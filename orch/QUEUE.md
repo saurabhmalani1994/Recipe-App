@@ -16,3 +16,4 @@ S8 curation: dedupe + quality filter + select 50-100k from raw | ingest | after 
 S9 corpus.db build + FTS5 + schema/corpus.sql | ingest | after S8 | opus | - | v0.1
 S7b UI polish: the recipe editor ingredient row overflows at 412px (3rd field cut off, seen in the screenshot); the qty/unit fields are too wide; OPFS persistence instead of the localStorage snapshot | app | DONE merged | sonnet | orch/briefs/S7b-ui-polish.md | v0.1
 S3b taxonomy/subs/parser fixups from S5a | ingest | RUNNING | sonnet | orch/briefs/S3b-fixups.md | v0.1
+S9a corpus.db schema + builder on sample + course tagger + app types/fixture | ingest+app types | RUNNING | opus | orch/briefs/S9a-corpus-schema.md | v0.1
