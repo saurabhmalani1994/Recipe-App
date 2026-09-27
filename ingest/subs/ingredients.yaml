@@ -1,0 +1,1618 @@
+# Ingredient taxonomy for the substitutions table (local mirror; the parser slice will own
+# the canonical taxonomy later). Keys are simple lowercase snake_case slugs.
+#
+# flags lists only the flags that are true. Meaning of each flag:
+#   red_meat, poultry, fish, shellfish: the ingredient is, or is made from, that animal
+#   animal_derived: contains slaughter-derived material that is easy to miss (gelatin, lard,
+#     rennet, stocks, fish or shellfish in a sauce). Dairy, egg and honey are NOT animal_derived.
+#   dairy, egg, gluten, nuts (tree nuts and peanuts), alcohol: contains it
+# hidden_animal: what the non-obvious animal ingredient is.
+# Flags are conservative: where brands differ and the common product contains it, it is flagged
+# and the note says so. Diet safety of a substitute is always computed by validate.py from
+# these flags, never written by hand on an entry.
+version: 1
+ingredients:
+  achiote_paste:
+    category: sauce_condiment
+    flags: []
+  active_dry_yeast:
+    category: leavener
+    flags: []
+  agar_agar:
+    category: flour_thickener
+    flags: []
+  agave_syrup:
+    category: sweetener
+    flags: []
+  aji_mirin:
+    category: alcohol
+    flags: [alcohol]
+    note: "Mirin-style seasoning; usually still contains some alcohol"
+  aleppo_pepper:
+    category: chile
+    flags: []
+  all_purpose_flour:
+    category: flour_thickener
+    flags: [gluten]
+  allspice:
+    category: spice
+    flags: []
+  almond_butter:
+    category: sauce_condiment
+    flags: [nuts]
+  almond_milk:
+    category: nondairy
+    flags: [nuts]
+  almonds:
+    category: nut_seed
+    flags: [nuts]
+  amchur:
+    category: vinegar_acid
+    flags: []
+  anaheim_chile:
+    category: chile
+    flags: []
+  anardana:
+    category: vinegar_acid
+    flags: []
+  ancho_chile:
+    category: chile
+    flags: []
+  ancho_chile_powder:
+    category: chile
+    flags: []
+  anchovy:
+    category: protein
+    flags: [fish]
+  anchovy_paste:
+    category: sauce_condiment
+    flags: [fish, animal_derived]
+    hidden_animal: "anchovies"
+  anise_seed:
+    category: spice
+    flags: []
+  apple_cider_vinegar:
+    category: vinegar_acid
+    flags: []
+  apple_pie_spice:
+    category: spice_blend
+    flags: []
+  applesauce:
+    category: pantry
+    flags: []
+  aquafaba:
+    category: egg
+    flags: []
+  arborio_rice:
+    category: pantry
+    flags: []
+  arctic_char:
+    category: protein
+    flags: [fish]
+  arrowroot:
+    category: flour_thickener
+    flags: []
+  asafoetida:
+    category: spice
+    flags: [gluten]
+    note: "Usually compounded with wheat flour"
+  avocado:
+    category: pantry
+    flags: []
+  avocado_oil:
+    category: fat_oil
+    flags: []
+  bacon:
+    category: protein
+    flags: [red_meat]
+  bacon_fat:
+    category: fat_oil
+    flags: [red_meat, animal_derived]
+    hidden_animal: "pork fat"
+  baharat:
+    category: spice_blend
+    flags: []
+  baking_powder:
+    category: leavener
+    flags: []
+  baking_soda:
+    category: leavener
+    flags: []
+  balsamic_vinegar:
+    category: vinegar_acid
+    flags: []
+  banana:
+    category: pantry
+    flags: []
+  basil:
+    category: herb
+    flags: []
+  bay_leaf:
+    category: herb
+    flags: []
+  bbq_sauce:
+    category: sauce_condiment
+    flags: [fish, animal_derived]
+    hidden_animal: "Worcestershire (anchovy) in many brands"
+    note: "Flagged conservatively; check the label"
+  beef_bouillon:
+    category: stock
+    flags: [red_meat, animal_derived]
+    hidden_animal: "beef extract"
+  beef_chuck:
+    category: protein
+    flags: [red_meat]
+  beef_stock:
+    category: stock
+    flags: [red_meat, animal_derived]
+    hidden_animal: "beef"
+  beer:
+    category: alcohol
+    flags: [alcohol, gluten]
+  bittersweet_chocolate:
+    category: chocolate_cocoa
+    flags: []
+    note: "May contain milk; check the label"
+  black_bean_sauce:
+    category: sauce_condiment
+    flags: [gluten]
+    note: "Usually contains soy sauce"
+  black_pepper:
+    category: spice
+    flags: []
+  black_salt:
+    category: salt
+    flags: []
+  black_sesame_seeds:
+    category: nut_seed
+    flags: []
+  black_treacle:
+    category: sweetener
+    flags: []
+  black_vinegar:
+    category: vinegar_acid
+    flags: [gluten]
+    note: "Brewed from rice with wheat and barley"
+  bok_choy:
+    category: pantry
+    flags: []
+  bourbon:
+    category: alcohol
+    flags: [alcohol]
+  brandy:
+    category: alcohol
+    flags: [alcohol]
+  bread_flour:
+    category: flour_thickener
+    flags: [gluten]
+  breadcrumbs:
+    category: flour_thickener
+    flags: [gluten]
+  brown_rice_syrup:
+    category: sweetener
+    flags: []
+    note: "Some brands use barley enzymes"
+  brown_sauce:
+    category: sauce_condiment
+    flags: [gluten]
+    note: "Malt vinegar"
+  brown_sugar:
+    category: sweetener
+    flags: []
+  bulgur:
+    category: pantry
+    flags: [gluten]
+  butter:
+    category: dairy
+    flags: [dairy]
+  buttermilk:
+    category: dairy
+    flags: [dairy]
+  cajun_seasoning:
+    category: spice_blend
+    flags: []
+  cake_flour:
+    category: flour_thickener
+    flags: [gluten]
+  calamansi_juice:
+    category: vinegar_acid
+    flags: []
+  canned_salmon:
+    category: protein
+    flags: [fish]
+  canned_tomatoes:
+    category: pantry
+    flags: []
+  canned_tuna:
+    category: protein
+    flags: [fish]
+  caper_berries:
+    category: pantry
+    flags: []
+  capers:
+    category: pantry
+    flags: []
+  caraway_seeds:
+    category: spice
+    flags: []
+  cardamom:
+    category: spice
+    flags: []
+  cardamom_pods:
+    category: spice
+    flags: []
+  carnaroli_rice:
+    category: pantry
+    flags: []
+  cashew_butter:
+    category: sauce_condiment
+    flags: [nuts]
+  cashew_cream:
+    category: nondairy
+    flags: [nuts]
+  cayenne:
+    category: chile
+    flags: []
+  cayenne_chile:
+    category: chile
+    flags: []
+  celery:
+    category: aromatic
+    flags: []
+  celery_leaves:
+    category: herb
+    flags: []
+  celery_root:
+    category: aromatic
+    flags: []
+  celery_salt:
+    category: salt
+    flags: []
+  celery_seed:
+    category: spice
+    flags: []
+  chaat_masala:
+    category: spice_blend
+    flags: []
+  champagne_vinegar:
+    category: vinegar_acid
+    flags: []
+  chervil:
+    category: herb
+    flags: []
+  chia_seeds:
+    category: flour_thickener
+    flags: []
+  chicken_bouillon:
+    category: stock
+    flags: [poultry, animal_derived]
+    hidden_animal: "chicken extract or fat"
+  chicken_breast:
+    category: protein
+    flags: [poultry]
+  chicken_stock:
+    category: stock
+    flags: [poultry, animal_derived]
+    hidden_animal: "chicken"
+  chicken_thigh:
+    category: protein
+    flags: [poultry]
+  chickpeas:
+    category: protein
+    flags: []
+  chile_de_arbol:
+    category: chile
+    flags: []
+  chili_garlic_sauce:
+    category: sauce_condiment
+    flags: []
+  chili_oil:
+    category: sauce_condiment
+    flags: []
+  chili_powder:
+    category: spice_blend
+    flags: []
+  chinese_five_spice:
+    category: spice_blend
+    flags: []
+  chinese_sausage:
+    category: protein
+    flags: [red_meat]
+  chinese_sesame_paste:
+    category: sauce_condiment
+    flags: []
+    note: "Sesame is a major allergen"
+  chipotle_in_adobo:
+    category: chile
+    flags: []
+  chipotle_powder:
+    category: chile
+    flags: []
+  chives:
+    category: herb
+    flags: []
+  chorizo:
+    category: protein
+    flags: [red_meat]
+  cilantro:
+    category: herb
+    flags: []
+  cinnamon:
+    category: spice
+    flags: []
+  cinnamon_stick:
+    category: spice
+    flags: []
+  clam_juice:
+    category: stock
+    flags: [shellfish, animal_derived]
+    hidden_animal: "clams"
+  cloves:
+    category: spice
+    flags: []
+  cocoa_powder:
+    category: chocolate_cocoa
+    flags: []
+  coconut_aminos:
+    category: sauce_condiment
+    flags: []
+    note: "Coconut is listed as a tree nut by the FDA but most tree-nut-allergic people tolerate it"
+  coconut_cream:
+    category: nondairy
+    flags: []
+    note: "See coconut_milk"
+  coconut_milk:
+    category: nondairy
+    flags: []
+    note: "Coconut is listed as a tree nut by the FDA but most tree-nut-allergic people tolerate it"
+  coconut_oil:
+    category: fat_oil
+    flags: []
+  coconut_sugar:
+    category: sweetener
+    flags: []
+  coconut_yogurt:
+    category: nondairy
+    flags: []
+  comte:
+    category: dairy
+    flags: [dairy, animal_derived]
+    hidden_animal: "calf rennet (AOP)"
+  coriander:
+    category: spice
+    flags: []
+  coriander_seeds:
+    category: spice
+    flags: []
+  cornflakes:
+    category: flour_thickener
+    flags: [gluten]
+    note: "Most brands contain barley malt"
+  cornichons:
+    category: pantry
+    flags: []
+  cornmeal:
+    category: flour_thickener
+    flags: []
+  cornstarch:
+    category: flour_thickener
+    flags: []
+  cotija:
+    category: dairy
+    flags: [dairy]
+    note: "Rennet type varies by brand"
+  cottage_cheese:
+    category: dairy
+    flags: [dairy]
+  couscous:
+    category: pantry
+    flags: [gluten]
+  crackers:
+    category: flour_thickener
+    flags: [gluten]
+  cream_cheese:
+    category: dairy
+    flags: [dairy]
+  cream_of_tartar:
+    category: vinegar_acid
+    flags: []
+  creme_fraiche:
+    category: dairy
+    flags: [dairy]
+  creole_seasoning:
+    category: spice_blend
+    flags: []
+  crystallized_ginger:
+    category: aromatic
+    flags: []
+  culantro:
+    category: herb
+    flags: []
+  cumin:
+    category: spice
+    flags: []
+  cumin_seeds:
+    category: spice
+    flags: []
+  curry_leaves:
+    category: herb
+    flags: []
+  curry_powder:
+    category: spice_blend
+    flags: []
+  dark_brown_sugar:
+    category: sweetener
+    flags: []
+  dark_rum:
+    category: alcohol
+    flags: [alcohol]
+  dark_soy_sauce:
+    category: sauce_condiment
+    flags: [gluten]
+    note: "Brewed with wheat"
+  dashi:
+    category: stock
+    flags: [fish, animal_derived]
+    hidden_animal: "bonito flakes (katsuobushi)"
+  date_syrup:
+    category: sweetener
+    flags: []
+  desiccated_coconut:
+    category: pantry
+    flags: []
+    note: "See coconut_milk"
+  dijon_mustard:
+    category: sauce_condiment
+    flags: []
+    note: "Traditionally made with white wine or verjuice"
+  dill:
+    category: herb
+    flags: []
+  dill_pickles:
+    category: pantry
+    flags: []
+  dill_seed:
+    category: spice
+    flags: []
+  distilled_white_vinegar:
+    category: vinegar_acid
+    flags: []
+  doenjang:
+    category: sauce_condiment
+    flags: []
+    note: "Some brands contain wheat"
+  doubanjiang:
+    category: sauce_condiment
+    flags: [gluten]
+    note: "Many brands contain wheat flour"
+  double_zero_flour:
+    category: flour_thickener
+    flags: [gluten]
+  dried_basil:
+    category: herb
+    flags: []
+  dried_dill:
+    category: herb
+    flags: []
+  dried_lemon_peel:
+    category: vinegar_acid
+    flags: []
+  dried_lemongrass:
+    category: herb
+    flags: []
+  dried_lime:
+    category: vinegar_acid
+    flags: []
+  dried_makrut_lime_leaf:
+    category: herb
+    flags: []
+  dried_marjoram:
+    category: herb
+    flags: []
+  dried_minced_garlic:
+    category: aromatic
+    flags: []
+  dried_mint:
+    category: herb
+    flags: []
+  dried_onion_flakes:
+    category: aromatic
+    flags: []
+  dried_oregano:
+    category: herb
+    flags: []
+  dried_parsley:
+    category: herb
+    flags: []
+  dried_rosemary:
+    category: herb
+    flags: []
+  dried_sage:
+    category: herb
+    flags: []
+  dried_shiitake:
+    category: pantry
+    flags: []
+  dried_tarragon:
+    category: herb
+    flags: []
+  dried_thyme:
+    category: herb
+    flags: []
+  dry_mustard:
+    category: spice
+    flags: []
+  dry_sherry:
+    category: alcohol
+    flags: [alcohol]
+  dry_vermouth:
+    category: alcohol
+    flags: [alcohol]
+  dry_white_wine:
+    category: alcohol
+    flags: [alcohol]
+    note: "Some wines are fined with isinglass, gelatin, egg or casein"
+  duck_fat:
+    category: fat_oil
+    flags: [poultry, animal_derived]
+    hidden_animal: "duck fat"
+  dutch_process_cocoa:
+    category: chocolate_cocoa
+    flags: []
+  egg:
+    category: egg
+    flags: [egg]
+  egg_replacer:
+    category: egg
+    flags: []
+    note: "Plant starch based"
+  egg_white:
+    category: egg
+    flags: [egg]
+  egg_yolk:
+    category: egg
+    flags: [egg]
+  epazote:
+    category: herb
+    flags: []
+  espresso_powder:
+    category: chocolate_cocoa
+    flags: []
+  evaporated_milk:
+    category: dairy
+    flags: [dairy]
+  extra_firm_tofu:
+    category: protein
+    flags: []
+  farmer_cheese:
+    category: dairy
+    flags: [dairy]
+  fennel:
+    category: aromatic
+    flags: []
+  fennel_fronds:
+    category: herb
+    flags: []
+  fennel_seeds:
+    category: spice
+    flags: []
+  fenugreek_seeds:
+    category: spice
+    flags: []
+  fermented_black_beans:
+    category: sauce_condiment
+    flags: []
+  feta:
+    category: dairy
+    flags: [dairy]
+    note: "Rennet type varies by brand"
+  firm_tofu:
+    category: protein
+    flags: []
+  fish_gelatin:
+    category: flour_thickener
+    flags: [fish, animal_derived]
+    hidden_animal: "fish skin"
+  fish_sauce:
+    category: sauce_condiment
+    flags: [fish, animal_derived]
+    hidden_animal: "fermented anchovies"
+  fish_stock:
+    category: stock
+    flags: [fish, animal_derived]
+    hidden_animal: "fish"
+  flaky_salt:
+    category: salt
+    flags: []
+  flaxseed_meal:
+    category: flour_thickener
+    flags: []
+  fontina:
+    category: dairy
+    flags: [dairy]
+    note: "Rennet type varies by brand"
+  freekeh:
+    category: pantry
+    flags: [gluten]
+  fresh_coconut:
+    category: pantry
+    flags: []
+    note: "See coconut_milk"
+  fresh_turmeric:
+    category: spice
+    flags: []
+  fresh_yeast:
+    category: leavener
+    flags: []
+  fresno_chile:
+    category: chile
+    flags: []
+  frozen_chopped_onion:
+    category: aromatic
+    flags: []
+  galangal:
+    category: aromatic
+    flags: []
+  galangal_paste:
+    category: aromatic
+    flags: []
+  garam_masala:
+    category: spice_blend
+    flags: []
+  garlic:
+    category: aromatic
+    flags: []
+  garlic_chives:
+    category: herb
+    flags: []
+  garlic_powder:
+    category: spice
+    flags: []
+  garlic_salt:
+    category: salt
+    flags: []
+  gelatin:
+    category: flour_thickener
+    flags: [animal_derived, red_meat]
+    hidden_animal: "usually pork skin or beef hide"
+  ghee:
+    category: dairy
+    flags: [dairy]
+    note: "Clarified butter; trace milk proteins"
+  ginger:
+    category: aromatic
+    flags: []
+  ginger_garlic_paste:
+    category: aromatic
+    flags: []
+  ginger_paste:
+    category: aromatic
+    flags: []
+  glucose_syrup:
+    category: sweetener
+    flags: []
+  gluten_free_flour_blend:
+    category: flour_thickener
+    flags: []
+  goat_cheese:
+    category: dairy
+    flags: [dairy]
+  gochugaru:
+    category: chile
+    flags: []
+  gochujang:
+    category: sauce_condiment
+    flags: [gluten]
+    note: "Most brands contain wheat or barley"
+  golden_syrup:
+    category: sweetener
+    flags: []
+  grana_padano:
+    category: dairy
+    flags: [dairy, animal_derived, egg]
+    hidden_animal: "calf rennet (DOP) and egg lysozyme"
+  granulated_garlic:
+    category: spice
+    flags: []
+  grapeseed_oil:
+    category: fat_oil
+    flags: []
+  greek_yogurt:
+    category: dairy
+    flags: [dairy]
+  green_bell_pepper:
+    category: chile
+    flags: []
+  green_chiles:
+    category: chile
+    flags: []
+  green_olives:
+    category: pantry
+    flags: []
+  green_onion:
+    category: aromatic
+    flags: []
+  green_tomato:
+    category: pantry
+    flags: []
+  ground_beef:
+    category: protein
+    flags: [red_meat]
+  ground_chicken:
+    category: protein
+    flags: [poultry]
+  ground_ginger:
+    category: spice
+    flags: []
+  ground_lamb:
+    category: protein
+    flags: [red_meat]
+  ground_pork:
+    category: protein
+    flags: [red_meat]
+  ground_turkey:
+    category: protein
+    flags: [poultry]
+  gruyere:
+    category: dairy
+    flags: [dairy, animal_derived]
+    hidden_animal: "animal rennet (AOP)"
+  guajillo_chile:
+    category: chile
+    flags: []
+  guanciale:
+    category: protein
+    flags: [red_meat]
+  guar_gum:
+    category: flour_thickener
+    flags: []
+  habanero:
+    category: chile
+    flags: []
+  haddock:
+    category: protein
+    flags: [fish]
+  half_and_half:
+    category: dairy
+    flags: [dairy]
+  halibut:
+    category: protein
+    flags: [fish]
+  halloumi:
+    category: dairy
+    flags: [dairy]
+    note: "Rennet type varies by brand"
+  harissa:
+    category: sauce_condiment
+    flags: []
+  hearts_of_palm:
+    category: pantry
+    flags: []
+  heavy_cream:
+    category: dairy
+    flags: [dairy]
+  herbes_de_provence:
+    category: spice_blend
+    flags: []
+  hoisin_sauce:
+    category: sauce_condiment
+    flags: [gluten]
+    note: "Most brands contain wheat"
+  holy_basil:
+    category: herb
+    flags: []
+  honey:
+    category: sweetener
+    flags: []
+    note: "Not vegan"
+  horseradish:
+    category: sauce_condiment
+    flags: []
+  hot_paprika:
+    category: spice
+    flags: []
+  hot_sauce:
+    category: sauce_condiment
+    flags: []
+  indian_bay_leaf:
+    category: herb
+    flags: []
+  instant_coffee:
+    category: chocolate_cocoa
+    flags: []
+  instant_dashi:
+    category: stock
+    flags: [fish, animal_derived]
+    hidden_animal: "bonito extract"
+  instant_yeast:
+    category: leavener
+    flags: []
+  italian_seasoning:
+    category: spice_blend
+    flags: []
+  jaggery:
+    category: sweetener
+    flags: []
+  jalapeno:
+    category: chile
+    flags: []
+  jarred_minced_garlic:
+    category: aromatic
+    flags: []
+  kashmiri_chili_powder:
+    category: chile
+    flags: []
+  kasuri_methi:
+    category: herb
+    flags: []
+  katsuobushi:
+    category: pantry
+    flags: [fish]
+    note: "Dried bonito"
+  kecap_manis:
+    category: sauce_condiment
+    flags: [gluten]
+    note: "Soy sauce base"
+  kefir:
+    category: dairy
+    flags: [dairy]
+  ketchup:
+    category: sauce_condiment
+    flags: []
+  kombu:
+    category: pantry
+    flags: []
+  kombu_dashi:
+    category: stock
+    flags: []
+    note: "Kelp only"
+  kosher_salt:
+    category: salt
+    flags: []
+  labneh:
+    category: dairy
+    flags: [dairy]
+  lard:
+    category: fat_oil
+    flags: [red_meat, animal_derived]
+    hidden_animal: "pork fat"
+  leek:
+    category: aromatic
+    flags: []
+  lemon_extract:
+    category: vinegar_acid
+    flags: [alcohol]
+  lemon_juice:
+    category: vinegar_acid
+    flags: []
+  lemon_zest:
+    category: vinegar_acid
+    flags: []
+  lemongrass:
+    category: herb
+    flags: []
+  lemongrass_paste:
+    category: herb
+    flags: []
+  lentils:
+    category: protein
+    flags: []
+  light_corn_syrup:
+    category: sweetener
+    flags: []
+  light_olive_oil:
+    category: fat_oil
+    flags: []
+  light_soy_sauce:
+    category: sauce_condiment
+    flags: [gluten]
+    note: "Brewed with wheat"
+  lime_juice:
+    category: vinegar_acid
+    flags: []
+  lime_zest:
+    category: vinegar_acid
+    flags: []
+  liquid_aminos:
+    category: sauce_condiment
+    flags: []
+  liquid_smoke:
+    category: sauce_condiment
+    flags: []
+  mace:
+    category: spice
+    flags: []
+  madeira:
+    category: alcohol
+    flags: [alcohol]
+  makrut_lime_leaf:
+    category: herb
+    flags: []
+  malt_vinegar:
+    category: vinegar_acid
+    flags: [gluten]
+    note: "Barley"
+  maple_syrup:
+    category: sweetener
+    flags: []
+  marjoram:
+    category: herb
+    flags: []
+  marsala:
+    category: alcohol
+    flags: [alcohol]
+  masa_harina:
+    category: flour_thickener
+    flags: []
+  mascarpone:
+    category: dairy
+    flags: [dairy]
+  mayonnaise:
+    category: sauce_condiment
+    flags: [egg]
+  meringue_powder:
+    category: egg
+    flags: [egg]
+    note: "Dried egg white"
+  mexican_chocolate:
+    category: chocolate_cocoa
+    flags: []
+    note: "May contain milk; check the label"
+  mexican_crema:
+    category: dairy
+    flags: [dairy]
+  mexican_oregano:
+    category: herb
+    flags: []
+  meyer_lemon_juice:
+    category: vinegar_acid
+    flags: []
+  milk:
+    category: dairy
+    flags: [dairy]
+  mint:
+    category: herb
+    flags: []
+  mirin:
+    category: alcohol
+    flags: [alcohol]
+    note: "Hon mirin is about 14 percent alcohol"
+  molasses:
+    category: sweetener
+    flags: []
+  mozzarella:
+    category: dairy
+    flags: [dairy]
+    note: "Rennet type varies by brand"
+  mulato_chile:
+    category: chile
+    flags: []
+  muscovado_sugar:
+    category: sweetener
+    flags: []
+  mushroom_soy_sauce:
+    category: sauce_condiment
+    flags: [gluten]
+    note: "Soy sauce base brewed with wheat"
+  mushroom_stock:
+    category: stock
+    flags: []
+  mushrooms:
+    category: pantry
+    flags: []
+  mustard_oil:
+    category: fat_oil
+    flags: []
+  mustard_seeds:
+    category: spice
+    flags: []
+  neufchatel:
+    category: dairy
+    flags: [dairy]
+  neutral_oil:
+    category: fat_oil
+    flags: []
+  new_mexico_chile:
+    category: chile
+    flags: []
+  nigella_seeds:
+    category: spice
+    flags: []
+  non_alcoholic_beer:
+    category: alcohol
+    flags: [gluten]
+    note: "May contain up to 0.5 percent alcohol"
+  nori:
+    category: pantry
+    flags: []
+  nutmeg:
+    category: spice
+    flags: []
+  nutritional_yeast:
+    category: nondairy
+    flags: []
+  oat_milk:
+    category: nondairy
+    flags: []
+  old_bay_seasoning:
+    category: spice_blend
+    flags: []
+  olive_oil:
+    category: fat_oil
+    flags: []
+  onion:
+    category: aromatic
+    flags: []
+  onion_powder:
+    category: spice
+    flags: []
+  orange_blossom_water:
+    category: sweetener
+    flags: []
+  orange_juice_concentrate:
+    category: pantry
+    flags: []
+  orange_liqueur:
+    category: alcohol
+    flags: [alcohol]
+  orange_zest:
+    category: vinegar_acid
+    flags: []
+  oregano:
+    category: herb
+    flags: []
+  oyster_sauce:
+    category: sauce_condiment
+    flags: [shellfish, animal_derived, gluten]
+    hidden_animal: "oyster extract"
+    note: "Many brands contain wheat"
+  palm_sugar:
+    category: sweetener
+    flags: []
+  pancetta:
+    category: protein
+    flags: [red_meat]
+  panch_phoron:
+    category: spice_blend
+    flags: []
+  paneer:
+    category: dairy
+    flags: [dairy]
+    note: "Acid-set, no rennet"
+  panko:
+    category: flour_thickener
+    flags: [gluten]
+  paprika:
+    category: spice
+    flags: []
+  parmigiano_reggiano:
+    category: dairy
+    flags: [dairy, animal_derived]
+    hidden_animal: "calf rennet (required by the DOP rules)"
+  parsley:
+    category: herb
+    flags: []
+  pasilla_chile:
+    category: chile
+    flags: []
+  peanut_butter:
+    category: sauce_condiment
+    flags: [nuts]
+    note: "Peanut is a legume, flagged for allergy"
+  peanut_oil:
+    category: fat_oil
+    flags: [nuts]
+    note: "Refined peanut oil is often tolerated; flagged conservatively"
+  pecorino_romano:
+    category: dairy
+    flags: [dairy, animal_derived]
+    hidden_animal: "lamb rennet (DOP)"
+  perilla_leaf:
+    category: herb
+    flags: []
+  perilla_oil:
+    category: fat_oil
+    flags: []
+  pickled_jalapeno:
+    category: chile
+    flags: []
+  piloncillo:
+    category: sweetener
+    flags: []
+  pine_nuts:
+    category: nut_seed
+    flags: [nuts]
+  plain_yogurt:
+    category: dairy
+    flags: [dairy]
+  plant_based_ground:
+    category: protein
+    flags: []
+  plum_sauce:
+    category: sauce_condiment
+    flags: []
+  poblano:
+    category: chile
+    flags: []
+  polenta:
+    category: flour_thickener
+    flags: []
+  pollock:
+    category: protein
+    flags: [fish]
+  pomegranate_juice:
+    category: vinegar_acid
+    flags: []
+  pomegranate_molasses:
+    category: vinegar_acid
+    flags: []
+  ponzu:
+    category: sauce_condiment
+    flags: []
+  pork_shoulder:
+    category: protein
+    flags: [red_meat]
+  port:
+    category: alcohol
+    flags: [alcohol]
+  potassium_bicarbonate:
+    category: leavener
+    flags: []
+  potato_starch:
+    category: flour_thickener
+    flags: []
+  powdered_milk:
+    category: dairy
+    flags: [dairy]
+  powdered_sugar:
+    category: sweetener
+    flags: []
+  preserved_lemon:
+    category: vinegar_acid
+    flags: []
+  prosciutto:
+    category: protein
+    flags: [red_meat]
+  provolone:
+    category: dairy
+    flags: [dairy]
+    note: "Rennet type varies by brand"
+  psyllium_husk:
+    category: flour_thickener
+    flags: []
+  pumpkin_pie_spice:
+    category: spice_blend
+    flags: []
+  puya_chile:
+    category: chile
+    flags: []
+  queso_blanco:
+    category: dairy
+    flags: [dairy]
+    note: "Acid-set"
+  queso_fresco:
+    category: dairy
+    flags: [dairy]
+  queso_para_freir:
+    category: dairy
+    flags: [dairy]
+  quinoa:
+    category: pantry
+    flags: []
+  ras_el_hanout:
+    category: spice_blend
+    flags: []
+  red_grape_juice:
+    category: pantry
+    flags: []
+  red_miso:
+    category: sauce_condiment
+    flags: []
+    note: "Barley miso contains gluten; rice and soy miso do not"
+  red_onion:
+    category: aromatic
+    flags: []
+  red_pepper_flakes:
+    category: chile
+    flags: []
+  red_wine:
+    category: alcohol
+    flags: [alcohol]
+    note: "Some wines are fined with isinglass, gelatin, egg or casein"
+  red_wine_vinegar:
+    category: vinegar_acid
+    flags: []
+  rice_flour:
+    category: flour_thickener
+    flags: []
+  rice_syrup:
+    category: sweetener
+    flags: []
+  rice_vinegar:
+    category: vinegar_acid
+    flags: []
+  ricotta:
+    category: dairy
+    flags: [dairy]
+  ricotta_salata:
+    category: dairy
+    flags: [dairy]
+  rock_sugar:
+    category: sweetener
+    flags: []
+  rolled_oats:
+    category: flour_thickener
+    flags: []
+    note: "Oats are often cross-contaminated with wheat"
+  rose_extract:
+    category: sweetener
+    flags: [alcohol]
+  rose_water:
+    category: sweetener
+    flags: []
+  rosemary:
+    category: herb
+    flags: []
+  rum_extract:
+    category: alcohol
+    flags: [alcohol]
+  safflower:
+    category: spice
+    flags: []
+  saffron:
+    category: spice
+    flags: []
+  sage:
+    category: herb
+    flags: []
+  sake:
+    category: alcohol
+    flags: [alcohol]
+  salmon:
+    category: protein
+    flags: [fish]
+  salt:
+    category: salt
+    flags: []
+  sambal_oelek:
+    category: sauce_condiment
+    flags: []
+  sansho:
+    category: spice
+    flags: []
+  scallops:
+    category: protein
+    flags: [shellfish]
+  schmaltz:
+    category: fat_oil
+    flags: [poultry, animal_derived]
+    hidden_animal: "chicken fat"
+  scotch_bonnet:
+    category: chile
+    flags: []
+  seasoned_rice_vinegar:
+    category: vinegar_acid
+    flags: []
+  seitan:
+    category: protein
+    flags: [gluten]
+    note: "Wheat gluten"
+  self_raising_flour:
+    category: flour_thickener
+    flags: [gluten]
+  semisweet_chocolate:
+    category: chocolate_cocoa
+    flags: []
+    note: "May contain milk; check the label"
+  serrano:
+    category: chile
+    flags: []
+  serrano_ham:
+    category: protein
+    flags: [red_meat]
+  sesame_seeds:
+    category: nut_seed
+    flags: []
+  shallot:
+    category: aromatic
+    flags: []
+  shaoxing_wine:
+    category: alcohol
+    flags: [alcohol, gluten]
+    note: "Fermented with a wheat starter"
+  sherry_vinegar:
+    category: vinegar_acid
+    flags: []
+  shichimi_togarashi:
+    category: spice_blend
+    flags: []
+  shiitake:
+    category: pantry
+    flags: []
+  shiitake_dashi:
+    category: stock
+    flags: []
+    note: "Mushroom only"
+  shiso:
+    category: herb
+    flags: []
+  shrimp:
+    category: protein
+    flags: [shellfish]
+  shrimp_paste:
+    category: sauce_condiment
+    flags: [shellfish, animal_derived]
+    hidden_animal: "fermented shrimp"
+  sichuan_peppercorns:
+    category: spice
+    flags: []
+  silken_tofu:
+    category: protein
+    flags: []
+  skyr:
+    category: dairy
+    flags: [dairy]
+  smoked_paprika:
+    category: spice
+    flags: []
+  sour_cream:
+    category: dairy
+    flags: [dairy]
+  soy_milk:
+    category: nondairy
+    flags: []
+  soy_sauce:
+    category: sauce_condiment
+    flags: [gluten]
+    note: "Brewed with wheat"
+  soy_yogurt:
+    category: nondairy
+    flags: []
+  soyrizo:
+    category: protein
+    flags: []
+  spelt_flour:
+    category: flour_thickener
+    flags: [gluten]
+  sriracha:
+    category: sauce_condiment
+    flags: []
+  ssamjang:
+    category: sauce_condiment
+    flags: [gluten]
+    note: "Made from gochujang and doenjang"
+  star_anise:
+    category: spice
+    flags: []
+  steelhead_trout:
+    category: protein
+    flags: [fish]
+  sugar:
+    category: sweetener
+    flags: []
+  sumac:
+    category: vinegar_acid
+    flags: []
+  sunflower_oil:
+    category: fat_oil
+    flags: []
+  sunflower_seed_butter:
+    category: sauce_condiment
+    flags: []
+  sunflower_seeds:
+    category: nut_seed
+    flags: []
+  superfine_sugar:
+    category: sweetener
+    flags: []
+  sushi_rice:
+    category: pantry
+    flags: []
+  sweet_bean_sauce:
+    category: sauce_condiment
+    flags: [gluten]
+    note: "Fermented wheat flour paste"
+  sweetened_condensed_coconut_milk:
+    category: nondairy
+    flags: []
+  sweetened_condensed_milk:
+    category: dairy
+    flags: [dairy]
+  swiss_cheese:
+    category: dairy
+    flags: [dairy]
+    note: "Rennet type varies by brand"
+  taco_seasoning:
+    category: spice_blend
+    flags: []
+  tahini:
+    category: sauce_condiment
+    flags: []
+    note: "Sesame is a major allergen"
+  tamari:
+    category: sauce_condiment
+    flags: []
+    note: "Usually wheat free; check the label"
+  tamarind_paste:
+    category: vinegar_acid
+    flags: []
+  tapioca_starch:
+    category: flour_thickener
+    flags: []
+  tarragon:
+    category: herb
+    flags: []
+  tempeh:
+    category: protein
+    flags: []
+  thai_basil:
+    category: herb
+    flags: []
+  thai_bird_chile:
+    category: chile
+    flags: []
+  thyme:
+    category: herb
+    flags: []
+  tilapia:
+    category: protein
+    flags: [fish]
+  toasted_sesame_oil:
+    category: fat_oil
+    flags: []
+  tomatillo:
+    category: pantry
+    flags: []
+  tomato_paste:
+    category: sauce_condiment
+    flags: []
+  tomato_sauce:
+    category: sauce_condiment
+    flags: []
+  tomatoes:
+    category: pantry
+    flags: []
+  tonkatsu_sauce:
+    category: sauce_condiment
+    flags: [gluten]
+    note: "Check label; most bottled versions contain no animal products"
+  triple_sec:
+    category: alcohol
+    flags: [alcohol]
+  turkey_bacon:
+    category: protein
+    flags: [poultry]
+  turkey_breast:
+    category: protein
+    flags: [poultry]
+  turkey_stock:
+    category: stock
+    flags: [poultry, animal_derived]
+    hidden_animal: "turkey"
+  turkey_thigh:
+    category: protein
+    flags: [poultry]
+  turmeric:
+    category: spice
+    flags: []
+  tvp:
+    category: protein
+    flags: []
+  unsweetened_chocolate:
+    category: chocolate_cocoa
+    flags: []
+  urfa_biber:
+    category: chile
+    flags: []
+  vanilla_bean:
+    category: sweetener
+    flags: []
+  vanilla_bean_paste:
+    category: sweetener
+    flags: [alcohol]
+    note: "Usually contains vanilla extract"
+  vanilla_extract:
+    category: sweetener
+    flags: [alcohol]
+  vegan_butter:
+    category: nondairy
+    flags: []
+  vegan_cream_cheese:
+    category: nondairy
+    flags: [nuts]
+    note: "Many brands are cashew based; flagged conservatively"
+  vegan_fish_sauce:
+    category: sauce_condiment
+    flags: []
+  vegan_mayonnaise:
+    category: sauce_condiment
+    flags: []
+  vegan_mozzarella:
+    category: nondairy
+    flags: [nuts]
+    note: "Many brands are cashew based; flagged conservatively"
+  vegan_worcestershire_sauce:
+    category: sauce_condiment
+    flags: [gluten]
+    note: "Often soy sauce based; check the label"
+  vegetable_bouillon:
+    category: stock
+    flags: []
+    note: "Some brands contain dairy or wheat"
+  vegetable_shortening:
+    category: fat_oil
+    flags: []
+  vegetable_stock:
+    category: stock
+    flags: []
+  vegetarian_hard_cheese:
+    category: dairy
+    flags: [dairy]
+    note: "Made with microbial rennet"
+  vegetarian_oyster_sauce:
+    category: sauce_condiment
+    flags: [gluten]
+    note: "Mushroom and soy based"
+  vietnamese_coriander:
+    category: herb
+    flags: []
+  vital_wheat_gluten:
+    category: flour_thickener
+    flags: [gluten]
+  walnuts:
+    category: nut_seed
+    flags: [nuts]
+  wasabi:
+    category: sauce_condiment
+    flags: []
+  water:
+    category: basic
+    flags: []
+  white_beans:
+    category: protein
+    flags: []
+  white_fish:
+    category: protein
+    flags: [fish]
+  white_grape_juice:
+    category: pantry
+    flags: []
+  white_miso:
+    category: sauce_condiment
+    flags: []
+    note: "Barley miso contains gluten; rice and soy miso do not"
+  white_pepper:
+    category: spice
+    flags: []
+  white_wine_vinegar:
+    category: vinegar_acid
+    flags: []
+  whole_grain_mustard:
+    category: sauce_condiment
+    flags: []
+  whole_wheat_flour:
+    category: flour_thickener
+    flags: [gluten]
+  worcestershire_sauce:
+    category: sauce_condiment
+    flags: [fish, animal_derived, gluten]
+    hidden_animal: "anchovies"
+    note: "UK recipe uses malt vinegar; US Lea and Perrins is labeled gluten free"
+  xanthan_gum:
+    category: flour_thickener
+    flags: []
+  yellow_mustard:
+    category: sauce_condiment
+    flags: []
+  yellow_mustard_seeds:
+    category: spice
+    flags: []
+  young_jackfruit:
+    category: protein
+    flags: []
+  yuzu_juice:
+    category: vinegar_acid
+    flags: []
+  zaatar:
+    category: spice_blend
+    flags: []
