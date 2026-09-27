@@ -7,7 +7,9 @@ import pytest
 HERE = os.path.dirname(os.path.abspath(__file__))
 
 from ingest.cuisine import cuisines as C  # noqa: E402
+from ingest.cuisine import lexicon as L  # noqa: E402
 from ingest.cuisine import season as S  # noqa: E402
+from ingest.cuisine.build_dataset import cap_classes  # noqa: E402
 from ingest.cuisine.classifier import classify, load_model, UNKNOWN  # noqa: E402
 from ingest.cuisine.features import tokens, ingredient_slugs, title_words  # noqa: E402
 
@@ -25,7 +27,7 @@ def test_around_25_canonical_labels():
 
 
 def test_label_map_targets_are_canonical():
-    for source in ('themealdb', 'bbcgoodfood'):
+    for source in ('themealdb', 'bbcgoodfood', 'hf_cuisine_type'):
         mapping = C.label_map(source)
         assert mapping, f'{source} should have a non-empty map'
         for raw, canon in mapping.items():
@@ -55,6 +57,61 @@ def test_tokens_namespaces_slugs_and_words():
     toks = tokens(['1 lb chicken thigh'], 'Chicken Curry')
     assert any(t.startswith('slug:') for t in toks)
     assert any(t.startswith('word:') for t in toks)
+
+
+# ---------- lexicon (silver labels, brief S5b-2 #1b/#2) ----------
+
+def test_lexicon_matches_dish_names_and_demonyms():
+    assert L.find_label('Authentic Pad Thai with Shrimp') == ('thai', 'pad thai')
+    assert L.find_label('Grandma\'s Chicken Tikka Masala') == ('indian', 'tikka masala')
+    assert L.find_label('Plain Roast Chicken') == (None, None)
+
+
+def test_lexicon_excludes_generic_ingredient_words():
+    """The exact false positives S5b's report called out: an ingredient adjective must not
+    be read as a cuisine marker."""
+    for title in ('Italian Sausage and Peppers', 'French Fries', 'American Cheese Dip',
+                  'Swiss Chard Saute', 'Spanish Onion Soup'):
+        assert L.find_label(title) == (None, None), title
+
+
+def test_marker_words_strip_from_title_tokens_no_leakage():
+    label, marker = L.find_label('Best Ever Pad Thai Noodles')
+    assert label == 'thai'
+    toks = tokens(['1 lb rice noodles'], 'Best Ever Pad Thai Noodles',
+                  exclude_words=L.marker_words(marker))
+    assert 'word:pad' not in toks and 'word:thai' not in toks
+    assert 'word:noodles' in toks  # the rest of the title still contributes
+
+
+# ---------- build_dataset (silver capping, brief S5b-2 #1b) ----------
+
+def _row(id_, label, silver):
+    return {'id': id_, 'label': label, 'silver': silver}
+
+
+def test_cap_classes_caps_silver_at_5x_smallest_and_returns_surplus():
+    gold = [_row(f'g{i}', 'tiny', False) for i in range(2)]  # total 2 -- the cap's anchor
+    silver = ([_row(f's{i}', 'small', True) for i in range(20)] +  # total 20
+              [_row(f'b{i}', 'big', True) for i in range(50)])     # total 50
+    kept, surplus, n_gold_trimmed = cap_classes(gold, silver, multiple=5)
+    # smallest nonzero class total is 'tiny' at 2 -> cap = 10
+    assert sum(1 for r in kept if r['label'] == 'tiny') == 2
+    assert sum(1 for r in kept if r['label'] == 'small') == 10
+    assert sum(1 for r in kept if r['label'] == 'big') == 10
+    assert len(surplus) == (20 - 10) + (50 - 10)
+    assert n_gold_trimmed == 0
+
+
+def test_cap_classes_trims_gold_when_silver_alone_cant_reach_cap():
+    gold = ([_row(f'g{i}', 'huge', False) for i in range(100)] +
+            [_row('t0', 'tiny', False)])
+    kept, surplus, n_gold_trimmed = cap_classes(gold, [], multiple=5)
+    # smallest nonzero is 'tiny' at 1 -> cap = 5, so 'huge' (all gold, no silver) must be
+    # trimmed to 5 even though gold rows are normally kept whole.
+    assert sum(1 for r in kept if r['label'] == 'huge') == 5
+    assert n_gold_trimmed == 95
+    assert surplus == []
 
 
 # ---------- classifier ----------
@@ -88,16 +145,32 @@ def test_classify_is_deterministic(model):
 
 
 def test_eval_meets_or_reports_the_bar():
-    """The bar is >=80% accuracy among scored, <=30% unknown (brief S5b #3). With ~823
-    labelled recipes across 26 overlapping cuisines the trained model does not clear the
-    accuracy half of it; this asserts the numbers are computed and sane, not that the bar
-    passed -- see orch/reports/S5b.md for the honest result."""
+    """The bar is >=80% accuracy among scored, <=30% unknown (brief S5b-2). With ~19,138
+    labelled recipes (up from S5b's 823 -- more sources, silver labels, class capping; see
+    orch/reports/S5b-2.md) the held-out split clears both halves of the bar. This asserts the
+    numbers are computed and sane either way, and additionally that the bar holds now that it
+    is expected to."""
     with open(os.path.join(HERE, 'eval.json'), encoding='utf-8') as fh:
         ev = json.load(fh)
     assert ev['n_held_out'] > 0
     assert 0.0 <= ev['accuracy_among_scored'] <= 1.0
     assert 0.0 <= ev['unknown_rate'] <= 1.0
     assert ev['unknown_rate'] <= 0.30, 'unknown-rate half of the bar should hold'
+    assert ev['accuracy_among_scored'] >= 0.80, 'accuracy half of the bar should hold now'
+
+
+def test_hand_check_eval_meets_the_bar():
+    """The new 300-recipe hand-checked set (brief S5b-2 #2): sources and titles not used in
+    training (drawn from build_dataset.py's silver_surplus.jsonl -- lexicon matches the
+    per-class cap left out of training). Also asserted against the bar."""
+    path = os.path.join(HERE, 'hand_check_eval.json')
+    with open(path, encoding='utf-8') as fh:
+        ev = json.load(fh)
+    assert ev['n_total'] > 0
+    assert 0.0 <= ev['accuracy_among_scored'] <= 1.0
+    assert 0.0 <= ev['unknown_rate'] <= 1.0
+    assert ev['unknown_rate'] <= 0.30
+    assert ev['accuracy_among_scored'] >= 0.80
 
 
 # ---------- season ----------

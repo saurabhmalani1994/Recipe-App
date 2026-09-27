@@ -44,19 +44,25 @@ def ingredient_slugs(ingredient_lines):
     return slugs
 
 
-def title_words(title):
-    """Deduplicated, stopword-filtered lowercase word tokens from a recipe title."""
+def title_words(title, exclude_words=None):
+    """Deduplicated, stopword-filtered lowercase word tokens from a recipe title.
+    `exclude_words`, if given, is a set of additional lowercase words to drop -- used to strip
+    a silver label's own marker words out of the features of the row it labelled, so the
+    model can't just learn "the word that produced the label predicts the label"
+    (brief S5b-2 #2, no leakage)."""
+    exclude = exclude_words or ()
     words = []
     seen = set()
     for w in _WORD_RE.findall((title or '').lower()):
-        if len(w) < 3 or w in _STOPWORDS or w in seen:
+        if len(w) < 3 or w in _STOPWORDS or w in seen or w in exclude:
             continue
         seen.add(w)
         words.append(w)
     return words
 
 
-def tokens(ingredient_lines, title):
-    """The full feature token list for one recipe: slug:* then word:* tokens."""
+def tokens(ingredient_lines, title, exclude_words=None):
+    """The full feature token list for one recipe: slug:* then word:* tokens. See
+    `title_words` for `exclude_words`."""
     return [f'slug:{s}' for s in ingredient_slugs(ingredient_lines)] + \
-           [f'word:{w}' for w in title_words(title)]
+           [f'word:{w}' for w in title_words(title, exclude_words)]
