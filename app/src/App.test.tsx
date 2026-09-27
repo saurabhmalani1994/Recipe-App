@@ -1,10 +1,15 @@
-import { cleanup, render, screen, within } from '@testing-library/react'
+import { cleanup, render, screen, within, waitFor } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { afterEach, beforeEach, describe, expect, it } from 'vitest'
 import { App } from './App'
+import { resetUserDbForTests } from './db'
+import { getSettings } from './features/settings/settingsRepo'
 
 beforeEach(() => {
   window.localStorage.clear()
+  // `user.db` is a module-level singleton (getUserDb()); force a fresh in-memory db per test
+  // so one test's settings writes don't leak into the next.
+  resetUserDbForTests()
 })
 
 afterEach(() => {
@@ -29,7 +34,7 @@ describe('App shell', () => {
     )
   })
 
-  it('persists the diet preset choice to localStorage', async () => {
+  it('persists the diet preset choice to settings in user.db', async () => {
     const user = userEvent.setup()
     render(<App />)
 
@@ -39,6 +44,8 @@ describe('App shell', () => {
       'aria-checked',
       'true',
     )
-    expect(window.localStorage.getItem('recipe-app.diet-preset')).toBe('no_red_meat')
+    await waitFor(async () => {
+      expect((await getSettings()).dietPreset).toBe('no_red_meat')
+    })
   })
 })

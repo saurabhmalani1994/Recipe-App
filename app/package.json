@@ -13,7 +13,8 @@
     "format:check": "prettier --check .",
     "test": "vitest run",
     "test:watch": "vitest",
-    "e2e": "playwright test"
+    "e2e": "playwright test",
+    "gen:slugs": "python3 scripts/gen_slugs.py"
   },
   "dependencies": {
     "@capacitor-community/sqlite": "^8.1.1",

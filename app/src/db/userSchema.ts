@@ -1,6 +1,22 @@
 import type { Migration } from './types'
 
 /**
+ * Pantry staples pre-seeded into `kitchen_items` (brief S7a #1): salt, pepper, neutral oil,
+ * water, plus sugar, flour, butter and olive oil, which the user can untick. Slugs match
+ * `ingest/taxonomy/ingredients.yaml`.
+ */
+export const PANTRY_DEFAULT_SLUGS = [
+  'salt',
+  'black_pepper',
+  'neutral_oil',
+  'water',
+  'sugar',
+  'all_purpose_flour',
+  'butter',
+  'olive_oil',
+] as const
+
+/**
  * `user.db` migration v1. Ruling R3: metric by default, a toggle per recipe. Owner (D11):
  * "1.5 servings worth per person", default 2 people -> 3 servings, rate configurable.
  */
@@ -71,6 +87,22 @@ export const USER_DB_MIGRATIONS: Migration[] = [
       )`,
     ],
   },
+  {
+    // S7a: settings screen ("my kitchen has" equipment) and pantry staple defaults.
+    // docs/PRODUCT.md #3 (equipment) and #7 (kitchen list, "staples are pre-seeded").
+    version: 2,
+    statements: [
+      `CREATE TABLE kitchen_equipment (
+        equipment_id TEXT PRIMARY KEY,
+        added_at TEXT NOT NULL DEFAULT (datetime('now'))
+      )`,
+      // Pantry staples pre-seeded into the kitchen list. The user can untick any of them,
+      // which just removes the row (see src/features/kitchen/kitchenRepo.ts).
+      ...PANTRY_DEFAULT_SLUGS.map(
+        (slug) => `INSERT OR IGNORE INTO kitchen_items (ingredient_id) VALUES ('${slug}')`,
+      ),
+    ],
+  },
 ]
 
 /** Every table `user.db` owns, in migration order. Used by backup export/import. */
@@ -80,6 +112,7 @@ export const USER_DB_TABLES = [
   'my_recipes',
   'recipe_forks',
   'kitchen_items',
+  'kitchen_equipment',
   'plans',
   'plan_entries',
   'grocery_lists',

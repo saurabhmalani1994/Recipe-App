@@ -1,5 +1,6 @@
-import { createContext, useCallback, useContext, useEffect, useMemo, useState } from 'react'
+import { createContext, useCallback, useContext, useEffect, useMemo, useRef, useState } from 'react'
 import type { ReactNode } from 'react'
+import { getSettings, updateSettings } from '../features/settings/settingsRepo'
 
 /**
  * The three diet presets from docs/PRODUCT.md ("Diet quick switch"). Owner (D5): "it would be
@@ -15,22 +16,7 @@ export const DIET_PRESET_LABELS: Record<DietPreset, string> = {
   no_red_meat: 'No red meat',
 }
 
-const STORAGE_KEY = 'recipe-app.diet-preset'
 const DEFAULT_PRESET: DietPreset = 'everything'
-
-function isDietPreset(value: unknown): value is DietPreset {
-  return typeof value === 'string' && (DIET_PRESETS as readonly string[]).includes(value)
-}
-
-function readStoredPreset(): DietPreset {
-  try {
-    const stored = window.localStorage.getItem(STORAGE_KEY)
-    return isDietPreset(stored) ? stored : DEFAULT_PRESET
-  } catch {
-    // Private browsing / blocked storage: fall back to the default rather than throw.
-    return DEFAULT_PRESET
-  }
-}
 
 interface DietContextValue {
   preset: DietPreset
@@ -40,23 +26,34 @@ interface DietContextValue {
 const DietContext = createContext<DietContextValue | null>(null)
 
 /**
- * Persists the diet preset to `localStorage` for now. `settings.diet_preset` in `user.db`
- * (see `src/db/userSchema.ts`) is the durable home for this once the settings screen writes
- * through the `Db` layer; wiring that up is out of scope for this slice.
+ * Persists the diet preset through `settings.diet_preset` in `user.db` (S7a: moved off
+ * `localStorage`, closing open item 1 in orch/reports/S2.md). The default renders immediately;
+ * once `getUserDb()` resolves, the real stored value (if different) takes over.
  */
 export function DietProvider({ children }: { children: ReactNode }) {
-  const [preset, setPresetState] = useState<DietPreset>(() => readStoredPreset())
+  const [preset, setPresetState] = useState<DietPreset>(DEFAULT_PRESET)
+  // Guards against the initial async load resolving *after* the user has already changed the
+  // preset (e.g. clicking the switch before getUserDb() settles) and stomping their choice.
+  const userChanged = useRef(false)
 
   useEffect(() => {
-    try {
-      window.localStorage.setItem(STORAGE_KEY, preset)
-    } catch {
-      // Ignore: persistence is best-effort in a blocked-storage environment.
+    let mounted = true
+    getSettings()
+      .then((settings) => {
+        if (mounted && !userChanged.current) setPresetState(settings.dietPreset)
+      })
+      .catch(() => {
+        // Db unavailable (e.g. still initialising): keep the default.
+      })
+    return () => {
+      mounted = false
     }
-  }, [preset])
+  }, [])
 
   const setPreset = useCallback((next: DietPreset) => {
+    userChanged.current = true
     setPresetState(next)
+    void updateSettings({ dietPreset: next })
   }, [])
 
   const value = useMemo(() => ({ preset, setPreset }), [preset, setPreset])
