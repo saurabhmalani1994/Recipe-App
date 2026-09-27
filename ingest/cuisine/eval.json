@@ -1,0 +1,1151 @@
+{
+  "n_total": 823,
+  "n_train": 668,
+  "n_held_out": 155,
+  "threshold": 0.6000000000000001,
+  "accuracy_among_scored": 0.6864406779661016,
+  "unknown_rate": 0.23870967741935484,
+  "scored": 118,
+  "correct": 81,
+  "wrong": 37,
+  "top_confusions": [
+    {
+      "true": "german_central_eu",
+      "pred": "british_irish",
+      "n": 4
+    },
+    {
+      "true": "american",
+      "pred": "german_central_eu",
+      "n": 3
+    },
+    {
+      "true": "british_irish",
+      "pred": "german_central_eu",
+      "n": 2
+    },
+    {
+      "true": "british_irish",
+      "pred": "italian",
+      "n": 2
+    },
+    {
+      "true": "middle_eastern",
+      "pred": "american",
+      "n": 2
+    },
+    {
+      "true": "american",
+      "pred": "british_irish",
+      "n": 2
+    },
+    {
+      "true": "vietnamese",
+      "pred": "thai",
+      "n": 2
+    },
+    {
+      "true": "italian",
+      "pred": "british_irish",
+      "n": 2
+    },
+    {
+      "true": "japanese",
+      "pred": "chinese",
+      "n": 2
+    },
+    {
+      "true": "turkish",
+      "pred": "italian",
+      "n": 1
+    }
+  ],
+  "model_size_mb": 0.786,
+  "samples": [
+    {
+      "id": "bbcgoodfood:adana-kebab",
+      "title": "Adana kebab",
+      "true": "turkish",
+      "pred": "turkish",
+      "confidence": 0.854
+    },
+    {
+      "id": "bbcgoodfood:turkish-cheese-toasties",
+      "title": "Turkish cheese toasties",
+      "true": "turkish",
+      "pred": "italian",
+      "confidence": 0.937
+    },
+    {
+      "id": "themealdb:53253",
+      "title": "Imam bayildi with BBQ lamb & tzatziki",
+      "true": "turkish",
+      "pred": "turkish",
+      "confidence": 0.846
+    },
+    {
+      "id": "themealdb:53258",
+      "title": "Hot cumin lamb wrap with crunchy slaw & spicy mayo",
+      "true": "turkish",
+      "pred": "north_african",
+      "confidence": 0.737
+    },
+    {
+      "id": "themealdb:53263",
+      "title": "Turkish lamb pilau",
+      "true": "turkish",
+      "pred": "unknown",
+      "confidence": 0.52
+    },
+    {
+      "id": "themealdb:53268",
+      "title": "Roasted chicken with creamy walnut sauce",
+      "true": "turkish",
+      "pred": "turkish",
+      "confidence": 0.707
+    },
+    {
+      "id": "themealdb:53273",
+      "title": "Roast aubergine with goat's cheese & toasted flatbread",
+      "true": "turkish",
+      "pred": "turkish",
+      "confidence": 0.899
+    },
+    {
+      "id": "themealdb:53278",
+      "title": "Aubergine & hummus grills",
+      "true": "turkish",
+      "pred": "turkish",
+      "confidence": 0.86
+    },
+    {
+      "id": "bbcgoodfood:aromatic-pork-pancakes",
+      "title": "Aromatic pork pancakes",
+      "true": "chinese",
+      "pred": "chinese",
+      "confidence": 0.847
+    },
+    {
+      "id": "bbcgoodfood:char-sui-bao-buns",
+      "title": "Char siu bao buns",
+      "true": "chinese",
+      "pred": "chinese",
+      "confidence": 0.644
+    },
+    {
+      "id": "bbcgoodfood:lionhead-meatball-soup",
+      "title": "Lionhead meatball soup",
+      "true": "chinese",
+      "pred": "chinese",
+      "confidence": 1.0
+    },
+    {
+      "id": "bbcgoodfood:sichuan-style-yuxiang-aubergine",
+      "title": "Sichuan-style yuxiang aubergine",
+      "true": "chinese",
+      "pred": "chinese",
+      "confidence": 1.0
+    },
+    {
+      "id": "bbcgoodfood:wonton-soup",
+      "title": "Wonton soup",
+      "true": "chinese",
+      "pred": "chinese",
+      "confidence": 1.0
+    },
+    {
+      "id": "themealdb:52948",
+      "title": "Wontons",
+      "true": "chinese",
+      "pred": "chinese",
+      "confidence": 1.0
+    },
+    {
+      "id": "themealdb:52953",
+      "title": "Shrimp Chow Fun",
+      "true": "chinese",
+      "pred": "chinese",
+      "confidence": 1.0
+    },
+    {
+      "id": "themealdb:53366",
+      "title": "Beef and Broccoli Stir-Fry",
+      "true": "chinese",
+      "pred": "chinese",
+      "confidence": 1.0
+    },
+    {
+      "id": "themealdb:53371",
+      "title": "Sichuan Style Stir-Fried Chinese Long Beans",
+      "true": "chinese",
+      "pred": "chinese",
+      "confidence": 1.0
+    },
+    {
+      "id": "themealdb:53376",
+      "title": "Sweet and Sour Chicken",
+      "true": "chinese",
+      "pred": "chinese",
+      "confidence": 0.997
+    },
+    {
+      "id": "bbcgoodfood:chocolate-churros-with-chocolate-salted-caramel-sauce",
+      "title": "Chocolate churros with chocolate & salted caramel sauce",
+      "true": "spanish",
+      "pred": "british_irish",
+      "confidence": 0.951
+    },
+    {
+      "id": "themealdb:52942",
+      "title": "Roast fennel and aubergine paella",
+      "true": "spanish",
+      "pred": "spanish",
+      "confidence": 0.834
+    },
+    {
+      "id": "themealdb:53145",
+      "title": "Jamon & wild garlic croquetas",
+      "true": "spanish",
+      "pred": "unknown",
+      "confidence": 0.513
+    },
+    {
+      "id": "themealdb:53151",
+      "title": "Paella",
+      "true": "spanish",
+      "pred": "spanish",
+      "confidence": 1.0
+    },
+    {
+      "id": "themealdb:53156",
+      "title": "Arroz al horno (baked rice)",
+      "true": "spanish",
+      "pred": "spanish",
+      "confidence": 0.996
+    },
+    {
+      "id": "themealdb:53161",
+      "title": "Chicken & chorizo rice pot",
+      "true": "spanish",
+      "pred": "spanish",
+      "confidence": 1.0
+    },
+    {
+      "id": "themealdb:53166",
+      "title": "Chickpea, chorizo & spinach stew",
+      "true": "spanish",
+      "pred": "spanish",
+      "confidence": 0.998
+    },
+    {
+      "id": "themealdb:53171",
+      "title": "Salt cod tortilla",
+      "true": "spanish",
+      "pred": "spanish",
+      "confidence": 0.884
+    },
+    {
+      "id": "themealdb:53176",
+      "title": "Spanish tomato bread with jam\u00f3n Serrano",
+      "true": "spanish",
+      "pred": "unknown",
+      "confidence": 0.366
+    },
+    {
+      "id": "themealdb:53181",
+      "title": "Spanish beans with chicken & chorizo",
+      "true": "spanish",
+      "pred": "spanish",
+      "confidence": 1.0
+    },
+    {
+      "id": "themealdb:53186",
+      "title": "Chicken with saffron, raisins & pine nuts",
+      "true": "spanish",
+      "pred": "spanish",
+      "confidence": 0.986
+    },
+    {
+      "id": "bbcgoodfood:brazilian-carrot-cake",
+      "title": "Brazilian carrot cake",
+      "true": "latin_american",
+      "pred": "british_irish",
+      "confidence": 0.98
+    },
+    {
+      "id": "themealdb:53135",
+      "title": "Milanesa",
+      "true": "latin_american",
+      "pred": "german_central_eu",
+      "confidence": 0.837
+    },
+    {
+      "id": "themealdb:53140",
+      "title": "Matambre a la Pizza",
+      "true": "latin_american",
+      "pred": "latin_american",
+      "confidence": 0.73
+    },
+    {
+      "id": "themealdb:53319",
+      "title": "Chivito sandwich",
+      "true": "latin_american",
+      "pred": "unknown",
+      "confidence": 0.458
+    },
+    {
+      "id": "themealdb:53324",
+      "title": "Chocolate empanadas",
+      "true": "latin_american",
+      "pred": "unknown",
+      "confidence": 0.508
+    },
+    {
+      "id": "themealdb:53329",
+      "title": "Arepa pelua",
+      "true": "latin_american",
+      "pred": "unknown",
+      "confidence": 0.595
+    },
+    {
+      "id": "themealdb:53334",
+      "title": "Arepa Pabell\u00f3n",
+      "true": "latin_american",
+      "pred": "unknown",
+      "confidence": 0.211
+    },
+    {
+      "id": "bbcgoodfood:ful-medames",
+      "title": "Ful medames",
+      "true": "north_african",
+      "pred": "unknown",
+      "confidence": 0.462
+    },
+    {
+      "id": "themealdb:52869",
+      "title": "Tahini Lentils",
+      "true": "north_african",
+      "pred": "unknown",
+      "confidence": 0.322
+    },
+    {
+      "id": "themealdb:52972",
+      "title": "Tunisian Lamb Soup",
+      "true": "north_african",
+      "pred": "north_african",
+      "confidence": 0.995
+    },
+    {
+      "id": "themealdb:53025",
+      "title": "Ful Medames",
+      "true": "north_african",
+      "pred": "unknown",
+      "confidence": 0.446
+    },
+    {
+      "id": "themealdb:53030",
+      "title": "Feteer Meshaltet",
+      "true": "north_african",
+      "pred": "german_central_eu",
+      "confidence": 0.644
+    },
+    {
+      "id": "themealdb:53282",
+      "title": "Algerian Carrots",
+      "true": "north_african",
+      "pred": "unknown",
+      "confidence": 0.483
+    },
+    {
+      "id": "themealdb:53287",
+      "title": "Tajine de Poulet aux Carottes et Patates Douces (Chicken and Sweet Potato Tagine)",
+      "true": "north_african",
+      "pred": "north_african",
+      "confidence": 0.995
+    },
+    {
+      "id": "bbcgoodfood:bara-brith",
+      "title": "Bara brith",
+      "true": "british_irish",
+      "pred": "british_irish",
+      "confidence": 0.994
+    },
+    {
+      "id": "bbcgoodfood:cheesy-hot-cross-buns",
+      "title": "Cheesy hot cross buns",
+      "true": "british_irish",
+      "pred": "unknown",
+      "confidence": 0.438
+    },
+    {
+      "id": "bbcgoodfood:classic-white-loaf-2",
+      "title": "Classic white loaf",
+      "true": "british_irish",
+      "pred": "german_central_eu",
+      "confidence": 0.798
+    },
+    {
+      "id": "bbcgoodfood:easy-pancakes",
+      "title": "Easy pancakes",
+      "true": "british_irish",
+      "pred": "british_irish",
+      "confidence": 0.932
+    },
+    {
+      "id": "bbcgoodfood:lemon-drizzle-cake",
+      "title": "Lemon drizzle cake",
+      "true": "british_irish",
+      "pred": "british_irish",
+      "confidence": 0.697
+    },
+    {
+      "id": "bbcgoodfood:pumpkin-ginger-teabread",
+      "title": "Pumpkin bread",
+      "true": "british_irish",
+      "pred": "british_irish",
+      "confidence": 0.908
+    },
+    {
+      "id": "bbcgoodfood:scotch-eggs-0",
+      "title": "Easy scotch eggs",
+      "true": "british_irish",
+      "pred": "british_irish",
+      "confidence": 0.907
+    },
+    {
+      "id": "bbcgoodfood:sparkling-vanilla-christmas-cookies",
+      "title": "Christmas cookies",
+      "true": "british_irish",
+      "pred": "british_irish",
+      "confidence": 0.913
+    },
+    {
+      "id": "bbcgoodfood:yorkshire-puddings-for-two",
+      "title": "Yorkshire puddings for two",
+      "true": "british_irish",
+      "pred": "british_irish",
+      "confidence": 0.978
+    },
+    {
+      "id": "themealdb:52788",
+      "title": "Christmas Pudding Flapjack",
+      "true": "british_irish",
+      "pred": "british_irish",
+      "confidence": 0.984
+    },
+    {
+      "id": "themealdb:52803",
+      "title": "Beef Wellington",
+      "true": "british_irish",
+      "pred": "unknown",
+      "confidence": 0.46
+    },
+    {
+      "id": "themealdb:52845",
+      "title": "Turkey Meatloaf",
+      "true": "british_irish",
+      "pred": "spanish",
+      "confidence": 0.604
+    },
+    {
+      "id": "themealdb:52864",
+      "title": "Mushroom & Chestnut Rotolo",
+      "true": "british_irish",
+      "pred": "italian",
+      "confidence": 0.72
+    },
+    {
+      "id": "themealdb:52876",
+      "title": "Minced Beef Pie",
+      "true": "british_irish",
+      "pred": "unknown",
+      "confidence": 0.584
+    },
+    {
+      "id": "themealdb:52882",
+      "title": "Three Fish Pie",
+      "true": "british_irish",
+      "pred": "british_irish",
+      "confidence": 0.827
+    },
+    {
+      "id": "themealdb:52888",
+      "title": "Eccles Cakes",
+      "true": "british_irish",
+      "pred": "british_irish",
+      "confidence": 0.927
+    },
+    {
+      "id": "themealdb:52893",
+      "title": "Apple & Blackberry Crumble",
+      "true": "british_irish",
+      "pred": "british_irish",
+      "confidence": 0.972
+    },
+    {
+      "id": "themealdb:52898",
+      "title": "Chelsea Buns",
+      "true": "british_irish",
+      "pred": "german_central_eu",
+      "confidence": 0.625
+    },
+    {
+      "id": "themealdb:52959",
+      "title": "Baked salmon with fennel & tomatoes",
+      "true": "british_irish",
+      "pred": "italian",
+      "confidence": 0.66
+    },
+    {
+      "id": "themealdb:52990",
+      "title": "Christmas cake",
+      "true": "british_irish",
+      "pred": "british_irish",
+      "confidence": 1.0
+    },
+    {
+      "id": "themealdb:53005",
+      "title": "Strawberry Rhubarb Pie",
+      "true": "british_irish",
+      "pred": "unknown",
+      "confidence": 0.579
+    },
+    {
+      "id": "themealdb:53096",
+      "title": "Corned Beef Hash",
+      "true": "british_irish",
+      "pred": "unknown",
+      "confidence": 0.468
+    },
+    {
+      "id": "bbcgoodfood:black-and-white-pinwheel-cookies",
+      "title": "Black and white pinwheel cookies",
+      "true": "german_central_eu",
+      "pred": "british_irish",
+      "confidence": 0.888
+    },
+    {
+      "id": "bbcgoodfood:chocolate-christmas-biscuits",
+      "title": "Chocolate Christmas biscuits",
+      "true": "german_central_eu",
+      "pred": "british_irish",
+      "confidence": 0.996
+    },
+    {
+      "id": "bbcgoodfood:marzipan-cookies",
+      "title": "Marzipan cookies",
+      "true": "german_central_eu",
+      "pred": "unknown",
+      "confidence": 0.541
+    },
+    {
+      "id": "bbcgoodfood:smoked-trout-horseradish-pate",
+      "title": "Smoked trout & horseradish p\u00e2t\u00e9",
+      "true": "german_central_eu",
+      "pred": "unknown",
+      "confidence": 0.226
+    },
+    {
+      "id": "themealdb:52834",
+      "title": "Beef stroganoff",
+      "true": "german_central_eu",
+      "pred": "unknown",
+      "confidence": 0.472
+    },
+    {
+      "id": "themealdb:53018",
+      "title": "Bigos (Hunters Stew)",
+      "true": "german_central_eu",
+      "pred": "german_central_eu",
+      "confidence": 0.903
+    },
+    {
+      "id": "themealdb:53023",
+      "title": "Sledz w Oleju (Polish Herrings)",
+      "true": "german_central_eu",
+      "pred": "german_central_eu",
+      "confidence": 0.941
+    },
+    {
+      "id": "themealdb:53058",
+      "title": "Croatian Bean Stew",
+      "true": "german_central_eu",
+      "pred": "spanish",
+      "confidence": 0.916
+    },
+    {
+      "id": "themealdb:53077",
+      "title": "Cabbage Soup (Shchi)",
+      "true": "german_central_eu",
+      "pred": "german_central_eu",
+      "confidence": 0.977
+    },
+    {
+      "id": "themealdb:53082",
+      "title": "Strawberries Romanoff",
+      "true": "german_central_eu",
+      "pred": "unknown",
+      "confidence": 0.44
+    },
+    {
+      "id": "themealdb:53118",
+      "title": "R\u00f8mmegr\u00f8t \u2013 Norwegian Sour Cream Porridge",
+      "true": "german_central_eu",
+      "pred": "german_central_eu",
+      "confidence": 0.947
+    },
+    {
+      "id": "themealdb:53124",
+      "title": "Raspeballer (Norwegian Potato Dumplings)",
+      "true": "german_central_eu",
+      "pred": "german_central_eu",
+      "confidence": 0.992
+    },
+    {
+      "id": "themealdb:53129",
+      "title": "Norwegian Krumkake",
+      "true": "german_central_eu",
+      "pred": "german_central_eu",
+      "confidence": 0.992
+    },
+    {
+      "id": "themealdb:53188",
+      "title": "Fa\u0161\u00edrky",
+      "true": "german_central_eu",
+      "pred": "german_central_eu",
+      "confidence": 0.896
+    },
+    {
+      "id": "themealdb:53294",
+      "title": "Zapiekanki",
+      "true": "german_central_eu",
+      "pred": "unknown",
+      "confidence": 0.56
+    },
+    {
+      "id": "themealdb:53299",
+      "title": "Polish patties (kotlety)",
+      "true": "german_central_eu",
+      "pred": "german_central_eu",
+      "confidence": 0.999
+    },
+    {
+      "id": "themealdb:53304",
+      "title": "Mini bundt cakes",
+      "true": "german_central_eu",
+      "pred": "british_irish",
+      "confidence": 0.981
+    },
+    {
+      "id": "themealdb:53309",
+      "title": "Cucumber & fennel salad",
+      "true": "german_central_eu",
+      "pred": "german_central_eu",
+      "confidence": 0.809
+    },
+    {
+      "id": "themealdb:53314",
+      "title": "Sauerkraut pierogii",
+      "true": "german_central_eu",
+      "pred": "german_central_eu",
+      "confidence": 0.999
+    },
+    {
+      "id": "themealdb:53381",
+      "title": "Gevulde speculaas",
+      "true": "german_central_eu",
+      "pred": "british_irish",
+      "confidence": 0.855
+    },
+    {
+      "id": "themealdb:53388",
+      "title": "Runner Bean Mash (Snijbonen Stamppot)",
+      "true": "german_central_eu",
+      "pred": "german_central_eu",
+      "confidence": 0.865
+    },
+    {
+      "id": "bbcgoodfood:cheese-sambousek",
+      "title": "Cheese sambousek",
+      "true": "middle_eastern",
+      "pred": "unknown",
+      "confidence": 0.283
+    },
+    {
+      "id": "themealdb:53089",
+      "title": "Syrian Bread",
+      "true": "middle_eastern",
+      "pred": "german_central_eu",
+      "confidence": 0.847
+    },
+    {
+      "id": "themealdb:53095",
+      "title": "Syrian Rice with Meat",
+      "true": "middle_eastern",
+      "pred": "american",
+      "confidence": 0.613
+    },
+    {
+      "id": "themealdb:53219",
+      "title": "Shakshuka Feta Cheese",
+      "true": "middle_eastern",
+      "pred": "north_african",
+      "confidence": 0.831
+    },
+    {
+      "id": "themealdb:53224",
+      "title": "Pistachio Kunafa Chocolate Cake and Cupcakes",
+      "true": "middle_eastern",
+      "pred": "american",
+      "confidence": 0.705
+    },
+    {
+      "id": "bbcgoodfood:akhni-fulab-lamb-pilau",
+      "title": "Akhni fulab (lamb pilau)",
+      "true": "indian",
+      "pred": "indian",
+      "confidence": 1.0
+    },
+    {
+      "id": "bbcgoodfood:boondi-laddu",
+      "title": "Boondi laddu",
+      "true": "indian",
+      "pred": "indian",
+      "confidence": 0.996
+    },
+    {
+      "id": "bbcgoodfood:chicken-chaat",
+      "title": "Chicken chaat",
+      "true": "indian",
+      "pred": "indian",
+      "confidence": 1.0
+    },
+    {
+      "id": "bbcgoodfood:easy-naan-bread",
+      "title": "Easy naan bread",
+      "true": "indian",
+      "pred": "indian",
+      "confidence": 0.882
+    },
+    {
+      "id": "bbcgoodfood:handesh",
+      "title": "Handesh",
+      "true": "indian",
+      "pred": "unknown",
+      "confidence": 0.264
+    },
+    {
+      "id": "bbcgoodfood:leftover-lamb-curry",
+      "title": "Leftover lamb curry",
+      "true": "indian",
+      "pred": "indian",
+      "confidence": 0.998
+    },
+    {
+      "id": "bbcgoodfood:mushroom-bhaji",
+      "title": "Mushroom bhaji",
+      "true": "indian",
+      "pred": "indian",
+      "confidence": 1.0
+    },
+    {
+      "id": "bbcgoodfood:paneer-chutney-pakora",
+      "title": "Paneer chutney pakora",
+      "true": "indian",
+      "pred": "indian",
+      "confidence": 1.0
+    },
+    {
+      "id": "bbcgoodfood:rasmalai",
+      "title": "Rasmalai",
+      "true": "indian",
+      "pred": "indian",
+      "confidence": 0.978
+    },
+    {
+      "id": "bbcgoodfood:spiced-indian-crackers-mathri",
+      "title": "Mathri (spiced Indian crackers)",
+      "true": "indian",
+      "pred": "indian",
+      "confidence": 0.892
+    },
+    {
+      "id": "themealdb:52795",
+      "title": "Chicken Handi",
+      "true": "indian",
+      "pred": "indian",
+      "confidence": 1.0
+    },
+    {
+      "id": "themealdb:52809",
+      "title": "Recheado Masala Fish",
+      "true": "indian",
+      "pred": "indian",
+      "confidence": 1.0
+    },
+    {
+      "id": "themealdb:53076",
+      "title": "Bread omelette",
+      "true": "indian",
+      "pred": "unknown",
+      "confidence": 0.425
+    },
+    {
+      "id": "bbcgoodfood:best-ever-chocolate-brownies-recipe",
+      "title": "Best ever chocolate brownies recipe",
+      "true": "american",
+      "pred": "british_irish",
+      "confidence": 0.904
+    },
+    {
+      "id": "bbcgoodfood:next-level-key-lime-pie",
+      "title": "Next level key lime pie",
+      "true": "american",
+      "pred": "german_central_eu",
+      "confidence": 0.8
+    },
+    {
+      "id": "themealdb:52779",
+      "title": "Cream Cheese Tart",
+      "true": "american",
+      "pred": "unknown",
+      "confidence": 0.6
+    },
+    {
+      "id": "themealdb:52812",
+      "title": "Beef Brisket Pot Roast",
+      "true": "american",
+      "pred": "british_irish",
+      "confidence": 0.632
+    },
+    {
+      "id": "themealdb:52829",
+      "title": "Grilled Mac and Cheese Sandwich",
+      "true": "american",
+      "pred": "american",
+      "confidence": 0.943
+    },
+    {
+      "id": "themealdb:52856",
+      "title": "Choc Chip Pecan Pie",
+      "true": "american",
+      "pred": "unknown",
+      "confidence": 0.382
+    },
+    {
+      "id": "themealdb:52861",
+      "title": "Peanut Butter Cheesecake",
+      "true": "american",
+      "pred": "american",
+      "confidence": 0.918
+    },
+    {
+      "id": "themealdb:52926",
+      "title": "Tourtiere",
+      "true": "american",
+      "pred": "german_central_eu",
+      "confidence": 0.829
+    },
+    {
+      "id": "themealdb:52931",
+      "title": "Sugar Pie",
+      "true": "american",
+      "pred": "unknown",
+      "confidence": 0.573
+    },
+    {
+      "id": "themealdb:52962",
+      "title": "Salmon Eggs Eggs Benedict",
+      "true": "american",
+      "pred": "unknown",
+      "confidence": 0.522
+    },
+    {
+      "id": "themealdb:52994",
+      "title": "Skillet Apple Pork Chops with Roasted Sweet Potatoes & Zucchini",
+      "true": "american",
+      "pred": "unknown",
+      "confidence": 0.416
+    },
+    {
+      "id": "themealdb:53016",
+      "title": "Chick-Fil-A Sandwich",
+      "true": "american",
+      "pred": "american",
+      "confidence": 0.964
+    },
+    {
+      "id": "themealdb:53339",
+      "title": "Jam jam cookies",
+      "true": "american",
+      "pred": "german_central_eu",
+      "confidence": 0.764
+    },
+    {
+      "id": "bbcgoodfood:purple-sprouting-broccoli-tempura-with-nuoc-cham",
+      "title": "Purple sprouting broccoli tempura with nuoc cham",
+      "true": "vietnamese",
+      "pred": "vietnamese",
+      "confidence": 0.995
+    },
+    {
+      "id": "themealdb:53228",
+      "title": "Vietnamese caramel trout",
+      "true": "vietnamese",
+      "pred": "vietnamese",
+      "confidence": 0.93
+    },
+    {
+      "id": "themealdb:53233",
+      "title": "Salt & pepper squid",
+      "true": "vietnamese",
+      "pred": "unknown",
+      "confidence": 0.505
+    },
+    {
+      "id": "themealdb:53238",
+      "title": "Beef pho",
+      "true": "vietnamese",
+      "pred": "thai",
+      "confidence": 1.0
+    },
+    {
+      "id": "themealdb:53243",
+      "title": "Vietnamese prawn spiralized rolls",
+      "true": "vietnamese",
+      "pred": "vietnamese",
+      "confidence": 0.977
+    },
+    {
+      "id": "themealdb:53248",
+      "title": "Salmon noodle wraps",
+      "true": "vietnamese",
+      "pred": "thai",
+      "confidence": 0.836
+    },
+    {
+      "id": "bbcgoodfood:beignets",
+      "title": "Beignets",
+      "true": "french",
+      "pred": "unknown",
+      "confidence": 0.562
+    },
+    {
+      "id": "bbcgoodfood:macarons",
+      "title": "Macarons",
+      "true": "french",
+      "pred": "british_irish",
+      "confidence": 0.869
+    },
+    {
+      "id": "themealdb:52847",
+      "title": "Pork Cassoulet",
+      "true": "french",
+      "pred": "spanish",
+      "confidence": 0.637
+    },
+    {
+      "id": "themealdb:52905",
+      "title": "Chocolate Souffle",
+      "true": "french",
+      "pred": "unknown",
+      "confidence": 0.583
+    },
+    {
+      "id": "themealdb:52910",
+      "title": "Chinon Apple Tarts",
+      "true": "french",
+      "pred": "german_central_eu",
+      "confidence": 0.742
+    },
+    {
+      "id": "themealdb:52915",
+      "title": "French Omelette",
+      "true": "french",
+      "pred": "french",
+      "confidence": 0.88
+    },
+    {
+      "id": "themealdb:52920",
+      "title": "Chicken Marengo",
+      "true": "french",
+      "pred": "unknown",
+      "confidence": 0.504
+    },
+    {
+      "id": "bbcgoodfood:jamaican-saltfish-fritters",
+      "title": "Jamaican saltfish fritters",
+      "true": "caribbean",
+      "pred": "caribbean",
+      "confidence": 0.998
+    },
+    {
+      "id": "themealdb:52939",
+      "title": "Callaloo Jamaican Style",
+      "true": "caribbean",
+      "pred": "caribbean",
+      "confidence": 0.731
+    },
+    {
+      "id": "themealdb:53344",
+      "title": "Jamaican Sweet Potato Pudding",
+      "true": "caribbean",
+      "pred": "caribbean",
+      "confidence": 0.911
+    },
+    {
+      "id": "themealdb:53349",
+      "title": "Jamaican Pepper Shrimp",
+      "true": "caribbean",
+      "pred": "caribbean",
+      "confidence": 0.999
+    },
+    {
+      "id": "themealdb:53354",
+      "title": "Jamaican Curry Goat",
+      "true": "caribbean",
+      "pred": "caribbean",
+      "confidence": 1.0
+    },
+    {
+      "id": "themealdb:53361",
+      "title": "Callaloo and SaltFish",
+      "true": "caribbean",
+      "pred": "caribbean",
+      "confidence": 0.985
+    },
+    {
+      "id": "bbcgoodfood:air-fryer-pizza",
+      "title": "Air fryer pizza",
+      "true": "italian",
+      "pred": "unknown",
+      "confidence": 0.23
+    },
+    {
+      "id": "bbcgoodfood:homemade-mozzarella-cheese",
+      "title": "Homemade mozzarella cheese",
+      "true": "italian",
+      "pred": "british_irish",
+      "confidence": 0.629
+    },
+    {
+      "id": "bbcgoodfood:ravioli-lasagne",
+      "title": "Ravioli lasagne",
+      "true": "italian",
+      "pred": "unknown",
+      "confidence": 0.455
+    },
+    {
+      "id": "bbcgoodfood:ultimate-vanilla-ice-cream",
+      "title": "Ultimate vanilla ice cream",
+      "true": "italian",
+      "pred": "british_irish",
+      "confidence": 0.853
+    },
+    {
+      "id": "themealdb:52777",
+      "title": "Mediterranean Pasta Salad",
+      "true": "italian",
+      "pred": "italian",
+      "confidence": 0.633
+    },
+    {
+      "id": "themealdb:52811",
+      "title": "Ribollita",
+      "true": "italian",
+      "pred": "unknown",
+      "confidence": 0.305
+    },
+    {
+      "id": "themealdb:52839",
+      "title": "Chilli prawn linguine",
+      "true": "italian",
+      "pred": "spanish",
+      "confidence": 0.648
+    },
+    {
+      "id": "themealdb:52982",
+      "title": "Spaghetti alla Carbonara",
+      "true": "italian",
+      "pred": "italian",
+      "confidence": 0.804
+    },
+    {
+      "id": "bbcgoodfood:chikuzen-ni",
+      "title": "Chikuzen-ni",
+      "true": "japanese",
+      "pred": "chinese",
+      "confidence": 0.995
+    },
+    {
+      "id": "bbcgoodfood:homemade-yakisoba-sauce",
+      "title": "Homemade yakisoba sauce",
+      "true": "japanese",
+      "pred": "japanese",
+      "confidence": 0.778
+    },
+    {
+      "id": "themealdb:52820",
+      "title": "Katsu Chicken curry",
+      "true": "japanese",
+      "pred": "british_irish",
+      "confidence": 0.681
+    },
+    {
+      "id": "themealdb:53034",
+      "title": "Japanese Katsudon",
+      "true": "japanese",
+      "pred": "chinese",
+      "confidence": 0.7
+    },
+    {
+      "id": "bbcgoodfood:drunken-noodles-pad-kee-mao",
+      "title": "Drunken noodles (pad kee mao)",
+      "true": "thai",
+      "pred": "thai",
+      "confidence": 0.737
+    },
+    {
+      "id": "themealdb:52774",
+      "title": "Pad See Ew",
+      "true": "thai",
+      "pred": "chinese",
+      "confidence": 1.0
+    },
+    {
+      "id": "themealdb:53193",
+      "title": "Drunken noodles (pad kee mao)",
+      "true": "thai",
+      "pred": "thai",
+      "confidence": 0.945
+    },
+    {
+      "id": "themealdb:53198",
+      "title": "Thai fried rice with prawns & peas",
+      "true": "thai",
+      "pred": "thai",
+      "confidence": 0.852
+    },
+    {
+      "id": "themealdb:53203",
+      "title": "Thai rice noodle salad",
+      "true": "thai",
+      "pred": "unknown",
+      "confidence": 0.567
+    },
+    {
+      "id": "themealdb:53208",
+      "title": "Thai coconut & veg broth",
+      "true": "thai",
+      "pred": "thai",
+      "confidence": 0.988
+    },
+    {
+      "id": "themealdb:53213",
+      "title": "Thai-style fish broth with greens",
+      "true": "thai",
+      "pred": "thai",
+      "confidence": 1.0
+    }
+  ]
+}
