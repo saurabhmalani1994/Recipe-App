@@ -1,0 +1,189 @@
+{
+  "total_recipes": 19525,
+  "label_distribution": {
+    "unknown": 10827,
+    "german_central_eu": 2414,
+    "british_irish": 2280,
+    "american": 1351,
+    "chinese": 750,
+    "italian": 500,
+    "indian": 324,
+    "north_african": 296,
+    "spanish": 226,
+    "thai": 154,
+    "turkish": 87,
+    "mexican": 77,
+    "caribbean": 68,
+    "vietnamese": 64,
+    "french": 61,
+    "latin_american": 13,
+    "middle_eastern": 12,
+    "japanese": 10,
+    "persian": 5,
+    "fusion_other": 3,
+    "mediterranean": 2,
+    "korean": 1
+  },
+  "unknown_rate_overall": 0.5545,
+  "by_source": {
+    "recipenlg": {
+      "n": 10000,
+      "unknown": 5484,
+      "unknown_rate": 0.5484,
+      "labels": {
+        "unknown": 5484,
+        "german_central_eu": 1422,
+        "british_irish": 1069,
+        "american": 923,
+        "chinese": 379,
+        "italian": 254,
+        "north_african": 136,
+        "indian": 104,
+        "spanish": 71,
+        "mexican": 40,
+        "thai": 38,
+        "caribbean": 28,
+        "french": 18,
+        "turkish": 18,
+        "vietnamese": 13,
+        "middle_eastern": 2,
+        "latin_american": 1
+      }
+    },
+    "openrecipes": {
+      "n": 6000,
+      "unknown": 3913,
+      "unknown_rate": 0.6522,
+      "labels": {
+        "unknown": 3913,
+        "british_irish": 591,
+        "german_central_eu": 506,
+        "american": 264,
+        "chinese": 191,
+        "italian": 133,
+        "indian": 96,
+        "north_african": 94,
+        "spanish": 68,
+        "thai": 55,
+        "french": 20,
+        "mexican": 20,
+        "turkish": 20,
+        "vietnamese": 19,
+        "caribbean": 6,
+        "middle_eastern": 2,
+        "japanese": 2
+      }
+    },
+    "foodcom": {
+      "n": 1228,
+      "unknown": 657,
+      "unknown_rate": 0.535,
+      "labels": {
+        "unknown": 657,
+        "german_central_eu": 189,
+        "british_irish": 148,
+        "american": 77,
+        "chinese": 63,
+        "italian": 31,
+        "north_african": 18,
+        "indian": 17,
+        "thai": 12,
+        "spanish": 6,
+        "turkish": 5,
+        "caribbean": 4,
+        "latin_american": 1
+      }
+    },
+    "bbcgoodfood": {
+      "n": 1200,
+      "unknown": 439,
+      "unknown_rate": 0.3658,
+      "labels": {
+        "unknown": 439,
+        "british_irish": 361,
+        "german_central_eu": 107,
+        "indian": 76,
+        "chinese": 51,
+        "italian": 46,
+        "american": 27,
+        "spanish": 22,
+        "turkish": 21,
+        "vietnamese": 11,
+        "thai": 10,
+        "mexican": 7,
+        "french": 5,
+        "persian": 5,
+        "middle_eastern": 3,
+        "japanese": 3,
+        "caribbean": 3,
+        "north_african": 2,
+        "korean": 1
+      }
+    },
+    "themealdb": {
+      "n": 790,
+      "unknown": 185,
+      "unknown_rate": 0.2342,
+      "labels": {
+        "unknown": 185,
+        "german_central_eu": 159,
+        "british_irish": 87,
+        "spanish": 51,
+        "american": 41,
+        "chinese": 37,
+        "thai": 36,
+        "north_african": 30,
+        "caribbean": 27,
+        "indian": 26,
+        "turkish": 22,
+        "vietnamese": 21,
+        "italian": 19,
+        "french": 17,
+        "latin_american": 11,
+        "mexican": 7,
+        "middle_eastern": 5,
+        "japanese": 4,
+        "fusion_other": 3,
+        "mediterranean": 2
+      }
+    },
+    "foodwishes": {
+      "n": 300,
+      "unknown": 148,
+      "unknown_rate": 0.4933,
+      "labels": {
+        "unknown": 148,
+        "german_central_eu": 31,
+        "chinese": 24,
+        "british_irish": 24,
+        "american": 19,
+        "north_african": 16,
+        "italian": 16,
+        "spanish": 8,
+        "indian": 5,
+        "mexican": 3,
+        "thai": 3,
+        "turkish": 1,
+        "japanese": 1,
+        "french": 1
+      }
+    },
+    "github_openrecipe": {
+      "n": 2,
+      "unknown": 1,
+      "unknown_rate": 0.5,
+      "labels": {
+        "italian": 1,
+        "unknown": 1
+      }
+    },
+    "github_recipegen": {
+      "n": 5,
+      "unknown": 0,
+      "unknown_rate": 0.0,
+      "labels": {
+        "chinese": 5
+      }
+    }
+  }
+}

@@ -1,0 +1,124 @@
+# The fixed cuisine list (D12: "explore new cuisines"). `ingest` owns this file; the
+# classifier and the app both read it through cuisines.py.
+#
+# `canonical` is the list every recipe is ultimately labelled with (plus `unknown` below
+# threshold), fixed at ~25 so the home-page picker doesn't grow without a ruling. `label_map`
+# maps each source's own free-text cuisine field to one canonical label; a source value not
+# listed here has no mapping and is dropped from training (counted, never guessed).
+# `regional_sublabels` are optional finer labels a recipe *may* also carry (e.g. a UI filter
+# chip); the classifier itself only predicts the canonical list, never a sub-label.
+
+canonical:
+  - indian
+  - chinese
+  - japanese
+  - korean
+  - thai
+  - vietnamese
+  - filipino
+  - indonesian_malaysian
+  - middle_eastern
+  - persian
+  - turkish
+  - greek
+  - italian
+  - french
+  - spanish
+  - mediterranean       # umbrella: pan-Mediterranean/Levantine dishes that aren't specifically
+                         # Greek/Italian/Spanish/Turkish/Persian/Middle Eastern
+  - mexican
+  - latin_american
+  - caribbean
+  - american
+  - southern_us
+  - british_irish
+  - german_central_eu    # Germany, the Low Countries, Scandinavia, Poland and the rest of
+                         # Central/Eastern Europe -- no source in this corpus labels those
+                         # separately, so they share one bucket until one does
+  - north_african
+  - east_west_african
+  - fusion_other
+
+regional_sublabels:
+  indian: [indian_north, indian_south, indian_bengali, indian_punjabi, indian_goan]
+
+# Values a source's own cuisine field is observed to take, mapped to the canonical list above.
+# A value present in the raw data but absent from this map (e.g. themealdb's bare "Asian", bbc's
+# "Jewish") is left unmapped on purpose: it names a real cuisine but not a single geography, so
+# guessing one would be a label error, not a classification. build_dataset.py counts every drop.
+label_map:
+  themealdb:                    # source field: cuisine_label, copied verbatim from strArea
+    American: american
+    "United States": american
+    Canadian: american
+    British: british_irish
+    Irish: british_irish
+    Chinese: chinese
+    Japanese: japanese
+    Vietnamese: vietnamese
+    Filipino: filipino
+    Malaysian: indonesian_malaysian
+    Thai: thai
+    Indian: indian
+    India: indian
+    Turkish: turkish
+    Greek: greek
+    Italian: italian
+    France: french
+    Spanish: spanish
+    Portuguese: mediterranean
+    Mexican: mexican
+    Argentina: latin_american
+    Uruguayan: latin_american
+    Venezuela: latin_american
+    Jamaican: caribbean
+    Moroccan: north_african
+    Tunisian: north_african
+    Algerian: north_african
+    Egyptian: north_african
+    Syrian: middle_eastern
+    "Saudi Arabian": middle_eastern
+    Kenyan: east_west_african
+    Polish: german_central_eu
+    Russian: german_central_eu
+    Ukrainian: german_central_eu
+    Croatian: german_central_eu
+    Slovakia: german_central_eu
+    Netherlands: german_central_eu
+    Norway: german_central_eu
+    Australian: fusion_other
+  bbcgoodfood:                  # source field: cuisine_label, as scraped (some multi-valued)
+    Indian: indian
+    British: british_irish
+    Scottish: british_irish
+    Welsh: british_irish
+    Chinese: chinese
+    "Asian, Chinese": chinese
+    Taiwanese: chinese
+    Japanese: japanese
+    Korean: korean
+    Thai: thai
+    Vietnamese: vietnamese
+    Italian: italian
+    French: french
+    Spanish: spanish
+    German: german_central_eu
+    Polish: german_central_eu
+    Danish: german_central_eu
+    Lithuanian: german_central_eu
+    "Eastern European": german_central_eu
+    Scandinavian: german_central_eu
+    Finland: german_central_eu
+    American: american
+    Mexican: mexican
+    Brazilian: latin_american
+    Jamaican: caribbean
+    Turkish: turkish
+    Persian: persian
+    "Middle Eastern": middle_eastern
+    Egyptian: north_african
+    Nigerian: east_west_african
+    "African, Senegalese": east_west_african
+    Australian: fusion_other
+    # left unmapped, dropped from training: Jewish (spans several geographies), Asian
+    # (too broad on its own), African (too broad on its own)
