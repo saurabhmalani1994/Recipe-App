@@ -10,3 +10,4 @@
 - 2026-09-27: S1 merged (verified line counts). CI green run 3 with APK. S3 briefed (opus high).
 - 2026-09-27: S3 merged (re-verified). S5a, S5b and S7a briefed.
 - 2026-09-27: S5b merged with the bar missed (68.6%). S5b-2 re-briefed with the failing line.
+- 2026-09-27: S7a merged. E2E webServer now builds before preview (it failed from a clean tree). An overflow bug was seen in a screenshot.
