@@ -16,7 +16,9 @@ allrecipes gives 402 even with a browser UA (bot wall), so S1 tries headless Chr
 ## Owner silence on 3 defaults (applied): metric default, no hosted PWA, start builds now.
 
 ## Running
-S1 (ingest fetch, sonnet), S2 (app scaffold, sonnet), S4 (substitutions, opus). Each runs in
+S1 (ingest fetch, sonnet), S4 (substitutions, opus). S2 was merged at 3639216; the orchestrator
+re-ran the check and got typecheck/lint pass, 7/0 unit. The CI APK job is unverified until its first Actions run.
+S2 open items: the diet preset lives in localStorage and is not yet in user.db settings (wire it in S6). Each runs in
 its own worktree. The orchestrator merges into the branch and pushes.
 
 ## Risk
