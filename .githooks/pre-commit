@@ -1,0 +1,6 @@
+#!/usr/bin/env bash
+# Enable with: git config core.hooksPath .githooks
+set -uo pipefail
+
+repo_root="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
+"$repo_root/scripts/check.sh"
