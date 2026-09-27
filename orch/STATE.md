@@ -16,11 +16,13 @@ allrecipes gives 402 even with a browser UA (bot wall), so S1 tries headless Chr
 ## Owner silence on 3 defaults (applied): metric default, no hosted PWA, start builds now.
 
 ## Running
-S5a (opus), S5b (sonnet), S7a (app, sonnet) run in worktrees. The full BBC crawl runs as a background
+S5a (opus), S5b-2 (sonnet), S7a (app, sonnet) run in worktrees. The full BBC crawl runs as a background
 script (cap 20000, 6h timeout; log in /home/user/recipe-data/bbc_full_crawl.log).
 Owner questions pending: Kaggle token (default: no ratings source), and location for seasonality (default: temperate north).
 
 ## Done
+- S5b merged: 224 pytest pass. Cuisine bar MISSED: 68.6% acc / 23.9% unknown held-out, transfer 57%.
+  Seasonality done (80 produce slugs). The 2nd attempt, S5b-2, adds labelled data. If it fails again, the next attempt is opus.
 - S3 parser + taxonomy, merged. Re-run: pytest 208 passed, taxonomy 0 errors (1553 slugs), gold slug 99.2%
   (first run 97.1%), unit 99.7%, qty 100%. Coverage: RecipeNLG 99.3%, fixture 96.3%. is_staple is narrow (11)
   by design, and user pantry defaults add the rest (S7a).
