@@ -64,7 +64,11 @@ export function Kitchen() {
         )}
       </div>
 
-      {groups.length === 0 && <p className="screen__placeholder">Nothing added yet.</p>}
+      {groups.length === 0 && (
+        <p className="screen__placeholder">
+          Nothing added yet. Search above for an ingredient you have and add it.
+        </p>
+      )}
 
       {groups.map(([aisle, aisleItems]) => (
         <div key={aisle} className="kitchen-group">
@@ -75,6 +79,7 @@ export function Kitchen() {
                 <span>{item.name}</span>
                 <button
                   type="button"
+                  className="icon-button"
                   aria-label={`Remove ${item.name}`}
                   onClick={() => void remove(item.ingredientId)}
                 >

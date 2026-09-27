@@ -3,7 +3,7 @@ import { createNativeDb } from './capacitorDb'
 import { createWebDb } from './webDb'
 import { runMigrations, type Db, type VersionedDb } from './types'
 import { USER_DB_MIGRATIONS } from './userSchema'
-import { hydrateFromLocalStorage, withLocalStoragePersistence } from './persistence'
+import { hydrateFromLocalStorage, openWebUserDb, withLocalStoragePersistence } from './persistence'
 
 export * from './types'
 export { USER_DB_MIGRATIONS, USER_DB_TABLES, PANTRY_DEFAULT_SLUGS } from './userSchema'
@@ -15,17 +15,23 @@ export function createDb(name: string): Db {
 let userDbSingleton: Promise<Db> | null = null
 
 /**
- * Opens (once) and migrates `user.db`, returning the same connection on every call. On the web
- * build (in-memory sqlite, see `webDb.ts`) this also rehydrates from, and persists back to,
- * `localStorage` — see `persistence.ts`.
+ * Opens (once) and migrates `user.db`, returning the same connection on every call. On native,
+ * `CapacitorDb` already writes to a real file. On the web build, this prefers a durable
+ * OPFS-backed sqlite file (`opfsDb.ts`) and only falls back to the in-memory `WebDb` plus a
+ * `localStorage` snapshot (`persistence.ts`) where OPFS isn't available.
  */
 export function getUserDb(): Promise<Db> {
   userDbSingleton ??= (async () => {
-    const native = Capacitor.isNativePlatform()
-    const db = createDb('user.db') as VersionedDb
-    await db.open()
-    await runMigrations(db, USER_DB_MIGRATIONS)
-    if (native) return db
+    if (Capacitor.isNativePlatform()) {
+      const db = createNativeDb('user.db') as VersionedDb
+      await db.open()
+      await runMigrations(db, USER_DB_MIGRATIONS)
+      return db
+    }
+    const { db, durable } = await openWebUserDb('user.db')
+    const versioned = db as VersionedDb
+    await runMigrations(versioned, USER_DB_MIGRATIONS)
+    if (durable) return db
     await hydrateFromLocalStorage(db)
     return withLocalStoragePersistence(db)
   })()

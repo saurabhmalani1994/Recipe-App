@@ -2,7 +2,7 @@ import { beforeEach, describe, expect, it } from 'vitest'
 import { WebDb } from './webDb'
 import { runMigrations } from './types'
 import { USER_DB_MIGRATIONS } from './userSchema'
-import { hydrateFromLocalStorage, withLocalStoragePersistence } from './persistence'
+import { hydrateFromLocalStorage, openWebUserDb, withLocalStoragePersistence } from './persistence'
 
 beforeEach(() => {
   window.localStorage.clear()
@@ -39,6 +39,20 @@ describe('web localStorage persistence', () => {
     await db.open()
     await runMigrations(db, USER_DB_MIGRATIONS)
     await expect(hydrateFromLocalStorage(db)).resolves.not.toThrow()
+    await db.close()
+  })
+})
+
+/**
+ * jsdom (this test environment) has no OPFS support (no `navigator.storage.getDirectory`),
+ * so `openWebUserDb` must fall back to the in-memory `WebDb`. Real-browser OPFS behaviour is
+ * covered by the e2e reload walk, which passes on whichever path the browser actually took.
+ */
+describe('openWebUserDb OPFS fallback', () => {
+  it('falls back to a non-durable in-memory db when OPFS is unavailable', async () => {
+    const { db, durable } = await openWebUserDb('user.db')
+    expect(durable).toBe(false)
+    expect(db).toBeInstanceOf(WebDb)
     await db.close()
   })
 })
