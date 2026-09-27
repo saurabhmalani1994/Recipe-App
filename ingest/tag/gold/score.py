@@ -33,6 +33,10 @@ Labelling conventions (the labels were written by reading each recipe, before th
              Diet is judged from the whole recipe text, never the title: a meat the steps add
              but the ingredient list omits (a scraped list with dropped lines) still counts.
 
+holdout.jsonl: 30 more recipes (bbcgoodfood, themealdb, foodcom, recipenlg), labelled the same
+way after the tagger had been tuned on gold.jsonl and scored once, untouched, as an estimate for
+unseen recipes. `--holdout` scores it; the bars apply to gold.jsonl only.
+
 Bars, written before the first run (brief S5a):
   diet exact 100% on the diet traps (stock_alt, oyster, lard) and >= 98% overall;
   oven, stovetop, air_fryer, food_processor, blender, mortar_pestle: precision >= 90% and
@@ -48,6 +52,7 @@ if _ROOT not in sys.path:
     sys.path.insert(0, _ROOT)
 
 GOLD_PATH = os.path.join(HERE, 'gold.jsonl')
+HOLDOUT_PATH = os.path.join(HERE, 'holdout.jsonl')
 DIET_TRAPS = ('stock_alt', 'oyster', 'lard')
 PRESETS = ('vegetarian', 'no_red_meat')
 BAR_EQUIPMENT = ('oven', 'stovetop', 'air_fryer', 'food_processor', 'blender', 'mortar_pestle')
@@ -137,7 +142,8 @@ def fmt(x):
 
 def main(argv):
     from ingest.tag.tagger import tag_recipe
-    gold = load_gold()
+    holdout = '--holdout' in argv
+    gold = load_gold(HOLDOUT_PATH if holdout else GOLD_PATH)
     summary, misses = score(gold, tag_recipe)
     if '--misses' in argv:
         for m in misses:
@@ -150,6 +156,9 @@ def main(argv):
         print(f"{mark} {e:18s} P {fmt(s['precision']):>6s}  R {fmt(s['recall']):>6s}  "
               f"(tp {s['tp']}, fp {s['fp']}, fn {s['fn']})")
     fails = bars(summary)
+    if holdout:
+        print('holdout: bars not applied (' + ('would pass' if not fails else '; '.join(fails)) + ')')
+        return 0
     print('BARS PASSED' if not fails else 'BARS FAILED: ' + '; '.join(fails))
     return 0 if not fails else 1
 
