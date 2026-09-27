@@ -45,38 +45,83 @@ def test_every_ingredient_is_used():
     assert v.unused_slugs(ING, ENTRIES) == []
 
 
-# ---------- planted diet traps (brief S4 item 4) ----------
+# ---------- planted diet traps (brief S4 item 4; revised for D15/R7, brief S4b) ----------
+# D15 (owner, verbatim): "anything that is not explicitly meat is fine for vegetarian, even
+# stuff like oyster sauce of worsterchire sauce is fine, its mostly about the protein source".
+# Vegetarian now excludes only `explicit_meat`. `vegetarian_strict` keeps the old, stricter rule
+# (any red_meat/poultry/fish/shellfish/animal_derived flag) for a possible strict mode later, but
+# it is not offered as a preset.
 
-def test_worcestershire_is_not_vegetarian():
+def test_worcestershire_is_vegetarian_ok_but_fails_strict():
     fl = ing_flags('worcestershire_sauce')
-    assert not v.diet_safe(fl, 'vegetarian')
-    assert 'fish' in fl and 'anchovies' in ING['worcestershire_sauce']['hidden_animal']
+    assert v.diet_safe(fl, 'vegetarian')
+    assert not v.diet_safe(fl, 'vegetarian_strict')
+    assert 'fish' in fl and 'explicit_meat' not in fl
+    assert 'anchovies' in ING['worcestershire_sauce']['hidden_animal']
 
 
-def test_fish_sauce_not_vegetarian_but_ok_for_no_red_meat():
+def test_oyster_sauce_is_vegetarian_ok_but_fails_strict():
+    fl = ing_flags('oyster_sauce')
+    assert v.diet_safe(fl, 'vegetarian')
+    assert not v.diet_safe(fl, 'vegetarian_strict')
+    assert 'shellfish' in fl and 'explicit_meat' not in fl
+
+
+def test_fish_sauce_is_vegetarian_ok_and_ok_for_no_red_meat():
     fl = ing_flags('fish_sauce')
-    assert not v.diet_safe(fl, 'vegetarian')
+    assert v.diet_safe(fl, 'vegetarian')
+    assert not v.diet_safe(fl, 'vegetarian_strict')
     assert v.diet_safe(fl, 'no_red_meat')
 
 
-def test_beef_stock_is_red_meat():
+def test_parmigiano_is_vegetarian_ok():
+    fl = ing_flags('parmigiano_reggiano')
+    assert v.diet_safe(fl, 'vegetarian')
+    assert not v.diet_safe(fl, 'vegetarian_strict'), 'rennet cheese still fails the strict rule'
+
+
+def test_chicken_stock_is_not_vegetarian():
+    fl = ing_flags('chicken_stock')
+    assert 'explicit_meat' in fl
+    assert not v.diet_safe(fl, 'vegetarian')
+    assert v.diet_safe(fl, 'no_red_meat'), 'poultry is fine for No red meat'
+
+
+def test_lard_is_not_vegetarian():
+    fl = ing_flags('lard')
+    assert 'explicit_meat' in fl
+    assert not v.diet_safe(fl, 'vegetarian')
+    assert not v.diet_safe(fl, 'no_red_meat')
+
+
+def test_anchovy_fillet_is_not_vegetarian():
+    fl = ing_flags('anchovy')
+    assert 'explicit_meat' in fl
+    assert not v.diet_safe(fl, 'vegetarian')
+
+
+def test_beef_stock_fails_vegetarian_and_no_red_meat():
     fl = ing_flags('beef_stock')
-    assert 'red_meat' in fl
+    assert 'red_meat' in fl and 'explicit_meat' in fl
     assert not v.diet_safe(fl, 'no_red_meat')
     assert not v.diet_safe(fl, 'vegetarian')
 
 
-def test_gelatin_is_animal_derived():
+def test_gelatin_is_vegetarian_ok_but_not_ok_for_no_red_meat():
     fl = ing_flags('gelatin')
-    assert 'animal_derived' in fl
-    assert not v.diet_safe(fl, 'vegetarian')
+    assert 'animal_derived' in fl and 'red_meat' in fl
+    assert 'explicit_meat' not in fl
+    assert v.diet_safe(fl, 'vegetarian'), 'D15: gelatin is a condiment-like trace, not the protein'
+    assert not v.diet_safe(fl, 'vegetarian_strict')
+    assert not v.diet_safe(fl, 'no_red_meat'), 'R8: No red meat stays strict'
 
 
-def test_entries_using_worcestershire_are_computed_non_vegetarian():
+def test_entries_using_worcestershire_are_now_vegetarian_ok():
     uses = [e for e in ENTRIES if any(c['slug'] == 'worcestershire_sauce' for c in e['substitute'])]
     assert uses, 'expected at least one entry that uses Worcestershire as a component'
     for e in uses:
-        assert not v.diet_safe(v.substitute_flags(ING, e), 'vegetarian'), e['id']
+        assert v.diet_safe(v.substitute_flags(ING, e), 'vegetarian'), e['id']
+        assert not v.diet_safe(v.substitute_flags(ING, e), 'vegetarian_strict'), e['id']
 
 
 def test_there_is_a_vegetarian_worcestershire_alternative():
@@ -91,16 +136,22 @@ def test_owner_examples_have_at_least_three_entries(target):
 
 
 def test_flags_are_computed_from_components_not_claims():
-    # A substitute containing fish sauce is not vegetarian, whatever else it contains.
+    # A substitute containing fish sauce is fine for Vegetarian now (D15/R7: not the protein
+    # source), but still fails the strict rule and is fine for No red meat either way.
     e = entry(substitute=[{'slug': 'soy_sauce', 'amount': 0.5, 'unit': 'x'},
                           {'slug': 'fish_sauce', 'amount': 0.5, 'unit': 'x'}])
     fl = v.substitute_flags(ING, e)
-    assert not v.diet_safe(fl, 'vegetarian')
+    assert v.diet_safe(fl, 'vegetarian')
+    assert not v.diet_safe(fl, 'vegetarian_strict')
     assert v.diet_safe(fl, 'no_red_meat')
+    # a component that IS the protein source (anchovy fillets) makes a mix unsafe for Vegetarian
+    e2 = entry(substitute=[{'slug': 'soy_sauce', 'amount': 0.5, 'unit': 'x'},
+                           {'slug': 'anchovy', 'amount': 0.5, 'unit': 'x'}])
+    assert not v.diet_safe(v.substitute_flags(ING, e2), 'vegetarian')
     # beef stock in a mix makes it unsafe for No red meat
-    e2 = entry(substitute=[{'slug': 'beef_stock', 'amount': 1, 'unit': 'x'},
+    e3 = entry(substitute=[{'slug': 'beef_stock', 'amount': 1, 'unit': 'x'},
                            {'slug': 'water', 'amount': 1, 'unit': 'x'}])
-    assert not v.diet_safe(v.substitute_flags(ING, e2), 'no_red_meat')
+    assert not v.diet_safe(v.substitute_flags(ING, e3), 'no_red_meat')
 
 
 def test_hand_written_diet_claim_is_rejected():
