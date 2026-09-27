@@ -39,3 +39,5 @@ Append only. The owner's words are verbatim (rule 13). Do not ask these again.
 | R6 | "Generate" in v1 = rank, then adapt with substitutions and scaling | D9 rules out AI |
 | R7 | Vegetarian (per D15) excludes only explicit meat, poultry, fish and shellfish, plus stocks, broths and fats named for them (chicken stock, lard). Condiments (oyster, fish and Worcestershire sauce, shrimp paste, anchovy paste), gelatin and rennet cheeses are allowed. The strict flags are kept, so a strict mode can be added later | D15 says "the protein source"; stock and lard are "explicitly meat" |
 | R8 | No red meat stays strict: beef stock, lard and gelatin are excluded, because the preset exists for the girlfriend, not the owner | D5 |
+| R9 | one_pot stays a literal tag (a single vessel). The app's "one pot meals" filter ANDs it with course=main, so S8 must derive a course tag | S5a open item; keeps course judgement out of an equipment tag |
+| R10 | Curation drops openrecipes records whose ingredient names were lost (about 32% sampled) and any recipe without steps | They can't be matched or cooked |
