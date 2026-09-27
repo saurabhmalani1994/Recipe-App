@@ -16,9 +16,14 @@ allrecipes gives 402 even with a browser UA (bot wall), so S1 tries headless Chr
 ## Owner silence on 3 defaults (applied): metric default, no hosted PWA, start builds now.
 
 ## Running
-S3 (parser + taxonomy, opus, high) runs in a worktree. A BBC Good Food crawl resumes in a background script.
+S5a (opus), S5b (sonnet), S7a (app, sonnet) run in worktrees. The full BBC crawl runs as a background
+script (cap 20000, 6h timeout; log in /home/user/recipe-data/bbc_full_crawl.log).
+Owner questions pending: Kaggle token (default: no ratings source), and location for seasonality (default: temperate north).
 
 ## Done
+- S3 parser + taxonomy, merged. Re-run: pytest 208 passed, taxonomy 0 errors (1553 slugs), gold slug 99.2%
+  (first run 97.1%), unit 99.7%, qty 100%. Coverage: RecipeNLG 99.3%, fixture 96.3%. is_staple is narrow (11)
+  by design, and user pantry defaults add the rest (S7a).
 - S1 sources, merged. pytest 12 passed. Raw data in /home/user/recipe-data/raw (4.7 GB), verified with wc:
   recipenlg 2,231,142; openrecipes 168,442; themealdb 790; foodwishes 300; bbcgoodfood 245; foodcom 1,228
   (the HF mirror is mostly blank); github repos 7 in total (Cookdiary and recipe-generator are link-farm repos,

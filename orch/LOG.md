@@ -8,3 +8,4 @@
 - 2026-09-27: Owner ruled D15 (vegetarian = the protein source). R7 and R8 recorded; S4b briefed.
 - 2026-09-27: S4b merged. Validator 0 errors; pytest 80 passed.
 - 2026-09-27: S1 merged (verified line counts). CI green run 3 with APK. S3 briefed (opus high).
+- 2026-09-27: S3 merged (re-verified). S5a, S5b and S7a briefed.
