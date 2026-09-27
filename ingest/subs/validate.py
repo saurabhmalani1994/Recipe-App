@@ -1,8 +1,9 @@
 #!/usr/bin/env python3
 """Validate the substitutions table and compute diet safety from ingredient flags.
 
-Diet flags of a substitute are always computed from its components' flags in
-ingredients.yaml. An entry may not declare them: any field outside the schema is an error.
+Diet flags of a substitute are always computed from its components' flags in the canonical
+taxonomy, ingest/taxonomy/ingredients.yaml (owned by ingest; this package keeps no copy). An
+entry may not declare them: any field outside the schema is an error.
 
 Usage:
   python3 validate.py              summary line; exit 1 on any error
@@ -18,16 +19,17 @@ from collections import Counter, defaultdict
 import yaml
 
 HERE = os.path.dirname(os.path.abspath(__file__))
-INGREDIENTS_PATH = os.path.join(HERE, 'ingredients.yaml')
+_ROOT = os.path.dirname(os.path.dirname(HERE))
+if _ROOT not in sys.path:
+    sys.path.insert(0, _ROOT)
+from ingest.taxonomy import taxonomy as T  # noqa: E402
+
+INGREDIENTS_PATH = T.TAXONOMY_PATH
 SUBSTITUTIONS_PATH = os.path.join(HERE, 'substitutions.yaml')
 COVERAGE_PATH = os.path.join(HERE, 'COVERAGE.md')
 
-FLAGS = ('red_meat', 'poultry', 'fish', 'shellfish', 'animal_derived', 'explicit_meat',
-         'dairy', 'egg', 'gluten', 'nuts', 'alcohol')
-CATEGORIES = ('sauce_condiment', 'vinegar_acid', 'dairy', 'nondairy', 'egg', 'flour_thickener',
-              'leavener', 'sweetener', 'chocolate_cocoa', 'fat_oil', 'herb', 'spice',
-              'spice_blend', 'salt', 'aromatic', 'chile', 'alcohol', 'stock', 'protein',
-              'pantry', 'nut_seed', 'basic')
+FLAGS = T.FLAGS
+CATEGORIES = T.CATEGORIES
 CONTEXTS = ('baking', 'sauce', 'marinade', 'dressing', 'stir_fry', 'braise', 'soup', 'frying',
             'garnish', 'dessert', 'beverage', 'any')
 CUISINES = ('indian', 'chinese', 'japanese', 'korean', 'thai', 'vietnamese', 'mexican',
@@ -55,8 +57,6 @@ PRESETS = ('vegetarian', 'no_red_meat')
 
 ENTRY_REQUIRED = ('id', 'target', 'substitute', 'contexts', 'quality', 'flavor_effect', 'cuisines')
 ENTRY_OPTIONAL = ('note', 'per')
-INGREDIENT_REQUIRED = ('category', 'flags')
-INGREDIENT_OPTIONAL = ('hidden_animal', 'note')
 COMPONENT_KEYS = ('slug', 'amount', 'unit')
 SLUG_RE = re.compile(r'^[a-z][a-z0-9]*(_[a-z0-9]+)*$')
 ID_RE = re.compile(r'^[a-z0-9_]+__[a-z0-9_-]+$')
@@ -65,22 +65,7 @@ ID_RE = re.compile(r'^[a-z0-9_]+__[a-z0-9_-]+$')
 NON_VEG = set(DIETS['vegetarian_strict'])
 
 
-class UniqueKeyLoader(yaml.SafeLoader):
-    """SafeLoader that refuses duplicate mapping keys instead of silently keeping the last."""
-
-
-def _construct_mapping(loader, node, deep=False):
-    seen = set()
-    for key_node, _ in node.value:
-        key = loader.construct_object(key_node, deep=deep)
-        if key in seen:
-            raise yaml.constructor.ConstructorError(
-                None, None, f'duplicate key {key!r}', key_node.start_mark)
-        seen.add(key)
-    return loader.construct_mapping(node, deep=deep)
-
-
-UniqueKeyLoader.add_constructor(yaml.resolver.BaseResolver.DEFAULT_MAPPING_TAG, _construct_mapping)
+UniqueKeyLoader = T.UniqueKeyLoader
 
 
 def load_yaml(path):
@@ -89,9 +74,9 @@ def load_yaml(path):
 
 
 def load(ingredients_path=INGREDIENTS_PATH, substitutions_path=SUBSTITUTIONS_PATH):
-    ing = load_yaml(ingredients_path)
+    ing = T.load(ingredients_path)
     subs = load_yaml(substitutions_path)
-    return (ing or {}).get('ingredients') or {}, (subs or {}).get('entries') or []
+    return ing, (subs or {}).get('entries') or []
 
 
 def _is_num(v):
@@ -99,43 +84,9 @@ def _is_num(v):
 
 
 def validate_ingredients(ingredients):
-    errors = []
-    if not isinstance(ingredients, dict) or not ingredients:
-        return ['ingredients: missing or empty']
-    for slug, rec in ingredients.items():
-        where = f'ingredient {slug!r}'
-        if not isinstance(slug, str) or not SLUG_RE.match(slug):
-            errors.append(f'{where}: slug must be lowercase snake_case')
-        if not isinstance(rec, dict):
-            errors.append(f'{where}: must be a mapping')
-            continue
-        for k in INGREDIENT_REQUIRED:
-            if k not in rec:
-                errors.append(f'{where}: missing field {k!r}')
-        for k in rec:
-            if k not in INGREDIENT_REQUIRED + INGREDIENT_OPTIONAL:
-                errors.append(f'{where}: unknown field {k!r}')
-        if 'category' in rec and rec['category'] not in CATEGORIES:
-            errors.append(f'{where}: unknown category {rec["category"]!r}')
-        fl = rec.get('flags')
-        if 'flags' in rec:
-            if not isinstance(fl, list):
-                errors.append(f'{where}: flags must be a list')
-            else:
-                for f in fl:
-                    if f not in FLAGS:
-                        errors.append(f'{where}: unknown flag {f!r}')
-                if len(set(fl)) != len(fl):
-                    errors.append(f'{where}: repeated flag')
-        hidden = rec.get('hidden_animal')
-        if hidden is not None:
-            if not isinstance(hidden, str) or not hidden.strip():
-                errors.append(f'{where}: hidden_animal must be a non-empty string')
-            elif isinstance(fl, list) and not NON_VEG & set(fl):
-                errors.append(f'{where}: hidden_animal set but no non-vegetarian flag')
-        if isinstance(fl, list) and 'animal_derived' in fl and not hidden:
-            errors.append(f'{where}: animal_derived needs a hidden_animal note')
-    return errors
+    """The taxonomy's own validator (unknown category/flag, animal_derived without a
+    hidden_animal note, ...)."""
+    return T.validate(ingredients)
 
 
 def ingredient_flags(ingredients, slug):
@@ -268,7 +219,18 @@ def validate(ingredients, entries):
     return validate_ingredients(ingredients) + validate_entries(ingredients, entries)
 
 
+def used_slugs(entries):
+    used = set()
+    for e in entries:
+        used.add(e.get('target'))
+        for c in e.get('substitute') or []:
+            if isinstance(c, dict):
+                used.add(c.get('slug'))
+    return used
+
+
 def unused_slugs(ingredients, entries):
+    """Taxonomy slugs the table never mentions. Informational since the taxonomy is shared."""
     used = set()
     for e in entries:
         used.add(e.get('target'))
@@ -292,7 +254,8 @@ def coverage_markdown(ingredients, entries):
          'Generated by `python3 validate.py --coverage`. Do not edit by hand.', '',
          f'- Entries: {len(entries)}',
          f'- Targets: {len(rep)}',
-         f'- Ingredient slugs: {len(ingredients)}',
+         f'- Ingredient slugs used: {len(used_slugs(entries) & set(ingredients))} '
+         f'(of {len(ingredients)} in the taxonomy)',
          f'- Targets with a Vegetarian-safe option: {n_veg} of {len(rep)}',
          f'- Targets with a No-red-meat-safe option: {n_nrm} of {len(rep)}',
          f'- Quality: 3 = {by_quality[3]}, 2 = {by_quality[2]}, 1 = {by_quality[1]}', '',
@@ -349,7 +312,7 @@ def main(argv):
         with open(COVERAGE_PATH, 'w', encoding='utf-8') as fh:
             fh.write(coverage_markdown(ingredients, entries))
     print(f'validate: 0 errors, {len(entries)} entries, {len(rep)} targets, '
-          f'{len(ingredients)} slugs ({len(unused)} unused), '
+          f'{len(ingredients) - len(unused)} taxonomy slugs used (of {len(ingredients)}), '
           f'vegetarian option {sum(r["vegetarian"] for r in rep.values())}/{len(rep)}, '
           f'no-red-meat option {sum(r["no_red_meat"] for r in rep.values())}/{len(rep)}')
     return 0

@@ -1,0 +1,920 @@
+{
+"achiote_paste": [],
+"active_dry_yeast": [],
+"agar_agar": [],
+"agave_syrup": [],
+"aji_mirin": [
+"alcohol"
+],
+"aleppo_pepper": [],
+"all_purpose_flour": [
+"gluten"
+],
+"allspice": [],
+"almond_butter": [
+"nuts"
+],
+"almond_milk": [
+"nuts"
+],
+"almonds": [
+"nuts"
+],
+"amchur": [],
+"anaheim_chile": [],
+"anardana": [],
+"ancho_chile": [],
+"ancho_chile_powder": [],
+"anchovy": [
+"explicit_meat",
+"fish"
+],
+"anchovy_paste": [
+"animal_derived",
+"fish"
+],
+"anise_seed": [],
+"apple_cider_vinegar": [],
+"apple_pie_spice": [],
+"applesauce": [],
+"aquafaba": [],
+"arborio_rice": [],
+"arctic_char": [
+"explicit_meat",
+"fish"
+],
+"arrowroot": [],
+"asafoetida": [
+"gluten"
+],
+"avocado": [],
+"avocado_oil": [],
+"bacon": [
+"explicit_meat",
+"red_meat"
+],
+"bacon_fat": [
+"animal_derived",
+"explicit_meat",
+"red_meat"
+],
+"baharat": [],
+"baking_powder": [],
+"baking_soda": [],
+"balsamic_vinegar": [],
+"banana": [],
+"basil": [],
+"bay_leaf": [],
+"bbq_sauce": [
+"animal_derived",
+"fish"
+],
+"beef_bouillon": [
+"animal_derived",
+"explicit_meat",
+"red_meat"
+],
+"beef_chuck": [
+"explicit_meat",
+"red_meat"
+],
+"beef_stock": [
+"animal_derived",
+"explicit_meat",
+"red_meat"
+],
+"beer": [
+"alcohol",
+"gluten"
+],
+"bittersweet_chocolate": [],
+"black_bean_sauce": [
+"gluten"
+],
+"black_pepper": [],
+"black_salt": [],
+"black_sesame_seeds": [],
+"black_treacle": [],
+"black_vinegar": [
+"gluten"
+],
+"bok_choy": [],
+"bourbon": [
+"alcohol"
+],
+"brandy": [
+"alcohol"
+],
+"bread_flour": [
+"gluten"
+],
+"breadcrumbs": [
+"gluten"
+],
+"brown_rice_syrup": [],
+"brown_sauce": [
+"gluten"
+],
+"brown_sugar": [],
+"bulgur": [
+"gluten"
+],
+"butter": [
+"dairy"
+],
+"buttermilk": [
+"dairy"
+],
+"cajun_seasoning": [],
+"cake_flour": [
+"gluten"
+],
+"calamansi_juice": [],
+"canned_salmon": [
+"explicit_meat",
+"fish"
+],
+"canned_tomatoes": [],
+"canned_tuna": [
+"explicit_meat",
+"fish"
+],
+"caper_berries": [],
+"capers": [],
+"caraway_seeds": [],
+"cardamom": [],
+"cardamom_pods": [],
+"carnaroli_rice": [],
+"cashew_butter": [
+"nuts"
+],
+"cashew_cream": [
+"nuts"
+],
+"cayenne": [],
+"cayenne_chile": [],
+"celery": [],
+"celery_leaves": [],
+"celery_root": [],
+"celery_salt": [],
+"celery_seed": [],
+"chaat_masala": [],
+"champagne_vinegar": [],
+"chervil": [],
+"chia_seeds": [],
+"chicken_bouillon": [
+"animal_derived",
+"explicit_meat",
+"poultry"
+],
+"chicken_breast": [
+"explicit_meat",
+"poultry"
+],
+"chicken_stock": [
+"animal_derived",
+"explicit_meat",
+"poultry"
+],
+"chicken_thigh": [
+"explicit_meat",
+"poultry"
+],
+"chickpeas": [],
+"chile_de_arbol": [],
+"chili_garlic_sauce": [],
+"chili_oil": [],
+"chili_powder": [],
+"chinese_five_spice": [],
+"chinese_sausage": [
+"explicit_meat",
+"red_meat"
+],
+"chinese_sesame_paste": [],
+"chipotle_in_adobo": [],
+"chipotle_powder": [],
+"chives": [],
+"chorizo": [
+"explicit_meat",
+"red_meat"
+],
+"cilantro": [],
+"cinnamon": [],
+"cinnamon_stick": [],
+"clam_juice": [
+"animal_derived",
+"explicit_meat",
+"shellfish"
+],
+"cloves": [],
+"cocoa_powder": [],
+"coconut_aminos": [],
+"coconut_cream": [],
+"coconut_milk": [],
+"coconut_oil": [],
+"coconut_sugar": [],
+"coconut_yogurt": [],
+"comte": [
+"animal_derived",
+"dairy"
+],
+"coriander": [],
+"coriander_seeds": [],
+"cornflakes": [
+"gluten"
+],
+"cornichons": [],
+"cornmeal": [],
+"cornstarch": [],
+"cotija": [
+"dairy"
+],
+"cottage_cheese": [
+"dairy"
+],
+"couscous": [
+"gluten"
+],
+"crackers": [
+"gluten"
+],
+"cream_cheese": [
+"dairy"
+],
+"cream_of_tartar": [],
+"creme_fraiche": [
+"dairy"
+],
+"creole_seasoning": [],
+"crystallized_ginger": [],
+"culantro": [],
+"cumin": [],
+"cumin_seeds": [],
+"curry_leaves": [],
+"curry_powder": [],
+"dark_brown_sugar": [],
+"dark_rum": [
+"alcohol"
+],
+"dark_soy_sauce": [
+"gluten"
+],
+"dashi": [
+"animal_derived",
+"explicit_meat",
+"fish"
+],
+"date_syrup": [],
+"desiccated_coconut": [],
+"dijon_mustard": [],
+"dill": [],
+"dill_pickles": [],
+"dill_seed": [],
+"distilled_white_vinegar": [],
+"doenjang": [],
+"doubanjiang": [
+"gluten"
+],
+"double_zero_flour": [
+"gluten"
+],
+"dried_basil": [],
+"dried_dill": [],
+"dried_lemon_peel": [],
+"dried_lemongrass": [],
+"dried_lime": [],
+"dried_makrut_lime_leaf": [],
+"dried_marjoram": [],
+"dried_minced_garlic": [],
+"dried_mint": [],
+"dried_onion_flakes": [],
+"dried_oregano": [],
+"dried_parsley": [],
+"dried_rosemary": [],
+"dried_sage": [],
+"dried_shiitake": [],
+"dried_tarragon": [],
+"dried_thyme": [],
+"dry_mustard": [],
+"dry_sherry": [
+"alcohol"
+],
+"dry_vermouth": [
+"alcohol"
+],
+"dry_white_wine": [
+"alcohol"
+],
+"duck_fat": [
+"animal_derived",
+"explicit_meat",
+"poultry"
+],
+"dutch_process_cocoa": [],
+"egg": [
+"egg"
+],
+"egg_replacer": [],
+"egg_white": [
+"egg"
+],
+"egg_yolk": [
+"egg"
+],
+"epazote": [],
+"espresso_powder": [],
+"evaporated_milk": [
+"dairy"
+],
+"extra_firm_tofu": [],
+"farmer_cheese": [
+"dairy"
+],
+"fennel": [],
+"fennel_fronds": [],
+"fennel_seeds": [],
+"fenugreek_seeds": [],
+"fermented_black_beans": [],
+"feta": [
+"dairy"
+],
+"firm_tofu": [],
+"fish_gelatin": [
+"animal_derived",
+"fish"
+],
+"fish_sauce": [
+"animal_derived",
+"fish"
+],
+"fish_stock": [
+"animal_derived",
+"explicit_meat",
+"fish"
+],
+"flaky_salt": [],
+"flaxseed_meal": [],
+"fontina": [
+"dairy"
+],
+"freekeh": [
+"gluten"
+],
+"fresh_coconut": [],
+"fresh_turmeric": [],
+"fresh_yeast": [],
+"fresno_chile": [],
+"frozen_chopped_onion": [],
+"galangal": [],
+"galangal_paste": [],
+"garam_masala": [],
+"garlic": [],
+"garlic_chives": [],
+"garlic_powder": [],
+"garlic_salt": [],
+"gelatin": [
+"animal_derived",
+"red_meat"
+],
+"ghee": [
+"dairy"
+],
+"ginger": [],
+"ginger_garlic_paste": [],
+"ginger_paste": [],
+"glucose_syrup": [],
+"gluten_free_flour_blend": [],
+"goat_cheese": [
+"dairy"
+],
+"gochugaru": [],
+"gochujang": [
+"gluten"
+],
+"golden_syrup": [],
+"grana_padano": [
+"animal_derived",
+"dairy",
+"egg"
+],
+"granulated_garlic": [],
+"grapeseed_oil": [],
+"greek_yogurt": [
+"dairy"
+],
+"green_bell_pepper": [],
+"green_chiles": [],
+"green_olives": [],
+"green_onion": [],
+"green_tomato": [],
+"ground_beef": [
+"explicit_meat",
+"red_meat"
+],
+"ground_chicken": [
+"explicit_meat",
+"poultry"
+],
+"ground_ginger": [],
+"ground_lamb": [
+"explicit_meat",
+"red_meat"
+],
+"ground_pork": [
+"explicit_meat",
+"red_meat"
+],
+"ground_turkey": [
+"explicit_meat",
+"poultry"
+],
+"gruyere": [
+"animal_derived",
+"dairy"
+],
+"guajillo_chile": [],
+"guanciale": [
+"explicit_meat",
+"red_meat"
+],
+"guar_gum": [],
+"habanero": [],
+"haddock": [
+"explicit_meat",
+"fish"
+],
+"half_and_half": [
+"dairy"
+],
+"halibut": [
+"explicit_meat",
+"fish"
+],
+"halloumi": [
+"dairy"
+],
+"harissa": [],
+"hearts_of_palm": [],
+"heavy_cream": [
+"dairy"
+],
+"herbes_de_provence": [],
+"hoisin_sauce": [
+"gluten"
+],
+"holy_basil": [],
+"honey": [],
+"horseradish": [],
+"hot_paprika": [],
+"hot_sauce": [],
+"indian_bay_leaf": [],
+"instant_coffee": [],
+"instant_dashi": [
+"animal_derived",
+"explicit_meat",
+"fish"
+],
+"instant_yeast": [],
+"italian_seasoning": [],
+"jaggery": [],
+"jalapeno": [],
+"jarred_minced_garlic": [],
+"kashmiri_chili_powder": [],
+"kasuri_methi": [],
+"katsuobushi": [
+"explicit_meat",
+"fish"
+],
+"kecap_manis": [
+"gluten"
+],
+"kefir": [
+"dairy"
+],
+"ketchup": [],
+"kombu": [],
+"kombu_dashi": [],
+"kosher_salt": [],
+"labneh": [
+"dairy"
+],
+"lard": [
+"animal_derived",
+"explicit_meat",
+"red_meat"
+],
+"leek": [],
+"lemon_extract": [
+"alcohol"
+],
+"lemon_juice": [],
+"lemon_zest": [],
+"lemongrass": [],
+"lemongrass_paste": [],
+"lentils": [],
+"light_corn_syrup": [],
+"light_olive_oil": [],
+"light_soy_sauce": [
+"gluten"
+],
+"lime_juice": [],
+"lime_zest": [],
+"liquid_aminos": [],
+"liquid_smoke": [],
+"mace": [],
+"madeira": [
+"alcohol"
+],
+"makrut_lime_leaf": [],
+"malt_vinegar": [
+"gluten"
+],
+"maple_syrup": [],
+"marjoram": [],
+"marsala": [
+"alcohol"
+],
+"masa_harina": [],
+"mascarpone": [
+"dairy"
+],
+"mayonnaise": [
+"egg"
+],
+"meringue_powder": [
+"egg"
+],
+"mexican_chocolate": [],
+"mexican_crema": [
+"dairy"
+],
+"mexican_oregano": [],
+"meyer_lemon_juice": [],
+"milk": [
+"dairy"
+],
+"mint": [],
+"mirin": [
+"alcohol"
+],
+"molasses": [],
+"mozzarella": [
+"dairy"
+],
+"mulato_chile": [],
+"muscovado_sugar": [],
+"mushroom_soy_sauce": [
+"gluten"
+],
+"mushroom_stock": [],
+"mushrooms": [],
+"mustard_oil": [],
+"mustard_seeds": [],
+"neufchatel": [
+"dairy"
+],
+"neutral_oil": [],
+"new_mexico_chile": [],
+"nigella_seeds": [],
+"non_alcoholic_beer": [
+"gluten"
+],
+"nori": [],
+"nutmeg": [],
+"nutritional_yeast": [],
+"oat_milk": [],
+"old_bay_seasoning": [],
+"olive_oil": [],
+"onion": [],
+"onion_powder": [],
+"orange_blossom_water": [],
+"orange_juice_concentrate": [],
+"orange_liqueur": [
+"alcohol"
+],
+"orange_zest": [],
+"oregano": [],
+"oyster_sauce": [
+"animal_derived",
+"gluten",
+"shellfish"
+],
+"palm_sugar": [],
+"pancetta": [
+"explicit_meat",
+"red_meat"
+],
+"panch_phoron": [],
+"paneer": [
+"dairy"
+],
+"panko": [
+"gluten"
+],
+"paprika": [],
+"parmigiano_reggiano": [
+"animal_derived",
+"dairy"
+],
+"parsley": [],
+"pasilla_chile": [],
+"peanut_butter": [
+"nuts"
+],
+"peanut_oil": [
+"nuts"
+],
+"pecorino_romano": [
+"animal_derived",
+"dairy"
+],
+"perilla_leaf": [],
+"perilla_oil": [],
+"pickled_jalapeno": [],
+"piloncillo": [],
+"pine_nuts": [
+"nuts"
+],
+"plain_yogurt": [
+"dairy"
+],
+"plant_based_ground": [],
+"plum_sauce": [],
+"poblano": [],
+"polenta": [],
+"pollock": [
+"explicit_meat",
+"fish"
+],
+"pomegranate_juice": [],
+"pomegranate_molasses": [],
+"ponzu": [],
+"pork_shoulder": [
+"explicit_meat",
+"red_meat"
+],
+"port": [
+"alcohol"
+],
+"potassium_bicarbonate": [],
+"potato_starch": [],
+"powdered_milk": [
+"dairy"
+],
+"powdered_sugar": [],
+"preserved_lemon": [],
+"prosciutto": [
+"explicit_meat",
+"red_meat"
+],
+"provolone": [
+"dairy"
+],
+"psyllium_husk": [],
+"pumpkin_pie_spice": [],
+"puya_chile": [],
+"queso_blanco": [
+"dairy"
+],
+"queso_fresco": [
+"dairy"
+],
+"queso_para_freir": [
+"dairy"
+],
+"quinoa": [],
+"ras_el_hanout": [],
+"red_grape_juice": [],
+"red_miso": [],
+"red_onion": [],
+"red_pepper_flakes": [],
+"red_wine": [
+"alcohol"
+],
+"red_wine_vinegar": [],
+"rice_flour": [],
+"rice_syrup": [],
+"rice_vinegar": [],
+"ricotta": [
+"dairy"
+],
+"ricotta_salata": [
+"dairy"
+],
+"rock_sugar": [],
+"rolled_oats": [],
+"rose_extract": [
+"alcohol"
+],
+"rose_water": [],
+"rosemary": [],
+"rum_extract": [
+"alcohol"
+],
+"safflower": [],
+"saffron": [],
+"sage": [],
+"sake": [
+"alcohol"
+],
+"salmon": [
+"explicit_meat",
+"fish"
+],
+"salt": [],
+"sambal_oelek": [],
+"sansho": [],
+"scallops": [
+"explicit_meat",
+"shellfish"
+],
+"schmaltz": [
+"animal_derived",
+"explicit_meat",
+"poultry"
+],
+"scotch_bonnet": [],
+"seasoned_rice_vinegar": [],
+"seitan": [
+"gluten"
+],
+"self_raising_flour": [
+"gluten"
+],
+"semisweet_chocolate": [],
+"serrano": [],
+"serrano_ham": [
+"explicit_meat",
+"red_meat"
+],
+"sesame_seeds": [],
+"shallot": [],
+"shaoxing_wine": [
+"alcohol",
+"gluten"
+],
+"sherry_vinegar": [],
+"shichimi_togarashi": [],
+"shiitake": [],
+"shiitake_dashi": [],
+"shiso": [],
+"shrimp": [
+"explicit_meat",
+"shellfish"
+],
+"shrimp_paste": [
+"animal_derived",
+"shellfish"
+],
+"sichuan_peppercorns": [],
+"silken_tofu": [],
+"skyr": [
+"dairy"
+],
+"smoked_paprika": [],
+"sour_cream": [
+"dairy"
+],
+"soy_milk": [],
+"soy_sauce": [
+"gluten"
+],
+"soy_yogurt": [],
+"soyrizo": [],
+"spelt_flour": [
+"gluten"
+],
+"sriracha": [],
+"ssamjang": [
+"gluten"
+],
+"star_anise": [],
+"steelhead_trout": [
+"explicit_meat",
+"fish"
+],
+"sugar": [],
+"sumac": [],
+"sunflower_oil": [],
+"sunflower_seed_butter": [],
+"sunflower_seeds": [],
+"superfine_sugar": [],
+"sushi_rice": [],
+"sweet_bean_sauce": [
+"gluten"
+],
+"sweetened_condensed_coconut_milk": [],
+"sweetened_condensed_milk": [
+"dairy"
+],
+"swiss_cheese": [
+"dairy"
+],
+"taco_seasoning": [],
+"tahini": [],
+"tamari": [],
+"tamarind_paste": [],
+"tapioca_starch": [],
+"tarragon": [],
+"tempeh": [],
+"thai_basil": [],
+"thai_bird_chile": [],
+"thyme": [],
+"tilapia": [
+"explicit_meat",
+"fish"
+],
+"toasted_sesame_oil": [],
+"tomatillo": [],
+"tomato_paste": [],
+"tomato_sauce": [],
+"tomatoes": [],
+"tonkatsu_sauce": [
+"gluten"
+],
+"triple_sec": [
+"alcohol"
+],
+"turkey_bacon": [
+"explicit_meat",
+"poultry"
+],
+"turkey_breast": [
+"explicit_meat",
+"poultry"
+],
+"turkey_stock": [
+"animal_derived",
+"explicit_meat",
+"poultry"
+],
+"turkey_thigh": [
+"explicit_meat",
+"poultry"
+],
+"turmeric": [],
+"tvp": [],
+"unsweetened_chocolate": [],
+"urfa_biber": [],
+"vanilla_bean": [],
+"vanilla_bean_paste": [
+"alcohol"
+],
+"vanilla_extract": [
+"alcohol"
+],
+"vegan_butter": [],
+"vegan_cream_cheese": [
+"nuts"
+],
+"vegan_fish_sauce": [],
+"vegan_mayonnaise": [],
+"vegan_mozzarella": [
+"nuts"
+],
+"vegan_worcestershire_sauce": [
+"gluten"
+],
+"vegetable_bouillon": [],
+"vegetable_shortening": [],
+"vegetable_stock": [],
+"vegetarian_hard_cheese": [
+"dairy"
+],
+"vegetarian_oyster_sauce": [
+"gluten"
+],
+"vietnamese_coriander": [],
+"vital_wheat_gluten": [
+"gluten"
+],
+"walnuts": [
+"nuts"
+],
+"wasabi": [],
+"water": [],
+"white_beans": [],
+"white_fish": [
+"explicit_meat",
+"fish"
+],
+"white_grape_juice": [],
+"white_miso": [],
+"white_pepper": [],
+"white_wine_vinegar": [],
+"whole_grain_mustard": [],
+"whole_wheat_flour": [
+"gluten"
+],
+"worcestershire_sauce": [
+"animal_derived",
+"fish",
+"gluten"
+],
+"xanthan_gum": [],
+"yellow_mustard": [],
+"yellow_mustard_seeds": [],
+"young_jackfruit": [],
+"yuzu_juice": [],
+"zaatar": []
+}
