@@ -16,9 +16,15 @@ allrecipes gives 402 even with a browser UA (bot wall), so S1 tries headless Chr
 ## Owner silence on 3 defaults (applied): metric default, no hosted PWA, start builds now.
 
 ## Running
-S1 (ingest fetch, sonnet) runs in its own worktree. The orchestrator merges and pushes.
+S3 (parser + taxonomy, opus, high) runs in a worktree. A BBC Good Food crawl resumes in a background script.
 
 ## Done
+- S1 sources, merged. pytest 12 passed. Raw data in /home/user/recipe-data/raw (4.7 GB), verified with wc:
+  recipenlg 2,231,142; openrecipes 168,442; themealdb 790; foodwishes 300; bbcgoodfood 245; foodcom 1,228
+  (the HF mirror is mostly blank); github repos 7 in total (Cookdiary and recipe-generator are link-farm repos,
+  so not usable). allrecipes gives 403 even in headless Chromium, so it is dropped.
+  Gap: no big rated source. Food.com on Kaggle (230k recipes, 1.1M reviews) needs the owner's Kaggle token.
+- CI run 3 GREEN at 2d52b77: typecheck, lint, unit, web build and the debug APK artifact.
 - S2 app scaffold, merged 3639216. Re-run: typecheck/lint pass, unit 7/0. CI failed on Node 20
   (jsdom/undici); fixed to Node 22 in df4b21c. The APK job is still unverified. Open: the diet
   preset is in localStorage, not in user.db (wire it in S6).
