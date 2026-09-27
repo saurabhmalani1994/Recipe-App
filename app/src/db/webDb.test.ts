@@ -1,0 +1,34 @@
+import { describe, expect, it } from 'vitest'
+import { WebDb } from './webDb'
+import { runMigrations } from './types'
+import { USER_DB_MIGRATIONS } from './userSchema'
+
+describe('WebDb', () => {
+  it('opens an in-memory database and runs migrations to v1', async () => {
+    const db = new WebDb('user.db')
+    await db.open()
+    await runMigrations(db, USER_DB_MIGRATIONS)
+
+    expect(await db.getVersion()).toBe(1)
+    const settings = await db.query('SELECT * FROM settings')
+    expect(settings.rows).toEqual([
+      {
+        id: 1,
+        people_default: 2,
+        servings_per_person: 1.5,
+        units: 'metric',
+        diet_preset: 'everything',
+      },
+    ])
+
+    await db.close()
+  })
+
+  it('does not re-run a migration already applied', async () => {
+    const db = new WebDb('user.db')
+    await db.open()
+    await runMigrations(db, USER_DB_MIGRATIONS)
+    await expect(runMigrations(db, USER_DB_MIGRATIONS)).resolves.not.toThrow()
+    await db.close()
+  })
+})
