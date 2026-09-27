@@ -16,12 +16,14 @@ allrecipes gives 402 even with a browser UA (bot wall), so S1 tries headless Chr
 ## Owner silence on 3 defaults (applied): metric default, no hosted PWA, start builds now.
 
 ## Running
-S1 (ingest fetch, sonnet). S4 is merged: validate 0 errors, 790 entries, 316 targets, 503 slugs,
-80 pytest passing (the orchestrator re-ran both). Owner question pending: are rennet cheeses (Parmigiano etc.)
-Vegetarian? Default: strict, not vegetarian. S2 was merged at 3639216; the orchestrator
-re-ran the check and got typecheck/lint pass, 7/0 unit. The CI APK job is unverified until its first Actions run.
-S2 open items: the diet preset lives in localStorage and is not yet in user.db settings (wire it in S6). Each runs in
-its own worktree. The orchestrator merges into the branch and pushes.
+S1 (ingest fetch, sonnet) runs in its own worktree. The orchestrator merges and pushes.
+
+## Done
+- S2 app scaffold, merged 3639216. Re-run: typecheck/lint pass, unit 7/0. CI failed on Node 20
+  (jsdom/undici); fixed to Node 22 in df4b21c. The APK job is still unverified. Open: the diet
+  preset is in localStorage, not in user.db (wire it in S6).
+- S4 + S4b substitutions: validate 0 errors, 790 entries, 316 targets, 503 slugs, pytest 80 passed
+  (re-run by the orchestrator). Vegetarian = explicit_meat only (D15/R7), and No red meat is strict (R8).
 
 ## Risk
 /home/user/recipe-data dies when the container is reclaimed. corpus.db needs durable storage
