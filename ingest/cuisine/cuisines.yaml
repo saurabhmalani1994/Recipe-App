@@ -122,3 +122,133 @@ label_map:
     Australian: fusion_other
     # left unmapped, dropped from training: Jewish (spans several geographies), Asian
     # (too broad on its own), African (too broad on its own)
+  hf_cuisine_type:               # source field: cuisine_label, from the public HF dataset
+    # Eitanli/cuisine_type (brief S5b-2 #1a, fetch_hf_cuisine.py). 34,348 single-label rows
+    # after dropping comma-joined multi-cuisine values and the source's own garbled label-
+    # column rows (recipe text that leaked into cuisine_type); of those, everything not
+    # listed below is a real but too-broad/ambiguous/one-off value (156 distinct raw values
+    # total, most with n<5) and stays unmapped, dropped and counted by build_dataset.py --
+    # never guessed. Not listed on purpose: European/Asian/African/Pacific Islander/
+    # Southeast Asian/South American/Oriental/Pan-Asian/Polynesian/French Polynesian
+    # (too broad), Jewish/Ashkenazi Jewish (spans geographies), Barbecue (a cooking method,
+    # not a cuisine), Belgian/Georgian/Tahitian/International (too ambiguous or n<4 to trust),
+    # and every one-off garbled/nonsense value (e.g. "Martian", "gdsgesgbsgygeg", the several
+    # "X is associated with Y cuisine" sentence fragments the regex in fetch_hf_cuisine.py
+    # didn't happen to catch).
+    American: american
+    Canadian: american
+    Californian: american
+    "New England": american
+    "Southern American": american
+    "North American": american
+    Floridian: american
+    Northwestern: american
+    "Napa Valley": american
+    Italian: italian
+    Tuscan: italian
+    Roman: italian
+    French: french
+    " French": french
+    Corsican: french
+    Provencal: french
+    "Beverage - French": french
+    Chinese: chinese
+    Taiwanese: chinese
+    Macanese: chinese
+    Indian: indian
+    "Sri Lankan": indian
+    Nepali: indian
+    Goanese: indian
+    Mediterranean: mediterranean
+    "Grilled - Mediterranean": mediterranean
+    Macedonian: mediterranean
+    Japanese: japanese
+    Mexican: mexican
+    "Tex-Mex": mexican
+    Poblano: mexican
+    Caribbean: caribbean
+    Cuban: caribbean
+    Jamaican: caribbean
+    Bahamian: caribbean
+    Barbadian: caribbean
+    "Puerto Rican": caribbean
+    Trinidadian: caribbean
+    Dominican: caribbean
+    Spanish: spanish
+    Catalan: spanish
+    Asturian: spanish
+    British: british_irish
+    Scottish: british_irish
+    Irish: british_irish
+    Greek: greek
+    Thai: thai
+    "Middle Eastern": middle_eastern
+    Israeli: middle_eastern
+    Arabic: middle_eastern
+    Arabian: middle_eastern
+    German: german_central_eu
+    Russian: german_central_eu
+    Austrian: german_central_eu
+    Hungarian: german_central_eu
+    Norwegian: german_central_eu
+    Polish: german_central_eu
+    Swiss: german_central_eu
+    Swedish: german_central_eu
+    Sweden: german_central_eu
+    Nordic: german_central_eu
+    Danish: german_central_eu
+    "Danish - European": german_central_eu
+    Scandinavian: german_central_eu
+    Romanian: german_central_eu
+    Ukrainian: german_central_eu
+    Dutch: german_central_eu
+    Finnish: german_central_eu
+    Icelandic: german_central_eu
+    Belorussian: german_central_eu
+    "Bohemian - European": german_central_eu
+    Moroccan: north_african
+    "North African": north_african
+    Egyptian: north_african
+    Tunisian: north_african
+    Korean: korean
+    Cajun: southern_us
+    Southern: southern_us
+    Creole: southern_us
+    "New Orleans": southern_us
+    Louisiana: southern_us
+    Brazilian: latin_american
+    Brasilian: latin_american
+    Peruvian: latin_american
+    Argentinian: latin_american
+    Argentinean: latin_american
+    Argentine: latin_american
+    Venezuelan: latin_american
+    Colombian: latin_american
+    "Latin American": latin_american
+    Chilean: latin_american
+    "Costa Rican": latin_american
+    Ecuadorian: latin_american
+    Guatemalan: latin_american
+    Nicaraguan: latin_american
+    Vietnamese: vietnamese
+    Portuguese: mediterranean
+    Filipino: filipino
+    Philippine: filipino
+    Indonesian: indonesian_malaysian
+    Malaysian: indonesian_malaysian
+    Singaporean: indonesian_malaysian
+    Iranian: persian
+    Turkish: turkish
+    Hawaiian: fusion_other
+    Australian: fusion_other
+    "New Zealand": fusion_other
+    AmericanMexican: fusion_other
+    "Italian-American": fusion_other
+    Ethiopian: east_west_african
+    Nigerian: east_west_african
+    "West African": east_west_african
+    Senegalese: east_west_african
+    Ghanaian: east_west_african
+    "South African": east_west_african
+    "East African": east_west_african
+    Tanzanian: east_west_african

@@ -1,0 +1,300 @@
+{"id": "recipenlg:1000473", "source": "recipenlg", "title": "Sumner'S Favorite Healthy Rhubarb Scones", "marker": "scone", "true": "british_irish", "pred": "british_irish", "confidence": 1.0}
+{"id": "recipenlg:1129450", "source": "recipenlg", "title": "Jamaican Pumpkin Soup", "marker": "jamaican", "true": "caribbean", "pred": "caribbean", "confidence": 0.929}
+{"id": "openrecipes:5169f42e96cc624c4d8ed0ca", "source": "openrecipes", "title": "Indonesian fried rice with mackerel", "marker": "fried rice", "true": "chinese", "pred": "unknown", "confidence": 0.749}
+{"id": "openrecipes:5160762f96cc6208ac7c9d53", "source": "openrecipes", "title": "Duck Confit Salad with Cranberry Vinaigrette", "marker": "confit", "true": "french", "pred": "unknown", "confidence": 0.414}
+{"id": "recipenlg:1039367", "source": "recipenlg", "title": "Veal Schnitzel With Herb And Cheese Crust", "marker": "schnitzel", "true": "german_central_eu", "pred": "italian", "confidence": 0.978}
+{"id": "recipenlg:1253921", "source": "recipenlg", "title": "Honey-Mint Lamb Skewers With Tzatziki", "marker": "tzatziki", "true": "greek", "pred": "greek", "confidence": 0.8}
+{"id": "openrecipes:5169fad896cc624c4d8ee2a3", "source": "openrecipes", "title": "Seafood Biryani", "marker": "biryani", "true": "indian", "pred": "unknown", "confidence": 0.617}
+{"id": "recipenlg:964444", "source": "recipenlg", "title": "Beef Satay", "marker": "satay", "true": "indonesian_malaysian", "pred": "unknown", "confidence": 0.3}
+{"id": "openrecipes:516075fc96cc6208ac7c9d48", "source": "openrecipes", "title": "Focaccia Bread with Roasted Garlic and Olives", "marker": "focaccia", "true": "italian", "pred": "unknown", "confidence": 0.484}
+{"id": "recipenlg:1012394", "source": "recipenlg", "title": "Benihana Teriyaki Sauce", "marker": "teriyaki", "true": "japanese", "pred": "japanese", "confidence": 0.936}
+{"id": "recipenlg:1398365", "source": "recipenlg", "title": "Korean Oxtails", "marker": "korean", "true": "korean", "pred": "korean", "confidence": 0.999}
+{"id": "recipenlg:1347973", "source": "recipenlg", "title": "Spiced Turkey Empanada", "marker": "empanada", "true": "latin_american", "pred": "unknown", "confidence": 0.413}
+{"id": "openrecipes:51716b9296cc620aff99721d", "source": "openrecipes", "title": "Tacos in a Cup", "marker": "taco", "true": "mexican", "pred": "mexican", "confidence": 1.0}
+{"id": "recipenlg:1233913", "source": "recipenlg", "title": "Whole Grain Hummus", "marker": "hummus", "true": "middle_eastern", "pred": "middle_eastern", "confidence": 0.999}
+{"id": "recipenlg:1060132", "source": "recipenlg", "title": "Moroccan-Spiced Baby Carrots", "marker": "moroccan", "true": "north_african", "pred": "north_african", "confidence": 1.0}
+{"id": "recipenlg:1067571", "source": "recipenlg", "title": "Half-Hour Chicken Gumbo", "marker": "gumbo", "true": "southern_us", "pred": "southern_us", "confidence": 0.999}
+{"id": "recipenlg:1136004", "source": "recipenlg", "title": "Seared Capsicum Tapas", "marker": "tapas", "true": "spanish", "pred": "italian", "confidence": 0.774}
+{"id": "recipenlg:1473092", "source": "recipenlg", "title": "Stir-Fried Tempeh With Spinach And Thai Basil", "marker": "thai basil", "true": "thai", "pred": "thai", "confidence": 0.982}
+{"id": "recipenlg:1714269", "source": "recipenlg", "title": "Turkish Rice Pilau with Eggplant and Chickpeas", "marker": "turkish", "true": "turkish", "pred": "unknown", "confidence": 0.588}
+{"id": "recipenlg:1594558", "source": "recipenlg", "title": "Vietnamese Pulled Pork Lettuce Wraps", "marker": "vietnamese", "true": "vietnamese", "pred": "vietnamese", "confidence": 1.0}
+{"id": "recipenlg:1000811", "source": "recipenlg", "title": "Trifle With Fresh Raspberries, Blueberries And Strawberries", "marker": "trifle", "true": "british_irish", "pred": "british_irish", "confidence": 1.0}
+{"id": "recipenlg:1130131", "source": "recipenlg", "title": "Original Jamaican Jerk Chicken", "marker": "jerk chicken", "true": "caribbean", "pred": "caribbean", "confidence": 1.0}
+{"id": "openrecipes:5169f78996cc624c4d8ed96b", "source": "openrecipes", "title": "Moroccan Sweet and Sour Soup", "marker": "sweet and sour", "true": "chinese", "pred": "north_african", "confidence": 1.0}
+{"id": "openrecipes:5160767496cc6208ac7c9d66", "source": "openrecipes", "title": "Peppermint Creme Brulee Recipe", "marker": "creme brulee", "true": "french", "pred": "french", "confidence": 0.973}
+{"id": "recipenlg:1039580", "source": "recipenlg", "title": "Tofu Pierogies - Vegan", "marker": "pierogi", "true": "german_central_eu", "pred": "unknown", "confidence": 0.43}
+{"id": "recipenlg:1254014", "source": "recipenlg", "title": "Paprika Lamb Chops With Greek Salad", "marker": "greek salad", "true": "greek", "pred": "unknown", "confidence": 0.62}
+{"id": "openrecipes:5169fb1296cc624c4d8ee339", "source": "openrecipes", "title": "Simple Chicken Tikka Masala", "marker": "tikka masala", "true": "indian", "pred": "indian", "confidence": 0.987}
+{"id": "recipenlg:965320", "source": "recipenlg", "title": "Satay Kangaroo", "marker": "satay", "true": "indonesian_malaysian", "pred": "indonesian_malaysian", "confidence": 0.987}
+{"id": "openrecipes:5160765696cc6208b330015a", "source": "openrecipes", "title": "Bruschetta Panini (and More!)", "marker": "bruschetta", "true": "italian", "pred": "italian", "confidence": 0.995}
+{"id": "recipenlg:1013091", "source": "recipenlg", "title": "Cherry Teriyaki Chicken", "marker": "teriyaki", "true": "japanese", "pred": "unknown", "confidence": 0.626}
+{"id": "recipenlg:1398708", "source": "recipenlg", "title": "Korean Potato Salad", "marker": "korean", "true": "korean", "pred": "korean", "confidence": 0.987}
+{"id": "recipenlg:1348381", "source": "recipenlg", "title": "Traditional Chimichurri", "marker": "chimichurri", "true": "latin_american", "pred": "latin_american", "confidence": 0.905}
+{"id": "openrecipes:51716bfd96cc620aff99724f", "source": "openrecipes", "title": "Carnitas and Guacamole Pizza", "marker": "guacamole", "true": "mexican", "pred": "mexican", "confidence": 1.0}
+{"id": "recipenlg:1234545", "source": "recipenlg", "title": "Roasted Vegetable Hummus", "marker": "hummus", "true": "middle_eastern", "pred": "middle_eastern", "confidence": 0.999}
+{"id": "recipenlg:1060156", "source": "recipenlg", "title": "Tajine Bil Khodar (Vegetable Tagine)", "marker": "tagine", "true": "north_african", "pred": "north_african", "confidence": 1.0}
+{"id": "recipenlg:1067729", "source": "recipenlg", "title": "Baby'S Jalapeño Cheese Cornbread", "marker": "cornbread", "true": "southern_us", "pred": "southern_us", "confidence": 1.0}
+{"id": "recipenlg:1136062", "source": "recipenlg", "title": "Spanish-Paella Madrid", "marker": "paella", "true": "spanish", "pred": "spanish", "confidence": 1.0}
+{"id": "recipenlg:1476148", "source": "recipenlg", "title": "Thai Green Curry Mussels", "marker": "green curry", "true": "thai", "pred": "thai", "confidence": 1.0}
+{"id": "recipenlg:1717811", "source": "recipenlg", "title": "Turkish Coffee Pots de Creme", "marker": "turkish", "true": "turkish", "pred": "unknown", "confidence": 0.515}
+{"id": "recipenlg:1595152", "source": "recipenlg", "title": "Vietnamese Pork And Noodle Bowl", "marker": "vietnamese", "true": "vietnamese", "pred": "vietnamese", "confidence": 1.0}
+{"id": "recipenlg:1001117", "source": "recipenlg", "title": "Dr. Oz Healthy Fish And Chips", "marker": "fish and chips", "true": "british_irish", "pred": "southern_us", "confidence": 0.985}
+{"id": "recipenlg:1131406", "source": "recipenlg", "title": "Kandhe Ki Roti - Mummy'S Favourite Onion Paratha", "marker": "roti", "true": "caribbean", "pred": "indian", "confidence": 0.998}
+{"id": "openrecipes:5169f7f496cc624c4d8eda87", "source": "openrecipes", "title": "Oriental egg fried rice", "marker": "fried rice", "true": "chinese", "pred": "chinese", "confidence": 0.999}
+{"id": "openrecipes:5160777d96cc6208c17934c6", "source": "openrecipes", "title": "Purple sprouting broccoli gratin with cheese sauce and toasted brioche", "marker": "gratin", "true": "french", "pred": "american", "confidence": 0.885}
+{"id": "recipenlg:1039619", "source": "recipenlg", "title": "Weiner Schnitzel, Veal Cutlettes With Lemon", "marker": "schnitzel", "true": "german_central_eu", "pred": "unknown", "confidence": 0.563}
+{"id": "recipenlg:1254041", "source": "recipenlg", "title": "Roasted Vegetable Salad With Tzatziki Sauce", "marker": "tzatziki", "true": "greek", "pred": "unknown", "confidence": 0.511}
+{"id": "openrecipes:5169fb3696cc624c4d8ee397", "source": "openrecipes", "title": "Slow-roast pork rolls with apple chilli chutney", "marker": "chutney", "true": "indian", "pred": "german_central_eu", "confidence": 0.964}
+{"id": "recipenlg:971869", "source": "recipenlg", "title": "Grilled Ginger Lamb Satays With Thai Sauce", "marker": "satay", "true": "indonesian_malaysian", "pred": "indonesian_malaysian", "confidence": 0.986}
+{"id": "openrecipes:516076f496cc6208b3300191", "source": "openrecipes", "title": "David’s Duck Risotto", "marker": "risotto", "true": "italian", "pred": "spanish", "confidence": 0.846}
+{"id": "recipenlg:1013138", "source": "recipenlg", "title": "Christopher'S Teriyaki Stir Fry", "marker": "teriyaki", "true": "japanese", "pred": "chinese", "confidence": 0.972}
+{"id": "recipenlg:1398842", "source": "recipenlg", "title": "Fiery Korean Tofu Soup With Pork Belly And Kimchi", "marker": "kimchi", "true": "korean", "pred": "korean", "confidence": 1.0}
+{"id": "recipenlg:1348988", "source": "recipenlg", "title": "Roasted Sweet Potatoes With Speck And Chimichurri", "marker": "chimichurri", "true": "latin_american", "pred": "latin_american", "confidence": 0.932}
+{"id": "openrecipes:51716c1396cc620aff997259", "source": "openrecipes", "title": "Israeli Couscous Taco Salad with California Avocados", "marker": "taco", "true": "mexican", "pred": "mexican", "confidence": 0.904}
+{"id": "recipenlg:1234671", "source": "recipenlg", "title": "Healthy Baked Falafel", "marker": "falafel", "true": "middle_eastern", "pred": "middle_eastern", "confidence": 1.0}
+{"id": "recipenlg:1060462", "source": "recipenlg", "title": "Creamy Couscous Salad", "marker": "couscous", "true": "north_african", "pred": "unknown", "confidence": 0.689}
+{"id": "recipenlg:1067874", "source": "recipenlg", "title": "Cornbread Souffle - Simple", "marker": "cornbread", "true": "southern_us", "pred": "southern_us", "confidence": 0.998}
+{"id": "recipenlg:1137049", "source": "recipenlg", "title": "Churros From Casa Marcela", "marker": "churro", "true": "spanish", "pred": "unknown", "confidence": 0.423}
+{"id": "recipenlg:1476417", "source": "recipenlg", "title": "Indian Green Curry Seasoning Paste", "marker": "green curry", "true": "thai", "pred": "indian", "confidence": 0.906}
+{"id": "recipenlg:1719077", "source": "recipenlg", "title": "Almond Baklava With Rose Water Recipe", "marker": "baklava", "true": "turkish", "pred": "turkish", "confidence": 1.0}
+{"id": "recipenlg:1595393", "source": "recipenlg", "title": "Pork Belly Banh Mi", "marker": "banh mi", "true": "vietnamese", "pred": "vietnamese", "confidence": 1.0}
+{"id": "recipenlg:1001125", "source": "recipenlg", "title": "Bangers And Mash With Creamed Onion Sauce", "marker": "bangers and mash", "true": "british_irish", "pred": "british_irish", "confidence": 0.959}
+{"id": "recipenlg:1132059", "source": "recipenlg", "title": "Kori'S Roti (Aka West Indian Chicken Curry)", "marker": "roti", "true": "caribbean", "pred": "indian", "confidence": 1.0}
+{"id": "openrecipes:5169f84196cc624c4d8edb65", "source": "openrecipes", "title": "Paella fried rice", "marker": "fried rice", "true": "chinese", "pred": "spanish", "confidence": 0.999}
+{"id": "openrecipes:5160793196cc6208c179357e", "source": "openrecipes", "title": "Quiche Lorraine with Gruyère and chive flowers", "marker": "quiche", "true": "french", "pred": "french", "confidence": 0.985}
+{"id": "recipenlg:1039690", "source": "recipenlg", "title": "Sauerkraut Pie Uses Leftover Mashed Potatoes", "marker": "sauerkraut", "true": "german_central_eu", "pred": "german_central_eu", "confidence": 0.998}
+{"id": "recipenlg:1254258", "source": "recipenlg", "title": "Lamb With Green Beans, Chickpeas And Tzatziki", "marker": "tzatziki", "true": "greek", "pred": "north_african", "confidence": 0.989}
+{"id": "openrecipes:5169fbae96cc624c4d8ee4c7", "source": "openrecipes", "title": "Spiced bubble & squeak cakes with raita", "marker": "raita", "true": "indian", "pred": "indian", "confidence": 0.936}
+{"id": "recipenlg:972270", "source": "recipenlg", "title": "Malaysian Curry Laksa", "marker": "laksa", "true": "indonesian_malaysian", "pred": "indonesian_malaysian", "confidence": 0.959}
+{"id": "openrecipes:5160788796cc6208c1793535", "source": "openrecipes", "title": "An authentic ragù bolognese", "marker": "bolognese", "true": "italian", "pred": "italian", "confidence": 1.0}
+{"id": "recipenlg:1013305", "source": "recipenlg", "title": "Benihana Yakisoba", "marker": "yakisoba", "true": "japanese", "pred": "japanese", "confidence": 0.813}
+{"id": "recipenlg:1398909", "source": "recipenlg", "title": "Kimchi, Shrimp, And Soba Salad", "marker": "kimchi", "true": "korean", "pred": "korean", "confidence": 0.987}
+{"id": "recipenlg:1349961", "source": "recipenlg", "title": "Tres Leches Cake (Betty Crocker)", "marker": "tres leches", "true": "latin_american", "pred": "unknown", "confidence": 0.669}
+{"id": "openrecipes:517482af96cc621c737457f8", "source": "openrecipes", "title": "Shrimp and Zucchini Tacos", "marker": "taco", "true": "mexican", "pred": "mexican", "confidence": 0.932}
+{"id": "recipenlg:1234744", "source": "recipenlg", "title": "Moroccan Hummus", "marker": "hummus", "true": "middle_eastern", "pred": "unknown", "confidence": 0.602}
+{"id": "recipenlg:1060517", "source": "recipenlg", "title": "North African Quick Tagine-Style Chicken", "marker": "tagine", "true": "north_african", "pred": "north_african", "confidence": 1.0}
+{"id": "recipenlg:1067910", "source": "recipenlg", "title": "Kids Cornbread", "marker": "cornbread", "true": "southern_us", "pred": "southern_us", "confidence": 0.922}
+{"id": "recipenlg:1137117", "source": "recipenlg", "title": "Texas Pete® Hotter Hot Sangria", "marker": "sangria", "true": "spanish", "pred": "spanish", "confidence": 1.0}
+{"id": "recipenlg:1476594", "source": "recipenlg", "title": "Green Curry With Lake Trout And Green Beans Recipe", "marker": "green curry", "true": "thai", "pred": "thai", "confidence": 1.0}
+{"id": "recipenlg:1719428", "source": "recipenlg", "title": "Lamb and Quinoa Koftas on Soft Chickpeas with Toasted Pita Bread", "marker": "kofta", "true": "turkish", "pred": "middle_eastern", "confidence": 0.998}
+{"id": "recipenlg:1596085", "source": "recipenlg", "title": "Vietnamese Spring Rolls With Slow-Cooked Pork", "marker": "vietnamese", "true": "vietnamese", "pred": "vietnamese", "confidence": 1.0}
+{"id": "recipenlg:1001436", "source": "recipenlg", "title": "Cherries In The Snow Trifle! \" Fourth Of July Version\"", "marker": "trifle", "true": "british_irish", "pred": "british_irish", "confidence": 0.805}
+{"id": "recipenlg:1132332", "source": "recipenlg", "title": "Jamaican Banana Cake With Broiled Topping", "marker": "jamaican", "true": "caribbean", "pred": "american", "confidence": 0.99}
+{"id": "openrecipes:5169f97d96cc624c4d8edef8", "source": "openrecipes", "title": "Pork & mushroom kebabs with quick fried rice", "marker": "fried rice", "true": "chinese", "pred": "unknown", "confidence": 0.679}
+{"id": "openrecipes:51607b2896cc6208c179362f", "source": "openrecipes", "title": "Roasted breast of duck with heart stew, gizzard sausage, confit duck legs, dauphinoise potatoes and squash purée", "marker": "confit", "true": "french", "pred": "french", "confidence": 0.998}
+{"id": "recipenlg:1040694", "source": "recipenlg", "title": "Pork Spareribs With Sauerkraut", "marker": "sauerkraut", "true": "german_central_eu", "pred": "german_central_eu", "confidence": 1.0}
+{"id": "recipenlg:1254372", "source": "recipenlg", "title": "Rosemary Kebabs With Greek Salad", "marker": "greek salad", "true": "greek", "pred": "greek", "confidence": 1.0}
+{"id": "openrecipes:5169fbb096cc624c4d8ee4cb", "source": "openrecipes", "title": "Spiced beetroot & orange chutney", "marker": "chutney", "true": "indian", "pred": "indian", "confidence": 0.992}
+{"id": "recipenlg:973437", "source": "recipenlg", "title": "Crocodile Or Chicken Skewers With Cashew Nut Satay", "marker": "satay", "true": "indonesian_malaysian", "pred": "indonesian_malaysian", "confidence": 1.0}
+{"id": "openrecipes:5160789996cc6208c8a9272e", "source": "openrecipes", "title": "Risotto A Go-Go Recipe", "marker": "risotto", "true": "italian", "pred": "italian", "confidence": 0.929}
+{"id": "recipenlg:1013449", "source": "recipenlg", "title": "Teriyaki Glazed Salmon", "marker": "teriyaki", "true": "japanese", "pred": "japanese", "confidence": 1.0}
+{"id": "recipenlg:1398982", "source": "recipenlg", "title": "Korean Carrot Salad", "marker": "korean", "true": "korean", "pred": "north_african", "confidence": 0.957}
+{"id": "recipenlg:1350374", "source": "recipenlg", "title": "Ceviche With Coconut Milk", "marker": "ceviche", "true": "latin_american", "pred": "caribbean", "confidence": 0.882}
+{"id": "openrecipes:517e22d996cc624fc93bfa1f", "source": "openrecipes", "title": "Turkey Burger Taco Salad", "marker": "taco", "true": "mexican", "pred": "mexican", "confidence": 1.0}
+{"id": "recipenlg:1235414", "source": "recipenlg", "title": "Hummus - To Die For!", "marker": "hummus", "true": "middle_eastern", "pred": "middle_eastern", "confidence": 1.0}
+{"id": "recipenlg:1060670", "source": "recipenlg", "title": "Moroccan Pesto Rockfish With Clam And Chorizo Sauce", "marker": "moroccan", "true": "north_african", "pred": "spanish", "confidence": 0.942}
+{"id": "recipenlg:1067929", "source": "recipenlg", "title": "Cajun Christmas Scent", "marker": "cajun", "true": "southern_us", "pred": "turkish", "confidence": 0.834}
+{"id": "recipenlg:1137775", "source": "recipenlg", "title": "Easy Sangria", "marker": "sangria", "true": "spanish", "pred": "spanish", "confidence": 0.999}
+{"id": "recipenlg:1476731", "source": "recipenlg", "title": "Mark Bittman'S Pad Thai Recipe", "marker": "pad thai", "true": "thai", "pred": "thai", "confidence": 1.0}
+{"id": "recipenlg:1719651", "source": "recipenlg", "title": "Baklava Fruit and Nut Bars", "marker": "baklava", "true": "turkish", "pred": "turkish", "confidence": 0.973}
+{"id": "recipenlg:1596664", "source": "recipenlg", "title": "Vietnamese Country Style Rib", "marker": "vietnamese", "true": "vietnamese", "pred": "vietnamese", "confidence": 0.999}
+{"id": "recipenlg:1001487", "source": "recipenlg", "title": "Bombay Fish And Chips With Curried Coleslaw And Dipping Sauce.", "marker": "fish and chips", "true": "british_irish", "pred": "indian", "confidence": 0.911}
+{"id": "recipenlg:1133175", "source": "recipenlg", "title": "Jamaican \"Beefless\" Patties", "marker": "jamaican", "true": "caribbean", "pred": "caribbean", "confidence": 1.0}
+{"id": "openrecipes:5169f9db96cc624c4d8ee004", "source": "openrecipes", "title": "Prawn chow mein", "marker": "chow mein", "true": "chinese", "pred": "chinese", "confidence": 0.999}
+{"id": "openrecipes:51607c8296cc6208c17936ad", "source": "openrecipes", "title": "Roast rump of lamb with pan-fried courgettes and a borlotti bean, olive and confit tomato broth", "marker": "confit", "true": "french", "pred": "mediterranean", "confidence": 0.996}
+{"id": "recipenlg:1040792", "source": "recipenlg", "title": "Jagerschnitzel The Germany Way Pork Steaks Or Cutlets", "marker": "schnitzel", "true": "german_central_eu", "pred": "german_central_eu", "confidence": 0.996}
+{"id": "recipenlg:1254999", "source": "recipenlg", "title": "Deluxe Greek Salad", "marker": "greek salad", "true": "greek", "pred": "greek", "confidence": 0.999}
+{"id": "openrecipes:5169fbce96cc624c4d8ee514", "source": "openrecipes", "title": "Spiced courgette chutney", "marker": "chutney", "true": "indian", "pred": "indian", "confidence": 1.0}
+{"id": "recipenlg:974298", "source": "recipenlg", "title": "Grilled Chicken Skewers With Satay Sauce", "marker": "satay", "true": "indonesian_malaysian", "pred": "indonesian_malaysian", "confidence": 0.994}
+{"id": "openrecipes:516078cf96cc6208c1793554", "source": "openrecipes", "title": "Oven-baked risotto carbonara", "marker": "carbonara", "true": "italian", "pred": "italian", "confidence": 0.99}
+{"id": "recipenlg:1013547", "source": "recipenlg", "title": "Teriyaki Toast", "marker": "teriyaki", "true": "japanese", "pred": "unknown", "confidence": 0.619}
+{"id": "recipenlg:1399032", "source": "recipenlg", "title": "Jajangmyeon Recipe (Korean Black Bean Noodles)", "marker": "korean", "true": "korean", "pred": "korean", "confidence": 0.842}
+{"id": "recipenlg:1350927", "source": "recipenlg", "title": "Empanada Dough Recipe Online", "marker": "empanada", "true": "latin_american", "pred": "american", "confidence": 0.824}
+{"id": "openrecipes:517f09af96cc6251b7d42dbc", "source": "openrecipes", "title": "Roasted Butternut Squash, Quinoa, and Jalapeño Chimichurri Tacos", "marker": "taco", "true": "mexican", "pred": "mexican", "confidence": 0.985}
+{"id": "recipenlg:1236176", "source": "recipenlg", "title": "Spicy Black Bean Hummus", "marker": "hummus", "true": "middle_eastern", "pred": "middle_eastern", "confidence": 1.0}
+{"id": "recipenlg:1060723", "source": "recipenlg", "title": "Aubergine And Mushroom Couscous", "marker": "couscous", "true": "north_african", "pred": "north_african", "confidence": 0.999}
+{"id": "recipenlg:1067931", "source": "recipenlg", "title": "Turkey Pot Pie With Cornbread Crust For The Crock Pot", "marker": "cornbread", "true": "southern_us", "pred": "southern_us", "confidence": 1.0}
+{"id": "recipenlg:1138944", "source": "recipenlg", "title": "Paella Croquettes", "marker": "paella", "true": "spanish", "pred": "spanish", "confidence": 0.96}
+{"id": "recipenlg:1479154", "source": "recipenlg", "title": "Spicy Thai Salad With Minced Pork (Larb) From 'Everyday Thai Cooking'", "marker": "larb", "true": "thai", "pred": "thai", "confidence": 1.0}
+{"id": "recipenlg:1722388", "source": "recipenlg", "title": "Hazelnut Baklava", "marker": "baklava", "true": "turkish", "pred": "turkish", "confidence": 0.988}
+{"id": "recipenlg:1600826", "source": "recipenlg", "title": "Vietnamese CrêPes", "marker": "vietnamese", "true": "vietnamese", "pred": "vietnamese", "confidence": 0.998}
+{"id": "recipenlg:1001519", "source": "recipenlg", "title": "Simply Scones", "marker": "scone", "true": "british_irish", "pred": "british_irish", "confidence": 0.962}
+{"id": "recipenlg:1134365", "source": "recipenlg", "title": "Jamaican Jerk Pork Filet Mignon", "marker": "jamaican", "true": "caribbean", "pred": "caribbean", "confidence": 1.0}
+{"id": "openrecipes:5169fb9796cc624c4d8ee489", "source": "openrecipes", "title": "Speedy prawn fried rice", "marker": "fried rice", "true": "chinese", "pred": "unknown", "confidence": 0.487}
+{"id": "openrecipes:51607d2496cc6208c17936e2", "source": "openrecipes", "title": "Chargrilled rack of lamb and confit lamb shoulder with tomatoes and smoked garlic mayonnaise", "marker": "confit", "true": "french", "pred": "french", "confidence": 0.759}
+{"id": "recipenlg:1041328", "source": "recipenlg", "title": "Brewmaster'S Spaetzle", "marker": "spaetzle", "true": "german_central_eu", "pred": "german_central_eu", "confidence": 0.954}
+{"id": "recipenlg:1255056", "source": "recipenlg", "title": "Individual Spanakopita", "marker": "spanakopita", "true": "greek", "pred": "greek", "confidence": 1.0}
+{"id": "openrecipes:5169fbe696cc624c4d8ee556", "source": "openrecipes", "title": "Spiced potato samosas", "marker": "samosa", "true": "indian", "pred": "indian", "confidence": 1.0}
+{"id": "recipenlg:975707", "source": "recipenlg", "title": "Peanut Satay Sauce", "marker": "satay", "true": "indonesian_malaysian", "pred": "indonesian_malaysian", "confidence": 0.868}
+{"id": "openrecipes:516078cf96cc6208c8a9273a", "source": "openrecipes", "title": "Classic Lasagna Recipe", "marker": "lasagna", "true": "italian", "pred": "unknown", "confidence": 0.713}
+{"id": "recipenlg:1013621", "source": "recipenlg", "title": "Chicken And Ramen Noodles", "marker": "ramen", "true": "japanese", "pred": "unknown", "confidence": 0.295}
+{"id": "recipenlg:1399075", "source": "recipenlg", "title": "Smoke Stacked Korean Chicken Nachos", "marker": "korean", "true": "korean", "pred": "mexican", "confidence": 0.834}
+{"id": "recipenlg:1352104", "source": "recipenlg", "title": "Ox’S Chimichurri", "marker": "chimichurri", "true": "latin_american", "pred": "latin_american", "confidence": 0.905}
+{"id": "openrecipes:51902ea196cc6203bc506fc9", "source": "openrecipes", "title": "Asparagus Chipotle Quesadillas", "marker": "quesadilla", "true": "mexican", "pred": "mexican", "confidence": 0.952}
+{"id": "recipenlg:1236391", "source": "recipenlg", "title": "Oven-Cooked Chicken Shawarma", "marker": "shawarma", "true": "middle_eastern", "pred": "north_african", "confidence": 0.976}
+{"id": "recipenlg:1061018", "source": "recipenlg", "title": "Couscous Porridge", "marker": "couscous", "true": "north_african", "pred": "north_african", "confidence": 0.994}
+{"id": "recipenlg:1067961", "source": "recipenlg", "title": "Popeye'S Cajun Rice - Copycat", "marker": "cajun", "true": "southern_us", "pred": "southern_us", "confidence": 1.0}
+{"id": "recipenlg:1139688", "source": "recipenlg", "title": "Tomatillo Gazpacho", "marker": "gazpacho", "true": "spanish", "pred": "mexican", "confidence": 0.93}
+{"id": "recipenlg:1479637", "source": "recipenlg", "title": "Massaman Curry With Eggplant And Broccoli Recipe", "marker": "massaman", "true": "thai", "pred": "thai", "confidence": 1.0}
+{"id": "recipenlg:1723022", "source": "recipenlg", "title": "Afghan Kofta (Meatballs)", "marker": "kofta", "true": "turkish", "pred": "unknown", "confidence": 0.593}
+{"id": "recipenlg:1600827", "source": "recipenlg", "title": "Vietnamese Crepes", "marker": "vietnamese", "true": "vietnamese", "pred": "vietnamese", "confidence": 0.999}
+{"id": "recipenlg:1002102", "source": "recipenlg", "title": "Sesame Scones", "marker": "scone", "true": "british_irish", "pred": "british_irish", "confidence": 0.822}
+{"id": "recipenlg:1134497", "source": "recipenlg", "title": "Stove Top Smoker Jamaican Smoked Shrimp Kabobs", "marker": "jamaican", "true": "caribbean", "pred": "unknown", "confidence": 0.602}
+{"id": "openrecipes:5169fb9e96cc624c4d8ee49c", "source": "openrecipes", "title": "Special fried rice with prawns & chorizo", "marker": "fried rice", "true": "chinese", "pred": "chinese", "confidence": 0.974}
+{"id": "openrecipes:51607dae96cc6208dde6590e", "source": "openrecipes", "title": "Roasted Brussel Sprout and Millet Gratin", "marker": "gratin", "true": "french", "pred": "unknown", "confidence": 0.645}
+{"id": "recipenlg:1041624", "source": "recipenlg", "title": "Sauerkraut Candy", "marker": "sauerkraut", "true": "german_central_eu", "pred": "american", "confidence": 0.838}
+{"id": "recipenlg:1255119", "source": "recipenlg", "title": "Greek Salad With Chickpeas", "marker": "greek salad", "true": "greek", "pred": "greek", "confidence": 1.0}
+{"id": "openrecipes:5169fbe696cc624c4d8ee558", "source": "openrecipes", "title": "Spiced potato cake with mint raita", "marker": "raita", "true": "indian", "pred": "indian", "confidence": 1.0}
+{"id": "recipenlg:976298", "source": "recipenlg", "title": "Baz'S Beef Rendang", "marker": "rendang", "true": "indonesian_malaysian", "pred": "indonesian_malaysian", "confidence": 1.0}
+{"id": "openrecipes:5160792396cc6208c1793579", "source": "openrecipes", "title": "Celeriac and roast hazelnut soup with soda bread focaccia", "marker": "focaccia", "true": "italian", "pred": "british_irish", "confidence": 0.979}
+{"id": "recipenlg:1013663", "source": "recipenlg", "title": "Baked Teriyaki Chicken Stir Fry", "marker": "teriyaki", "true": "japanese", "pred": "chinese", "confidence": 0.989}
+{"id": "recipenlg:1399096", "source": "recipenlg", "title": "Kimchi-Rice Celery With Nanohana Flowers", "marker": "kimchi", "true": "korean", "pred": "korean", "confidence": 0.989}
+{"id": "recipenlg:1352200", "source": "recipenlg", "title": "Baked Chicken Empanadas", "marker": "empanada", "true": "latin_american", "pred": "latin_american", "confidence": 0.9}
+{"id": "openrecipes:519fff2896cc620aa3bf20b7", "source": "openrecipes", "title": "Grilled Corn, Onion, and Whipped Cilantro Goat Cheese Quesadilla", "marker": "quesadilla", "true": "mexican", "pred": "mexican", "confidence": 0.973}
+{"id": "recipenlg:1237021", "source": "recipenlg", "title": "Spinning Grillers- Beef And Lamb Shawarma", "marker": "shawarma", "true": "middle_eastern", "pred": "turkish", "confidence": 0.817}
+{"id": "recipenlg:1061383", "source": "recipenlg", "title": "Harissa Cauliflower Steaks", "marker": "harissa", "true": "north_african", "pred": "unknown", "confidence": 0.733}
+{"id": "recipenlg:1068012", "source": "recipenlg", "title": "Favorite \"Non-Crumble\" Cornbread", "marker": "cornbread", "true": "southern_us", "pred": "unknown", "confidence": 0.607}
+{"id": "recipenlg:1139889", "source": "recipenlg", "title": "Cracked Tapas Patatas Braves", "marker": "tapas", "true": "spanish", "pred": "spanish", "confidence": 0.921}
+{"id": "recipenlg:1480729", "source": "recipenlg", "title": "Harold Dieterle'S Duck Larb Recipe", "marker": "larb", "true": "thai", "pred": "unknown", "confidence": 0.582}
+{"id": "recipenlg:1723896", "source": "recipenlg", "title": "Pogaca (Turkish biscuit)", "marker": "turkish", "true": "turkish", "pred": "unknown", "confidence": 0.614}
+{"id": "recipenlg:1601865", "source": "recipenlg", "title": "My Variation On Chao Tom (Vietnamese Sugar Cane Shrimp)", "marker": "vietnamese", "true": "vietnamese", "pred": "vietnamese", "confidence": 0.922}
+{"id": "recipenlg:1002134", "source": "recipenlg", "title": "Master Scone Mix", "marker": "scone", "true": "british_irish", "pred": "unknown", "confidence": 0.45}
+{"id": "recipenlg:1135528", "source": "recipenlg", "title": "Jamaican Carrot Juice", "marker": "jamaican", "true": "caribbean", "pred": "caribbean", "confidence": 0.797}
+{"id": "openrecipes:5169fc3396cc624c4d8ee621", "source": "openrecipes", "title": "Spicy vegetable egg fried rice", "marker": "fried rice", "true": "chinese", "pred": "chinese", "confidence": 0.971}
+{"id": "openrecipes:51607dc196cc6208dde65916", "source": "openrecipes", "title": "Personal Tortilla Quiche", "marker": "quiche", "true": "french", "pred": "unknown", "confidence": 0.564}
+{"id": "recipenlg:1041725", "source": "recipenlg", "title": "Apple Crunch Trifle - Strudel Style", "marker": "strudel", "true": "german_central_eu", "pred": "british_irish", "confidence": 1.0}
+{"id": "recipenlg:1255861", "source": "recipenlg", "title": "Greek Salad With Fried Feta", "marker": "greek salad", "true": "greek", "pred": "greek", "confidence": 1.0}
+{"id": "openrecipes:5169fbec96cc624c4d8ee569", "source": "openrecipes", "title": "Spiced paneer skewers with green chilli sauce", "marker": "paneer", "true": "indian", "pred": "indian", "confidence": 1.0}
+{"id": "recipenlg:982596", "source": "recipenlg", "title": "Satay Daging", "marker": "satay", "true": "indonesian_malaysian", "pred": "indonesian_malaysian", "confidence": 0.863}
+{"id": "openrecipes:5160799296cc6208ac7c9e67", "source": "openrecipes", "title": "Gnocchi recipe with Grilled Asparagus and Grapefruit", "marker": "gnocchi", "true": "italian", "pred": "italian", "confidence": 0.933}
+{"id": "recipenlg:1013958", "source": "recipenlg", "title": "Apricot Teriyaki Sauce", "marker": "teriyaki", "true": "japanese", "pred": "japanese", "confidence": 0.829}
+{"id": "recipenlg:1399327", "source": "recipenlg", "title": "Korean Short Rib Stew With Dried Jujubes And Chestnuts", "marker": "korean", "true": "korean", "pred": "korean", "confidence": 1.0}
+{"id": "recipenlg:1353371", "source": "recipenlg", "title": "Grass-Fed Steaks With Kalamata Olive Chimichurri", "marker": "chimichurri", "true": "latin_american", "pred": "latin_american", "confidence": 0.951}
+{"id": "openrecipes:51a2a28b96cc620fbda160d7", "source": "openrecipes", "title": "Mexican Chicken Taco Casserole with Olives, Peppers & Queso Fresco Cheese", "marker": "taco", "true": "mexican", "pred": "mexican", "confidence": 1.0}
+{"id": "recipenlg:1237051", "source": "recipenlg", "title": "Lemon And Herb Hummus", "marker": "hummus", "true": "middle_eastern", "pred": "middle_eastern", "confidence": 0.925}
+{"id": "recipenlg:1061498", "source": "recipenlg", "title": "White Bean Tagine", "marker": "tagine", "true": "north_african", "pred": "north_african", "confidence": 1.0}
+{"id": "recipenlg:1068031", "source": "recipenlg", "title": "Cajun Fettuccine Alfredo", "marker": "cajun", "true": "southern_us", "pred": "southern_us", "confidence": 0.99}
+{"id": "recipenlg:1139975", "source": "recipenlg", "title": "Sangria!", "marker": "sangria", "true": "spanish", "pred": "spanish", "confidence": 1.0}
+{"id": "recipenlg:1481330", "source": "recipenlg", "title": "Thai Chicken Larb Recipe", "marker": "larb", "true": "thai", "pred": "thai", "confidence": 0.996}
+{"id": "recipenlg:1724027", "source": "recipenlg", "title": "Kofta Curry - the Yorkshire Way", "marker": "kofta", "true": "turkish", "pred": "indian", "confidence": 1.0}
+{"id": "recipenlg:1602384", "source": "recipenlg", "title": "Chicken Banh Mi Sandiwch", "marker": "banh mi", "true": "vietnamese", "pred": "vietnamese", "confidence": 1.0}
+{"id": "recipenlg:1002225", "source": "recipenlg", "title": "Agave Scones", "marker": "scone", "true": "british_irish", "pred": "british_irish", "confidence": 0.991}
+{"id": "recipenlg:1135851", "source": "recipenlg", "title": "Whole Wheat Rotini With Spicy Turkey Sausage And Mustard Greens", "marker": "roti", "true": "caribbean", "pred": "italian", "confidence": 0.79}
+{"id": "openrecipes:5169fcc796cc624c4d8ee7a9", "source": "openrecipes", "title": "Steamed pork & prawn wontons", "marker": "wonton", "true": "chinese", "pred": "chinese", "confidence": 1.0}
+{"id": "openrecipes:51607f0596cc6208e46ae3da", "source": "openrecipes", "title": "Quiche Tartlettes", "marker": "quiche", "true": "french", "pred": "french", "confidence": 0.882}
+{"id": "recipenlg:1041848", "source": "recipenlg", "title": "Old Fashioned Pierogies", "marker": "pierogi", "true": "german_central_eu", "pred": "german_central_eu", "confidence": 0.907}
+{"id": "recipenlg:1256491", "source": "recipenlg", "title": "Souvlaki With Greek Salad", "marker": "souvlaki", "true": "greek", "pred": "greek", "confidence": 1.0}
+{"id": "openrecipes:5169fbed96cc624c4d8ee56a", "source": "openrecipes", "title": "Spiced paneer", "marker": "paneer", "true": "indian", "pred": "indian", "confidence": 1.0}
+{"id": "recipenlg:984575", "source": "recipenlg", "title": "Healthy Chicken Satay", "marker": "satay", "true": "indonesian_malaysian", "pred": "indonesian_malaysian", "confidence": 1.0}
+{"id": "openrecipes:516079c796cc6208c17935c0", "source": "openrecipes", "title": "Fresh tomato salsa (with bruschetta variations)", "marker": "bruschetta", "true": "italian", "pred": "unknown", "confidence": 0.584}
+{"id": "recipenlg:1014232", "source": "recipenlg", "title": "Shrimp And Avacado Salad With Miso Dressing", "marker": "miso", "true": "japanese", "pred": "japanese", "confidence": 0.983}
+{"id": "recipenlg:1399414", "source": "recipenlg", "title": "Kimchi Soba Salad", "marker": "kimchi", "true": "korean", "pred": "korean", "confidence": 0.999}
+{"id": "recipenlg:1353401", "source": "recipenlg", "title": "Truro Ceviche", "marker": "ceviche", "true": "latin_american", "pred": "latin_american", "confidence": 0.989}
+{"id": "openrecipes:51a2a37996cc620fbda160fe", "source": "openrecipes", "title": "Southwestern Breakfast Quesadilla Recipe with Eggs, Black Beans & Salsa", "marker": "quesadilla", "true": "mexican", "pred": "mexican", "confidence": 0.999}
+{"id": "recipenlg:1237123", "source": "recipenlg", "title": "Pumpkin Pepita Hummus", "marker": "hummus", "true": "middle_eastern", "pred": "middle_eastern", "confidence": 1.0}
+{"id": "recipenlg:1061819", "source": "recipenlg", "title": "Traditional Moroccan Chicken", "marker": "moroccan", "true": "north_african", "pred": "north_african", "confidence": 1.0}
+{"id": "recipenlg:1068085", "source": "recipenlg", "title": "Cajun Oven-Fried Catfish", "marker": "cajun", "true": "southern_us", "pred": "southern_us", "confidence": 0.999}
+{"id": "recipenlg:1140048", "source": "recipenlg", "title": "Our Favorite Gazpacho", "marker": "gazpacho", "true": "spanish", "pred": "spanish", "confidence": 0.997}
+{"id": "recipenlg:1481333", "source": "recipenlg", "title": "Chicken Pad Thai Recipe", "marker": "pad thai", "true": "thai", "pred": "thai", "confidence": 1.0}
+{"id": "recipenlg:1729052", "source": "recipenlg", "title": "Yugoslavian Burek (Borek)", "marker": "borek", "true": "turkish", "pred": "turkish", "confidence": 0.928}
+{"id": "recipenlg:1604401", "source": "recipenlg", "title": "Vietnamese Caramelised Pork", "marker": "vietnamese", "true": "vietnamese", "pred": "vietnamese", "confidence": 0.994}
+{"id": "recipenlg:1002271", "source": "recipenlg", "title": "Irish And Scottish Gaelic Soda Bread Scones", "marker": "scone", "true": "british_irish", "pred": "british_irish", "confidence": 1.0}
+{"id": "recipenlg:1136702", "source": "recipenlg", "title": "Jamaican Calypso Chicken", "marker": "jamaican", "true": "caribbean", "pred": "caribbean", "confidence": 0.99}
+{"id": "openrecipes:5169fd0996cc624c4d8ee84a", "source": "openrecipes", "title": "Stir-fried rice with cabbage & bacon", "marker": "fried rice", "true": "chinese", "pred": "chinese", "confidence": 0.987}
+{"id": "openrecipes:51607f0696cc6208c1793787", "source": "openrecipes", "title": "Spider crab gratin", "marker": "gratin", "true": "french", "pred": "french", "confidence": 0.996}
+{"id": "recipenlg:10421", "source": "recipenlg", "title": "Chinese Goulash", "marker": "goulash", "true": "german_central_eu", "pred": "unknown", "confidence": 0.569}
+{"id": "recipenlg:1256736", "source": "recipenlg", "title": "Mediterranean Dolmades With Cashew Tzatziki", "marker": "tzatziki", "true": "greek", "pred": "unknown", "confidence": 0.704}
+{"id": "openrecipes:5169fbfe96cc624c4d8ee597", "source": "openrecipes", "title": "Spiced vegetable biryani", "marker": "biryani", "true": "indian", "pred": "indian", "confidence": 1.0}
+{"id": "recipenlg:984943", "source": "recipenlg", "title": "Thai Chicken Satay With Peanut Sauce", "marker": "satay", "true": "indonesian_malaysian", "pred": "indonesian_malaysian", "confidence": 1.0}
+{"id": "openrecipes:516079dc96cc6208c17935c9", "source": "openrecipes", "title": "Pumpkin risotto with crispy sage", "marker": "risotto", "true": "italian", "pred": "italian", "confidence": 0.918}
+{"id": "recipenlg:1014384", "source": "recipenlg", "title": "Ginger Teriyaki Sliders", "marker": "teriyaki", "true": "japanese", "pred": "japanese", "confidence": 0.955}
+{"id": "recipenlg:1399573", "source": "recipenlg", "title": "Miyeok Guk (Korean Seaweed Soup) Recipe For Your Baby", "marker": "korean", "true": "korean", "pred": "korean", "confidence": 1.0}
+{"id": "recipenlg:1353530", "source": "recipenlg", "title": "Shrimp Ceviche W/ Homemade Tortilla Chips", "marker": "ceviche", "true": "latin_american", "pred": "mexican", "confidence": 0.998}
+{"id": "openrecipes:51a2a4e996cc620fbda16131", "source": "openrecipes", "title": "Lunchtime Quesadilla Recipe with Smoked Turkey, Apples, Havarti Cheese & Arugula", "marker": "quesadilla", "true": "mexican", "pred": "unknown", "confidence": 0.594}
+{"id": "recipenlg:1237845", "source": "recipenlg", "title": "Minted Baba Ganoush", "marker": "baba ganoush", "true": "middle_eastern", "pred": "middle_eastern", "confidence": 0.998}
+{"id": "recipenlg:1061863", "source": "recipenlg", "title": "Lamb Shank Tagine", "marker": "tagine", "true": "north_african", "pred": "north_african", "confidence": 1.0}
+{"id": "recipenlg:1068230", "source": "recipenlg", "title": "Sweet Vanilla Cornbread", "marker": "cornbread", "true": "southern_us", "pred": "american", "confidence": 0.973}
+{"id": "recipenlg:1140742", "source": "recipenlg", "title": "Susan'S Sangria", "marker": "sangria", "true": "spanish", "pred": "spanish", "confidence": 0.753}
+{"id": "recipenlg:1486720", "source": "recipenlg", "title": "Eat For Eight Bucks: Gai Pad Krapow (Thai Basil Chicken) Recipe", "marker": "thai basil", "true": "thai", "pred": "thai", "confidence": 1.0}
+{"id": "recipenlg:1729407", "source": "recipenlg", "title": "Toasted Ham, Tomato, Philly & Basil Turkish Bread", "marker": "turkish", "true": "turkish", "pred": "italian", "confidence": 0.915}
+{"id": "recipenlg:1617861", "source": "recipenlg", "title": "Vietnamese Pork", "marker": "vietnamese", "true": "vietnamese", "pred": "vietnamese", "confidence": 0.959}
+{"id": "recipenlg:1002429", "source": "recipenlg", "title": "Super Scones", "marker": "scone", "true": "british_irish", "pred": "british_irish", "confidence": 1.0}
+{"id": "recipenlg:1136895", "source": "recipenlg", "title": "Jamaican Flounder With Mango Lime Sauce", "marker": "jamaican", "true": "caribbean", "pred": "caribbean", "confidence": 0.999}
+{"id": "openrecipes:5169fd7996cc624c4d8ee957", "source": "openrecipes", "title": "Szechuan pepper prawns", "marker": "szechuan", "true": "chinese", "pred": "chinese", "confidence": 0.996}
+{"id": "openrecipes:51607f6596cc6208e46ae3de", "source": "openrecipes", "title": "Quiche with Potato Crust", "marker": "quiche", "true": "french", "pred": "unknown", "confidence": 0.504}
+{"id": "recipenlg:1042162", "source": "recipenlg", "title": "Sauerkraut Bierocks Casserole", "marker": "sauerkraut", "true": "german_central_eu", "pred": "german_central_eu", "confidence": 0.954}
+{"id": "recipenlg:1257508", "source": "recipenlg", "title": "Individual Pastitsio", "marker": "pastitsio", "true": "greek", "pred": "greek", "confidence": 0.991}
+{"id": "openrecipes:5169fc0f96cc624c4d8ee5bf", "source": "openrecipes", "title": "Spicy Persimon Chutney", "marker": "chutney", "true": "indian", "pred": "indian", "confidence": 0.998}
+{"id": "recipenlg:986363", "source": "recipenlg", "title": "Almond Coconut Chicken Satay", "marker": "satay", "true": "indonesian_malaysian", "pred": "thai", "confidence": 0.957}
+{"id": "openrecipes:516079e696cc6208ac7c9e82", "source": "openrecipes", "title": "Smoky Leek Risotto", "marker": "risotto", "true": "italian", "pred": "unknown", "confidence": 0.309}
+{"id": "recipenlg:1014513", "source": "recipenlg", "title": "Slow Cooker Teriyaki Ribs", "marker": "teriyaki", "true": "japanese", "pred": "unknown", "confidence": 0.618}
+{"id": "recipenlg:1399621", "source": "recipenlg", "title": "Bibigo Gochujang Bloody Mary", "marker": "gochujang", "true": "korean", "pred": "unknown", "confidence": 0.648}
+{"id": "recipenlg:1354017", "source": "recipenlg", "title": "Lobster And Shrimp Ceviche Tostadas", "marker": "ceviche", "true": "latin_american", "pred": "latin_american", "confidence": 0.913}
+{"id": "openrecipes:51a2a50796cc620fbda16137", "source": "openrecipes", "title": "Asian Quesadilla with Chicken, Zucchini & Hoisin Sauce", "marker": "quesadilla", "true": "mexican", "pred": "chinese", "confidence": 0.912}
+{"id": "recipenlg:1238482", "source": "recipenlg", "title": "Roasted Hummus", "marker": "hummus", "true": "middle_eastern", "pred": "middle_eastern", "confidence": 1.0}
+{"id": "recipenlg:1061943", "source": "recipenlg", "title": "Lamb Meatballs With Cucumber Mint Yogurt And Couscous", "marker": "couscous", "true": "north_african", "pred": "turkish", "confidence": 0.797}
+{"id": "recipenlg:1068303", "source": "recipenlg", "title": "Oven-Baked Cajun Chicken", "marker": "cajun", "true": "southern_us", "pred": "southern_us", "confidence": 0.959}
+{"id": "recipenlg:1140966", "source": "recipenlg", "title": "Healthy Sangria", "marker": "sangria", "true": "spanish", "pred": "spanish", "confidence": 1.0}
+{"id": "recipenlg:1486779", "source": "recipenlg", "title": "Pork Larb (Thai Salad With Pork, Herbs, Chili, And Toasted Rice Powder) Recipe", "marker": "larb", "true": "thai", "pred": "thai", "confidence": 0.958}
+{"id": "recipenlg:1730377", "source": "recipenlg", "title": "Kofta Egyptian Style", "marker": "kofta", "true": "turkish", "pred": "unknown", "confidence": 0.536}
+{"id": "recipenlg:1618597", "source": "recipenlg", "title": "Vietnamese Tomato And Lemongrass Soup", "marker": "vietnamese", "true": "vietnamese", "pred": "vietnamese", "confidence": 0.964}
+{"id": "recipenlg:1002550", "source": "recipenlg", "title": "Bran And Oat Scones", "marker": "scone", "true": "british_irish", "pred": "british_irish", "confidence": 0.999}
+{"id": "recipenlg:1137009", "source": "recipenlg", "title": "Lamb Leg Of Lamb On A Rotisserie", "marker": "roti", "true": "caribbean", "pred": "greek", "confidence": 0.971}
+{"id": "openrecipes:5169fd7996cc624c4d8ee958", "source": "openrecipes", "title": "Szechuan pepper chicken with tomato chilli jam", "marker": "szechuan", "true": "chinese", "pred": "chinese", "confidence": 0.929}
+{"id": "openrecipes:51607f9a96cc6208c17937b6", "source": "openrecipes", "title": "Roasted breast and confit leg of spiced Anjou squab", "marker": "confit", "true": "french", "pred": "french", "confidence": 0.961}
+{"id": "recipenlg:104272", "source": "recipenlg", "title": "Pork Goulash - Gulasz Wieprzowy", "marker": "goulash", "true": "german_central_eu", "pred": "german_central_eu", "confidence": 0.813}
+{"id": "recipenlg:1257578", "source": "recipenlg", "title": "Steak Gyros With Fries", "marker": "gyro", "true": "greek", "pred": "latin_american", "confidence": 0.828}
+{"id": "openrecipes:5169fc1b96cc624c4d8ee5e1", "source": "openrecipes", "title": "Spicy plum & apple chutney", "marker": "chutney", "true": "indian", "pred": "indian", "confidence": 1.0}
+{"id": "recipenlg:986731", "source": "recipenlg", "title": "Leanna'S Satay Sauce", "marker": "satay", "true": "indonesian_malaysian", "pred": "indonesian_malaysian", "confidence": 0.855}
+{"id": "openrecipes:51607a0c96cc6208b3300296", "source": "openrecipes", "title": "Cooking With Ryan: Pasta Carbonara", "marker": "carbonara", "true": "italian", "pred": "italian", "confidence": 0.968}
+{"id": "recipenlg:1014712", "source": "recipenlg", "title": "Linda'S Spicy Mayonnaise Sauce For Sushi", "marker": "sushi", "true": "japanese", "pred": "japanese", "confidence": 0.983}
+{"id": "recipenlg:1399647", "source": "recipenlg", "title": "Kimchi Buckwheat With Tuna And Asparagus", "marker": "kimchi", "true": "korean", "pred": "korean", "confidence": 0.998}
+{"id": "recipenlg:1354265", "source": "recipenlg", "title": "Char-Grilled Beef Tenderloin With Three-Herb Chimichurri", "marker": "chimichurri", "true": "latin_american", "pred": "latin_american", "confidence": 1.0}
+{"id": "openrecipes:51a2a5e196cc620fbda16151", "source": "openrecipes", "title": "Fish Tacos with Creamy Green Chile & Cilantro Sauce Recipe", "marker": "taco", "true": "mexican", "pred": "mexican", "confidence": 1.0}
+{"id": "recipenlg:1238628", "source": "recipenlg", "title": "Smoked Paprika Hummus (From L.V. Anderson At Slate)", "marker": "hummus", "true": "middle_eastern", "pred": "middle_eastern", "confidence": 1.0}
+{"id": "recipenlg:1062221", "source": "recipenlg", "title": "Baked Couscous With Summer Squash", "marker": "couscous", "true": "north_african", "pred": "unknown", "confidence": 0.635}
+{"id": "recipenlg:1068597", "source": "recipenlg", "title": "Jambalaya With Sausage (Rice Cooker Recipe)", "marker": "jambalaya", "true": "southern_us", "pred": "southern_us", "confidence": 1.0}
+{"id": "recipenlg:1141134", "source": "recipenlg", "title": "Churros (Spanish Doughnuts)", "marker": "churro", "true": "spanish", "pred": "unknown", "confidence": 0.494}
+{"id": "recipenlg:1486980", "source": "recipenlg", "title": "Scallops In Green Curry Sauce Recipe", "marker": "green curry", "true": "thai", "pred": "thai", "confidence": 0.994}
+{"id": "recipenlg:1731122", "source": "recipenlg", "title": "Turkish Bread with Greek Feta and Spinach Dip", "marker": "turkish", "true": "turkish", "pred": "greek", "confidence": 0.999}
+{"id": "recipenlg:1618621", "source": "recipenlg", "title": "Banh Mi With Char Sui Pork", "marker": "banh mi", "true": "vietnamese", "pred": "chinese", "confidence": 0.986}
+{"id": "recipenlg:1002780", "source": "recipenlg", "title": "Idiot-Proof Yorkshire Puddings", "marker": "yorkshire pudding", "true": "british_irish", "pred": "british_irish", "confidence": 0.995}
+{"id": "recipenlg:1137195", "source": "recipenlg", "title": "Ma'S Secret Jamaican Banana Fritters", "marker": "jamaican", "true": "caribbean", "pred": "caribbean", "confidence": 0.768}
+{"id": "openrecipes:5169fd9696cc624c4d8ee9a9", "source": "openrecipes", "title": "simple sweet and sour", "marker": "sweet and sour", "true": "chinese", "pred": "chinese", "confidence": 0.829}
+{"id": "openrecipes:51607fc896cc6208dde659d0", "source": "openrecipes", "title": "Roasted Potato, Onion, and Rosemary Crustless Quiche", "marker": "quiche", "true": "french", "pred": "greek", "confidence": 0.856}
+{"id": "recipenlg:1043263", "source": "recipenlg", "title": "Crock Pot Sauerkraut And Pork Shoulder Roast", "marker": "sauerkraut", "true": "german_central_eu", "pred": "german_central_eu", "confidence": 1.0}
+{"id": "recipenlg:1258274", "source": "recipenlg", "title": "Spinach And Feta Pie (Spanakopita)", "marker": "spanakopita", "true": "greek", "pred": "greek", "confidence": 1.0}
+{"id": "openrecipes:5169fc1b96cc624c4d8ee5e2", "source": "openrecipes", "title": "Spicy pizza breads with raita salad", "marker": "raita", "true": "indian", "pred": "indian", "confidence": 1.0}
+{"id": "recipenlg:987188", "source": "recipenlg", "title": "Pineapple Chicken Satay", "marker": "satay", "true": "indonesian_malaysian", "pred": "indonesian_malaysian", "confidence": 0.997}
+{"id": "openrecipes:51607a1096cc6208b3300297", "source": "openrecipes", "title": "Cooking With Pastor Ryan: Delicious Mexican Lasagna", "marker": "lasagna", "true": "italian", "pred": "mexican", "confidence": 1.0}
+{"id": "recipenlg:1015064", "source": "recipenlg", "title": "Stuffed Garlic Beef Roast With Teriyaki Sauce", "marker": "teriyaki", "true": "japanese", "pred": "japanese", "confidence": 0.784}
+{"id": "recipenlg:1400171", "source": "recipenlg", "title": "Korean Beef (Savory Ground Beef A La Brown Sugar)", "marker": "korean", "true": "korean", "pred": "korean", "confidence": 1.0}
+{"id": "recipenlg:1354268", "source": "recipenlg", "title": "Feijoada Nachos", "marker": "feijoada", "true": "latin_american", "pred": "mexican", "confidence": 0.987}
+{"id": "openrecipes:51a2a89496cc620fbda1619d", "source": "openrecipes", "title": "Rick Bayless’ Smoky Peanut Mole Recipe with Pork Tenderloin", "marker": "mole ", "true": "mexican", "pred": "filipino", "confidence": 0.999}
+{"id": "recipenlg:1238963", "source": "recipenlg", "title": "Cuban Black Bean Hummus", "marker": "hummus", "true": "middle_eastern", "pred": "middle_eastern", "confidence": 0.999}
+{"id": "recipenlg:1062328", "source": "recipenlg", "title": "Chunky Tunisian Fish Soup (Broudou Bil Hout)", "marker": "tunisian", "true": "north_african", "pred": "north_african", "confidence": 1.0}
+{"id": "recipenlg:106871", "source": "recipenlg", "title": "Cajun Martini", "marker": "cajun", "true": "southern_us", "pred": "southern_us", "confidence": 0.993}
+{"id": "recipenlg:1141384", "source": "recipenlg", "title": "Sangria Spritzer Cocktail", "marker": "sangria", "true": "spanish", "pred": "spanish", "confidence": 0.998}
+{"id": "recipenlg:1486990", "source": "recipenlg", "title": "Chicken Massaman Curry (Kaeng Matsaman Kai) Recipe", "marker": "massaman", "true": "thai", "pred": "thai", "confidence": 0.983}
+{"id": "recipenlg:1732428", "source": "recipenlg", "title": "Turkish-Style Mocha", "marker": "turkish", "true": "turkish", "pred": "turkish", "confidence": 0.985}
+{"id": "recipenlg:1619179", "source": "recipenlg", "title": "Vietnamese Pork Noodle Soup Recipe - Hủ TiếU Mì", "marker": "vietnamese", "true": "vietnamese", "pred": "vietnamese", "confidence": 0.999}
+{"id": "recipenlg:1003303", "source": "recipenlg", "title": "Vegan Pumpkin Scones", "marker": "scone", "true": "british_irish", "pred": "british_irish", "confidence": 0.965}
+{"id": "recipenlg:1137233", "source": "recipenlg", "title": "Caribbean Jerk Chicken Wings", "marker": "jerk chicken", "true": "caribbean", "pred": "caribbean", "confidence": 1.0}
+{"id": "openrecipes:5169fdba96cc624c4d8eea05", "source": "openrecipes", "title": "sweet and sour spiced pork", "marker": "sweet and sour", "true": "chinese", "pred": "unknown", "confidence": 0.748}
+{"id": "openrecipes:5160806096cc6208c17937f8", "source": "openrecipes", "title": "Stuffed Portobello mushrooms, sun-dried tomato and basil gratin", "marker": "gratin", "true": "french", "pred": "italian", "confidence": 1.0}
+{"id": "recipenlg:1043798", "source": "recipenlg", "title": "Sauerkraut Juice Cocktail", "marker": "sauerkraut", "true": "german_central_eu", "pred": "german_central_eu", "confidence": 0.908}
+{"id": "recipenlg:1258665", "source": "recipenlg", "title": "Oregano Chicken With Greek Salad", "marker": "greek salad", "true": "greek", "pred": "greek", "confidence": 1.0}
+{"id": "openrecipes:5169fc1d96cc624c4d8ee5e7", "source": "openrecipes", "title": "Spicy paneer skewers", "marker": "paneer", "true": "indian", "pred": "indian", "confidence": 0.82}
+{"id": "recipenlg:988132", "source": "recipenlg", "title": "Shrimp Laksa", "marker": "laksa", "true": "indonesian_malaysian", "pred": "thai", "confidence": 0.996}
+{"id": "openrecipes:51607a5996cc6208c17935ea", "source": "openrecipes", "title": "Celeriac risotto", "marker": "risotto", "true": "italian", "pred": "italian", "confidence": 0.914}
+{"id": "recipenlg:1015231", "source": "recipenlg", "title": "Chicken And Chinese Broccoli Miso Stir-Fry", "marker": "miso", "true": "japanese", "pred": "chinese", "confidence": 1.0}
+{"id": "recipenlg:1400347", "source": "recipenlg", "title": "Beef & Vegetables With Sesame Glass Noodles (Japchae)", "marker": "japchae", "true": "korean", "pred": "korean", "confidence": 0.999}
+{"id": "recipenlg:1355260", "source": "recipenlg", "title": "Argentine-Style Beef With Chimichurri Sauce", "marker": "chimichurri", "true": "latin_american", "pred": "latin_american", "confidence": 1.0}
+{"id": "openrecipes:51a2b04496cc620fa1bb53d9", "source": "openrecipes", "title": "Guacamole and refried bean wraps with chilli syrup", "marker": "guacamole", "true": "mexican", "pred": "mexican", "confidence": 1.0}
+{"id": "recipenlg:1239648", "source": "recipenlg", "title": "Nan'S English Muffin, Hummus, & Tomato Sandwich ( Ww )", "marker": "hummus", "true": "middle_eastern", "pred": "middle_eastern", "confidence": 0.984}
+{"id": "recipenlg:1062621", "source": "recipenlg", "title": "Couscous With Pistachios, Scallions And Currants", "marker": "couscous", "true": "north_african", "pred": "north_african", "confidence": 0.995}
+{"id": "recipenlg:1069099", "source": "recipenlg", "title": "Hippie Cornbread", "marker": "cornbread", "true": "southern_us", "pred": "southern_us", "confidence": 0.995}
+{"id": "recipenlg:1142693", "source": "recipenlg", "title": "Layered Gazpacho Salad( Low Calorie)", "marker": "gazpacho", "true": "spanish", "pred": "greek", "confidence": 0.982}
+{"id": "recipenlg:1487116", "source": "recipenlg", "title": "Scooped: Massaman And Coconut Curry Sorbet Recipe", "marker": "massaman", "true": "thai", "pred": "thai", "confidence": 0.985}
+{"id": "recipenlg:1735558", "source": "recipenlg", "title": "Baklava - Orange/Pomegranate Honey Syrup", "marker": "baklava", "true": "turkish", "pred": "turkish", "confidence": 1.0}
+{"id": "recipenlg:1619604", "source": "recipenlg", "title": "Vietnamese Banh Mi Burger With Sriracha Mayo", "marker": "banh mi", "true": "vietnamese", "pred": "vietnamese", "confidence": 1.0}
