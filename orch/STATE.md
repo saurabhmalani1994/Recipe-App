@@ -8,14 +8,21 @@ Commit identity: saurabhmalani1994 <saurabhmalani1994@users.noreply.github.com> 
 Scoping is done. `docs/PRODUCT.md` v1 is DRAFT and waiting on the owner's approval, plus an
 optional Codex review (`reviews/01-product-codex-brief.md`). No product code yet.
 
-## Blockers
-- Network: this container reaches registry.npmjs.org (200). allrecipes, bbcgoodfood, foodwishes,
-  huggingface and kaggle time out (000), github.com gives 403, and fdc.nal.usda.gov times out.
-  Probed with curl on 2026-09-27. Ingest of real data is blocked until the owner widens network
-  access. Parser and tagger work proceeds on fixtures.
+## Network (re-probed 2026-09-27 after the owner set it to full)
+bbcgoodfood 200, foodwishes 200, huggingface 200, kaggle 200, fdc.nal.usda.gov 200.
+`git clone` and raw.githubusercontent work, but github.com HTML, the API and codeload give 403.
+allrecipes gives 402 even with a browser UA (bot wall), so S1 tries headless Chromium.
+
+## Owner silence on 3 defaults (applied): metric default, no hosted PWA, start builds now.
+
+## Running
+S1 (ingest fetch, sonnet), S2 (app scaffold, sonnet), S4 (substitutions, opus). Each runs in
+its own worktree. The orchestrator merges into the branch and pushes.
+
+## Risk
+/home/user/recipe-data dies when the container is reclaimed. corpus.db needs durable storage
+(a Release asset has no upload tool here, so decide at S1's end).
 
 ## Mapping (§4)
 strong=opus, mid=sonnet, cheap=haiku, top=fable. The orchestrator runs on strong.
 
-## Next on approval
-Queue rows S2, S3 and S4 are READY and start in parallel (two packages: app, ingest).
