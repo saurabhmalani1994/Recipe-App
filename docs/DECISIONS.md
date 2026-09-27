@@ -1,0 +1,33 @@
+# Decision record
+
+Append only. The owner's words are verbatim (rule 13). Do not ask these again.
+
+## 2026-09-27, scoping
+
+| # | Topic | Owner said / chose |
+|---|---|---|
+| D1 | Form | "PWA + APK wrapper" |
+| D2 | Data | "On-phone + file backup" |
+| D3 | Library | "Curated ~50-100k" |
+| D4 | NYT Cooking | "Skip it" |
+| D5 | Diet | "In general I eat everything - but it would be good to be able to easily filter to vegetarian and to fish+poultry (my girlfriend does not eat red meat) when i'm cooking for her" |
+| D6 | Extras | "Weekly meal planner", "Import from URL", "Nutrition estimates", "Scaling + unit toggle", "Substitutions" |
+| D7 | Substitutions | "the substitutions table would be AMAZING - make a good focus of this, for all sorts of things, soy sauce, worstershire sauce, apple cider vinegar - just examples not exhaustive - i cook ALL KINDS of food" |
+| D8 | Equipment | "choose which cooking equipment i would like to use, option for one pot meals, and use that to filter, e.g. oven, stove top, BOTH stove and oven, air fryer, food processer, mortar pestle, etc. etc. etc. <-- only illustrative NOt definitive" |
+| D9 | AI | "None in v1" |
+| D10 | Commit identity | GitHub noreply: saurabhmalani1994 <saurabhmalani1994@users.noreply.github.com> |
+| D11 | Servings | "do 3 servings - i find the 2 servings are always too small for 2 people - I find 1.5 servings worth per person to be appropriate" |
+| D12 | Home page | All four: cook with what I have, explore new cuisines, like my favorites, seasonal / quick weeknight |
+| D13 | Not chosen | Cooking mode, pantry with expiry, and cook log with ratings were not picked for v1 |
+| D14 | General | "I want most of the app to work without needing AI tools." "used primarily on my own Android phone." "personal use only" |
+
+## Orchestrator rulings (challengeable)
+
+| # | Ruling | Why |
+|---|---|---|
+| R1 | The APK is the primary install, and the browser build is for dev and tests | Bundles the library offline, and native HTTP gets around CORS for URL import |
+| R2 | Vite + React + TS + Capacitor, SQLite on both sides | One codebase, and it can be tested in this container |
+| R3 | Metric by default, with a toggle per recipe | The owner answered servings but not units |
+| R4 | `ingest` owns the corpus schema, and `app` owns `user.db` | Rule 8 |
+| R5 | `corpus.db` ships as a Release asset, not in git | Size |
+| R6 | "Generate" in v1 = rank, then adapt with substitutions and scaling | D9 rules out AI |
