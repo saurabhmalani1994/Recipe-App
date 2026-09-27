@@ -5,6 +5,13 @@
 #   red_meat, poultry, fish, shellfish: the ingredient is, or is made from, that animal
 #   animal_derived: contains slaughter-derived material that is easy to miss (gelatin, lard,
 #     rennet, stocks, fish or shellfish in a sauce). Dairy, egg and honey are NOT animal_derived.
+#   explicit_meat (D15/R7): the ingredient IS the protein source, or a stock/broth/bouillon/fat
+#     named for one -- meat, poultry, fish or shellfish as a protein (fillets, mince, bacon,
+#     anchovy fillets, canned tuna), or chicken/beef/turkey stock, dashi, lard, suet, schmaltz,
+#     bacon fat, duck fat. It is NOT set on condiments and hidden-animal items even when they
+#     carry red_meat/poultry/fish/shellfish: oyster sauce, fish sauce, Worcestershire, shrimp
+#     paste, anchovy paste, XO sauce, gelatin, and rennet cheeses -- per the owner, vegetarian is
+#     mostly about the protein source, not every trace of animal.
 #   dairy, egg, gluten, nuts (tree nuts and peanuts), alcohol: contains it
 # hidden_animal: what the non-obvious animal ingredient is.
 # Flags are conservative: where brands differ and the common product contains it, it is flagged
@@ -63,7 +70,7 @@ ingredients:
     flags: []
   anchovy:
     category: protein
-    flags: [fish]
+    flags: [fish, explicit_meat]
   anchovy_paste:
     category: sauce_condiment
     flags: [fish, animal_derived]
@@ -88,7 +95,7 @@ ingredients:
     flags: []
   arctic_char:
     category: protein
-    flags: [fish]
+    flags: [fish, explicit_meat]
   arrowroot:
     category: flour_thickener
     flags: []
@@ -104,10 +111,10 @@ ingredients:
     flags: []
   bacon:
     category: protein
-    flags: [red_meat]
+    flags: [red_meat, explicit_meat]
   bacon_fat:
     category: fat_oil
-    flags: [red_meat, animal_derived]
+    flags: [red_meat, animal_derived, explicit_meat]
     hidden_animal: "pork fat"
   baharat:
     category: spice_blend
@@ -137,14 +144,14 @@ ingredients:
     note: "Flagged conservatively; check the label"
   beef_bouillon:
     category: stock
-    flags: [red_meat, animal_derived]
+    flags: [red_meat, animal_derived, explicit_meat]
     hidden_animal: "beef extract"
   beef_chuck:
     category: protein
-    flags: [red_meat]
+    flags: [red_meat, explicit_meat]
   beef_stock:
     category: stock
-    flags: [red_meat, animal_derived]
+    flags: [red_meat, animal_derived, explicit_meat]
     hidden_animal: "beef"
   beer:
     category: alcohol
@@ -219,13 +226,13 @@ ingredients:
     flags: []
   canned_salmon:
     category: protein
-    flags: [fish]
+    flags: [fish, explicit_meat]
   canned_tomatoes:
     category: pantry
     flags: []
   canned_tuna:
     category: protein
-    flags: [fish]
+    flags: [fish, explicit_meat]
   caper_berries:
     category: pantry
     flags: []
@@ -285,18 +292,18 @@ ingredients:
     flags: []
   chicken_bouillon:
     category: stock
-    flags: [poultry, animal_derived]
+    flags: [poultry, animal_derived, explicit_meat]
     hidden_animal: "chicken extract or fat"
   chicken_breast:
     category: protein
-    flags: [poultry]
+    flags: [poultry, explicit_meat]
   chicken_stock:
     category: stock
-    flags: [poultry, animal_derived]
+    flags: [poultry, animal_derived, explicit_meat]
     hidden_animal: "chicken"
   chicken_thigh:
     category: protein
-    flags: [poultry]
+    flags: [poultry, explicit_meat]
   chickpeas:
     category: protein
     flags: []
@@ -317,7 +324,7 @@ ingredients:
     flags: []
   chinese_sausage:
     category: protein
-    flags: [red_meat]
+    flags: [red_meat, explicit_meat]
   chinese_sesame_paste:
     category: sauce_condiment
     flags: []
@@ -333,7 +340,7 @@ ingredients:
     flags: []
   chorizo:
     category: protein
-    flags: [red_meat]
+    flags: [red_meat, explicit_meat]
   cilantro:
     category: herb
     flags: []
@@ -345,7 +352,7 @@ ingredients:
     flags: []
   clam_juice:
     category: stock
-    flags: [shellfish, animal_derived]
+    flags: [shellfish, animal_derived, explicit_meat]
     hidden_animal: "clams"
   cloves:
     category: spice
@@ -452,7 +459,7 @@ ingredients:
     note: "Brewed with wheat"
   dashi:
     category: stock
-    flags: [fish, animal_derived]
+    flags: [fish, animal_derived, explicit_meat]
     hidden_animal: "bonito flakes (katsuobushi)"
   date_syrup:
     category: sweetener
@@ -554,7 +561,7 @@ ingredients:
     note: "Some wines are fined with isinglass, gelatin, egg or casein"
   duck_fat:
     category: fat_oil
-    flags: [poultry, animal_derived]
+    flags: [poultry, animal_derived, explicit_meat]
     hidden_animal: "duck fat"
   dutch_process_cocoa:
     category: chocolate_cocoa
@@ -619,7 +626,7 @@ ingredients:
     hidden_animal: "fermented anchovies"
   fish_stock:
     category: stock
-    flags: [fish, animal_derived]
+    flags: [fish, animal_derived, explicit_meat]
     hidden_animal: "fish"
   flaky_salt:
     category: salt
@@ -737,22 +744,22 @@ ingredients:
     flags: []
   ground_beef:
     category: protein
-    flags: [red_meat]
+    flags: [red_meat, explicit_meat]
   ground_chicken:
     category: protein
-    flags: [poultry]
+    flags: [poultry, explicit_meat]
   ground_ginger:
     category: spice
     flags: []
   ground_lamb:
     category: protein
-    flags: [red_meat]
+    flags: [red_meat, explicit_meat]
   ground_pork:
     category: protein
-    flags: [red_meat]
+    flags: [red_meat, explicit_meat]
   ground_turkey:
     category: protein
-    flags: [poultry]
+    flags: [poultry, explicit_meat]
   gruyere:
     category: dairy
     flags: [dairy, animal_derived]
@@ -762,7 +769,7 @@ ingredients:
     flags: []
   guanciale:
     category: protein
-    flags: [red_meat]
+    flags: [red_meat, explicit_meat]
   guar_gum:
     category: flour_thickener
     flags: []
@@ -771,13 +778,13 @@ ingredients:
     flags: []
   haddock:
     category: protein
-    flags: [fish]
+    flags: [fish, explicit_meat]
   half_and_half:
     category: dairy
     flags: [dairy]
   halibut:
     category: protein
-    flags: [fish]
+    flags: [fish, explicit_meat]
   halloumi:
     category: dairy
     flags: [dairy]
@@ -822,7 +829,7 @@ ingredients:
     flags: []
   instant_dashi:
     category: stock
-    flags: [fish, animal_derived]
+    flags: [fish, animal_derived, explicit_meat]
     hidden_animal: "bonito extract"
   instant_yeast:
     category: leavener
@@ -847,7 +854,7 @@ ingredients:
     flags: []
   katsuobushi:
     category: pantry
-    flags: [fish]
+    flags: [fish, explicit_meat]
     note: "Dried bonito"
   kecap_manis:
     category: sauce_condiment
@@ -874,7 +881,7 @@ ingredients:
     flags: [dairy]
   lard:
     category: fat_oil
-    flags: [red_meat, animal_derived]
+    flags: [red_meat, animal_derived, explicit_meat]
     hidden_animal: "pork fat"
   leek:
     category: aromatic
@@ -1071,7 +1078,7 @@ ingredients:
     flags: []
   pancetta:
     category: protein
-    flags: [red_meat]
+    flags: [red_meat, explicit_meat]
   panch_phoron:
     category: spice_blend
     flags: []
@@ -1139,7 +1146,7 @@ ingredients:
     flags: []
   pollock:
     category: protein
-    flags: [fish]
+    flags: [fish, explicit_meat]
   pomegranate_juice:
     category: vinegar_acid
     flags: []
@@ -1151,7 +1158,7 @@ ingredients:
     flags: []
   pork_shoulder:
     category: protein
-    flags: [red_meat]
+    flags: [red_meat, explicit_meat]
   port:
     category: alcohol
     flags: [alcohol]
@@ -1172,7 +1179,7 @@ ingredients:
     flags: []
   prosciutto:
     category: protein
-    flags: [red_meat]
+    flags: [red_meat, explicit_meat]
   provolone:
     category: dairy
     flags: [dairy]
@@ -1270,7 +1277,7 @@ ingredients:
     flags: [alcohol]
   salmon:
     category: protein
-    flags: [fish]
+    flags: [fish, explicit_meat]
   salt:
     category: salt
     flags: []
@@ -1282,10 +1289,10 @@ ingredients:
     flags: []
   scallops:
     category: protein
-    flags: [shellfish]
+    flags: [shellfish, explicit_meat]
   schmaltz:
     category: fat_oil
-    flags: [poultry, animal_derived]
+    flags: [poultry, animal_derived, explicit_meat]
     hidden_animal: "chicken fat"
   scotch_bonnet:
     category: chile
@@ -1309,7 +1316,7 @@ ingredients:
     flags: []
   serrano_ham:
     category: protein
-    flags: [red_meat]
+    flags: [red_meat, explicit_meat]
   sesame_seeds:
     category: nut_seed
     flags: []
@@ -1338,7 +1345,7 @@ ingredients:
     flags: []
   shrimp:
     category: protein
-    flags: [shellfish]
+    flags: [shellfish, explicit_meat]
   shrimp_paste:
     category: sauce_condiment
     flags: [shellfish, animal_derived]
@@ -1386,7 +1393,7 @@ ingredients:
     flags: []
   steelhead_trout:
     category: protein
-    flags: [fish]
+    flags: [fish, explicit_meat]
   sugar:
     category: sweetener
     flags: []
@@ -1456,7 +1463,7 @@ ingredients:
     flags: []
   tilapia:
     category: protein
-    flags: [fish]
+    flags: [fish, explicit_meat]
   toasted_sesame_oil:
     category: fat_oil
     flags: []
@@ -1481,17 +1488,17 @@ ingredients:
     flags: [alcohol]
   turkey_bacon:
     category: protein
-    flags: [poultry]
+    flags: [poultry, explicit_meat]
   turkey_breast:
     category: protein
-    flags: [poultry]
+    flags: [poultry, explicit_meat]
   turkey_stock:
     category: stock
-    flags: [poultry, animal_derived]
+    flags: [poultry, animal_derived, explicit_meat]
     hidden_animal: "turkey"
   turkey_thigh:
     category: protein
-    flags: [poultry]
+    flags: [poultry, explicit_meat]
   turmeric:
     category: spice
     flags: []
@@ -1573,7 +1580,7 @@ ingredients:
     flags: []
   white_fish:
     category: protein
-    flags: [fish]
+    flags: [fish, explicit_meat]
   white_grape_juice:
     category: pantry
     flags: []

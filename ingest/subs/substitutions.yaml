@@ -203,7 +203,7 @@ entries:
     substitute:
       - {slug: fish_sauce, amount: 0.5, unit: x}
       - {slug: apple_cider_vinegar, amount: 0.5, unit: x}
-    note: "Add a pinch of sugar; not vegetarian"
+    note: "Add a pinch of sugar; vegetarian but not vegan"
     contexts: [marinade, sauce]
     quality: 2
     flavor_effect: "Brings the anchovy depth and tang, less sweet"

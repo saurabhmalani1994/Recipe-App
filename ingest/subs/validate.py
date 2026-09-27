@@ -22,7 +22,7 @@ INGREDIENTS_PATH = os.path.join(HERE, 'ingredients.yaml')
 SUBSTITUTIONS_PATH = os.path.join(HERE, 'substitutions.yaml')
 COVERAGE_PATH = os.path.join(HERE, 'COVERAGE.md')
 
-FLAGS = ('red_meat', 'poultry', 'fish', 'shellfish', 'animal_derived',
+FLAGS = ('red_meat', 'poultry', 'fish', 'shellfish', 'animal_derived', 'explicit_meat',
          'dairy', 'egg', 'gluten', 'nuts', 'alcohol')
 CATEGORIES = ('sauce_condiment', 'vinegar_acid', 'dairy', 'nondairy', 'egg', 'flour_thickener',
               'leavener', 'sweetener', 'chocolate_cocoa', 'fat_oil', 'herb', 'spice',
@@ -40,10 +40,18 @@ PER_UNITS = ('cup', 'tbsp', 'tsp', 'g', 'oz', 'whole', 'clove', 'inch', 'stalk',
              'pinch', 'can', 'fillet')
 
 # Diet presets (D5). A substitute is safe when none of these flags appear in its components.
+# Vegetarian (D15/R7): excludes explicit_meat only -- oyster sauce, fish sauce, Worcestershire,
+# shrimp/anchovy paste, gelatin and rennet cheeses are allowed, since they are not "the protein
+# source". `vegetarian_strict` is the old, stricter rule (any red_meat/poultry/fish/shellfish/
+# animal_derived flag); it is kept in code and tests for a possible strict mode later, but is not
+# offered as a preset (R7).
 DIETS = {
-    'vegetarian': ('red_meat', 'poultry', 'fish', 'shellfish', 'animal_derived'),
-    'no_red_meat': ('red_meat',),  # fish and poultry OK
+    'vegetarian': ('explicit_meat',),
+    'vegetarian_strict': ('red_meat', 'poultry', 'fish', 'shellfish', 'animal_derived'),
+    'no_red_meat': ('red_meat',),  # fish and poultry OK; stays strict (R8): beef stock, lard and
+                                    # gelatin (all red_meat) are excluded
 }
+PRESETS = ('vegetarian', 'no_red_meat')
 
 ENTRY_REQUIRED = ('id', 'target', 'substitute', 'contexts', 'quality', 'flavor_effect', 'cuisines')
 ENTRY_OPTIONAL = ('note', 'per')
@@ -52,7 +60,9 @@ INGREDIENT_OPTIONAL = ('hidden_animal', 'note')
 COMPONENT_KEYS = ('slug', 'amount', 'unit')
 SLUG_RE = re.compile(r'^[a-z][a-z0-9]*(_[a-z0-9]+)*$')
 ID_RE = re.compile(r'^[a-z0-9_]+__[a-z0-9_-]+$')
-NON_VEG = set(DIETS['vegetarian'])
+# NON_VEG guards hidden_animal / animal_derived consistency on ingredient records, independent
+# of which diet preset is offered; it stays the broad (strict) set of animal flags.
+NON_VEG = set(DIETS['vegetarian_strict'])
 
 
 class UniqueKeyLoader(yaml.SafeLoader):
@@ -248,7 +258,7 @@ def target_report(ingredients, entries):
                                'target_flags': sorted(ingredient_flags(ingredients, t))})
         r['entries'] += 1
         fl = substitute_flags(ingredients, e)
-        for diet in DIETS:
+        for diet in PRESETS:
             if diet_safe(fl, diet):
                 r[diet] = True
     return rep
