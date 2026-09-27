@@ -4,12 +4,12 @@ import { runMigrations } from './types'
 import { USER_DB_MIGRATIONS } from './userSchema'
 
 describe('WebDb', () => {
-  it('opens an in-memory database and runs migrations to v1', async () => {
+  it('opens an in-memory database and runs migrations to the latest version', async () => {
     const db = new WebDb('user.db')
     await db.open()
     await runMigrations(db, USER_DB_MIGRATIONS)
 
-    expect(await db.getVersion()).toBe(1)
+    expect(await db.getVersion()).toBe(2)
     const settings = await db.query('SELECT * FROM settings')
     expect(settings.rows).toEqual([
       {

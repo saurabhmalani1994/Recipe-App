@@ -3,10 +3,15 @@ import { BottomNav } from './components/BottomNav'
 import { Header } from './components/Header'
 import { DietProvider } from './state/diet'
 import { Cook } from './routes/Cook'
+import { Favorites } from './routes/Favorites'
 import { GroceryList } from './routes/GroceryList'
 import { Home } from './routes/Home'
+import { Kitchen } from './routes/Kitchen'
+import { MyRecipeEditor } from './routes/MyRecipeEditor'
 import { MyRecipes } from './routes/MyRecipes'
 import { Plan } from './routes/Plan'
+import { RecipeDetail } from './routes/RecipeDetail'
+import { Settings } from './routes/Settings'
 
 export function App() {
   return (
@@ -21,6 +26,11 @@ export function App() {
               <Route path="/plan" element={<Plan />} />
               <Route path="/list" element={<GroceryList />} />
               <Route path="/my-recipes" element={<MyRecipes />} />
+              <Route path="/my-recipes/:id" element={<MyRecipeEditor />} />
+              <Route path="/recipe/:id" element={<RecipeDetail />} />
+              <Route path="/favorites" element={<Favorites />} />
+              <Route path="/kitchen" element={<Kitchen />} />
+              <Route path="/settings" element={<Settings />} />
             </Routes>
           </main>
           <BottomNav />

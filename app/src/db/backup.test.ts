@@ -26,6 +26,7 @@ async function seededDb(): Promise<WebDb> {
     3,
     'unit',
   ])
+  await db.run('INSERT INTO kitchen_equipment (equipment_id) VALUES (?)', ['oven'])
   return db
 }
 
@@ -38,6 +39,11 @@ describe('backup round trip', () => {
     expect(backup.format).toBe('recipe-app-user-backup')
     expect(backup.tables.favorites).toHaveLength(1)
     expect(backup.tables.my_recipes).toHaveLength(1)
+    expect(backup.tables.kitchen_equipment).toEqual([
+      expect.objectContaining({ equipment_id: 'oven' }),
+    ])
+    // 8 pantry staple defaults (migration v2) plus the manually added 'onion'.
+    expect(backup.tables.kitchen_items).toHaveLength(9)
 
     // Round trip through JSON, as a real file export/import would.
     const roundTripped = JSON.parse(JSON.stringify(backup)) as typeof backup
