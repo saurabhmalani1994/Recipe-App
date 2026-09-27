@@ -52,8 +52,10 @@ suggests substitutions.
 - **Cuisine.** Indian, Chinese, Italian, Mediterranean, Mexican, Thai, Japanese, Korean, Middle
   Eastern, French, American, and so on. It comes from source labels, with an ingredient-signature
   classifier as fallback.
-- **Diet.** Derived from the ingredients, never from titles. The planted traps are beef stock,
-  gelatin, lard, Worcestershire sauce (anchovy), fish sauce, and suet.
+- **Diet.** Derived from the ingredients, never from titles. Vegetarian rules on the protein
+  source (D15 and R7): condiments like oyster sauce and Worcestershire are OK, while chicken
+  stock, lard and fish fillets are not. No red meat stays strict (R8): beef stock, lard and
+  gelatin are excluded.
 - **Equipment**, inferred from the steps: oven, stovetop, both, air fryer, food processor,
   blender, mortar and pestle, slow cooker, pressure cooker, grill, microwave, wok, stand mixer,
   and others. There is also a one-pot / one-pan / sheet-pan flag.
@@ -102,8 +104,8 @@ be changed in settings.
 
 ## Quality bar (§9, written before any eval)
 
-- Diet filter: zero red meat in "No red meat" and zero meat or fish in "Vegetarian", tested on
-  planted hidden-ingredient fixtures. This is a hard gate.
+- Diet filter: zero red meat, including stock, lard and gelatin, in "No red meat", and zero explicit
+  meat or fish protein, stock or fat in "Vegetarian" (R7), tested on planted fixtures. This is a hard gate.
 - What can I cook: on a set of planted kitchens, the owner would cook at least 8 of the top 10
   results. The owner grades one hand-made set, and a cheap judge is used while iterating.
 - Substitutions: every entry has a ratio and a context, and no entry violates the diet flags it

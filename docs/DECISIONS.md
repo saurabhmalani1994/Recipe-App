@@ -21,6 +21,12 @@ Append only. The owner's words are verbatim (rule 13). Do not ask these again.
 | D13 | Not chosen | Cooking mode, pantry with expiry, and cook log with ratings were not picked for v1 |
 | D14 | General | "I want most of the app to work without needing AI tools." "used primarily on my own Android phone." "personal use only" |
 
+## 2026-09-27, diet follow-up
+
+| # | Topic | Owner said |
+|---|---|---|
+| D15 | Vegetarian meaning | "yes, honestly anythiing that is not explicitly meat is fine for vegetarian, even stuff like oyster sauce of worsterchire sauce is fine, its mostly about the protein source" |
+
 ## Orchestrator rulings (challengeable)
 
 | # | Ruling | Why |
@@ -31,3 +37,5 @@ Append only. The owner's words are verbatim (rule 13). Do not ask these again.
 | R4 | `ingest` owns the corpus schema, and `app` owns `user.db` | Rule 8 |
 | R5 | `corpus.db` ships as a Release asset, not in git | Size |
 | R6 | "Generate" in v1 = rank, then adapt with substitutions and scaling | D9 rules out AI |
+| R7 | Vegetarian (per D15) excludes only explicit meat, poultry, fish and shellfish, plus stocks, broths and fats named for them (chicken stock, lard). Condiments (oyster, fish and Worcestershire sauce, shrimp paste, anchovy paste), gelatin and rennet cheeses are allowed. The strict flags are kept, so a strict mode can be added later | D15 says "the protein source"; stock and lard are "explicitly meat" |
+| R8 | No red meat stays strict: beef stock, lard and gelatin are excluded, because the preset exists for the girlfriend, not the owner | D5 |
