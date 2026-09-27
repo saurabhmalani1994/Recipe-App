@@ -1,14 +1,38 @@
 import type { Db, QueryResult, SqlParam } from './types'
 import { exportUserDb, importUserDb } from './backup'
+import { createOpfsDb, opfsSupported } from './opfsDb'
+import { createWebDb } from './webDb'
+
+/**
+ * Opens the web build's `user.db` connection, preferring a durable OPFS-backed sqlite file
+ * (`opfsDb.ts`) over the `:memory:` + `localStorage`-snapshot fallback below. Falls back
+ * whenever OPFS isn't available (older Safari, a private-storage context, jsdom in tests, or
+ * `open()` throwing for any other reason) so a reload still keeps everything the snapshot
+ * always kept. Callers (`db/index.ts`) run migrations either way, and only run
+ * `hydrateFromLocalStorage`/`withLocalStoragePersistence` on the non-durable path — the `Db`
+ * interface returned here is identical either way.
+ */
+export async function openWebUserDb(name: string): Promise<{ db: Db; durable: boolean }> {
+  if (await opfsSupported()) {
+    try {
+      const db = createOpfsDb(name)
+      await db.open()
+      return { db, durable: true }
+    } catch {
+      // Fall through to the in-memory + localStorage-snapshot path below.
+    }
+  }
+  const db = createWebDb(name)
+  await db.open()
+  return { db, durable: false }
+}
 
 /**
  * `WebDb` is `:memory:` (see the comment at the top of `webDb.ts`) — a page reload starts a
- * fresh, empty database. Native builds don't need this (`CapacitorDb` writes to a real file),
- * but the web build has nothing durable yet, and this slice's tests rely on settings,
- * favorites, kitchen items and forks surviving a reload. Until a real persistent VFS (OPFS)
- * lands, this snapshots `user.db` as JSON into `localStorage` after every write and rehydrates
- * it on open, reusing the existing backup format. Interim; replace when `ingest`/a later slice
- * gives the web build a persistent sqlite file.
+ * fresh, empty database. Native builds don't need this (`CapacitorDb` writes to a real file).
+ * This is the fallback for web contexts where the OPFS-backed `OpfsDb` above isn't available:
+ * it snapshots `user.db` as JSON into `localStorage` after every write and rehydrates it on
+ * open, reusing the existing backup format.
  */
 const STORAGE_KEY = 'recipe-app.user-db-snapshot'
 

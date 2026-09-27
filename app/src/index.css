@@ -34,6 +34,9 @@ html,
 body {
   margin: 0;
   padding: 0;
+  /* Belt-and-suspenders against a stray wide child: nothing should scroll sideways. */
+  max-width: 100%;
+  overflow-x: hidden;
 }
 
 body {
@@ -46,6 +49,56 @@ body {
     Roboto,
     sans-serif;
   -webkit-tap-highlight-color: transparent;
+}
+
+button {
+  font: inherit;
+  color: inherit;
+  cursor: pointer;
+}
+
+/* Every interactive element gets a visible focus state; :focus-visible skips it for a mouse
+   click so it only shows for keyboard/assistive-tech navigation. */
+a:focus-visible,
+button:focus-visible,
+input:focus-visible,
+select:focus-visible,
+textarea:focus-visible,
+[role='radio']:focus-visible {
+  outline: 2px solid var(--color-accent);
+  outline-offset: 2px;
+}
+
+/* A plain, unstyled `<button>` (Save, +Ingredient, +Step, Make my version, …). Buttons with
+   their own look (nav items, diet switch, icon buttons, …) override this with a more specific
+   class, so this only sets the shared baseline: a real 44px tap target. */
+button {
+  min-height: 44px;
+  padding: 8px 16px;
+  border: 1px solid var(--color-border);
+  border-radius: 8px;
+  background: var(--color-surface);
+}
+
+button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+/* A small square button for a single icon/glyph (remove ×, favorite star, settings gear) that
+   still meets the 44px tap target without looking like a full-width button. */
+.icon-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 44px;
+  min-height: 44px;
+  padding: 0;
+  border: none;
+  background: none;
+  font-size: 1.2rem;
+  color: var(--color-text-muted);
+  flex-shrink: 0;
 }
 
 #root {
@@ -83,6 +136,7 @@ body {
 
 .diet-switch__option {
   flex: 1;
+  min-height: 44px;
   padding: 8px 6px;
   font-size: 0.75rem;
   line-height: 1.1;
@@ -129,9 +183,12 @@ body {
 
 .bottom-nav__item {
   flex: 1;
+  min-width: 0;
+  min-height: 44px;
   display: flex;
   flex-direction: column;
   align-items: center;
+  justify-content: center;
   gap: 2px;
   padding: 8px 2px 6px;
   text-decoration: none;
@@ -156,10 +213,16 @@ body {
 }
 
 .app-header__settings {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 44px;
+  min-height: 44px;
   text-decoration: none;
   color: var(--color-text-muted);
-  font-size: 1.1rem;
+  font-size: 1.3rem;
   line-height: 1;
+  flex-shrink: 0;
 }
 
 .settings-group {
@@ -185,6 +248,8 @@ body {
 .settings-field input,
 .settings-field select,
 .settings-field textarea {
+  width: 100%;
+  min-height: 44px;
   padding: 6px 8px;
   border: 1px solid var(--color-border);
   border-radius: 6px;
@@ -197,6 +262,7 @@ body {
   display: flex;
   align-items: center;
   gap: 8px;
+  min-height: 44px;
   padding: 4px 0;
   font-size: 0.85rem;
 }
@@ -219,7 +285,9 @@ body {
 .recipe-list a {
   color: var(--color-text);
   text-decoration: none;
-  display: block;
+  display: flex;
+  align-items: center;
+  min-height: 44px;
   padding: 8px 0;
   border-bottom: 1px solid var(--color-border);
 }
@@ -233,6 +301,8 @@ body {
 }
 
 .kitchen-add input {
+  width: 100%;
+  min-height: 44px;
   padding: 8px 10px;
   border: 1px solid var(--color-border);
   border-radius: 8px;
@@ -245,16 +315,18 @@ body {
   border: 1px solid var(--color-border);
   border-radius: 8px;
   background: var(--color-surface);
-  max-height: 200px;
+  max-height: 220px;
   overflow-y: auto;
 }
 
 .kitchen-suggestions button {
   width: 100%;
+  min-height: 44px;
   text-align: left;
-  padding: 8px 10px;
+  padding: 10px;
   background: none;
   border: none;
+  border-radius: 0;
   color: var(--color-text);
 }
 
@@ -273,8 +345,10 @@ body {
 
 .kitchen-item {
   display: flex;
+  align-items: center;
   justify-content: space-between;
-  padding: 6px 0;
+  min-height: 44px;
+  padding: 4px 0;
   border-bottom: 1px solid var(--color-border);
 }
 
@@ -285,10 +359,17 @@ body {
 }
 
 .recipe-detail__favorite {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 44px;
+  min-height: 44px;
+  padding: 0;
   background: none;
   border: none;
   font-size: 1.4rem;
   color: var(--color-accent);
+  flex-shrink: 0;
 }
 
 .recipe-detail__meta {
@@ -300,18 +381,54 @@ body {
   margin: 8px 0 16px;
 }
 
-.editor-ingredient-row,
-.editor-step-row {
-  display: flex;
-  gap: 6px;
-  margin-bottom: 6px;
-}
-
 .editor-ingredients,
 .editor-steps {
   list-style: none;
   padding: 0;
   margin: 0;
+}
+
+/* Compact row: qty (~4ch) and unit (~6ch) stay narrow, the name field takes what's left, and
+   the remove button is a fixed 44px square — nothing here can push past the screen width. */
+.editor-ingredient-row {
+  display: grid;
+  grid-template-columns: 4ch 6ch 1fr 44px;
+  gap: 6px;
+  align-items: center;
+  margin-bottom: 6px;
+}
+
+.editor-ingredient-row input {
+  width: 100%;
+  min-width: 0;
+  min-height: 44px;
+  padding: 6px 6px;
+  border: 1px solid var(--color-border);
+  border-radius: 6px;
+  background: var(--color-surface);
+  color: var(--color-text);
+}
+
+/* Steps run full width with a multi-line textarea; the remove button sits below it so the
+   textarea itself never has to compete for horizontal space. */
+.editor-step-row {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 4px;
+  margin-bottom: 10px;
+}
+
+.editor-step-row textarea {
+  width: 100%;
+  min-height: 64px;
+  padding: 8px;
+  border: 1px solid var(--color-border);
+  border-radius: 6px;
+  background: var(--color-surface);
+  color: var(--color-text);
+  font: inherit;
+  resize: vertical;
 }
 
 .fork-diff {
@@ -323,8 +440,10 @@ body {
 }
 
 .my-recipes__new {
-  display: inline-block;
-  margin: 8px 0 16px;
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
+  margin: 4px 0 12px;
   color: var(--color-accent);
   text-decoration: none;
   font-weight: 600;

@@ -13,13 +13,14 @@ export function MyRecipes() {
   return (
     <section className="screen" data-testid="screen-my-recipes">
       <h2>My Recipes</h2>
-      <p className="screen__placeholder">
-        Your own recipes and forks ("make my version") land here.
-      </p>
       <Link to="/my-recipes/new" className="my-recipes__new">
         + New recipe
       </Link>
-      {recipes.length === 0 && <p className="screen__placeholder">Nothing yet.</p>}
+      {recipes.length === 0 && (
+        <p className="screen__placeholder">
+          No recipes yet. Create one, or open a recipe and tap "Make my version" to fork it.
+        </p>
+      )}
       <ul className="recipe-list">
         {recipes.map((recipe) => (
           <li key={recipe.id}>

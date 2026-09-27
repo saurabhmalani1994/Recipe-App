@@ -215,6 +215,7 @@ export function MyRecipeEditor() {
             />
             <button
               type="button"
+              className="icon-button"
               aria-label={`Remove ingredient ${i + 1}`}
               onClick={() => removeIngredient(i)}
             >
@@ -231,13 +232,17 @@ export function MyRecipeEditor() {
       <ol className="editor-steps">
         {data.steps.map((step, i) => (
           <li key={i} className="editor-step-row">
-            <input
-              type="text"
+            <textarea
               aria-label={`Step ${i + 1}`}
               value={step}
               onChange={(e) => updateStep(i, e.target.value)}
             />
-            <button type="button" aria-label={`Remove step ${i + 1}`} onClick={() => removeStep(i)}>
+            <button
+              type="button"
+              className="icon-button"
+              aria-label={`Remove step ${i + 1}`}
+              onClick={() => removeStep(i)}
+            >
               ×
             </button>
           </li>

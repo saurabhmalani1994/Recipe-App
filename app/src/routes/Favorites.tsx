@@ -17,7 +17,11 @@ export function Favorites() {
   return (
     <section className="screen" data-testid="screen-favorites">
       <h2>Favorites</h2>
-      {recipes.length === 0 && <p className="screen__placeholder">No favorites yet.</p>}
+      {recipes.length === 0 && (
+        <p className="screen__placeholder">
+          No favorites yet. Open a recipe and tap the star to save it here.
+        </p>
+      )}
       <ul className="recipe-list">
         {recipes.map((recipe) => (
           <li key={recipe.id}>
