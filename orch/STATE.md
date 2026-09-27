@@ -17,7 +17,7 @@ allrecipes gives 402 even with a browser UA (bot wall), so S1 tries headless Chr
 
 ## Running
 S1 (ingest fetch, sonnet). S4 is merged: validate 0 errors, 790 entries, 316 targets, 503 slugs,
-75 pytest passing (the orchestrator re-ran both). Owner question pending: are rennet cheeses (Parmigiano etc.)
+80 pytest passing (the orchestrator re-ran both). Owner question pending: are rennet cheeses (Parmigiano etc.)
 Vegetarian? Default: strict, not vegetarian. S2 was merged at 3639216; the orchestrator
 re-ran the check and got typecheck/lint pass, 7/0 unit. The CI APK job is unverified until its first Actions run.
 S2 open items: the diet preset lives in localStorage and is not yet in user.db settings (wire it in S6). Each runs in

@@ -6,3 +6,4 @@
 - 2026-09-27: S2 merged (3639216). Unit tests re-run: 7 passed / 0 failed.
 - 2026-09-27: S4 merged. Validator and pytest re-run: 0 errors, 75 passed. Codex brief 02 written.
 - 2026-09-27: Owner ruled D15 (vegetarian = the protein source). R7 and R8 recorded; S4b briefed.
+- 2026-09-27: S4b merged. Validator 0 errors; pytest 80 passed.
