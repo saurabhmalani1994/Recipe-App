@@ -14,4 +14,4 @@ S6 matcher engine "what can I cook" + substitution-aware ranking | app | after S
 S7 planner + grocery aggregation (1.5/person) | app | after S6 | sonnet | - | v0.2
 S8 curation: dedupe + quality filter + select 50-100k from raw | ingest | after S3,S5 | opus | - | v0.1
 S9 corpus.db build + FTS5 + schema/corpus.sql | ingest | after S8 | opus | - | v0.1
-S7b UI polish: the recipe editor ingredient row overflows at 412px (3rd field cut off, seen in the screenshot); the qty/unit fields are too wide; OPFS persistence instead of the localStorage snapshot | app | READY | sonnet | - | v0.1
+S7b UI polish: the recipe editor ingredient row overflows at 412px (3rd field cut off, seen in the screenshot); the qty/unit fields are too wide; OPFS persistence instead of the localStorage snapshot | app | RUNNING | sonnet | orch/briefs/S7b-ui-polish.md | v0.1
