@@ -16,11 +16,15 @@ allrecipes gives 402 even with a browser UA (bot wall), so S1 tries headless Chr
 ## Owner silence on 3 defaults (applied): metric default, no hosted PWA, start builds now.
 
 ## Running
-S5b-2 (sonnet) and S3b (sonnet) run in worktrees. The app lane is free until corpus schema S9. The app lane is free (S7b READY; S6 waits on corpus schema S9). The full BBC crawl runs as a background
+S3b (sonnet) and S9a (opus) run in worktrees. The app lane is free until corpus schema S9. The app lane is free (S7b READY; S6 waits on corpus schema S9). The full BBC crawl runs as a background
 script (cap 20000, 6h timeout; log in /home/user/recipe-data/bbc_full_crawl.log).
 Owner questions pending: Kaggle token (default: no ratings source), and location for seasonality (default: temperate north).
 
 ## Done
+- S5b-2 merged. Re-run: 267 pytest; eval.json held-out 80.7% acc, 28.3% unknown (bar 80/30, a NARROW pass).
+  The 300 "hand-checked" set is really lexicon-labelled (not human): 80.5%/14.3%. Section 9 caveat: the key is
+  the lexicon's view, not the owner's. Before the ship, have the owner grade ~50 cuisine-filtered results.
+  corpus unknown 48.5%. New raw source hf_cuisine_type (74,465 recipes, Eitanli/cuisine_type).
 - S7b merged. Re-run: 34/0 unit, e2e 22 passed incl. no-horizontal-scroll at 360 and 412. OPFS in a Worker.
 - S5a taggers merged. Re-run: 261 pytest, tag gold BARS PASSED. First run 96.0% diet, final 99.7%, holdout 96.7%.
   20k run: veg ok 57% / adaptable 6% / no 29% / unknown 9%. R9 (one_pot + course=main), R10 (drop nameless/stepless).
