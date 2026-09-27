@@ -41,8 +41,27 @@ def test_at_least_400_entries():
     assert len(ENTRIES) >= 400
 
 
-def test_every_ingredient_is_used():
-    assert v.unused_slugs(ING, ENTRIES) == []
+def test_every_legacy_slug_and_flag_is_kept():
+    """The taxonomy replaced this package's own ingredients.yaml (brief S3). Every slug that file
+    had must still exist, with every flag it had (D15/R7 explicit_meat included)."""
+    import json
+    with open(os.path.join(os.path.dirname(os.path.abspath(__file__)), 'legacy_slug_flags.json'),
+              encoding='utf-8') as fh:
+        legacy = json.load(fh)
+    assert len(legacy) == 503
+    missing = [s for s in legacy if s not in ING]
+    dropped = [(s, f) for s, f in legacy.items() if s in ING and not set(f) <= ing_flags(s)]
+    assert missing == [] and dropped == []
+
+
+def test_every_slug_the_table_uses_is_in_the_taxonomy():
+    assert v.used_slugs(ENTRIES) - set(ING) == set()
+
+
+def test_subs_package_keeps_no_copy_of_the_taxonomy():
+    here = os.path.dirname(os.path.abspath(__file__))
+    assert not os.path.exists(os.path.join(here, 'ingredients.yaml'))
+    assert v.INGREDIENTS_PATH.endswith(os.path.join('taxonomy', 'ingredients.yaml'))
 
 
 # ---------- planted diet traps (brief S4 item 4; revised for D15/R7, brief S4b) ----------
