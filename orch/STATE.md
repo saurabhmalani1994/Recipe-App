@@ -16,11 +16,12 @@ allrecipes gives 402 even with a browser UA (bot wall), so S1 tries headless Chr
 ## Owner silence on 3 defaults (applied): metric default, no hosted PWA, start builds now.
 
 ## Running
-S5b-2 (sonnet), S3b (sonnet) and S7b (app, sonnet) run in worktrees. The app lane is free (S7b READY; S6 waits on corpus schema S9). The full BBC crawl runs as a background
+S5b-2 (sonnet) and S3b (sonnet) run in worktrees. The app lane is free until corpus schema S9. The app lane is free (S7b READY; S6 waits on corpus schema S9). The full BBC crawl runs as a background
 script (cap 20000, 6h timeout; log in /home/user/recipe-data/bbc_full_crawl.log).
 Owner questions pending: Kaggle token (default: no ratings source), and location for seasonality (default: temperate north).
 
 ## Done
+- S7b merged. Re-run: 34/0 unit, e2e 22 passed incl. no-horizontal-scroll at 360 and 412. OPFS in a Worker.
 - S5a taggers merged. Re-run: 261 pytest, tag gold BARS PASSED. First run 96.0% diet, final 99.7%, holdout 96.7%.
   20k run: veg ok 57% / adaptable 6% / no 29% / unknown 9%. R9 (one_pot + course=main), R10 (drop nameless/stepless).
 - S7a merged. Re-run: check 33/0 unit, e2e 2 passed (after the orchestrator fixed playwright webServer to build
