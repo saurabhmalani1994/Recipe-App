@@ -1,4 +1,4 @@
-Builder ingest, slice S5b. Hash <FILLED-AFTER-COMMIT> on worktree-agent-a5d233fd4d8b71df5, nothing pushed.
+Builder ingest, slice S5b. Hash 85e901e on worktree-agent-a5d233fd4d8b71df5, nothing pushed.
 
 - Changed: new `ingest/cuisine/` package only (26 files): `cuisines.yaml`/`cuisines.py` (fixed
   26-label list + per-source label map), `features.py` (shared slug/title tokenizer, reuses
