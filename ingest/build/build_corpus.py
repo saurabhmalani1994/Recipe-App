@@ -4,6 +4,11 @@ Run:
   python3 -m ingest.build.build_corpus --sample              the 5k sample (sample.SAMPLE_QUOTAS)
   python3 -m ingest.build.build_corpus --all                 every line of every source
   python3 -m ingest.build.build_corpus --sample --fresh      delete the output first
+  python3 -m ingest.build.build_corpus --select /home/user/recipe-data/derived/curate/selection.tsv
+                                                             the curated corpus (brief S8): exactly
+                                                             the lines ingest/curate/rank.py chose,
+                                                             with its quality score, to
+                                                             /home/user/recipe-data/out/corpus.db
 Options: --out PATH (default /home/user/recipe-data/derived/corpus_sample.db, or corpus.db with
 --all), --raw DIR, --only SOURCE[,SOURCE], --stop-after N (stop after N more lines; for tests
 and for bounded runs), --report PATH (write the markdown build report).
@@ -53,6 +58,7 @@ from ingest.taxonomy import taxonomy as T  # noqa: E402
 
 SCHEMA_PATH = os.path.join(_ROOT, 'schema', 'corpus.sql')
 DERIVED = '/home/user/recipe-data/derived'
+CURATED_OUT = '/home/user/recipe-data/out/corpus.db'   # the curated build (brief S8), --select
 BATCH = 500
 PER_RECIPE_TIMEOUT_S = 5
 PRESETS = ('vegetarian', 'no_red_meat', 'vegetarian_strict')
@@ -143,6 +149,22 @@ def load_static(con):
 
 # ---- one recipe ------------------------------------------------------------------------------
 
+def derive(raw, model):
+    """(items, tags, course, (cuisine, confidence, cuisine_source)) for one raw recipe; raises on a
+    parser or tagger failure. Shared with the curation scan (ingest/curate/scan.py), so the scan
+    ranks recipes on exactly the tags the build writes."""
+    items = parse_items(raw)
+    tags = tag_recipe(raw, items)
+    course = tag_course(raw, items)['course']
+    cuisine = CU.to_canonical(raw.get('source'), raw.get('cuisine_label'))
+    if cuisine:
+        cz = (cuisine, 1.0, 'source_label')
+    else:
+        got = classify(raw.get('ingredients'), raw.get('title'), model)
+        cz = (None, None, None) if got['label'] == 'unknown' else (got['label'], round(got['confidence'], 4), 'classifier')
+    return items, tags, course, cz
+
+
 class Writer:
     def __init__(self, con):
         self.con = con
@@ -150,6 +172,7 @@ class Writer:
         self.ing = T.load()
         self.model = load_model()
         self.coerced = {}
+        self.overrides = {}   # key -> selection row (quality, rating, rating_count), from --select
 
     def _enum(self, table, col, v):
         if v is None:
@@ -168,16 +191,7 @@ class Writer:
 
     def derive(self, raw):
         """Everything computed for one recipe; raises on a parser or tagger failure."""
-        items = parse_items(raw)
-        tags = tag_recipe(raw, items)
-        course = tag_course(raw, items)['course']
-        cuisine = CU.to_canonical(raw.get('source'), raw.get('cuisine_label'))
-        if cuisine:
-            cz = (cuisine, 1.0, 'source_label')
-        else:
-            got = classify(raw.get('ingredients'), raw.get('title'), self.model)
-            cz = (None, None, None) if got['label'] == 'unknown' else (got['label'], round(got['confidence'], 4), 'classifier')
-        return items, tags, course, cz
+        return derive(raw, self.model)
 
     def write(self, raw, derived):
         """Insert one recipe; returns its id, or raises sqlite3.IntegrityError on a duplicate key."""
@@ -203,6 +217,11 @@ class Writer:
                                        servings is not None, raw.get('rating'), raw.get('rating_count'))
         rating = raw.get('rating') if isinstance(raw.get('rating'), (int, float)) else None
         rating_count = raw.get('rating_count') if isinstance(raw.get('rating_count'), int) else None
+        ov = self.overrides.get(raw['id'])
+        if ov is not None:   # a curation selection: its score, and a joined rating when the source has none
+            quality = ov['quality']
+            if rating is None and ov.get('rating') is not None:
+                rating, rating_count = ov['rating'], ov.get('rating_count')
         cur = self.con.execute(
             'INSERT INTO recipes (key, source, source_url, title, servings, yield_text, total_min, active_min, '
             'time_source, weeknight, cuisine, cuisine_confidence, cuisine_source, course, one_pot, one_pan, '
@@ -259,8 +278,9 @@ def _drop(con, source, reason, example):
                 'ON CONFLICT (source, reason) DO UPDATE SET count = count + 1', (source, reason, str(example)))
 
 
-def build_source(con, writer, source, raw_root, quota, stop_after=None, log=print):
-    """Build one source; returns the number of lines handled (stop_after bounds it)."""
+def build_source(con, writer, source, raw_root, quota, stop_after=None, log=print, lines=None):
+    """Build one source; returns the number of lines handled (stop_after bounds it). `lines`
+    ({line_no: selection row}) builds exactly those lines instead of a quota's stride."""
     path = S.raw_path(source, raw_root)
     row = con.execute('SELECT lines_total, next_line, selected, written, done FROM build_sources WHERE source = ?',
                       (source,)).fetchone()
@@ -277,7 +297,9 @@ def build_source(con, writer, source, raw_root, quota, stop_after=None, log=prin
     since_commit = 0
     t0 = time.time()
     last = next_line - 1
-    for n, line in S.select(path, total, quota, start=next_line):
+    picked = (S.select(path, total, quota, start=next_line) if lines is None
+              else S.select_lines(path, total, set(lines), start=next_line))
+    for n, line in picked:
         if stop_after is not None and handled >= stop_after:
             break
         handled += 1
@@ -289,6 +311,8 @@ def build_source(con, writer, source, raw_root, quota, stop_after=None, log=prin
         except ValueError:
             raw = None
         reason = curate.drop_reason(raw)
+        if reason is None and lines is not None and raw['id'] != lines[n]['key']:
+            reason = 'selection_mismatch'   # the raw file changed under the selection
         if reason:
             _drop(con, source, reason, (raw or {}).get('id') if isinstance(raw, dict) else f'line {n}')
         else:
@@ -319,6 +343,8 @@ def build_source(con, writer, source, raw_root, quota, stop_after=None, log=prin
         if since_commit >= BATCH:
             _checkpoint(con, writer, source, last + 1, selected, written, 0)
             since_commit = 0
+            if selected % (BATCH * 10) == 0:
+                log(f'  {source}: {selected:,} read, {written:,} written, line {n:,} ({time.time() - t0:.0f}s)')
     finished = stop_after is None or handled < stop_after
     _checkpoint(con, writer, source, last + 1, selected, written, int(finished))
     log(f'{source}: {selected} selected, {written} written, {"done" if finished else "paused"} '
@@ -350,9 +376,30 @@ def finalize(con):
     con.execute('VACUUM')
 
 
-def build(out, raw_root=S.RAW, quotas=None, only=None, fresh=False, stop_after=None, log=print):
+def load_curation_drops(con, path):
+    """Add a curation run's drop counts (ingest/curate/rank.py drops.json) to build_drops, once."""
+    if con.execute("SELECT 1 FROM corpus_meta WHERE key = 'curation_drops'").fetchone():
+        return
+    with open(path, encoding='utf-8') as fh:
+        drops = json.load(fh)
+    for source in sorted(drops):
+        for reason, (count, example) in sorted(drops[source].items()):
+            con.execute('INSERT INTO build_drops (source, reason, count, example) VALUES (?,?,?,?) '
+                        'ON CONFLICT (source, reason) DO UPDATE SET count = count + excluded.count',
+                        (source, reason, count, str(example)))
+    con.execute("INSERT INTO corpus_meta (key, value) VALUES ('curation_drops', ?)", (os.path.basename(path),))
+    con.commit()
+
+
+def build(out, raw_root=S.RAW, quotas=None, only=None, fresh=False, stop_after=None, log=print, select=None):
     """Build (or resume) `out`. quotas: {source: n}, or None for every line of every source.
-    Returns True when every source is done and the file is finalized."""
+    select: a curation selection.tsv path; builds exactly its lines with its quality scores,
+    and adds the drops.json beside it to build_drops. Returns True when every source is done
+    and the file is finalized."""
+    selection = None
+    if select:
+        selection = S.load_selection(select)
+        quotas = {s: len(v) for s, v in selection.items()}
     if fresh and os.path.exists(out):
         os.remove(out)
     os.makedirs(os.path.dirname(os.path.abspath(out)), exist_ok=True)
@@ -360,6 +407,8 @@ def build(out, raw_root=S.RAW, quotas=None, only=None, fresh=False, stop_after=N
     con.execute('PRAGMA journal_mode = DELETE')
     con.execute('PRAGMA synchronous = NORMAL')
     writer = Writer(con)
+    if selection:
+        writer.overrides = {row['key']: row for rows in selection.values() for row in rows.values()}
     signal.signal(signal.SIGALRM, _alarm)
     sources = [s for s in S.sources(raw_root) if (quotas is None or quotas.get(s))]
     if only:
@@ -367,7 +416,7 @@ def build(out, raw_root=S.RAW, quotas=None, only=None, fresh=False, stop_after=N
     left = stop_after
     for src in sources:
         handled = build_source(con, writer, src, raw_root, None if quotas is None else quotas[src],
-                               stop_after=left, log=log)
+                               stop_after=left, log=log, lines=selection[src] if selection else None)
         if left is not None:
             left -= handled
             if left <= 0:
@@ -376,6 +425,10 @@ def build(out, raw_root=S.RAW, quotas=None, only=None, fresh=False, stop_after=N
     started = {r[0] for r in con.execute('SELECT source FROM build_sources')}
     complete = pending == 0 and set(sources) <= started
     if complete:
+        if select:
+            drops = os.path.join(os.path.dirname(os.path.abspath(select)), 'drops.json')
+            if os.path.exists(drops):
+                load_curation_drops(con, drops)
         finalize(con)
     con.close()
     return complete
@@ -447,6 +500,7 @@ def main(argv=None):
     g = ap.add_mutually_exclusive_group(required=True)
     g.add_argument('--sample', action='store_true')
     g.add_argument('--all', action='store_true')
+    g.add_argument('--select', metavar='SELECTION_TSV', help='a curation selection (ingest/curate/rank.py)')
     ap.add_argument('--out')
     ap.add_argument('--raw', default=S.RAW)
     ap.add_argument('--only')
@@ -454,11 +508,12 @@ def main(argv=None):
     ap.add_argument('--stop-after', type=int)
     ap.add_argument('--report')
     args = ap.parse_args(argv)
-    out = args.out or os.path.join(DERIVED, 'corpus_sample.db' if args.sample else 'corpus.db')
+    out = args.out or (CURATED_OUT if args.select else
+                       os.path.join(DERIVED, 'corpus_sample.db' if args.sample else 'corpus.db'))
     t0 = time.time()
     complete = build(out, raw_root=args.raw, quotas=S.SAMPLE_QUOTAS if args.sample else None,
                      only=set(args.only.split(',')) if args.only else None, fresh=args.fresh,
-                     stop_after=args.stop_after)
+                     stop_after=args.stop_after, select=args.select)
     print(f'{"complete" if complete else "paused"}: {out} ({os.path.getsize(out):,} bytes) in '
           f'{time.time() - t0:.0f}s')
     if complete and args.report:

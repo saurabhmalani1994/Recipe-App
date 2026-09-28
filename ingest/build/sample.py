@@ -52,6 +52,35 @@ def stride_for(limit, quota):
     return max(1, limit // quota)
 
 
+def load_selection(path):
+    """A curation selection (ingest/curate/rank.py selection.tsv) as
+    {source: {line_no: {'key', 'quality', 'rating', 'rating_count'}}}."""
+    out = {}
+    with open(path, encoding='utf-8') as fh:
+        head = next(fh).rstrip('\n').split('\t')
+        for row in fh:
+            r = dict(zip(head, row.rstrip('\n').split('\t')))
+            out.setdefault(r['source'], {})[int(r['line'])] = {
+                'key': r['key'], 'quality': float(r['quality']),
+                'rating': float(r['rating']) if r['rating'] else None,
+                'rating_count': int(r['rating_count']) if r['rating_count'] else None}
+    return out
+
+
+def select_lines(path, limit, lines, start=0):
+    """Yield (line_no, text) for the line numbers in `lines` (a set), in file order, from `start`
+    and below `limit`. Streams the file; nothing else is held."""
+    if not lines:
+        return
+    last = max(lines)
+    with open(path, encoding='utf-8', errors='replace') as fh:
+        for n, line in enumerate(fh):
+            if n >= limit or n > last:
+                break
+            if n >= start and n in lines:
+                yield n, line
+
+
 def select(path, limit, quota, start=0):
     """Yield (line_no, text) for the selected lines of `path`, line_no counted from 0.
 

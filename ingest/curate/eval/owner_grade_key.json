@@ -1,0 +1,482 @@
+[
+ {
+  "n": 1,
+  "band": "bottom",
+  "rank": 1774065,
+  "of": 1858555,
+  "key": "recipenlg:687783",
+  "score": 0.54
+ },
+ {
+  "n": 2,
+  "band": "top",
+  "rank": 16558,
+  "of": 1858555,
+  "key": "recipenlg:1743553",
+  "score": 0.823
+ },
+ {
+  "n": 3,
+  "band": "bottom",
+  "rank": 1784258,
+  "of": 1858555,
+  "key": "recipenlg:372327",
+  "score": 0.527
+ },
+ {
+  "n": 4,
+  "band": "middle",
+  "rank": 933456,
+  "of": 1858555,
+  "key": "recipenlg:1086412",
+  "score": 0.69
+ },
+ {
+  "n": 5,
+  "band": "middle",
+  "rank": 891083,
+  "of": 1858555,
+  "key": "recipenlg:2203709",
+  "score": 0.698
+ },
+ {
+  "n": 6,
+  "band": "top",
+  "rank": 25312,
+  "of": 1858555,
+  "key": "recipenlg:1206075",
+  "score": 0.811
+ },
+ {
+  "n": 7,
+  "band": "bottom",
+  "rank": 1776907,
+  "of": 1858555,
+  "key": "recipenlg:9296",
+  "score": 0.54
+ },
+ {
+  "n": 8,
+  "band": "bottom",
+  "rank": 1852246,
+  "of": 1858555,
+  "key": "recipenlg:374990",
+  "score": 0.292
+ },
+ {
+  "n": 9,
+  "band": "bottom",
+  "rank": 1836369,
+  "of": 1858555,
+  "key": "recipenlg:2203738",
+  "score": 0.33
+ },
+ {
+  "n": 10,
+  "band": "top",
+  "rank": 11165,
+  "of": 1858555,
+  "key": "recipenlg:1320740",
+  "score": 0.823
+ },
+ {
+  "n": 11,
+  "band": "top",
+  "rank": 63884,
+  "of": 1858555,
+  "key": "recipenlg:1380823",
+  "score": 0.8
+ },
+ {
+  "n": 12,
+  "band": "middle",
+  "rank": 895549,
+  "of": 1858555,
+  "key": "recipenlg:1113392",
+  "score": 0.696
+ },
+ {
+  "n": 13,
+  "band": "top",
+  "rank": 60179,
+  "of": 1858555,
+  "key": "recipenlg:1368225",
+  "score": 0.8
+ },
+ {
+  "n": 14,
+  "band": "bottom",
+  "rank": 1779748,
+  "of": 1858555,
+  "key": "recipenlg:1961517",
+  "score": 0.531
+ },
+ {
+  "n": 15,
+  "band": "bottom",
+  "rank": 1770538,
+  "of": 1858555,
+  "key": "recipenlg:420293",
+  "score": 0.54
+ },
+ {
+  "n": 16,
+  "band": "top",
+  "rank": 59392,
+  "of": 1858555,
+  "key": "recipenlg:1365698",
+  "score": 0.8
+ },
+ {
+  "n": 17,
+  "band": "top",
+  "rank": 5738,
+  "of": 1858555,
+  "key": "bbcgoodfood:venison-madras",
+  "score": 0.837
+ },
+ {
+  "n": 18,
+  "band": "bottom",
+  "rank": 1796353,
+  "of": 1858555,
+  "key": "recipenlg:1647527",
+  "score": 0.48
+ },
+ {
+  "n": 19,
+  "band": "middle",
+  "rank": 913508,
+  "of": 1858555,
+  "key": "recipenlg:1205981",
+  "score": 0.695
+ },
+ {
+  "n": 20,
+  "band": "bottom",
+  "rank": 1841851,
+  "of": 1858555,
+  "key": "recipenlg:7976",
+  "score": 0.33
+ },
+ {
+  "n": 21,
+  "band": "middle",
+  "rank": 957934,
+  "of": 1858555,
+  "key": "recipenlg:1799324",
+  "score": 0.685
+ },
+ {
+  "n": 22,
+  "band": "top",
+  "rank": 3970,
+  "of": 1858555,
+  "key": "recipenlg:1300784",
+  "score": 0.853
+ },
+ {
+  "n": 23,
+  "band": "middle",
+  "rank": 897720,
+  "of": 1858555,
+  "key": "recipenlg:1358500",
+  "score": 0.696
+ },
+ {
+  "n": 24,
+  "band": "top",
+  "rank": 51180,
+  "of": 1858555,
+  "key": "recipenlg:1335353",
+  "score": 0.8
+ },
+ {
+  "n": 25,
+  "band": "top",
+  "rank": 29714,
+  "of": 1858555,
+  "key": "recipenlg:1540066",
+  "score": 0.806
+ },
+ {
+  "n": 26,
+  "band": "top",
+  "rank": 66369,
+  "of": 1858555,
+  "key": "recipenlg:1389152",
+  "score": 0.8
+ },
+ {
+  "n": 27,
+  "band": "bottom",
+  "rank": 1829678,
+  "of": 1858555,
+  "key": "recipenlg:1783283",
+  "score": 0.341
+ },
+ {
+  "n": 28,
+  "band": "top",
+  "rank": 64878,
+  "of": 1858555,
+  "key": "recipenlg:1384140",
+  "score": 0.8
+ },
+ {
+  "n": 29,
+  "band": "bottom",
+  "rank": 1809987,
+  "of": 1858555,
+  "key": "recipenlg:1921942",
+  "score": 0.397
+ },
+ {
+  "n": 30,
+  "band": "bottom",
+  "rank": 1833367,
+  "of": 1858555,
+  "key": "recipenlg:1752205",
+  "score": 0.33
+ },
+ {
+  "n": 31,
+  "band": "middle",
+  "rank": 908010,
+  "of": 1858555,
+  "key": "recipenlg:386731",
+  "score": 0.696
+ },
+ {
+  "n": 32,
+  "band": "top",
+  "rank": 17936,
+  "of": 1858555,
+  "key": "recipenlg:2032214",
+  "score": 0.823
+ },
+ {
+  "n": 33,
+  "band": "middle",
+  "rank": 974716,
+  "of": 1858555,
+  "key": "recipenlg:238538",
+  "score": 0.683
+ },
+ {
+  "n": 34,
+  "band": "bottom",
+  "rank": 1830846,
+  "of": 1858555,
+  "key": "recipenlg:1274671",
+  "score": 0.339
+ },
+ {
+  "n": 35,
+  "band": "middle",
+  "rank": 944984,
+  "of": 1858555,
+  "key": "recipenlg:1230211",
+  "score": 0.688
+ },
+ {
+  "n": 36,
+  "band": "bottom",
+  "rank": 1773237,
+  "of": 1858555,
+  "key": "recipenlg:627927",
+  "score": 0.54
+ },
+ {
+  "n": 37,
+  "band": "bottom",
+  "rank": 1856238,
+  "of": 1858555,
+  "key": "recipenlg:147304",
+  "score": 0.27
+ },
+ {
+  "n": 38,
+  "band": "top",
+  "rank": 92381,
+  "of": 1858555,
+  "key": "recipenlg:1460234",
+  "score": 0.8
+ },
+ {
+  "n": 39,
+  "band": "bottom",
+  "rank": 1857616,
+  "of": 1858555,
+  "key": "recipenlg:478405",
+  "score": 0.255
+ },
+ {
+  "n": 40,
+  "band": "middle",
+  "rank": 936247,
+  "of": 1858555,
+  "key": "recipenlg:1595205",
+  "score": 0.69
+ },
+ {
+  "n": 41,
+  "band": "middle",
+  "rank": 935594,
+  "of": 1858555,
+  "key": "recipenlg:1545127",
+  "score": 0.69
+ },
+ {
+  "n": 42,
+  "band": "bottom",
+  "rank": 1815069,
+  "of": 1858555,
+  "key": "recipenlg:1449851",
+  "score": 0.383
+ },
+ {
+  "n": 43,
+  "band": "middle",
+  "rank": 885434,
+  "of": 1858555,
+  "key": "recipenlg:1546486",
+  "score": 0.698
+ },
+ {
+  "n": 44,
+  "band": "middle",
+  "rank": 946396,
+  "of": 1858555,
+  "key": "recipenlg:1791889",
+  "score": 0.688
+ },
+ {
+  "n": 45,
+  "band": "top",
+  "rank": 27446,
+  "of": 1858555,
+  "key": "recipenlg:1450848",
+  "score": 0.808
+ },
+ {
+  "n": 46,
+  "band": "middle",
+  "rank": 969709,
+  "of": 1858555,
+  "key": "recipenlg:1829651",
+  "score": 0.683
+ },
+ {
+  "n": 47,
+  "band": "top",
+  "rank": 49200,
+  "of": 1858555,
+  "key": "recipenlg:1327705",
+  "score": 0.8
+ },
+ {
+  "n": 48,
+  "band": "top",
+  "rank": 32432,
+  "of": 1858555,
+  "key": "recipenlg:1917876",
+  "score": 0.803
+ },
+ {
+  "n": 49,
+  "band": "middle",
+  "rank": 916677,
+  "of": 1858555,
+  "key": "recipenlg:993037",
+  "score": 0.695
+ },
+ {
+  "n": 50,
+  "band": "middle",
+  "rank": 894553,
+  "of": 1858555,
+  "key": "recipenlg:1043210",
+  "score": 0.696
+ },
+ {
+  "n": 51,
+  "band": "middle",
+  "rank": 950994,
+  "of": 1858555,
+  "key": "foodcom:002553",
+  "score": 0.685
+ },
+ {
+  "n": 52,
+  "band": "top",
+  "rank": 84130,
+  "of": 1858555,
+  "key": "recipenlg:1439628",
+  "score": 0.8
+ },
+ {
+  "n": 53,
+  "band": "middle",
+  "rank": 917779,
+  "of": 1858555,
+  "key": "recipenlg:1024834",
+  "score": 0.693
+ },
+ {
+  "n": 54,
+  "band": "bottom",
+  "rank": 1850788,
+  "of": 1858555,
+  "key": "recipenlg:2170090",
+  "score": 0.305
+ },
+ {
+  "n": 55,
+  "band": "bottom",
+  "rank": 1792880,
+  "of": 1858555,
+  "key": "recipenlg:1596433",
+  "score": 0.503
+ },
+ {
+  "n": 56,
+  "band": "middle",
+  "rank": 932500,
+  "of": 1858555,
+  "key": "recipenlg:966700",
+  "score": 0.691
+ },
+ {
+  "n": 57,
+  "band": "middle",
+  "rank": 964100,
+  "of": 1858555,
+  "key": "recipenlg:117090",
+  "score": 0.683
+ },
+ {
+  "n": 58,
+  "band": "bottom",
+  "rank": 1845151,
+  "of": 1858555,
+  "key": "recipenlg:713362",
+  "score": 0.322
+ },
+ {
+  "n": 59,
+  "band": "top",
+  "rank": 48550,
+  "of": 1858555,
+  "key": "recipenlg:1325229",
+  "score": 0.8
+ },
+ {
+  "n": 60,
+  "band": "top",
+  "rank": 52521,
+  "of": 1858555,
+  "key": "recipenlg:1340155",
+  "score": 0.8
+ }
+]
