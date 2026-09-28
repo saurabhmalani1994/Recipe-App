@@ -2,7 +2,7 @@
 // `ingest` owns the corpus schema (ruling R4); change schema/corpus.sql and regenerate.
 
 /** corpus_meta.schema_version this app was built against. */
-export const CORPUS_SCHEMA_VERSION = 3
+export const CORPUS_SCHEMA_VERSION = 4
 
 export const AISLE_VALUES = [
   'produce',
@@ -61,10 +61,10 @@ export const CUISINE_VALUES = [
 ] as const
 export type Cuisine = (typeof CUISINE_VALUES)[number]
 
-export const CUISINE_SOURCE_VALUES = ['source_label', 'classifier'] as const
+export const CUISINE_SOURCE_VALUES = ['source_label', 'classifier', 'title_marker'] as const
 export type CuisineSource = (typeof CUISINE_SOURCE_VALUES)[number]
 
-export const DIET_PRESET_VALUES = ['vegetarian', 'no_red_meat', 'vegetarian_strict'] as const
+export const DIET_PRESET_VALUES = ['vegetarian', 'no_red_meat'] as const
 export type DietPreset = (typeof DIET_PRESET_VALUES)[number]
 
 export const DIET_STATUS_VALUES = ['ok', 'adaptable', 'no', 'unknown'] as const
@@ -262,7 +262,7 @@ export interface RecipesRow {
   /** total_min <= 30; NULL when total_min is unknown */
   weeknight: 0 | 1 | null
   cuisine: Cuisine | null
-  /** 1.0 for a mapped source label, else the classifier's posterior; NULL with cuisine */
+  /** 1.0 for a mapped source label or a title marker (R20), else the classifier's posterior; NULL with cuisine */
   cuisine_confidence: number | null
   cuisine_source: CuisineSource | null
   course: Course
@@ -356,7 +356,7 @@ export interface RecipeDietRow {
   recipe_id: number
   preset: DietPreset
   status: DietStatus
-  /** JSON-encoded `DietSwap[]`. What makes an adaptable recipe work; [] unless status = 'adaptable' */
+  /** JSON-encoded `DietSwap[]`. Stored in the short form, read with decodeDietSwaps (model.ts); what makes an adaptable recipe work; [] unless status = 'adaptable' */
   swaps: string
 }
 

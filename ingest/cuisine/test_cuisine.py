@@ -241,3 +241,44 @@ def test_title_cuisine_demonym_and_dish_marker():
 def test_title_cuisine_never_overrides_generic_adjectives():
     for title in ('Italian Sausage and Peppers', 'French Fries', 'American Cheese Dip'):
         assert C.title_cuisine(title) is None
+
+
+# ---------- R20 wired into the build (brief S19 #1) ----------
+
+def _never():
+    raise AssertionError('the classifier must not be consulted')
+
+
+def test_r20_demonym_beats_dish_marker_both_in_title():
+    # ruling R20's own example: the demonym wins over "tabbouleh"
+    assert C.title_marker('Moroccan Lamb With Tabbouleh And Crispy Garlic') == ('north_african', 'demonym')
+    assert C.title_marker('Sticky Fig & Port Chutney') == ('indian', 'dish')
+    assert C.title_marker('Plain Roast Chicken') == (None, None)
+
+
+def test_r20_demonym_is_a_whole_word_and_skips_ingredient_names():
+    assert C.title_marker('Indiana Sugar Cream Pie') == (None, None)
+    assert C.title_marker('Greek Yogurt Parfait') == (None, None)
+    assert C.title_marker('German Chocolate Cake')[1] != 'demonym'
+    assert C.title_marker("Super Bowl: General Tso'S Chicken Wings") == ('chinese', 'demonym')
+
+
+def test_r20_resolve_precedence():
+    confident = lambda: {'label': 'korean', 'confidence': 0.91234}  # noqa: E731
+    unsure = lambda: {'label': 'unknown', 'confidence': 0.2}  # noqa: E731
+    # a source label always wins, and the classifier is not run
+    assert C.resolve('greek', 'Thai Salad', _never) == ('greek', 1.0, 'source_label')
+    # a demonym always overrides the classifier
+    assert C.resolve(None, "General Tso'S Chicken Wings", _never) == ('chinese', 1.0, 'title_marker')
+    # a dish marker only when the classifier is unknown (below its threshold)
+    assert C.resolve(None, 'Sticky Fig Chutney', confident) == ('korean', 0.9123, 'classifier')
+    assert C.resolve(None, 'Sticky Fig Chutney', unsure) == ('indian', 1.0, 'title_marker')
+    assert C.resolve(None, 'Plain Roast Chicken', unsure) == (None, None, None)
+    assert C.resolve(None, 'Plain Roast Chicken', confident) == ('korean', 0.9123, 'classifier')
+
+
+def test_r20_retitle_matches_resolve_on_old_scan_records():
+    assert C.retitle('korean', 0.8, "General Tso'S Chicken Wings") == ('chinese', 1.0)
+    assert C.retitle('korean', 0.8, 'Sticky Fig Chutney') == ('korean', 0.8)
+    assert C.retitle(None, None, 'Sticky Fig Chutney') == ('indian', 1.0)
+    assert C.retitle('greek', 1.0, 'Thai Salad') == ('greek', 1.0)   # a source label stays

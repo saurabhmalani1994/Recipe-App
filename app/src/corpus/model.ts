@@ -55,6 +55,32 @@ export interface DietSwap {
   from_steps?: boolean
 }
 
+/**
+ * `recipe_diet.swaps` is stored in a short form (schema 4, schema/corpus.sql): keys
+ * i, s, u, x, v, b, q, f for item, slug, use, use_slug, via, sub_id, quality, from_steps; via
+ * 's', 'a', 'o' for substitution, alternative, omit; a null value left out. An element already in
+ * the long form (a schema 3 file) is passed through.
+ */
+const SWAP_VIA: Record<string, SwapVia> = { s: 'substitution', a: 'alternative', o: 'omit' }
+
+export function decodeDietSwaps(json: string | null | undefined): DietSwap[] {
+  const rows = JSON.parse(json ?? '[]') as Record<string, unknown>[]
+  return rows.map((r) => {
+    if ('item' in r) return r as unknown as DietSwap
+    const swap: DietSwap = {
+      item: r.i as string,
+      slug: (r.s as string | undefined) ?? null,
+      use: (r.u as string | undefined) ?? null,
+      via: SWAP_VIA[r.v as string] ?? (r.v as SwapVia),
+    }
+    if (r.x !== undefined) swap.use_slug = r.x as string | string[]
+    if (r.b !== undefined) swap.sub_id = r.b as string
+    if (r.q !== undefined) swap.quality = r.q as number
+    if (r.f !== undefined) swap.from_steps = r.f as boolean
+    return swap
+  })
+}
+
 /** A diet status the preset filter lets through. */
 export function dietAllows(status: DietStatus): boolean {
   return status === 'ok' || status === 'adaptable'

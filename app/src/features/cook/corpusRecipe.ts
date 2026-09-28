@@ -1,5 +1,5 @@
 import type { Db } from '../../db/types'
-import type { DietSwap } from '../../corpus/model'
+import { decodeDietSwaps, type DietSwap } from '../../corpus/model'
 import type {
   Course,
   Cuisine,
@@ -155,7 +155,7 @@ export async function loadCorpusRecipe(
     })),
     steps: steps.rows.map((s) => s.text),
     diet: dietRow
-      ? { status: dietRow.status, swaps: JSON.parse(dietRow.swaps) as DietSwap[] }
+      ? { status: dietRow.status, swaps: decodeDietSwaps(dietRow.swaps) }
       : null,
   }
 }

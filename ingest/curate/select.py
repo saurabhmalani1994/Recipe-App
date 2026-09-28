@@ -67,7 +67,10 @@ HARD_CAP = 100_000
 SIZE_CAP_BYTES = 235_000_000
 BYTE_BUDGET = int(SIZE_CAP_BYTES * 0.97)
 STATIC_BYTES = 823_296
-EST_BASE, EST_PER_STEP_CHAR, EST_PER_LINE = 529.0, 0.997, 162.4
+# S19 (schema 4) stores no vegetarian_strict rows and writes swaps with short keys: measured on a
+# copy of the S10 build, 13,877,248 bytes over its 64,225 recipes, 216 bytes a recipe, taken off
+# the fitted base of 529.
+EST_BASE, EST_PER_STEP_CHAR, EST_PER_LINE = 313.0, 0.997, 162.4
 OK = ('ok', 'adaptable')
 MIX = {
     'main': (0.45, lambda r: r['course'] == 'main'),

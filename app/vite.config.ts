@@ -10,14 +10,17 @@ import { defineConfig, type Plugin } from 'vite'
  * Bundles `corpus.db` with the build at `assets/databases/corpus.db` (S6), the path
  * `src/corpus/config.ts` reads by default. On Android that lands in
  * `assets/public/assets/databases/`, where @capacitor-community/sqlite's `copyFromAssets()` looks.
- * The file bundled is `src/corpus/fixture.db` until the real corpus.db (a GitHub Release asset,
- * never in git) is dropped in by setting CORPUS_DB_FILE at build time.
+ * The file bundled is `src/corpus/fixture.db` unless CORPUS_DB_FILE names another at build time:
+ * CI's APK build sets `CORPUS_DB_FILE=corpus/corpus.db`, the real library kept in git LFS (S19).
+ * A relative CORPUS_DB_FILE is resolved from the repository root, and a named file that is
+ * missing fails the build rather than shipping without its corpus.
  */
 const CORPUS_ASSET = 'assets/databases/corpus.db'
 
 function bundleCorpus(): Plugin {
   const root = fileURLToPath(new URL('.', import.meta.url))
-  const file = resolve(root, process.env.CORPUS_DB_FILE ?? 'src/corpus/fixture.db')
+  const named = process.env.CORPUS_DB_FILE
+  const file = named ? resolve(root, '..', named) : resolve(root, 'src/corpus/fixture.db')
   const read = (): Buffer | null => (existsSync(file) ? readFileSync(file) : null)
   return {
     name: 'bundle-corpus-db',
@@ -42,8 +45,13 @@ function bundleCorpus(): Plugin {
     generateBundle() {
       const bytes = read()
       if (!bytes) {
+        if (named) this.error(`CORPUS_DB_FILE=${named}: ${file} is missing`)
         this.warn(`corpus.db not bundled: ${file} is missing`)
         return
+      }
+      if (bytes.subarray(0, 16).toString('latin1') !== 'SQLite format 3\u0000') {
+        // an LFS pointer left by a checkout that did not pull the object, or any other non-database
+        this.error(`${file} is not an SQLite database (${bytes.length} bytes)`)
       }
       this.emitFile({ type: 'asset', fileName: CORPUS_ASSET, source: bytes })
     },
