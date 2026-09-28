@@ -66,6 +66,14 @@ PAIRS.push(
   ['--on-accent-soft', '--accent-soft', 4.5],
   ['--text', '--accent-soft', 4.5],
   ['--on-herb-soft', '--herb-soft', 4.5],
+  // S22b: swipe actions (tick, delete) and the undo snackbar.
+  ['--on-herb', '--herb', 4.5],
+  ['--on-danger', '--danger', 4.5],
+  ['--on-inverse', '--inverse-surface', 4.5],
+  ['--inverse-accent', '--inverse-surface', 4.5],
+  // S22b: the delete action's colour also marks "you avoid this" text on the page.
+  ['--danger', '--bg', 4.5],
+  ['--danger', '--surface', 4.5],
 )
 for (let i = 1; i <= 8; i++) PAIRS.push([`--ph-${i}-fg`, `--ph-${i}-bg`, 4.5])
 

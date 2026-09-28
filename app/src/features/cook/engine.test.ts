@@ -336,6 +336,7 @@ describe('ranking (R19: ok outranks adaptable within a coverage band)', () => {
       title: 't',
       course: 'main',
       cuisine: null,
+      cuisineTag: null,
       totalMin: null,
       quality: 5,
       coverage: 0.5,

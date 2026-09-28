@@ -14,6 +14,8 @@ import { GroceryList } from './routes/GroceryList'
 import { Home } from './routes/Home'
 import { ImportFromUrl } from './routes/ImportFromUrl'
 import { Kitchen } from './routes/Kitchen'
+import { SnackbarProvider } from './components/ui/Snackbar'
+import { MyRecipeDetail } from './routes/MyRecipeDetail'
 import { MyRecipeEditor } from './routes/MyRecipeEditor'
 import { MyRecipes } from './routes/MyRecipes'
 import { Plan } from './routes/Plan'
@@ -62,6 +64,7 @@ function StackScreen() {
     <div className="stack-screen app-scroll" onScroll={onScroll} key={pathname}>
       <Routes>
         <Route path="/my-recipes/import" element={<ImportFromUrl />} />
+        <Route path="/my-recipes/:id/view" element={<MyRecipeDetail />} />
         <Route path="/my-recipes/:id" element={<MyRecipeEditor />} />
         <Route path="/recipe/:id" element={<RecipeDetail />} />
         <Route path="/favorites" element={<Favorites />} />
@@ -74,9 +77,12 @@ function StackScreen() {
 
 function Shell() {
   const { pathname } = useLocation()
+  const { collapsed } = useChrome()
   const isTab = tabIndexOf(pathname) >= 0
   return (
-    <div className="app-shell">
+    // `app-shell--bar-hidden` moves sticky headers (List aisles, the recipe's servings bar) up
+    // into the space the tucked-away top bar leaves.
+    <div className={`app-shell${collapsed ? ' app-shell--bar-hidden' : ''}`}>
       <AppTopBar />
       <main className="app-main">
         {isTab ? <TabPager screens={TAB_SCREENS} /> : <StackScreen />}
@@ -92,7 +98,9 @@ export function App() {
       <HashRouter>
         <AndroidBackButton />
         <ChromeProvider>
-          <Shell />
+          <SnackbarProvider>
+            <Shell />
+          </SnackbarProvider>
         </ChromeProvider>
       </HashRouter>
     </DietProvider>

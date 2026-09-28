@@ -1,6 +1,7 @@
 import type { Db } from '../../db/types'
 import { decodeDietSwaps, type DietSwap } from '../../corpus/model'
-import type { Course, Cuisine, DietStatus, Equipment } from '../../corpus/types'
+import type { Course, Cuisine, CuisineSource, DietStatus, Equipment } from '../../corpus/types'
+import { cuisineTag } from './labels'
 import {
   avoidHits,
   expandAvoid,
@@ -72,6 +73,8 @@ export interface MatchResult {
   title: string
   course: Course
   cuisine: Cuisine | null
+  /** The cuisine to label the card with (S22b: a classifier guess under 0.8 is not shown). */
+  cuisineTag: Cuisine | null
   totalMin: number | null
   quality: number
   /** Core slugs the cook has, over core slugs plus unreadable lines. */
@@ -112,6 +115,8 @@ interface CandidateRow {
   title: string
   course: Course
   cuisine: Cuisine | null
+  cuisine_source: CuisineSource | null
+  cuisine_confidence: number | null
   total_min: number | null
   quality: number
   core_slug_count: number
@@ -159,7 +164,8 @@ hits AS (
   GROUP BY rs.recipe_id
 )
 SELECT
-  r.id, r.key, r.title, r.course, r.cuisine, r.total_min, r.quality,
+  r.id, r.key, r.title, r.course, r.cuisine, r.cuisine_source, r.cuisine_confidence,
+  r.total_min, r.quality,
   r.core_slug_count, r.unresolved_count, hits.matched,
   count(*) OVER () AS total,
   d.status AS diet_status, d.swaps AS diet_swaps
@@ -356,6 +362,11 @@ export async function matchRecipes(db: Db, query: MatchQuery): Promise<MatchOutp
       title: candidate.title,
       course: candidate.course,
       cuisine: candidate.cuisine,
+      cuisineTag: cuisineTag(
+        candidate.cuisine,
+        candidate.cuisine_source,
+        candidate.cuisine_confidence,
+      ),
       totalMin: candidate.total_min,
       quality: candidate.quality,
       coverage,

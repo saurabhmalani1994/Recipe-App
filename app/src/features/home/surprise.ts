@@ -1,7 +1,8 @@
-import type { Cuisine, Course } from '../../corpus/types'
+import type { Cuisine, CuisineSource, Course } from '../../corpus/types'
 import type { Db } from '../../db/types'
 import { loadAvoidHits, recordHidden, verdictFor, type AvoidList, type HiddenTally } from '../cook/avoid'
 import type { AppDiet } from '../cook/engine'
+import { cuisineTag } from '../cook/labels'
 import { expandHave, type Taxonomy } from '../cook/taxonomy'
 import { loadCoverage } from './coverage'
 import type { HomeCard } from './types'
@@ -28,6 +29,8 @@ interface RecipeSummaryRow {
   key: string
   title: string
   cuisine: Cuisine | null
+  cuisine_source: CuisineSource | null
+  cuisine_confidence: number | null
   course: Course
   total_min: number | null
   quality: number
@@ -42,7 +45,8 @@ export async function pickSurprise(
   const diet = params.diet === 'everything' ? null : params.diet
   const floor = params.qualityFloor ?? DEFAULT_QUALITY_FLOOR
   const { rows } = await db.query<RecipeSummaryRow>(
-    `SELECT r.id, r.key, r.title, r.cuisine, r.course, r.total_min, r.quality, r.image_url
+    `SELECT r.id, r.key, r.title, r.cuisine, r.cuisine_source, r.cuisine_confidence, r.course,
+            r.total_min, r.quality, r.image_url
        FROM recipes r
        LEFT JOIN recipe_diet d ON d.recipe_id = r.id AND d.preset = ?
       WHERE r.quality >= ?
@@ -78,6 +82,8 @@ export async function pickSurprise(
     key: row.key,
     title: row.title,
     cuisine: row.cuisine,
+    cuisineTag: cuisineTag(row.cuisine, row.cuisine_source, row.cuisine_confidence),
+    course: row.course,
     totalMin: row.total_min,
     imageUrl: row.image_url,
     covered: cov.covered,

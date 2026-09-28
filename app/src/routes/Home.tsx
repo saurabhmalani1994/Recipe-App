@@ -14,6 +14,7 @@ import { cuisineLabel } from '../features/cook/labels'
 import { corpusStatusText, useCorpus } from '../features/cook/useCorpus'
 import { loadHomeRows } from '../features/home/homeRepo'
 import { pickSurprise } from '../features/home/surprise'
+import { pickTodaysHero } from '../features/home/todaysPick'
 import type { HomeCard, HomeRow, HomeRowId } from '../features/home/types'
 import { listKitchenItems } from '../features/kitchen/kitchenRepo'
 import { listAvoidIngredients } from '../features/settings/settingsRepo'
@@ -42,20 +43,11 @@ function greeting(date: Date): string {
   return 'Good evening'
 }
 
-/** Today's pick for the hero: the day's seasonal/weekend pick, else the best "cook" match. */
-function pickHero(rows: HomeRow[]): { card: HomeCard; from: HomeRowId } | null {
-  for (const id of ['seasonal', 'cook', 'explore', 'favorites'] as const) {
-    const card = rows.find((row) => row.id === id)?.cards[0]
-    if (card) return { card, from: id }
-  }
-  return null
-}
-
 function toCardData(card: HomeCard) {
   return {
     title: card.title,
     cuisine: card.cuisine,
-    cuisineLabel: card.cuisine ? cuisineLabel(card.cuisine) : null,
+    cuisineLabel: card.cuisineTag ? cuisineLabel(card.cuisineTag) : null,
     totalMin: card.totalMin,
     imageUrl: card.imageUrl,
     covered: card.covered,
@@ -126,7 +118,7 @@ export function Home() {
 
   const notReady = corpus ? null : (corpusStatusText(status) ?? 'Opening the recipe library…')
   const loading = !rows
-  const hero = rows ? pickHero(rows) : null
+  const hero = rows ? pickTodaysHero(rows) : null
 
   return (
     <section className="screen screen--home" data-testid="screen-home">
@@ -237,7 +229,7 @@ export function Home() {
           // The hero already shows this row's first card: don't repeat it right underneath.
           const cards =
             hero && !surprise && hero.from === row.id && row.cards.length > 1
-              ? row.cards.slice(1)
+              ? row.cards.filter((card) => card.key !== hero.card.key)
               : row.cards
           const copy = ROW_COPY[row.id]
           // Explore's reason ("You haven't cooked Korean lately") is the same for the whole row:

@@ -189,6 +189,8 @@ export async function matchMyRecipes(
       title: recipe.title,
       course: 'main',
       cuisine: recipe.data.cuisine,
+      // The owner typed this cuisine themselves: always shown.
+      cuisineTag: recipe.data.cuisine,
       totalMin: recipe.data.totalMin ?? null,
       // R12: the owner's own recipes worked well by definition (that's why they're saved), so
       // a My Recipe ranks as the top quality within its coverage band rather than sinking below

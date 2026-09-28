@@ -3,6 +3,7 @@ import { decodeDietSwaps, type DietSwap } from '../../corpus/model'
 import type {
   Course,
   Cuisine,
+  CuisineSource,
   DietStatus,
   Equipment,
   ServingsSource,
@@ -11,6 +12,7 @@ import type {
 import { targetServings } from '../scaling/scale'
 import { convertAmount, formatAmount, type UnitSystem, type UnitTable } from '../units/units'
 import type { AppDiet } from './engine'
+import { cuisineTag } from './labels'
 import { fittingSwaps, loadSwapTable, recipeContexts, type SwapOption } from './swaps'
 import { displayName, type Taxonomy } from './taxonomy'
 
@@ -29,6 +31,8 @@ export interface CorpusRecipe {
   totalMin: number | null
   activeMin: number | null
   cuisine: Cuisine | null
+  /** The cuisine to label the recipe with (S22b: a classifier guess under 0.8 is not shown). */
+  cuisineTag: Cuisine | null
   course: Course
   onePot: boolean
   noCook: boolean
@@ -36,6 +40,21 @@ export interface CorpusRecipe {
   lines: CorpusLine[]
   steps: string[]
   diet: { status: DietStatus; swaps: DietSwap[] } | null
+  /** S22a/S22b: the recipe's photo, shown only online. */
+  imageUrl: string | null
+  /** S14: per serving, estimated from USDA FoodData Central; null when the build had none. */
+  nutrition: Nutrition | null
+}
+
+/** Per-serving nutrition estimate (S14). `kcal` is always set; the rest may be missing. */
+export interface Nutrition {
+  kcal: number
+  proteinG: number | null
+  fatG: number | null
+  carbsG: number | null
+  fiberG: number | null
+  sugarG: number | null
+  sodiumMg: number | null
 }
 
 export interface CorpusLine {
@@ -66,9 +85,19 @@ interface RecipeRow {
   total_min: number | null
   active_min: number | null
   cuisine: Cuisine | null
+  cuisine_source: CuisineSource | null
+  cuisine_confidence: number | null
   course: Course
   one_pot: number | null
   no_cook: number
+  image_url: string | null
+  kcal: number | null
+  protein_g: number | null
+  fat_g: number | null
+  carbs_g: number | null
+  fiber_g: number | null
+  sugar_g: number | null
+  sodium_mg: number | null
 }
 
 interface IngredientRow {
@@ -94,7 +123,9 @@ export async function loadCorpusRecipe(
 ): Promise<CorpusRecipe | null> {
   const { rows } = await db.query<RecipeRow>(
     `SELECT id, key, title, source_url, video_url, servings, servings_source, yield_text,
-            total_min, active_min, cuisine, course, one_pot, no_cook
+            total_min, active_min, cuisine, cuisine_source, cuisine_confidence, course,
+            one_pot, no_cook, image_url, kcal, protein_g, fat_g, carbs_g, fiber_g, sugar_g,
+            sodium_mg
        FROM recipes WHERE key = ?`,
     [key],
   )
@@ -134,7 +165,21 @@ export async function loadCorpusRecipe(
     totalMin: row.total_min,
     activeMin: row.active_min,
     cuisine: row.cuisine,
+    cuisineTag: cuisineTag(row.cuisine, row.cuisine_source, row.cuisine_confidence),
     course: row.course,
+    imageUrl: row.image_url,
+    nutrition:
+      row.kcal === null
+        ? null
+        : {
+            kcal: row.kcal,
+            proteinG: row.protein_g,
+            fatG: row.fat_g,
+            carbsG: row.carbs_g,
+            fiberG: row.fiber_g,
+            sugarG: row.sugar_g,
+            sodiumMg: row.sodium_mg,
+          },
     onePot: row.one_pot === 1,
     noCook: row.no_cook === 1,
     equipment: equipment.rows.map((e) => e.equipment),

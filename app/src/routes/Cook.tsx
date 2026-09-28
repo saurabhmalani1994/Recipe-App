@@ -564,7 +564,7 @@ export function Cook() {
                         {result.mine && <span className="badge"> Mine</span>}
                       </span>
                       <span className="meta">
-                        {result.cuisine && <span>{cuisineLabel(result.cuisine)}</span>}
+                        {result.cuisineTag && <span>{cuisineLabel(result.cuisineTag)}</span>}
                         {result.totalMin !== null && (
                           <span className="meta__time">
                             <Icon name="clock" size={14} />

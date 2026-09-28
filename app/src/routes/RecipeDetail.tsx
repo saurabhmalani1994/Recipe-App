@@ -1,15 +1,14 @@
 import { useEffect, useState } from 'react'
 import { useNavigate, useParams } from 'react-router-dom'
+import { RecipeDetailView, StarButton } from '../components/recipe/RecipeDetailView'
+import { Icon } from '../components/ui/Icon'
+import { EmptyState } from '../components/ui/Section'
 import { FIXTURE_RECIPES } from '../corpus/fixture'
+import { cuisineLabel, equipmentLabel } from '../features/cook/labels'
 import { isFavorite, setFavorite } from '../features/favorites/favoritesRepo'
 import { forkRecipe } from '../features/myRecipes/myRecipesRepo'
 import { AddToPlanControl } from '../features/plan/AddToPlanControl'
-import {
-  scaleFactor,
-  scaleIngredients,
-  targetServings,
-  type Units,
-} from '../features/scaling/scale'
+import { scaleIngredients, targetServings } from '../features/scaling/scale'
 import { getSettings, type AppSettings } from '../features/settings/settingsRepo'
 import { CorpusRecipeDetail } from './CorpusRecipeDetail'
 
@@ -31,22 +30,19 @@ function FixtureRecipeDetail({ id }: { id: string | undefined }) {
 
   const [favorite, setFavoriteState] = useState(false)
   const [settings, setSettings] = useState<AppSettings | null>(null)
-  const [units, setUnits] = useState<Units>('metric')
+  const [people, setPeople] = useState<number | null>(null)
   const [forking, setForking] = useState(false)
 
   useEffect(() => {
     if (!id) return
     void isFavorite(id).then(setFavoriteState)
-    void getSettings().then((s) => {
-      setSettings(s)
-      setUnits(s.units)
-    })
+    void getSettings().then(setSettings)
   }, [id])
 
   if (!recipe) {
     return (
-      <section className="screen" data-testid="screen-recipe-detail">
-        <p className="screen__placeholder">Recipe not found.</p>
+      <section className="screen screen--detail" data-testid="screen-recipe-detail">
+        <EmptyState icon="search" title="Recipe not found." />
       </section>
     )
   }
@@ -71,61 +67,74 @@ function FixtureRecipeDetail({ id }: { id: string | undefined }) {
     }
   }
 
-  const people = settings?.peopleDefault ?? 2
+  const headCount = people ?? settings?.peopleDefault ?? 2
   const perPerson = settings?.servingsPerPerson ?? 1.5
-  const target = targetServings(people, perPerson)
-  const factor = scaleFactor(recipe.servings, people, perPerson)
+  const target = targetServings(headCount, perPerson)
+  const factor = recipe.servings > 0 ? target / recipe.servings : 1
   const scaled = scaleIngredients(recipe.ingredients, factor)
 
   return (
-    <section className="screen" data-testid="screen-recipe-detail">
-      <div className="recipe-detail__header">
-        <h2>{recipe.title}</h2>
-        <button
-          type="button"
-          aria-pressed={favorite}
-          aria-label={favorite ? 'Remove favorite' : 'Add favorite'}
-          className="recipe-detail__favorite"
-          onClick={() => void toggleFavorite()}
-        >
-          {favorite ? '★' : '☆'}
-        </button>
-        <AddToPlanControl recipeId={recipe.id} recipeSource="fixture" recipeTitle={recipe.title} />
-      </div>
-
-      <div className="recipe-detail__meta">
-        <span>
-          Serves {target} (for {people} people × {perPerson}/person, recipe makes {recipe.servings})
-        </span>
-        <label>
-          Units
-          <select value={units} onChange={(e) => setUnits(e.target.value as Units)}>
-            <option value="metric">Metric</option>
-            <option value="us">US</option>
-          </select>
-        </label>
-      </div>
-
-      <h3>Ingredients</h3>
-      <ul className="recipe-detail__ingredients">
-        {scaled.map((line, i) => (
-          <li key={i}>
-            {line.scaledQuantity ?? ''} {line.unit ?? ''} {line.canonicalIngredient}
-            {line.form ? ` (${line.form})` : ''}
-          </li>
-        ))}
-      </ul>
-
-      <h3>Steps</h3>
-      <ol className="recipe-detail__steps">
-        {recipe.steps.map((step, i) => (
-          <li key={i}>{step}</li>
-        ))}
-      </ol>
-
-      <button type="button" disabled={forking} onClick={() => void makeMyVersion()}>
-        Make my version
-      </button>
+    <section className="screen screen--detail" data-testid="screen-recipe-detail">
+      <RecipeDetailView
+        title={recipe.title}
+        cuisine={recipe.cuisine}
+        cuisineLabel={cuisineLabel(recipe.cuisine)}
+        meta={
+          <>
+            <span className="meta__time">
+              <Icon name="clock" size={16} />
+              {recipe.totalMinutes} min total
+            </span>
+            <span>Serves {recipe.servings}</span>
+            {recipe.onePot && <span>One pot</span>}
+          </>
+        }
+        actions={
+          <>
+            <StarButton on={favorite} onToggle={() => void toggleFavorite()} />
+            <AddToPlanControl
+              recipeId={recipe.id}
+              recipeSource="fixture"
+              recipeTitle={recipe.title}
+              variant="pill"
+            />
+            <button
+              type="button"
+              className="button button--quiet"
+              disabled={forking}
+              onClick={() => void makeMyVersion()}
+            >
+              <Icon name="edit" size={18} />
+              Make my version
+            </button>
+          </>
+        }
+        servings={{ people: headCount, onPeopleChange: setPeople, target }}
+        intro={
+          recipe.equipment.length > 0 && (
+            <ul className="chip-wrap detail-equipment" aria-label="Equipment">
+              {recipe.equipment.map((e) => (
+                <li key={e} className="chip">
+                  {equipmentLabel(e)}
+                </li>
+              ))}
+            </ul>
+          )
+        }
+        ingredients={scaled.map((line, i) => ({
+          key: i,
+          text: [
+            line.scaledQuantity ?? '',
+            line.unit && line.unit !== 'unit' ? line.unit : '',
+            line.canonicalIngredient,
+          ]
+            .filter((part) => part !== '')
+            .join(' ')
+            .concat(line.form ? ` (${line.form})` : ''),
+        }))}
+        // The hand-written fixture's source links are example.com placeholders: not shown.
+        steps={recipe.steps}
+      />
     </section>
   )
 }
