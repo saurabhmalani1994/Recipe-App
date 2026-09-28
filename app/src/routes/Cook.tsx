@@ -12,6 +12,7 @@ import { cuisineLabel, equipmentLabel } from '../features/cook/labels'
 import { displayName } from '../features/cook/taxonomy'
 import { corpusStatusText, useCorpus } from '../features/cook/useCorpus'
 import { listKitchenItems } from '../features/kitchen/kitchenRepo'
+import { AddToPlanControl } from '../features/plan/AddToPlanControl'
 import { listKitchenEquipment } from '../features/settings/settingsRepo'
 import { KITCHEN_EQUIPMENT } from '../data/equipment'
 import { PANTRY_DEFAULT_SLUGS } from '../db'
@@ -280,6 +281,11 @@ export function Cook() {
                       </span>
                     )}
                   </Link>
+                  <AddToPlanControl
+                    recipeId={result.key}
+                    recipeSource="corpus"
+                    recipeTitle={result.title}
+                  />
                 </li>
               )
             })}

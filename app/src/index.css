@@ -580,3 +580,137 @@ button.chip[aria-pressed='true'] {
 .recipe-detail__source {
   overflow-wrap: anywhere;
 }
+
+/* S7: Plan (weekly grid) and List (grocery build + shopping mode). */
+.plan-week-switch {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 12px;
+}
+
+.plan-day {
+  margin-bottom: 16px;
+}
+
+.plan-day__title {
+  margin: 0 0 6px;
+  font-size: 1rem;
+}
+
+.plan-slot {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding: 8px 0;
+  border-bottom: 1px solid var(--color-border);
+}
+
+.plan-slot__meal {
+  font-size: 0.8rem;
+  color: var(--color-text-muted);
+}
+
+.plan-entry {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+}
+
+.plan-entry a {
+  color: var(--color-text);
+  font-weight: 600;
+  overflow-wrap: anywhere;
+}
+
+.plan-entry__people input {
+  width: 56px;
+  margin-left: 4px;
+}
+
+.plan-entry__hint {
+  flex-basis: 100%;
+  margin: 0;
+  font-size: 0.8rem;
+  color: var(--color-accent);
+}
+
+.plan-picker {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.plan-picker__list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.add-to-plan {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin: 8px 0;
+  padding: 8px;
+  border: 1px solid var(--color-border);
+  border-radius: 8px;
+}
+
+.add-to-plan__actions {
+  display: flex;
+  gap: 8px;
+}
+
+.list-build {
+  display: flex;
+  align-items: flex-end;
+  gap: 8px;
+  margin-bottom: 12px;
+}
+
+.list-actions {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 12px;
+}
+
+.shopping-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.shopping-item {
+  border-bottom: 1px solid var(--color-border);
+}
+
+.shopping-item__label {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-height: 44px;
+  padding: 6px 0;
+}
+
+.shopping-item__label input[type='checkbox'] {
+  width: 24px;
+  height: 24px;
+  flex-shrink: 0;
+}
+
+.shopping-item__name {
+  flex: 1;
+  overflow-wrap: anywhere;
+}
+
+.shopping-item--checked .shopping-item__name {
+  text-decoration: line-through;
+  color: var(--color-text-muted);
+}
+
+.shopping-item__amount {
+  font-size: 0.85rem;
+  color: var(--color-text-muted);
+  white-space: nowrap;
+}

@@ -12,6 +12,7 @@ import { swapLabel, type SwapOption } from '../features/cook/swaps'
 import { expandHave } from '../features/cook/taxonomy'
 import { corpusStatusText, useCorpus } from '../features/cook/useCorpus'
 import { listKitchenItems } from '../features/kitchen/kitchenRepo'
+import { AddToPlanControl } from '../features/plan/AddToPlanControl'
 import { getSettings, type AppSettings } from '../features/settings/settingsRepo'
 import type { UnitSystem } from '../features/units/units'
 import { DIET_PRESET_LABELS, useDiet } from '../state/diet'
@@ -99,6 +100,7 @@ export function CorpusRecipeDetail({ recipeKey }: { recipeKey: string }) {
     <section className="screen" data-testid="screen-recipe-detail">
       <div className="recipe-detail__header">
         <h2>{recipe.title}</h2>
+        <AddToPlanControl recipeId={recipe.key} recipeSource="corpus" recipeTitle={recipe.title} />
       </div>
 
       <div className="recipe-detail__meta">

@@ -3,6 +3,7 @@ import { useNavigate, useParams } from 'react-router-dom'
 import { FIXTURE_RECIPES } from '../corpus/fixture'
 import { isFavorite, setFavorite } from '../features/favorites/favoritesRepo'
 import { forkRecipe } from '../features/myRecipes/myRecipesRepo'
+import { AddToPlanControl } from '../features/plan/AddToPlanControl'
 import {
   scaleFactor,
   scaleIngredients,
@@ -89,6 +90,7 @@ function FixtureRecipeDetail({ id }: { id: string | undefined }) {
         >
           {favorite ? '★' : '☆'}
         </button>
+        <AddToPlanControl recipeId={recipe.id} recipeSource="fixture" recipeTitle={recipe.title} />
       </div>
 
       <div className="recipe-detail__meta">
