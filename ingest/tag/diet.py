@@ -32,11 +32,6 @@ from ingest.parse.parser import resolve  # noqa: E402
 PRESETS = ('vegetarian', 'no_red_meat', 'vegetarian_strict')
 MIN_QUALITY = 2
 
-# Generic slugs that ingest/subs has no entries for, read through a proxy target. The taxonomy
-# reads an unnamed "stock" as meat-based (flagged poultry), so it takes chicken stock's
-# substitutions. Local mirror until ingest/subs gains a `stock` target (see report).
-PROXY_TARGET = {'stock': 'chicken_stock', 'broth': 'chicken_stock'}
-
 I = re.IGNORECASE
 _RED = (r'beef|steaks?|pork|ham|hams|bacon|lamb|mutton|veal|venison|goat|sausages?|chorizo|salami|'
         r'pepperoni|prosciutto|pancetta|brisket|hamburgers?|burgers?|meatballs?|meatloaf|'
@@ -221,7 +216,6 @@ def best_substitution(slug, preset, contexts, item_optional=False):
     ing = _ing()
     by = subs_by_target()
     targets = T.ancestors(ing, slug)
-    targets += [PROXY_TARGET[t] for t in list(targets) if t in PROXY_TARGET]
     cands = []
     for depth, t in enumerate(targets):
         for e in by.get(t, []):

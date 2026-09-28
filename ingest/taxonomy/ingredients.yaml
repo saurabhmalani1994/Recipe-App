@@ -171,10 +171,13 @@ ingredients:
     name: alligator
     synonyms: [alligator meat, gator]
     category: protein
-    flags: [red_meat, explicit_meat]
+    flags: [poultry, explicit_meat]
     aisle: meat
     is_staple: false
     parent: meat
+    note: Reptile, not a mammal; not red meat. Grouped under `poultry` as the taxonomy's bucket
+      for non-red, non-seafood meat (like squid/octopus under `shellfish`), so it is fine for
+      no_red_meat.
   allspice:
     name: allspice
     synonyms: [ground allspice, allspice berries, whole allspice, pimento berries, jamaica pepper]
@@ -2965,7 +2968,7 @@ ingredients:
     is_staple: false
   crab:
     name: crab
-    synonyms: [crabmeat, crab meat, lump crabmeat, lump crab meat, fresh crabmeat, crab legs, king crab legs, dungeness crab, blue crabs, soft shell crabs, soft shelled crabs, snow crab, crab claws, backfin crab meat, canned crab, jumbo lump crab meat, claw crabmeat]
+    synonyms: [crabmeat, crab meat, lump crabmeat, lump crab meat, fresh crabmeat, crab legs, king crab legs, dungeness crab, blue crabs, soft shell crabs, soft shelled crabs, snow crab, crab claws, backfin crab meat, canned crab, jumbo lump crab meat, claw crabmeat, crab brown and white meat, brown and white crab meat, brown and white crabmeat]
     category: protein
     flags: [shellfish, explicit_meat]
     aisle: seafood
@@ -4520,10 +4523,13 @@ ingredients:
     name: frog legs
     synonyms: []
     category: protein
-    flags: [red_meat, explicit_meat]
+    flags: [poultry, explicit_meat]
     aisle: meat
     is_staple: false
     parent: meat
+    note: Amphibian, not a mammal; not red meat. Grouped under `poultry` as the taxonomy's
+      bucket for non-red, non-seafood meat (like squid/octopus under `shellfish`), so it is
+      fine for no_red_meat.
   frosting:
     name: frosting
     synonyms: [icing, canned frosting, chocolate frosting, vanilla frosting, cream cheese frosting, prepared frosting, buttercream, buttercream frosting, fudge frosting, white frosting, ready-to-spread frosting, royal icing, ready-to-roll icing, fondant, rolled fondant, sugarpaste, glaze, cake icing, decorating icing, whipped frosting, coconut pecan frosting, prepared chocolate frosting]
@@ -9131,6 +9137,15 @@ ingredients:
     aisle: pantry
     is_staple: false
     parent: penne
+  roast:
+    name: roast
+    synonyms: []
+    category: protein
+    flags: [red_meat, explicit_meat]
+    aisle: meat
+    is_staple: false
+    parent: beef
+    note: Unnamed roast is read as a beef roast, the conservative reading (like unnamed "meat").
   roasted_red_peppers:
     name: roasted red peppers
     synonyms: [roasted peppers, jarred roasted red peppers, roasted red bell peppers, piquillo peppers, pimientos, pimento, piquillo]

@@ -101,37 +101,51 @@ def test_ground_beef_is_adaptable_via_substitution():
         assert d['swaps'][0]['quality'] >= 2
 
 
-def test_low_quality_substitution_is_not_a_way_out():
-    # bacon -> tempeh is quality 1: not vegetarian-adaptable; turkey bacon (q2) works for no_red_meat
+def test_bacon_is_adaptable_via_substitution():
+    # S3b: bacon (via its `pork` ancestor) now has a real quality>=2 vegetarian analog, so it
+    # is no longer stuck as an unresolved blocker; no_red_meat has the same rescue.
     r = R(['8 slices bacon', '1 onion'], ['Fry the bacon.'])
+    for p in ('vegetarian', 'no_red_meat'):
+        d = diet(r, p)
+        assert d['status'] == 'adaptable'
+        assert d['swaps'][0]['quality'] >= 2
+
+
+def test_low_quality_substitution_is_not_a_way_out():
+    # ground lamb's only vegetarian-safe substitute (plant-based ground) is quality 1: not
+    # enough on its own. Lamb has no quality>=2 rescue for either preset.
+    r = R(['1 lb ground lamb', '1 onion'], ['Brown the lamb.'])
     assert diet(r, 'vegetarian')['status'] == 'no'
-    assert diet(r, 'no_red_meat')['status'] == 'adaptable'
+    assert diet(r, 'no_red_meat')['status'] == 'no'
 
 
 def test_optional_item_can_be_left_out_but_not_a_head_on_fish():
-    r = R(['1 lb bacon, cooked and crumbled (optional)', '2 potatoes'], ['Boil the potatoes.'])
+    # duck has no substitution in the table, so an optional one is left out; a turkey leg noted
+    # only "optional to remove the skin" is not an optional turkey leg.
+    r = R(['1 lb duck, cooked and shredded (optional)', '2 potatoes'], ['Boil the potatoes.'])
     d = diet(r, 'vegetarian')
     assert d['status'] == 'adaptable' and d['swaps'][0]['via'] == 'omit'
-    r = R(['2 whole sea bass, cleaned (optional to keep head on)', '1 lemon'], ['Grill the fish.'])
+    r = R(['2 turkey legs (optional to remove the skin)', '1 lemon'], ['Roast the turkey.'])
     assert diet(r, 'vegetarian')['status'] == 'no'
 
 
 def test_unreadable_alternative_is_not_a_way_out():
-    # the 20k run first tagged this ham "adaptable" via the alternative "unsmoked ..."
-    r = R(['5kg boneless gammon joint (smoked or unsmoked depending on your preference)', '2 tbsp honey'],
-          source='bbcgoodfood')
+    # the 20k run first tagged a similar ham cut "adaptable" via the alternative "unsmoked ...";
+    # lamb has no rescue substitution, so the unreadable alternative must be what is on trial.
+    r = R(['5kg boneless lamb joint (bone-in or boneless depending on your preference)',
+           '2 tbsp honey'], source='bbcgoodfood')
     assert diet(r, 'vegetarian')['status'] == 'no'
     assert diet(r, 'no_red_meat')['status'] == 'no'
 
 
 def test_negated_alternative_is_not_a_way_out():
-    r = R(['1 tin of tuna in oil (olive oil is best - NOT in brine or water)', '500g potatoes'])
+    r = R(['500g stewing lamb (not lamb neck)', '500g potatoes'])
     assert diet(r, 'vegetarian')['status'] == 'no'
 
 
 def test_meat_added_in_steps_but_missing_from_list_offends():
     r = R(['2 c. flour', 'hot chicken broth', '1 egg'], ['Drop dumplings into hot broth.',
-                                                         'Add chicken pieces, salt and pepper.'])
+                                                         'Add turkey pieces, salt and pepper.'])
     assert diet(r, 'vegetarian')['status'] == 'no'
     # a marinade that names meats as a choice is not itself meat
     r = R(['1/2 cup soy sauce', '1 tsp sugar'], ['Mix all together.', 'Add beef, pork, chicken or fish.'])
@@ -146,7 +160,11 @@ def test_nameless_lines_make_diet_unknown():
 
 
 def test_generic_meat_slug_yields_to_named_animal():
-    r = R(['1 crab brown and white meat separated', '100g watercress'])
+    # S3b: "crab brown and white meat" now resolves straight to `crab` in the parser (and crab
+    # has a real vegetarian swap via its `shellfish` ancestor, so it is no longer a fixture for
+    # this fallback). Lobster still misparses to the generic `meat` slug; the named animal
+    # ("lobster") must still win over the conservative, red-meat reading of unnamed "meat".
+    r = R(['1 lobster brown and white meat separated', '100g watercress'])
     assert diet(r, 'no_red_meat')['status'] == 'ok'
     assert diet(r, 'vegetarian')['status'] == 'no'
 
