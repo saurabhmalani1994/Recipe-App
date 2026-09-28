@@ -2,7 +2,7 @@
 import { afterAll, beforeAll, describe, expect, it } from 'vitest'
 import type { WebDb } from '../../db/webDb'
 import { openFixtureDb } from '../../test/fixtureDb'
-import { matchRecipes, missingSummary, type MatchQuery } from './engine'
+import { compareRanked, matchRecipes, missingSummary, type MatchQuery, type MatchResult } from './engine'
 import { fittingSwaps, loadSwapTable, recipeContexts } from './swaps'
 import { expandHave, loadTaxonomy } from './taxonomy'
 
@@ -279,6 +279,100 @@ describe('substitutions: context and diet', () => {
       'beef_stock__mushroom_stock',
       'beef_stock__vegetable_stock-soy_sauce-tomato_paste',
     ])
+  })
+
+  // S20: ranking the "best swap" (orch/reports/S18.md flagged shrimp__scallops losing an id
+  // tiebreak to the ancestor swap shellfish__hearts_of_palm at equal quality).
+  describe('best-swap ranking (S20)', () => {
+    it('prefers an exact-slug swap over an ancestor one at equal quality, under Everything', async () => {
+      const tax = await loadTaxonomy(db)
+      const table = await loadSwapTable(db, tax, ['shrimp'])
+      const best = fittingSwaps(table, 'shrimp', new Set(), {
+        contexts: recipeContexts('main', 'Shrimp scampi'),
+        cuisine: null,
+        diet: 'everything',
+      })[0]
+      // shrimp__scallops (exact, quality 2) ties shellfish__hearts_of_palm (ancestor, quality 2)
+      // on quality; the exact-slug swap now wins instead of the id tiebreak.
+      expect(best.id).toBe('shrimp__scallops')
+    })
+
+    it('prefers the swap that satisfies the diet, under a diet preset', async () => {
+      const tax = await loadTaxonomy(db)
+      const table = await loadSwapTable(db, tax, ['shrimp'])
+      const best = fittingSwaps(table, 'shrimp', new Set(), {
+        contexts: recipeContexts('main', 'Shrimp scampi'),
+        cuisine: null,
+        diet: 'vegetarian',
+      })[0]
+      // scallops is dropped as explicit meat; between the two hearts-of-palm swaps left, the
+      // ancestor one (shellfish__hearts_of_palm, quality 2) beats the exact one (quality 1).
+      expect(best.id).toBe('shellfish__hearts_of_palm')
+    })
+
+    it('prefers a swap that keeps the dish\'s diet character over a diet-changing one, under Everything', async () => {
+      const tax = await loadTaxonomy(db)
+      const table = await loadSwapTable(db, tax, ['heavy_cream'])
+      const best = fittingSwaps(table, 'heavy_cream', new Set(), {
+        contexts: recipeContexts('main', 'Beef stroganoff'),
+        cuisine: null,
+        diet: 'everything',
+      })[0]
+      // All five heavy_cream swaps are exact, quality 2, global (cuisineFit true). Among the
+      // single-component ones (fewer components beats heavy_cream__milk-butter), the dairy ones
+      // (evaporated_milk, half_and_half) now outrank the dairy-free ones (cashew_cream,
+      // coconut_cream) that used to win the id tiebreak ('heavy_cream__cashew_cream' sorts
+      // first).
+      expect(best.id).toBe('heavy_cream__evaporated_milk')
+    })
+  })
+})
+
+describe('ranking (R19: ok outranks adaptable within a coverage band)', () => {
+  function result(over: Partial<MatchResult>): MatchResult {
+    return {
+      id: 1,
+      key: 'src:1',
+      title: 't',
+      course: 'main',
+      cuisine: null,
+      totalMin: null,
+      quality: 5,
+      coverage: 0.5,
+      covered: 5,
+      needed: 10,
+      missing: [],
+      substitutable: [],
+      diet: null,
+      avoided: [],
+      ...over,
+    }
+  }
+
+  it('ranks an "ok" recipe above an "adaptable" one in the same coverage band', () => {
+    const ok = result({ id: 1, coverage: 0.55, diet: { status: 'ok', swaps: [] } })
+    const adaptable = result({ id: 2, coverage: 0.51, diet: { status: 'adaptable', swaps: [] } })
+    expect([adaptable, ok].sort(compareRanked)).toEqual([ok, adaptable])
+  })
+
+  it('still lets a higher band win regardless of status (band comes first)', () => {
+    const okLowerBand = result({ id: 1, coverage: 0.51, diet: { status: 'ok', swaps: [] } })
+    const adaptableHigherBand = result({
+      id: 2,
+      coverage: 0.69,
+      diet: { status: 'adaptable', swaps: [] },
+    })
+    expect([okLowerBand, adaptableHigherBand].sort(compareRanked)).toEqual([
+      adaptableHigherBand,
+      okLowerBand,
+    ])
+  })
+
+  it('never distinguishes on status under Everything (diet is null there)', () => {
+    const a = result({ id: 1, coverage: 0.55, diet: null })
+    const b = result({ id: 2, coverage: 0.52, diet: null })
+    // Falls through to `covered`/`quality`/`missing`/`id`, unaffected by dietRank.
+    expect([a, b].sort(compareRanked)).toEqual([a, b])
   })
 })
 

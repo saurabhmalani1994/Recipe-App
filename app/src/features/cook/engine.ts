@@ -219,6 +219,12 @@ function compareLegacy(a: MatchResult, b: MatchResult): number {
   )
 }
 
+/** R19: under a diet preset, "ok" outranks "adaptable" within a coverage band (`diet` is null
+ * under the Everything preset, so this never distinguishes there). */
+function dietRank(status: DietStatus | undefined): number {
+  return status === 'adaptable' ? 1 : 0
+}
+
 export function compareRanked(a: MatchResult, b: MatchResult): number {
   // The floor: neither side's covered count may be beaten by a tinier recipe's percentage.
   if (a.covered < RANK_FLOOR_COVERED && b.covered > a.covered) return 1
@@ -229,6 +235,7 @@ export function compareRanked(a: MatchResult, b: MatchResult): number {
   if (bandA !== bandB) return bandB - bandA
 
   return (
+    dietRank(a.diet?.status) - dietRank(b.diet?.status) ||
     b.covered - a.covered ||
     b.quality - a.quality ||
     a.missing.length - b.missing.length ||

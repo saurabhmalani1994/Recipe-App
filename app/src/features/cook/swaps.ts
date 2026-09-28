@@ -180,8 +180,12 @@ export async function loadSwapTable(
 
 /**
  * The swaps for `slug` that fit `context` (a swap for a broader slug above it fits too), best
- * first: the ones you have everything for, then quality, then one written for this cuisine (or
- * 'global'), then fewer components, then id.
+ * first: the ones you have everything for, then quality, then an exact-slug swap over one
+ * written for a broader ancestor slug, then (S20, Everything preset only) a swap that keeps the
+ * dish's diet character (shares a diet flag with `slug` itself, e.g. a seafood-for-seafood swap)
+ * over a diet-changing one — under a diet preset every surviving swap already satisfies that
+ * diet, so this step is skipped there — then one written for this cuisine (or 'global'), then
+ * fewer components, then id.
  */
 export function fittingSwaps(
   table: SwapTable,
@@ -190,7 +194,9 @@ export function fittingSwaps(
   context: SwapContext,
 ): SwapOption[] {
   const banned = forbiddenFlag(context.diet)
-  const options: (SwapOption & { cuisineFit: boolean })[] = []
+  const origFlags = table.tax.flags.get(slug) ?? []
+  const preferCharacter = context.diet === 'everything' && origFlags.length > 0
+  const options: (SwapOption & { exactMatch: boolean; keepsCharacter: boolean; cuisineFit: boolean })[] = []
   for (const target of [slug, ...ancestors(table.tax, slug)]) {
     for (const swap of table.byTarget.get(target) ?? []) {
       if (!swap.contexts.some((c) => context.contexts.has(c))) continue
@@ -200,6 +206,8 @@ export function fittingSwaps(
       options.push({
         ...swap.option,
         haveAll: swap.option.components.every((c) => have.has(c.slug)),
+        exactMatch: target === slug,
+        keepsCharacter: preferCharacter && origFlags.some((f) => swap.flags.includes(f)),
         cuisineFit:
           swap.cuisines.includes('global') ||
           (context.cuisine !== null && swap.cuisines.includes(context.cuisine)),
@@ -210,11 +218,15 @@ export function fittingSwaps(
     (a, b) =>
       Number(b.haveAll) - Number(a.haveAll) ||
       b.quality - a.quality ||
+      Number(b.exactMatch) - Number(a.exactMatch) ||
+      Number(b.keepsCharacter) - Number(a.keepsCharacter) ||
       Number(b.cuisineFit) - Number(a.cuisineFit) ||
       a.components.length - b.components.length ||
       a.id.localeCompare(b.id),
   )
-  return options.map(({ cuisineFit, ...option }) => {
+  return options.map(({ exactMatch, keepsCharacter, cuisineFit, ...option }) => {
+    void exactMatch
+    void keepsCharacter
     void cuisineFit
     return option
   })
