@@ -71,6 +71,11 @@ export interface MatchResult {
   /** Missing, but a substitute works. */
   substitutable: SubstitutableItem[]
   diet: { status: DietStatus; swaps: DietSwap[] } | null
+  /** Set on a My Recipe joined in by `features/myRecipes/myRecipeMatch.ts` (S12); absent (falsy)
+   * for a corpus recipe. `myRecipeId` is then `key`'s companion for routing to the editor
+   * instead of the corpus recipe detail screen. */
+  mine?: boolean
+  myRecipeId?: string
 }
 
 export interface MatchOutput {
@@ -196,7 +201,7 @@ function compareLegacy(a: MatchResult, b: MatchResult): number {
   )
 }
 
-function compareRanked(a: MatchResult, b: MatchResult): number {
+export function compareRanked(a: MatchResult, b: MatchResult): number {
   // The floor: neither side's covered count may be beaten by a tinier recipe's percentage.
   if (a.covered < RANK_FLOOR_COVERED && b.covered > a.covered) return 1
   if (b.covered < RANK_FLOOR_COVERED && a.covered > b.covered) return -1
@@ -213,10 +218,19 @@ function compareRanked(a: MatchResult, b: MatchResult): number {
   )
 }
 
+/** `matchRecipes`'s default `limit`, reused by the My Recipes union (`myRecipeMatch.ts`) so a
+ * merged, re-sorted list is capped the same way the SQL-only one always was. */
+export const DEFAULT_MATCH_LIMIT = 50
+
+/** The ranking `matchRecipes` sorts by (S12: also used to re-sort a corpus + My Recipes union). */
+export function compareResults(a: MatchResult, b: MatchResult): number {
+  return RANK_LEGACY ? compareLegacy(a, b) : compareRanked(a, b)
+}
+
 export async function matchRecipes(db: Db, query: MatchQuery): Promise<MatchOutput> {
   const tax = await loadTaxonomy(db)
   const have = expandHave(tax, query.have)
-  const limit = query.limit ?? 50
+  const limit = query.limit ?? DEFAULT_MATCH_LIMIT
   const pool = Math.max(query.candidatePool ?? Math.max(limit * 4, 200), limit)
   const kitchen = nonEmpty(query.kitchen)
   const useOnly = nonEmpty(query.useOnly)
@@ -317,7 +331,7 @@ export async function matchRecipes(db: Db, query: MatchQuery): Promise<MatchOutp
     })
   }
 
-  results.sort(RANK_LEGACY ? compareLegacy : compareRanked)
+  results.sort(compareResults)
   return {
     results: results.slice(0, limit),
     stats: { candidates: total, scored: candidates.length },

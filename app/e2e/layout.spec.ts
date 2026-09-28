@@ -10,6 +10,7 @@ const ROUTES: { path: string; name: string; waitFor?: string }[] = [
   { path: '/list', name: 'list' },
   { path: '/my-recipes', name: 'my-recipes' },
   { path: '/my-recipes/new', name: 'my-recipe-editor' },
+  { path: '/my-recipes/import', name: 'import-url' },
   { path: '/favorites', name: 'favorites' },
   { path: '/kitchen', name: 'kitchen' },
   { path: '/settings', name: 'settings' },

@@ -1,4 +1,5 @@
 import type { Db } from '../../db/types'
+import type { IngredientFlag } from '../../corpus/types'
 
 /**
  * The slice of `corpus.db`'s `ingredients` table the engine, the recipe view and unit conversion
@@ -13,6 +14,9 @@ export interface Taxonomy {
   density: Map<string, number>
   /** grams in one piece. */
   eachG: Map<string, number>
+  /** The diet flags that are true for this slug (S12: My Recipes' own diet status, computed
+   * client-side since My Recipes are never in `recipe_diet`). Absent slug = no flags. */
+  flags: Map<string, IngredientFlag[]>
 }
 
 interface IngredientRow {
@@ -22,6 +26,7 @@ interface IngredientRow {
   is_staple: number
   density_g_per_ml: number | null
   each_g: number | null
+  flags: string
 }
 
 const cache = new WeakMap<Db, Promise<Taxonomy>>()
@@ -37,7 +42,7 @@ export function loadTaxonomy(db: Db): Promise<Taxonomy> {
 
 async function readTaxonomy(db: Db): Promise<Taxonomy> {
   const { rows } = await db.query<IngredientRow>(
-    'SELECT slug, name, parent, is_staple, density_g_per_ml, each_g FROM ingredients',
+    'SELECT slug, name, parent, is_staple, density_g_per_ml, each_g, flags FROM ingredients',
   )
   const tax: Taxonomy = {
     names: new Map(),
@@ -46,6 +51,7 @@ async function readTaxonomy(db: Db): Promise<Taxonomy> {
     staples: new Set(),
     density: new Map(),
     eachG: new Map(),
+    flags: new Map(),
   }
   for (const row of rows) {
     tax.names.set(row.slug, row.name)
@@ -58,6 +64,8 @@ async function readTaxonomy(db: Db): Promise<Taxonomy> {
     if (row.is_staple) tax.staples.add(row.slug)
     if (row.density_g_per_ml) tax.density.set(row.slug, row.density_g_per_ml)
     if (row.each_g) tax.eachG.set(row.slug, row.each_g)
+    const flags = row.flags ? (JSON.parse(row.flags) as IngredientFlag[]) : []
+    if (flags.length > 0) tax.flags.set(row.slug, flags)
   }
   for (const row of rows) {
     if (tax.density.has(row.slug)) continue

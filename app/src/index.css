@@ -456,6 +456,12 @@ button:disabled {
   font-size: 0.85rem;
 }
 
+.my-recipes__actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px;
+}
+
 .my-recipes__new {
   display: inline-flex;
   align-items: center;
@@ -549,6 +555,11 @@ button.chip[aria-pressed='true'] {
 
 .cook-result__title {
   font-weight: 600;
+}
+
+.cook-result__mine {
+  font-weight: 400;
+  color: var(--color-accent);
 }
 
 .cook-result__meta,
