@@ -10,10 +10,11 @@ import type { AggregatedItem, CheckThisLine } from './aggregate'
  * plan changes underneath it.
  *
  * Column convention (schema/README.md: `app` owns `user.db`'s migrations):
- * - A slug-backed row (from the aggregation) stores the canonical slug in `canonical_ingredient`
- *   and the formatted amount ("227 g", "2 x 400 g cans") in `unit`; `manual` is 0 and `note` is
- *   null. Its display name comes from `corpus/slugs.ts` (`ingredientName`), same as the kitchen
- *   list.
+ * - A slug-backed row (from the aggregation) stores the bought slug in `canonical_ingredient`,
+ *   the formatted shop amount ("1 head (need 3 cloves)", "amount: see recipe") in `unit`, the
+ *   shopper-facing name ("lemons") in `display_name` and the source recipe titles (JSON) in
+ *   `sources`; `manual` is 0 and `note` is null. Rows from before v4 have no `display_name` and
+ *   fall back to `corpus/slugs.ts` (`ingredientName`), same as the kitchen list.
  * - A "Check these" row (unparseable, rule 11) has `note` set to the reason and
  *   `canonical_ingredient` holding the raw line text, unit/aisle null.
  * - A manual extra item ("paper towels") has `manual = 1` and `canonical_ingredient` holding
@@ -34,6 +35,8 @@ export interface GroceryListItem {
   note: string | null
   /** True for a normal (non-manual, non-"check these") slug-backed row. */
   isSlug: boolean
+  /** The planned recipes the line came from (S7c; empty for manual/older rows). */
+  sources: string[]
 }
 
 interface GroceryItemRow {
@@ -45,6 +48,18 @@ interface GroceryItemRow {
   checked: number
   manual: number
   note: string | null
+  display_name: string | null
+  sources: string | null
+}
+
+function parseSources(raw: string | null): string[] {
+  if (!raw) return []
+  try {
+    const parsed: unknown = JSON.parse(raw)
+    return Array.isArray(parsed) ? parsed.filter((s): s is string => typeof s === 'string') : []
+  } catch {
+    return []
+  }
 }
 
 function toItem(row: GroceryItemRow, nameOf: (slug: string) => string): GroceryListItem {
@@ -52,13 +67,16 @@ function toItem(row: GroceryItemRow, nameOf: (slug: string) => string): GroceryL
   return {
     id: row.id,
     text: row.canonical_ingredient,
-    name: isSlug ? nameOf(row.canonical_ingredient) : row.canonical_ingredient,
+    name: isSlug
+      ? (row.display_name ?? nameOf(row.canonical_ingredient))
+      : row.canonical_ingredient,
     amount: row.unit,
     aisle: row.aisle,
     checked: row.checked === 1,
     manual: row.manual === 1,
     note: row.note,
     isSlug,
+    sources: parseSources(row.sources),
   }
 }
 
@@ -78,7 +96,8 @@ export async function getCurrentGroceryList(
   const row = list.rows[0]
   if (!row) return null
   const items = await db.query<GroceryItemRow>(
-    `SELECT id, canonical_ingredient, quantity, unit, aisle, checked, manual, note
+    `SELECT id, canonical_ingredient, quantity, unit, aisle, checked, manual, note, display_name,
+            sources
        FROM grocery_items WHERE grocery_list_id = ?`,
     [row.id],
   )
@@ -101,9 +120,18 @@ export async function buildGroceryList(
     for (const item of items) {
       if (item.have) continue // "have" items are shown collapsed, not put on the list to buy
       await db.run(
-        `INSERT INTO grocery_items (id, grocery_list_id, canonical_ingredient, unit, aisle)
-         VALUES (?, ?, ?, ?, ?)`,
-        [newId('item'), listId, item.slug, item.amount, item.aisle],
+        `INSERT INTO grocery_items
+           (id, grocery_list_id, canonical_ingredient, unit, aisle, display_name, sources)
+         VALUES (?, ?, ?, ?, ?, ?, ?)`,
+        [
+          newId('item'),
+          listId,
+          item.slug,
+          item.amount,
+          item.aisle,
+          item.name,
+          JSON.stringify(item.sources),
+        ],
       )
     }
     for (const line of checkThese) {
@@ -146,7 +174,8 @@ export async function clearGroceryList(listId: string): Promise<void> {
 export async function addTickedToKitchen(listId: string): Promise<number> {
   const db = await getUserDb()
   const { rows } = await db.query<GroceryItemRow>(
-    `SELECT id, canonical_ingredient, quantity, unit, aisle, checked, manual, note
+    `SELECT id, canonical_ingredient, quantity, unit, aisle, checked, manual, note, display_name,
+            sources
        FROM grocery_items
       WHERE grocery_list_id = ? AND checked = 1 AND manual = 0 AND note IS NULL`,
     [listId],

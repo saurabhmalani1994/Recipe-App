@@ -1,17 +1,42 @@
+import type { Purchase, ShopUnit } from '../../corpus/slugs'
 import type { Unit } from '../../corpus/types'
 import type { UnitSystem, UnitTable } from '../units/units'
 import { convertAmount, formatAmount, unitLabel } from '../units/units'
 
 /**
- * Grocery aggregation (brief S7 #2): scale each plan entry (D11, done by the caller with
- * `features/scaling/scale.ts` before lines reach here), aggregate by canonical slug, convert to
- * one unit per slug using the corpus `units` table and each ingredient's density, and keep
- * packages in counts ("2 x 400 g cans"). A line that cannot be resolved — no slug, no quantity,
- * an unrecognised unit, or one that will not reconcile with the rest of its slug's lines — is
- * never dropped (rule 11): it goes to `checkThese` with its raw text and a reason.
+ * Grocery aggregation (brief S7 #2, made shoppable in S7c). Each plan entry is scaled by the
+ * caller (`features/scaling/scale.ts`); here the lines are grouped by the slug you actually buy
+ * (taxonomy `buy_as`: lemon juice is bought as lemons) and the total is rounded UP to what a shop
+ * sells (`shop_unit` + `yield`): "garlic 1 head (need 3 cloves)", "lemons 2 (need 90 ml juice)",
+ * "carrot 1 (46 g)", "cilantro 1 bunch (need 2 tbsp)". Pantry bottles/jars/packs needed in small
+ * amounts read "check you have some".
+ *
+ * Nothing is dropped (rule 11):
+ * - a line with no canonical ingredient goes to `checkThese` — the only thing that does;
+ * - a line with a slug but no usable amount (no quantity, a unit the table does not know, or a
+ *   count with its unit missing — see `trustsBareCount`) still puts the item on the list in its
+ *   aisle, marked "amount: see recipe" (or "+ more, see recipe" next to the amounts it does have).
  */
 
 const CONTAINER_UNITS: ReadonlySet<Unit> = new Set(['can', 'jar', 'bottle', 'package'])
+/** Count units a slug's `each_g` measures (each_g is "one piece"; for garlic, one clove; for
+ * celery, one stalk). A "head" or "bunch" of garlic is not 5 g. */
+const EACH_UNITS: ReadonlySet<string> = new Set(['piece', 'clove', 'stalk'])
+/** Aisles whose bottles, jars and packs are pantry stock: most kitchens have some already. */
+const PANTRY_AISLES: ReadonlySet<string> = new Set([
+  'pantry',
+  'spices',
+  'international',
+  'beverages',
+])
+const PANTRY_SHOP_UNITS: ReadonlySet<ShopUnit> = new Set(['bottle', 'jar', 'pack'])
+/** Below this share of one bottle/jar/pack, a pantry item reads "check you have some". */
+const PANTRY_LARGE_SHARE = 0.5
+/** Rounding up forgives a 5% shortfall: 227 g from a 225 g pack is one pack, not two. */
+const ROUND_UP_SLACK = 0.05
+
+export const SEE_RECIPE = 'amount: see recipe'
+export const CHECK_YOU_HAVE = 'check you have some'
 
 export interface GroceryLineInput {
   /** Canonical ingredient; null when the line could not be resolved to one. */
@@ -25,6 +50,11 @@ export interface GroceryLineInput {
   /** Container size ("1 (14 oz) can"); not scaled, see corpusRecipe.ts. */
   pkgQty: number | null
   pkgUnit: Unit | null
+  /** The planned recipe the line came from (its title), shown when the list line is tapped. */
+  recipe?: string | null
+  /** The source never recorded units, so a bare number here is not a piece count (Food.com: see
+   * `features/plan/recipeLookup.ts`). */
+  unitStripped?: boolean
 }
 
 export interface SlugMeta {
@@ -35,6 +65,8 @@ export interface SlugMeta {
   density: number | null
   /** grams in one piece, when known. */
   eachG: number | null
+  /** Taxonomy purchase fields; null for slugs the taxonomy has none for. */
+  purchase?: Purchase | null
 }
 
 export interface AggregateContext {
@@ -46,14 +78,18 @@ export interface AggregateContext {
 }
 
 export interface AggregatedItem {
+  /** The slug bought (the `buy_as` target when there is one). */
   slug: string
+  /** As the shopper sees it: plural for more than one piece ("lemons"). */
   name: string
   aisle: string
-  /** Formatted amount, e.g. "800 g", "2 x 400 g cans", "3 cloves". Null when nothing but a
-   * bare count with no unit at all ("2 onion" already becomes grams via each_g when known). */
+  /** "1 head (need 3 cloves)", "2 (need 90 ml juice)", "check you have some", "amount: see
+   * recipe". */
   amount: string
-  /** Assumed on hand: a pantry staple, or already in the kitchen list. Shown collapsed. */
+  /** Assumed on hand: a pantry staple, or already in the kitchen list. Left off the list. */
   have: boolean
+  /** Titles of the planned recipes that asked for it, in plan order. */
+  sources: string[]
 }
 
 export interface CheckThisLine {
@@ -66,83 +102,298 @@ export interface GroceryBuild {
   checkThese: CheckThisLine[]
 }
 
-type Resolved =
-  | { kind: 'grams'; grams: number; container: Container | null }
-  | { kind: 'ml'; ml: number; container: Container | null }
-  | { kind: 'count'; count: number; unit: Unit | null; container: Container | null }
-  | { kind: 'failed'; reason: string }
-
-interface Container {
-  unit: Unit
-  pkgQty: number
-  pkgUnit: Unit
+/** One line's amount in every form it can be read as: grams, millilitres, and/or a count. */
+interface Qty {
+  g: number | null
+  ml: number | null
+  count: number | null
+  /** The count's unit; 'piece' for a bare number. */
+  countUnit: Unit | null
 }
 
-function resolveLine(line: GroceryLineInput, meta: SlugMeta, units: UnitTable): Resolved {
-  if (line.qty === null) return { kind: 'failed', reason: 'no quantity given' }
+type LineAmount = { ok: true; qty: Qty; unit: Unit | null } | { ok: false; reason: string }
 
-  if (!line.unit) {
-    if (meta.eachG !== null) return { kind: 'grams', grams: line.qty * meta.eachG, container: null }
-    return { kind: 'count', count: line.qty, unit: null, container: null }
+/**
+ * Whether a bare number ("1 carrot", unit 'piece' from the parser) is a real count. The parser
+ * gives 'piece' to every number with no unit word, so "3 lemon juice" (Food.com's "3 tablespoons
+ * lemon juice" with the unit stripped) arrived as 3 pieces and was shown as "2¼" at 0.75x. A
+ * count is only believed for something you count: it has a weight per piece, it is bought by the
+ * piece, or its yield is counted (garlic cloves, eggs, bay leaves). "Juice of 2 lemons" is also
+ * a count (of the lemons) — except from a source that stripped its units, where "3 lemon juice"
+ * is not three lemons' worth.
+ */
+function trustsBareCount(meta: SlugMeta, unitStripped: boolean, units: UnitTable): boolean {
+  if (meta.eachG !== null) return true
+  const p = meta.purchase
+  if (!p) return !unitStripped
+  if (p.buyAs && unitStripped) return false
+  if (p.shopUnit === 'piece') return true
+  const yieldUnit = p.yield ? units.get(p.yield.unit) : undefined
+  return !!yieldUnit && yieldUnit.dimension === 'count'
+}
+
+function lineAmount(line: GroceryLineInput, meta: SlugMeta, units: UnitTable): LineAmount {
+  if (line.qty === null) return { ok: false, reason: 'no quantity given' }
+  const q = line.qty
+  const unit = line.unit ?? 'piece'
+
+  if (unit === 'piece') {
+    if (!trustsBareCount(meta, !!line.unitStripped, units)) {
+      return { ok: false, reason: 'the recipe gives no unit' }
+    }
+    return {
+      ok: true,
+      unit: 'piece',
+      qty: {
+        g: meta.eachG !== null ? q * meta.eachG : null,
+        ml: null,
+        count: q,
+        countUnit: 'piece',
+      },
+    }
   }
 
-  const info = units.get(line.unit)
-  if (!info) return { kind: 'failed', reason: `unit "${line.unit}" is not recognised` }
+  const info = units.get(unit)
+  if (!info) return { ok: false, reason: `unit "${unit}" is not recognised` }
 
   if (info.dimension === 'mass') {
-    if (info.toBase === null) return { kind: 'failed', reason: `unit "${line.unit}" has no size` }
-    return { kind: 'grams', grams: line.qty * info.toBase, container: null }
+    if (info.toBase === null) return { ok: false, reason: `unit "${unit}" has no size` }
+    const g = q * info.toBase
+    return {
+      ok: true,
+      unit,
+      qty: { g, ml: meta.density ? g / meta.density : null, count: null, countUnit: null },
+    }
   }
 
   if (info.dimension === 'volume') {
-    if (info.toBase === null) return { kind: 'failed', reason: `unit "${line.unit}" has no size` }
-    const ml = line.qty * info.toBase
-    if (meta.density !== null) return { kind: 'grams', grams: ml * meta.density, container: null }
-    return { kind: 'ml', ml, container: null }
+    if (info.toBase === null) return { ok: false, reason: `unit "${unit}" has no size` }
+    const ml = q * info.toBase
+    return {
+      ok: true,
+      unit,
+      qty: { g: meta.density ? ml * meta.density : null, ml, count: null, countUnit: null },
+    }
   }
 
-  // count dimension
-  if (CONTAINER_UNITS.has(line.unit) && line.pkgQty !== null && line.pkgUnit) {
-    const pkgInfo = units.get(line.pkgUnit)
-    const container: Container = { unit: line.unit, pkgQty: line.pkgQty, pkgUnit: line.pkgUnit }
-    if (pkgInfo && pkgInfo.toBase !== null && pkgInfo.dimension === 'mass') {
-      return { kind: 'grams', grams: line.qty * line.pkgQty * pkgInfo.toBase, container }
+  // count dimension: a container with its size ("1 (400 g) can") also knows its weight.
+  const out: Qty = { g: null, ml: null, count: q, countUnit: unit }
+  if (CONTAINER_UNITS.has(unit) && line.pkgQty !== null && line.pkgUnit) {
+    const pkg = units.get(line.pkgUnit)
+    if (pkg?.toBase != null && pkg.dimension === 'mass') {
+      out.g = q * line.pkgQty * pkg.toBase
+      if (meta.density) out.ml = out.g / meta.density
+    } else if (pkg?.toBase != null && pkg.dimension === 'volume') {
+      out.ml = q * line.pkgQty * pkg.toBase
+      if (meta.density) out.g = out.ml * meta.density
     }
-    if (pkgInfo && pkgInfo.toBase !== null && pkgInfo.dimension === 'volume') {
-      const ml = line.qty * line.pkgQty * pkgInfo.toBase
-      if (meta.density !== null) return { kind: 'grams', grams: ml * meta.density, container }
-      return { kind: 'ml', ml, container }
-    }
-    return { kind: 'count', count: line.qty, unit: line.unit, container }
+  } else if (EACH_UNITS.has(unit) && meta.eachG !== null) {
+    out.g = q * meta.eachG
+  }
+  return { ok: true, unit, qty: out }
+}
+
+/** `qty` expressed in `unit` (g, a volume unit, or a count unit), or null when it cannot be. */
+function amountIn(qty: Qty, unit: Unit, meta: SlugMeta, units: UnitTable): number | null {
+  const info = units.get(unit)
+  if (!info) return null
+  if (info.dimension === 'mass') return qty.g !== null && info.toBase ? qty.g / info.toBase : null
+  if (info.dimension === 'volume') {
+    const ml = qty.ml ?? (qty.g !== null && meta.density ? qty.g / meta.density : null)
+    return ml !== null && info.toBase ? ml / info.toBase : null
+  }
+  if (qty.count !== null && (qty.countUnit === unit || qty.countUnit === 'piece')) return qty.count
+  if (qty.g !== null && meta.eachG !== null && EACH_UNITS.has(unit)) return qty.g / meta.eachG
+  return null
+}
+
+function sameShopUnit(countUnit: Unit | null, shop: ShopUnit): boolean {
+  if (!countUnit) return false
+  if (countUnit === shop) return true
+  return shop === 'pack' && countUnit === 'package'
+}
+
+/** How many shop units of the bought slug one line needs, or null when it cannot be worked out. */
+function shopUnitsFor(
+  qty: Qty,
+  src: SlugMeta,
+  srcIsBought: boolean,
+  shop: ShopUnit,
+  bought: SlugMeta,
+  units: UnitTable,
+): number | null {
+  // "1 head garlic", "2 cans tomatoes", "1 package cream cheese": already in shop units.
+  // "2 carrots" when carrots are bought by the piece, too.
+  if (srcIsBought && sameShopUnit(qty.countUnit, shop)) return qty.count
+  // "juice of 2 lemons": a bare count of a bought-as slug is a count of what is bought.
+  if (!srcIsBought && shop === 'piece' && qty.countUnit === 'piece') return qty.count
+  if (shop === 'g') return qty.g
+  if (shop === 'ml') return qty.ml ?? (qty.g !== null && src.density ? qty.g / src.density : null)
+  const y = src.purchase?.yield ?? null
+  if (y) {
+    const n = amountIn(qty, y.unit, src, units)
+    return n === null ? null : n / y.qty
+  }
+  if (shop === 'piece' && qty.g !== null && bought.eachG !== null) return qty.g / bought.eachG
+  return null
+}
+
+function roundUp(n: number): number {
+  return Math.max(1, Math.ceil(n - ROUND_UP_SLACK))
+}
+
+/** Grams to buy by weight, rounded up to a step a counter would weigh out. */
+function roundUpGrams(g: number): number {
+  const step = g <= 100 ? 10 : g <= 1000 ? 50 : 100
+  return Math.ceil(g / step - 1e-9) * step
+}
+
+function formatGrams(grams: number, system: UnitSystem, units: UnitTable): string {
+  return formatAmount(convertAmount({ qty: grams, qtyMax: null, unit: 'g' }, system, units, null))
+}
+
+function formatMl(ml: number, system: UnitSystem, units: UnitTable): string {
+  return formatAmount(convertAmount({ qty: ml, qtyMax: null, unit: 'ml' }, system, units, null))
+}
+
+const SHOP_LABELS: Record<Exclude<ShopUnit, 'piece' | 'g' | 'ml'>, [string, string]> = {
+  bunch: ['bunch', 'bunches'],
+  head: ['head', 'heads'],
+  can: ['can', 'cans'],
+  bottle: ['bottle', 'bottles'],
+  jar: ['jar', 'jars'],
+  pack: ['pack', 'packs'],
+}
+
+/** A plain English plural for a shopping-list name ("lemon" -> "lemons", "tomato" ->
+ * "tomatoes"); names already ending in s are left alone. */
+export function pluralName(name: string): string {
+  if (/s$/.test(name)) return name
+  if (/[^aeiou]y$/.test(name)) return `${name.slice(0, -1)}ies`
+  if (/(sh|ch|x|z|[^aeiou]o)$/.test(name)) return `${name}es`
+  return `${name}s`
+}
+
+/** Near enough to a whole number to be shown as a count ("2 eggs", not "100 g"). */
+function isWhole(n: number): boolean {
+  return Math.abs(n - Math.round(n)) < ROUND_UP_SLACK
+}
+
+/**
+ * What one source slug's lines add up to, for the "(need ...)" note: "3 cloves", "90 ml",
+ * "2 tbsp", "46 g" (¾ of a carrot reads better as a weight), "2" (whole pieces stay counts).
+ * Lines that disagree on a dimension are joined with " + " rather than dropped.
+ */
+function needText(
+  entries: { unit: Unit | null; qty: Qty }[],
+  meta: SlugMeta,
+  ctx: AggregateContext,
+): { text: string; bareCount: number | null } {
+  // Every line in the same volume/mass unit: say it in that unit ("2 tbsp"), converted only as
+  // the unit system asks (cups become ml/g in metric).
+  const first = entries[0].unit
+  const firstInfo = first ? ctx.units.get(first) : undefined
+  if (
+    first &&
+    firstInfo?.toBase &&
+    firstInfo.dimension !== 'count' &&
+    entries.every((e) => e.unit === first)
+  ) {
+    const base = entries.reduce(
+      (sum, e) => sum + ((firstInfo.dimension === 'mass' ? e.qty.g : e.qty.ml) ?? 0),
+      0,
+    )
+    const amount = convertAmount(
+      { qty: base / firstInfo.toBase, qtyMax: null, unit: first },
+      ctx.system,
+      ctx.units,
+      meta.density,
+    )
+    return { text: formatAmount(amount), bareCount: null }
   }
 
-  if (meta.eachG !== null) return { kind: 'grams', grams: line.qty * meta.eachG, container: null }
-  return { kind: 'count', count: line.qty, unit: line.unit, container: null }
+  let g = 0
+  let ml = 0
+  let hasG = false
+  let hasMl = false
+  let pieces = 0
+  let piecesG = 0
+  let piecesAllWeighed = true
+  let hasPieces = false
+  const counts = new Map<string, number>()
+  const addCount = (unit: string, n: number) => counts.set(unit, (counts.get(unit) ?? 0) + n)
+  for (const { unit, qty } of entries) {
+    const info = unit ? ctx.units.get(unit) : undefined
+    if (info?.dimension === 'mass') {
+      g += qty.g ?? 0
+      hasG = true
+    } else if (info?.dimension === 'volume') {
+      ml += qty.ml ?? 0
+      hasMl = true
+    } else if (!unit || unit === 'piece') {
+      hasPieces = true
+      pieces += qty.count ?? 0
+      if (qty.g !== null) piecesG += qty.g
+      else piecesAllWeighed = false
+    } else if (CONTAINER_UNITS.has(unit) && qty.g !== null) {
+      g += qty.g
+      hasG = true
+    } else if (CONTAINER_UNITS.has(unit) && qty.ml !== null) {
+      ml += qty.ml
+      hasMl = true
+    } else {
+      // cloves, stalks, sprigs, bunches, unsized cans: kept as counted ("3 cloves")
+      addCount(unit, qty.count ?? 0)
+    }
+  }
+  let bareCount: number | null = null
+  if (hasPieces) {
+    // weighed pieces join a weight total ("1 onion" + "200 g onion" = 350 g); ¾ of a carrot
+    // reads better as 46 g; whole pieces on their own stay a count ("2 eggs")
+    if (piecesAllWeighed && (hasG || !isWhole(pieces))) {
+      g += piecesG
+      hasG = true
+    } else {
+      bareCount = Math.max(1, Math.ceil(pieces - ROUND_UP_SLACK))
+    }
+  }
+  // Volume and weight of the same thing: one total, by weight, when the density is known.
+  if (hasG && hasMl && meta.density) {
+    g += ml * meta.density
+    hasMl = false
+  }
+  const parts: string[] = []
+  if (hasG) parts.push(formatGrams(g, ctx.system, ctx.units))
+  if (hasMl) parts.push(formatMl(ml, ctx.system, ctx.units))
+  for (const [unit, n] of counts) {
+    const whole = Math.max(1, Math.ceil(n - ROUND_UP_SLACK))
+    parts.push(`${whole} ${unitLabel(unit, whole !== 1)}`)
+  }
+  if (parts.length > 0) {
+    if (bareCount !== null) parts.unshift(String(bareCount))
+    return { text: parts.join(' + '), bareCount: null }
+  }
+  return { text: bareCount === null ? '' : String(bareCount), bareCount }
 }
 
-/** True when every resolved line for a slug is the same container, so the total can stay in
- * package counts ("2 x 400 g cans") instead of collapsing into a converted total. */
-function uniformContainer(resolved: Resolved[]): Container | null {
-  const first = resolved[0]
-  if (first.kind === 'failed' || !first.container) return null
-  const c = first.container
-  const allSame = resolved.every(
-    (r) =>
-      r.kind !== 'failed' &&
-      r.container &&
-      r.container.unit === c.unit &&
-      r.container.pkgQty === c.pkgQty &&
-      r.container.pkgUnit === c.pkgUnit,
-  )
-  return allSame ? c : null
-}
-
-function formatGrams(grams: number, ctx: AggregateContext): string {
-  return formatAmount(convertAmount({ qty: grams, qtyMax: null, unit: 'g' }, ctx.system, ctx.units, null))
-}
-
-function formatMl(ml: number, ctx: AggregateContext): string {
-  return formatAmount(convertAmount({ qty: ml, qtyMax: null, unit: 'ml' }, ctx.system, ctx.units, null))
+/**
+ * How a source slug bought as something else is named in the "(need ...)" note: "lemon juice"
+ * bought as lemons is "juice" ("need 90 ml juice"); a bare count of it is "juice of 2" when its
+ * yield is not counted, and "2 yolks" when it is (egg yolks from a pack of eggs).
+ */
+function describeNeed(
+  text: string,
+  bareCount: number | null,
+  src: SlugMeta,
+  bought: SlugMeta,
+  units: UnitTable,
+): string {
+  const prefix = `${bought.name} `
+  const label = src.name.startsWith(prefix) ? src.name.slice(prefix.length) : src.name
+  if (bareCount === null) return `${text} ${label}`
+  const yieldUnit = src.purchase?.yield ? units.get(src.purchase.yield.unit) : undefined
+  if (yieldUnit && yieldUnit.dimension !== 'count') return `${label} of ${bareCount}`
+  return `${bareCount} ${bareCount === 1 ? label : pluralName(label)}`
 }
 
 export function aggregateGroceryLines(
@@ -150,89 +401,116 @@ export function aggregateGroceryLines(
   ctx: AggregateContext,
 ): GroceryBuild {
   const checkThese: CheckThisLine[] = []
-  const bySlug = new Map<string, GroceryLineInput[]>()
+  const byBought = new Map<string, GroceryLineInput[]>()
 
   for (const line of lines) {
     if (!line.slug) {
       checkThese.push({ raw: line.raw, reason: 'no canonical ingredient matched' })
       continue
     }
-    const group = bySlug.get(line.slug)
+    const bought = ctx.metaFor(line.slug).purchase?.buyAs ?? line.slug
+    const group = byBought.get(bought)
     if (group) group.push(line)
-    else bySlug.set(line.slug, [line])
+    else byBought.set(bought, [line])
   }
 
   const items: AggregatedItem[] = []
-
-  for (const [slug, groupLines] of bySlug) {
-    const meta = ctx.metaFor(slug)
-    const resolved = groupLines.map((line) => resolveLine(line, meta, ctx.units))
-
-    const ok: { line: GroceryLineInput; r: Resolved }[] = []
-    resolved.forEach((r, i) => {
-      if (r.kind === 'failed') checkThese.push({ raw: groupLines[i].raw, reason: r.reason })
-      else ok.push({ line: groupLines[i], r })
-    })
-    if (ok.length === 0) continue
-
-    // A group's lines must agree on a dimension to be summed together; anything that disagrees
-    // with the first ok line is set aside under "Check these" rather than silently merged.
-    const kind = ok[0].r.kind
-    const agreeing = ok.filter((o) => o.r.kind === kind)
-    const disagreeing = ok.filter((o) => o.r.kind !== kind)
-    for (const o of disagreeing) {
-      checkThese.push({
-        raw: o.line.raw,
-        reason: `does not match the other lines' unit for ${meta.name}`,
-      })
-    }
-
-    const have = meta.isStaple || ctx.haveSlugs.has(slug)
-    const container = uniformContainer(agreeing.map((o) => o.r))
-    const amount = formatGroupAmount(agreeing, container, ctx)
-
-    items.push({ slug, name: meta.name, aisle: meta.aisle, amount, have })
+  for (const [slug, groupLines] of byBought) {
+    items.push(aggregateOne(slug, groupLines, ctx))
   }
-
   items.sort((a, b) => a.name.localeCompare(b.name))
   return { items, checkThese }
 }
 
-function formatGroupAmount(
-  agreeing: { line: GroceryLineInput; r: Resolved }[],
-  container: Container | null,
+function aggregateOne(
+  slug: string,
+  groupLines: GroceryLineInput[],
   ctx: AggregateContext,
-): string {
-  if (container) {
-    const count = agreeing.reduce((sum, o) => {
-      const r = o.r
-      if (r.kind === 'grams' || r.kind === 'ml') {
-        // grams/ml still carry the original line qty via count fallback path only; container
-        // lines resolved as grams/ml store the raw line qty separately, recomputed here.
-        return sum + o.line.qty!
-      }
-      if (r.kind === 'count') return sum + r.count
-      return sum
-    }, 0)
-    const pkg = formatAmount({ qty: container.pkgQty, qtyMax: null, unit: container.pkgUnit })
-    return `${count} x ${pkg} ${unitLabel(container.unit, count !== 1)}`
+): AggregatedItem {
+  const bought = ctx.metaFor(slug)
+  const shop = bought.purchase?.shopUnit ?? null
+
+  const sources: string[] = []
+  const srcSlugs = new Set<string>()
+  // per source slug, in first-seen order: the amounts it adds up to
+  const needs = new Map<string, { unit: Unit | null; qty: Qty }[]>()
+  let unknown = false
+  let shopTotal = 0
+  let unconvertible = false
+
+  for (const line of groupLines) {
+    const srcSlug = line.slug!
+    srcSlugs.add(srcSlug)
+    if (line.recipe && !sources.includes(line.recipe)) sources.push(line.recipe)
+    const src = srcSlug === slug ? bought : ctx.metaFor(srcSlug)
+    const amount = lineAmount(line, src, ctx.units)
+    if (!amount.ok) {
+      unknown = true
+      continue
+    }
+    const list = needs.get(srcSlug)
+    if (list) list.push({ unit: amount.unit, qty: amount.qty })
+    else needs.set(srcSlug, [{ unit: amount.unit, qty: amount.qty }])
+    if (shop) {
+      const n = shopUnitsFor(amount.qty, src, srcSlug === slug, shop, bought, ctx.units)
+      if (n === null) unconvertible = true
+      else shopTotal += n
+    }
   }
 
-  const kind = agreeing[0].r.kind
-  if (kind === 'grams') {
-    const total = agreeing.reduce((sum, o) => sum + (o.r as { grams: number }).grams, 0)
-    return formatGrams(total, ctx)
+  const needParts: string[] = []
+  for (const [srcSlug, entries] of needs) {
+    const src = srcSlug === slug ? bought : ctx.metaFor(srcSlug)
+    const { text, bareCount } = needText(entries, src, ctx)
+    if (!text) continue
+    needParts.push(srcSlug === slug ? text : describeNeed(text, bareCount, src, bought, ctx.units))
   }
-  if (kind === 'ml') {
-    const total = agreeing.reduce((sum, o) => sum + (o.r as { ml: number }).ml, 0)
-    return formatMl(total, ctx)
+  const need = needParts.join(' + ')
+  const known = needs.size > 0
+
+  const have =
+    bought.isStaple || ctx.haveSlugs.has(slug) || [...srcSlugs].every((s) => ctx.haveSlugs.has(s))
+
+  let name = bought.name
+  let amount: string
+  const more = unknown ? ' + more, see recipe' : ''
+
+  if (!shop) {
+    // No purchase fields for this slug: the plain total, as the recipes add up.
+    amount = known ? `${need}${more}` : SEE_RECIPE
+  } else if (!known) {
+    amount =
+      PANTRY_SHOP_UNITS.has(shop) && PANTRY_AISLES.has(bought.aisle) ? CHECK_YOU_HAVE : SEE_RECIPE
+  } else if (
+    PANTRY_SHOP_UNITS.has(shop) &&
+    PANTRY_AISLES.has(bought.aisle) &&
+    shopTotal < PANTRY_LARGE_SHARE
+  ) {
+    amount = `${CHECK_YOU_HAVE} (need ${need}${more})`
+  } else if (shop === 'g' || shop === 'ml') {
+    // bought by weight or volume: the total, rounded up to what a counter measures out
+    const total = roundUpGrams(shopTotal)
+    const main =
+      shop === 'g'
+        ? formatGrams(total, ctx.system, ctx.units)
+        : formatMl(total, ctx.system, ctx.units)
+    const note = unconvertible ? ` (need ${need})` : ''
+    amount = shopTotal > 0 ? `${main}${note}${more}` : `${need}${more}`
+  } else {
+    const count = roundUp(shopTotal)
+    if (shop === 'piece') {
+      if (count !== 1) name = pluralName(name)
+      // "carrot 1 (46 g)": the weight of the thing itself needs no "need"
+      const plain = srcSlugs.size === 1 && srcSlugs.has(slug)
+      if (plain && need === String(count) && !more) amount = String(count)
+      else amount = `${count} (${plain ? '' : 'need '}${need}${more})`
+    } else {
+      const [one, many] = SHOP_LABELS[shop]
+      amount = `${count} ${count === 1 ? one : many} (need ${need}${more})`
+    }
   }
-  // count
-  const total = agreeing.reduce((sum, o) => sum + (o.r as { count: number }).count, 0)
-  const unit = (agreeing[0].r as { unit: Unit | null }).unit
-  const qtyText = formatAmount({ qty: total, qtyMax: null, unit: null })
-  if (!unit) return qtyText
-  return `${qtyText} ${unitLabel(unit, total !== 1)}`
+
+  return { slug, name, aisle: bought.aisle, amount, have, sources }
 }
 
 /** Groups aggregated items by aisle, aisles sorted alphabetically, items within by name. */

@@ -17,6 +17,8 @@ export interface PlanLine {
   unit: Unit | null
   pkgQty: number | null
   pkgUnit: Unit | null
+  /** The source recorded no units, so a bare number is not a piece count (see below). */
+  unitStripped: boolean
 }
 
 export interface PlanRecipe {
@@ -24,6 +26,21 @@ export interface PlanRecipe {
    * with no head count). */
   servings: number | null
   lines: PlanLine[]
+}
+
+/**
+ * Sources whose ingredient quantities carry no unit at all (S7c #1). The Food.com mirror
+ * (`ingest/fetch/fetch_foodcom.py`) ships `RecipeIngredientQuantities` ("3") and
+ * `RecipeIngredientParts` ("lemon juice") with the unit in neither column, so the fetcher's
+ * "3 lemon juice" reaches the parser, which gives any unit-less number the unit 'piece'. For
+ * these recipes a bare number is not trusted as a count unless the ingredient is one you count
+ * (`trustsBareCount` in `features/grocery/aggregate.ts`); units named in the ingredient text
+ * itself ("1 garlic clove") are still real.
+ */
+const UNITLESS_SOURCES = ['foodcom:']
+
+export function sourceHasNoUnits(recipeKey: string): boolean {
+  return UNITLESS_SOURCES.some((prefix) => recipeKey.startsWith(prefix))
 }
 
 function rawFor(qty: number | null, unit: Unit | null, name: string): string {
@@ -42,6 +59,7 @@ export async function lookupPlanRecipe(
     if (!corpus) return null
     const recipe = await loadCorpusRecipe(corpus.db, corpus.tax, entry.recipeId, 'everything')
     if (!recipe) return null
+    const unitStripped = sourceHasNoUnits(recipe.key)
     return {
       servings: recipe.servings,
       lines: recipe.lines.map((line) => ({
@@ -52,6 +70,7 @@ export async function lookupPlanRecipe(
         unit: line.unit,
         pkgQty: line.pkgQty,
         pkgUnit: line.pkgUnit,
+        unitStripped: unitStripped && line.unit === 'piece',
       })),
     }
   }
@@ -69,6 +88,7 @@ export async function lookupPlanRecipe(
         unit: null,
         pkgQty: null,
         pkgUnit: null,
+        unitStripped: false,
       })),
     }
   }
@@ -86,6 +106,7 @@ export async function lookupPlanRecipe(
       unit: null,
       pkgQty: null,
       pkgUnit: null,
+      unitStripped: false,
     })),
   }
 }
