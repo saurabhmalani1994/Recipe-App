@@ -11,6 +11,7 @@ import { cuisineLabel, equipmentLabel } from '../features/cook/labels'
 import { swapLabel, type SwapOption } from '../features/cook/swaps'
 import { expandHave } from '../features/cook/taxonomy'
 import { corpusStatusText, useCorpus } from '../features/cook/useCorpus'
+import { isFavorite, setFavorite } from '../features/favorites/favoritesRepo'
 import { listKitchenItems } from '../features/kitchen/kitchenRepo'
 import { AddToPlanControl } from '../features/plan/AddToPlanControl'
 import { getSettings, type AppSettings } from '../features/settings/settingsRepo'
@@ -33,6 +34,17 @@ export function CorpusRecipeDetail({ recipeKey }: { recipeKey: string }) {
   const [units, setUnits] = useState<UnitSystem>('metric')
   const [have, setHave] = useState<string[] | null>(fromSearch)
   const [swaps, setSwaps] = useState<Map<string, SwapOption>>(new Map())
+  const [favorite, setFavoriteState] = useState(false)
+
+  useEffect(() => {
+    void isFavorite(recipeKey, 'corpus').then(setFavoriteState)
+  }, [recipeKey])
+
+  async function toggleFavorite() {
+    const next = !favorite
+    setFavoriteState(next)
+    await setFavorite(recipeKey, next, 'corpus')
+  }
 
   useEffect(() => {
     void getSettings().then((s) => {
@@ -100,6 +112,15 @@ export function CorpusRecipeDetail({ recipeKey }: { recipeKey: string }) {
     <section className="screen" data-testid="screen-recipe-detail">
       <div className="recipe-detail__header">
         <h2>{recipe.title}</h2>
+        <button
+          type="button"
+          aria-pressed={favorite}
+          aria-label={favorite ? 'Remove favorite' : 'Add favorite'}
+          className="recipe-detail__favorite"
+          onClick={() => void toggleFavorite()}
+        >
+          {favorite ? '★' : '☆'}
+        </button>
         <AddToPlanControl recipeId={recipe.key} recipeSource="corpus" recipeTitle={recipe.title} />
       </div>
 

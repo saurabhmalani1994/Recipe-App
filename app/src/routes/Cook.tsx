@@ -11,6 +11,7 @@ import {
 import { cuisineLabel, equipmentLabel } from '../features/cook/labels'
 import { displayName } from '../features/cook/taxonomy'
 import { corpusStatusText, useCorpus } from '../features/cook/useCorpus'
+import { listFavoriteIds, setFavorite } from '../features/favorites/favoritesRepo'
 import { listKitchenItems } from '../features/kitchen/kitchenRepo'
 import { AddToPlanControl } from '../features/plan/AddToPlanControl'
 import { listKitchenEquipment } from '../features/settings/settingsRepo'
@@ -46,6 +47,23 @@ export function Cook() {
   const [output, setOutput] = useState<MatchOutput | null>(null)
   // S6b #3: staples collapse into one "+ pantry basics (N)" chip, expanded on request.
   const [showStaples, setShowStaples] = useState(false)
+  // S11 #1: a star on each result, keyed by recipes.key (corpus favorites).
+  const [favoriteKeys, setFavoriteKeys] = useState<Set<string>>(new Set())
+
+  useEffect(() => {
+    void listFavoriteIds('corpus').then((ids) => setFavoriteKeys(new Set(ids)))
+  }, [])
+
+  async function toggleFavorite(key: string) {
+    const next = !favoriteKeys.has(key)
+    setFavoriteKeys((current) => {
+      const updated = new Set(current)
+      if (next) updated.add(key)
+      else updated.delete(key)
+      return updated
+    })
+    await setFavorite(key, next, 'corpus')
+  }
 
   useEffect(() => {
     let mounted = true
@@ -281,6 +299,19 @@ export function Cook() {
                       </span>
                     )}
                   </Link>
+                  <button
+                    type="button"
+                    aria-pressed={favoriteKeys.has(result.key)}
+                    aria-label={
+                      favoriteKeys.has(result.key)
+                        ? `Remove favorite: ${result.title}`
+                        : `Add favorite: ${result.title}`
+                    }
+                    className="cook-result__favorite"
+                    onClick={() => void toggleFavorite(result.key)}
+                  >
+                    {favoriteKeys.has(result.key) ? '★' : '☆'}
+                  </button>
                   <AddToPlanControl
                     recipeId={result.key}
                     recipeSource="corpus"
