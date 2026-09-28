@@ -1,11 +1,13 @@
 import { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
+import { avoidListFrom, newHiddenTally, hiddenNote as avoidHiddenNote } from '../features/cook/avoid'
 import { cuisineLabel } from '../features/cook/labels'
 import { corpusStatusText, useCorpus } from '../features/cook/useCorpus'
 import { loadHomeRows } from '../features/home/homeRepo'
 import { pickSurprise } from '../features/home/surprise'
 import type { HomeCard, HomeRow } from '../features/home/types'
 import { listKitchenItems } from '../features/kitchen/kitchenRepo'
+import { listAvoidIngredients } from '../features/settings/settingsRepo'
 import { useDiet } from '../state/diet'
 
 /**
@@ -22,32 +24,47 @@ export function Home() {
 
   const [have, setHave] = useState<string[] | null>(null)
   const [rows, setRows] = useState<HomeRow[] | null>(null)
+  const [hiddenNote, setHiddenNote] = useState<string | null>(null)
   const [surprise, setSurprise] = useState<HomeCard | null | undefined>(undefined)
   const [surpriseLoading, setSurpriseLoading] = useState(false)
+  // S16: "ingredients I avoid" (Settings), applied to the rows below and to Surprise me.
+  const [avoid, setAvoid] = useState<ReturnType<typeof avoidListFrom>>(new Map())
 
   useEffect(() => {
     void listKitchenItems().then((items) => {
       setHave(items.map((item) => item.ingredientId))
     })
+    void listAvoidIngredients().then((rows) => setAvoid(avoidListFrom(rows)))
   }, [])
 
   useEffect(() => {
     if (!corpus || have === null) return
     let current = true
-    void loadHomeRows(corpus.db, corpus.tax, { have, diet: preset }).then((next) => {
-      if (current) setRows(next)
+    void loadHomeRows(corpus.db, corpus.tax, { have, diet: preset, avoid }).then((next) => {
+      if (current) {
+        setRows(next.rows)
+        setHiddenNote(next.hiddenNote)
+      }
     })
     return () => {
       current = false
     }
-  }, [corpus, have, preset])
+  }, [corpus, have, preset, avoid])
 
   async function surpriseMe() {
     if (!corpus || have === null) return
     setSurpriseLoading(true)
     try {
-      const card = await pickSurprise(corpus.db, corpus.tax, { have, diet: preset })
+      const tally = newHiddenTally()
+      const card = await pickSurprise(corpus.db, corpus.tax, {
+        have,
+        diet: preset,
+        avoid,
+        hiddenTally: tally,
+      })
       setSurprise(card)
+      const note = avoidHiddenNote(tally)
+      if (note) setHiddenNote((prev) => prev ?? note)
     } finally {
       setSurpriseLoading(false)
     }
@@ -81,6 +98,12 @@ export function Home() {
       </div>
 
       {notReady && <p className="screen__placeholder">{notReady}</p>}
+
+      {hiddenNote && (
+        <p className="home-hidden-avoid" data-testid="home-hidden-avoid">
+          {hiddenNote}
+        </p>
+      )}
 
       {corpus && rows === null && !notReady && (
         <p className="screen__placeholder">Finding something for you…</p>

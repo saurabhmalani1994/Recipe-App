@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react'
 import { useLocation } from 'react-router-dom'
+import { avoidListFrom, expandAvoid, type AvoidList } from '../features/cook/avoid'
 import {
   corpusScale,
   formatLine,
@@ -14,7 +15,11 @@ import { corpusStatusText, useCorpus } from '../features/cook/useCorpus'
 import { isFavorite, setFavorite } from '../features/favorites/favoritesRepo'
 import { listKitchenItems } from '../features/kitchen/kitchenRepo'
 import { AddToPlanControl } from '../features/plan/AddToPlanControl'
-import { getSettings, type AppSettings } from '../features/settings/settingsRepo'
+import {
+  getSettings,
+  listAvoidIngredients,
+  type AppSettings,
+} from '../features/settings/settingsRepo'
 import type { UnitSystem } from '../features/units/units'
 import { DIET_PRESET_LABELS, useDiet } from '../state/diet'
 
@@ -35,6 +40,12 @@ export function CorpusRecipeDetail({ recipeKey }: { recipeKey: string }) {
   const [have, setHave] = useState<string[] | null>(fromSearch)
   const [swaps, setSwaps] = useState<Map<string, SwapOption>>(new Map())
   const [favorite, setFavoriteState] = useState(false)
+  // S16: "ingredients I avoid" (Settings) — marks each avoided line below.
+  const [avoid, setAvoid] = useState<AvoidList>(new Map())
+
+  useEffect(() => {
+    void listAvoidIngredients().then((rows) => setAvoid(avoidListFrom(rows)))
+  }, [])
 
   useEffect(() => {
     void isFavorite(recipeKey, 'corpus').then(setFavoriteState)
@@ -110,6 +121,7 @@ export function CorpusRecipeDetail({ recipeKey }: { recipeKey: string }) {
       .filter((s) => s.slug)
       .map((s) => [s.slug as string, s]),
   )
+  const expandedAvoid = avoid.size > 0 ? expandAvoid(corpus.tax, avoid) : null
 
   return (
     <section className="screen" data-testid="screen-recipe-detail">
@@ -186,15 +198,21 @@ export function CorpusRecipeDetail({ recipeKey }: { recipeKey: string }) {
       <ul className="recipe-detail__ingredients corpus-ingredients">
         {recipe.lines.map((line) => {
           const lacking = !!(line.slug && haveSet && !haveSet.has(line.slug) && !line.optional)
+          const avoidMode = line.slug ? expandedAvoid?.get(line.slug) : undefined
           const swap = line.slug ? swaps.get(line.slug) : undefined
           const dietSwap = line.slug ? dietSwapFor.get(line.slug) : undefined
+          const classes = ['corpus-line']
+          if (lacking) classes.push('corpus-line--missing')
+          if (avoidMode) classes.push('corpus-line--avoided')
           return (
-            <li
-              key={line.position}
-              className={lacking ? 'corpus-line corpus-line--missing' : 'corpus-line'}
-            >
+            <li key={line.position} className={classes.join(' ')}>
               <span>{formatLine(line, factor, units, corpus.units, corpus.tax)}</span>
               {lacking && <span className="corpus-line__tag">missing</span>}
+              {avoidMode && (
+                <span className="corpus-line__tag" data-testid="line-avoided">
+                  {avoidMode === 'hide' ? 'you avoid this' : 'you avoid this — ranked lower'}
+                </span>
+              )}
               {dietSwap && (
                 <span className="corpus-line__swap" data-testid="diet-swap">
                   {DIET_PRESET_LABELS[preset]}:{' '}

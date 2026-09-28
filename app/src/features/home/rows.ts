@@ -1,5 +1,15 @@
 import type { Cuisine, Course } from '../../corpus/types'
 import type { Db } from '../../db/types'
+import {
+  avoidHits,
+  expandAvoid,
+  loadAvoidHits,
+  mergeHiddenTally,
+  recordHidden,
+  verdictFor,
+  type AvoidList,
+  type HiddenTally,
+} from '../cook/avoid'
 import { type AppDiet, matchRecipes } from '../cook/engine'
 import { cuisineLabel } from '../cook/labels'
 import { expandHave, type Taxonomy } from '../cook/taxonomy'
@@ -64,6 +74,37 @@ async function coverageFor(
   return loadCoverage(db, expandHave(tax, have), ids)
 }
 
+/**
+ * S16: applies "ingredients I avoid" to a row's own candidate list, which (unlike
+ * `cook/engine.ts`'s SQL side) ranks by quality/similarity rather than a coverage band. A
+ * hide-mode hit drops the recipe and is tallied into `tally` (rule 11: never silently); a
+ * lower-mode hit keeps it but moves it behind every candidate with no avoided hit, so "ranked
+ * lower" holds here the same way it does in Cook (`engine.ts`'s coverage-band drop).
+ */
+async function applyAvoid<T extends { id: number }>(
+  db: Db,
+  tax: Taxonomy,
+  avoid: AvoidList,
+  tally: HiddenTally,
+  rows: readonly T[],
+): Promise<T[]> {
+  if (avoid.size === 0 || rows.length === 0) return [...rows]
+  const hits = await loadAvoidHits(db, tax, avoid, rows.map((r) => r.id))
+  const kept: T[] = []
+  const lowered: T[] = []
+  for (const row of rows) {
+    const rowHits = hits.get(row.id) ?? []
+    const verdict = verdictFor(rowHits)
+    if (verdict.hide) {
+      recordHidden(tally, rowHits)
+      continue
+    }
+    if (verdict.lowerBy > 0) lowered.push(row)
+    else kept.push(row)
+  }
+  return [...kept, ...lowered]
+}
+
 // ---------------------------------------------------------------------------------------------
 // a. Cook with what I have
 // ---------------------------------------------------------------------------------------------
@@ -73,13 +114,16 @@ export interface CookRowParams {
   diet: AppDiet
   seed: number
   count?: number
+  /** S16: forwarded straight to `matchRecipes`, which already hides/lowers by coverage band. */
+  avoid?: AvoidList
+  hiddenTally?: HiddenTally
 }
 
 /** S11 #2a: "the engine's top results, with the floor applied" — `engine.ts` unmodified, the
  * ranking floor (`RANK_FLOOR_COVERED`) is already in effect by default. No `Taxonomy` needed:
  * `matchRecipes` already returns `covered`/`needed` against the same kitchen. */
 export async function buildCookRow(db: Db, params: CookRowParams): Promise<HomeRow> {
-  const { results } = await matchRecipes(db, {
+  const { results, stats } = await matchRecipes(db, {
     have: params.have,
     cuisine: null,
     diet: params.diet,
@@ -88,7 +132,9 @@ export async function buildCookRow(db: Db, params: CookRowParams): Promise<HomeR
     onePot: false,
     maxMinutes: null,
     limit: CANDIDATE_POOL,
+    avoid: params.avoid,
   })
+  if (params.hiddenTally) mergeHiddenTally(params.hiddenTally, stats.hidden)
   const count = params.count ?? DEFAULT_COUNT
   const chosen = dailyWindow(results, count, params.seed, 'cook')
   const images = await imagesFor(
@@ -133,6 +179,8 @@ export interface ExploreRowParams {
   seed: number
   cuisineCount?: number
   perCuisine?: number
+  avoid?: AvoidList
+  hiddenTally?: HiddenTally
 }
 
 const EXPLORE_EMPTY = 'Nothing new to suggest yet — you have cooked a bit of everything lately.'
@@ -173,7 +221,11 @@ export async function buildExploreRow(
         LIMIT ?`,
       [diet, cuisine, diet, perCuisine],
     )
-    rowsByCuisine.push(rows)
+    rowsByCuisine.push(
+      params.avoid && params.hiddenTally
+        ? await applyAvoid(db, tax, params.avoid, params.hiddenTally, rows)
+        : rows,
+    )
   }
   const allIds = rowsByCuisine.flat().map((r) => r.id)
   const coverage = await coverageFor(db, tax, params.have, allIds)
@@ -198,6 +250,8 @@ export interface FavoritesRowParams {
   favoriteKeys: string[]
   seed: number
   count?: number
+  avoid?: AvoidList
+  hiddenTally?: HiddenTally
 }
 
 const FAVORITES_PROMPT = 'Star a recipe you love and this row will fill in with more like it.'
@@ -279,8 +333,21 @@ export async function buildFavoritesRow(
     coreSlugsByRecipe(db, candidates.map((c) => c.id)),
   ])
 
-  const scored = candidates.map((candidate) => {
+  // S16: candSlugs already has each candidate's core slugs in hand, so the avoid check is free
+  // here (no `loadAvoidHits` query) — a hide-mode hit drops it (tallied), a lower-mode one is
+  // scored normally but moved behind every non-avoided candidate below.
+  const expandedAvoid =
+    params.avoid && params.avoid.size > 0 ? expandAvoid(tax, params.avoid) : null
+  const scoredKept: { row: RecipeSummaryRow; score: number }[] = []
+  const scoredLowered: { row: RecipeSummaryRow; score: number }[] = []
+  for (const candidate of candidates) {
     const candSet = candSlugs.get(candidate.id) ?? new Set<string>()
+    const hits = expandedAvoid ? avoidHits(tax, expandedAvoid, candSet) : []
+    const verdict = verdictFor(hits)
+    if (verdict.hide) {
+      if (params.hiddenTally) recordHidden(params.hiddenTally, hits)
+      continue
+    }
     let best = 0
     for (const fav of favorites) {
       let score = jaccard(candSet, favSlugs.get(fav.id) ?? new Set())
@@ -288,12 +355,13 @@ export async function buildFavoritesRow(
       if (fav.course === candidate.course) score += 0.1
       if (score > best) best = score
     }
-    return { row: candidate, score: best }
-  })
-  scored.sort(
-    (a, b) => b.score - a.score || b.row.quality - a.row.quality || a.row.id - b.row.id,
-  )
-  const ranked = scored.map((s) => s.row)
+    ;(verdict.lowerBy > 0 ? scoredLowered : scoredKept).push({ row: candidate, score: best })
+  }
+  const byScore = (a: { row: RecipeSummaryRow; score: number }, b: { row: RecipeSummaryRow; score: number }) =>
+    b.score - a.score || b.row.quality - a.row.quality || a.row.id - b.row.id
+  scoredKept.sort(byScore)
+  scoredLowered.sort(byScore)
+  const ranked = [...scoredKept, ...scoredLowered].map((s) => s.row)
   const count = params.count ?? DEFAULT_COUNT
   const chosen = dailyWindow(ranked, count, params.seed, 'favorites')
   const coverage = await coverageFor(db, tax, params.have, chosen.map((c) => c.id))
@@ -311,6 +379,8 @@ export interface SeasonalRowParams {
   date: Date
   seed: number
   count?: number
+  avoid?: AvoidList
+  hiddenTally?: HiddenTally
 }
 
 const WEEKEND_EMPTY = 'No weekend project recipes matched yet.'
@@ -375,6 +445,10 @@ export async function buildSeasonalRow(
               [diet, JSON.stringify(seasonSlugs), diet, CANDIDATE_POOL],
             )
           ).rows
+  }
+
+  if (params.avoid && params.hiddenTally) {
+    rows = await applyAvoid(db, tax, params.avoid, params.hiddenTally, rows)
   }
 
   const count = params.count ?? DEFAULT_COUNT

@@ -1,7 +1,16 @@
 import type { Db } from '../../db/types'
 import type { Equipment } from '../../corpus/types'
 import {
+  avoidHits,
+  expandAvoid,
+  newHiddenTally,
+  recordHidden,
+  verdictFor,
+  type HiddenTally,
+} from '../cook/avoid'
+import {
   compareResults,
+  RANK_BAND_WIDTH,
   type MatchQuery,
   type MatchResult,
   type MissingItem,
@@ -22,6 +31,10 @@ export interface HiddenMyRecipe {
 export interface MyRecipeMatchOutput {
   results: MatchResult[]
   hidden: HiddenMyRecipe[]
+  /** S16: how many of `recipes` a hide-mode avoided ingredient dropped, and which slug(s)
+   * (rule 11: tallied, never silent — merge into `matchRecipes`' `stats.hidden` with
+   * `mergeHiddenTally`). */
+  avoidHidden: HiddenTally
 }
 
 /** Every currently-active filter this My Recipe has no value for, human-readable. Checked
@@ -73,8 +86,10 @@ export async function matchMyRecipes(
   recipes: MyRecipe[],
   query: MatchQuery,
 ): Promise<MyRecipeMatchOutput> {
-  if (recipes.length === 0) return { results: [], hidden: [] }
+  const avoidHidden = newHiddenTally()
+  if (recipes.length === 0) return { results: [], hidden: [], avoidHidden }
   const have = expandHave(tax, query.have)
+  const avoid = query.avoid && query.avoid.size > 0 ? expandAvoid(tax, query.avoid) : null
 
   // One swap-table query for every slug any My Recipe uses (kitchen substitution and diet
   // substitution both draw on it).
@@ -144,6 +159,14 @@ export async function matchMyRecipes(
     const needed = core.size + unresolvedCount
     if (needed === 0) continue
 
+    // S16: same hide/lower verdict `matchRecipes` applies to the SQL side.
+    const avoided = avoid ? avoidHits(tax, avoid, core) : []
+    const verdict = verdictFor(avoided)
+    if (verdict.hide) {
+      recordHidden(avoidHidden, avoided)
+      continue
+    }
+
     const lacking = [...core].filter((slug) => !have.has(slug))
     const covered = core.size - lacking.length
     // Matches the SQL candidate query's inner join on `hits`: at least one core slug on hand.
@@ -171,11 +194,12 @@ export async function matchMyRecipes(
       // a My Recipe ranks as the top quality within its coverage band rather than sinking below
       // a same-band corpus recipe on the quality tiebreak (compareRanked/compareLegacy).
       quality: 1,
-      coverage: covered / needed,
+      coverage: Math.max(0, covered / needed - verdict.lowerBy * RANK_BAND_WIDTH),
       covered,
       needed,
       missing,
       substitutable,
+      avoided,
       diet,
       mine: true,
       myRecipeId: recipe.id,
@@ -183,5 +207,5 @@ export async function matchMyRecipes(
   }
 
   results.sort(compareResults)
-  return { results, hidden }
+  return { results, hidden, avoidHidden }
 }

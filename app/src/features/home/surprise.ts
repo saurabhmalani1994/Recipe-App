@@ -1,5 +1,6 @@
 import type { Cuisine, Course } from '../../corpus/types'
 import type { Db } from '../../db/types'
+import { loadAvoidHits, recordHidden, verdictFor, type AvoidList, type HiddenTally } from '../cook/avoid'
 import type { AppDiet } from '../cook/engine'
 import { expandHave, type Taxonomy } from '../cook/taxonomy'
 import { loadCoverage } from './coverage'
@@ -13,6 +14,11 @@ export interface SurpriseParams {
   diet: AppDiet
   qualityFloor?: number
   random?: () => number
+  /** S16 "ingredients I avoid": a hide-mode hit takes the recipe out of the draw entirely
+   * (tallied into `hiddenTally`, rule 11); a lower-mode hit is only drawn when nothing avoid-free
+   * qualifies. */
+  avoid?: AvoidList
+  hiddenTally?: HiddenTally
 }
 
 const DEFAULT_QUALITY_FLOOR = 0.6
@@ -44,8 +50,28 @@ export async function pickSurprise(
     [diet, floor, diet],
   )
   if (rows.length === 0) return null
+
+  let pool = rows
+  if (params.avoid && params.avoid.size > 0) {
+    const hitsByRecipe = await loadAvoidHits(db, tax, params.avoid, rows.map((r) => r.id))
+    const kept: RecipeSummaryRow[] = []
+    const lowered: RecipeSummaryRow[] = []
+    for (const candidate of rows) {
+      const hits = hitsByRecipe.get(candidate.id) ?? []
+      const verdict = verdictFor(hits)
+      if (verdict.hide) {
+        if (params.hiddenTally) recordHidden(params.hiddenTally, hits)
+        continue
+      }
+      ;(verdict.lowerBy > 0 ? lowered : kept).push(candidate)
+    }
+    // "Ranked lower": only reach into the avoided-lower pool when nothing avoid-free qualifies.
+    pool = kept.length > 0 ? kept : lowered
+    if (pool.length === 0) return null
+  }
+
   const rand = params.random ?? Math.random
-  const row = rows[Math.floor(rand() * rows.length)]
+  const row = pool[Math.floor(rand() * pool.length)]
   const coverage = await loadCoverage(db, expandHave(tax, params.have), [row.id])
   const cov = coverage.get(row.id) ?? { covered: 0, needed: 0 }
   return {

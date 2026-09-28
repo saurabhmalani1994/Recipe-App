@@ -271,4 +271,48 @@ describe('My Recipes in Cook results (S12)', () => {
       expect(kitchenWithoutStovetop.results).toEqual([])
     })
   })
+
+  // S16: "ingredients I avoid" applies to the Mine side the same way it does to the SQL side
+  // (engine.ts's matchRecipes).
+  describe('S16 "ingredients I avoid"', () => {
+    it('hide drops the My Recipe and tallies it in avoidHidden (rule 11)', async () => {
+      await createMyRecipe('Weeknight chicken', {
+        ...emptyMyRecipeData(),
+        ingredients: typed('1 lb chicken breast', '1 onion'),
+      })
+      const tax = await loadTaxonomy(corpusDb)
+      const recipes = await listMyRecipes()
+
+      const { results, avoidHidden } = await matchMyRecipes(corpusDb, tax, recipes, {
+        ...BASE,
+        have: ['chicken_breast', 'onion'],
+        avoid: new Map([['chicken_breast', 'hide']]),
+      })
+      expect(results).toEqual([])
+      expect(avoidHidden.count).toBe(1)
+      expect(avoidHidden.bySlug.get('chicken_breast')?.name).toBe('chicken breast')
+    })
+
+    it('lower keeps it, drops one coverage band, and marks `avoided`', async () => {
+      await createMyRecipe('Weeknight chicken', {
+        ...emptyMyRecipeData(),
+        ingredients: typed('1 lb chicken breast', '1 onion'),
+      })
+      const tax = await loadTaxonomy(corpusDb)
+      const recipes = await listMyRecipes()
+
+      const { results, avoidHidden } = await matchMyRecipes(corpusDb, tax, recipes, {
+        ...BASE,
+        have: ['chicken_breast', 'onion'],
+        avoid: new Map([['chicken_breast', 'lower']]),
+      })
+      expect(avoidHidden.count).toBe(0)
+      expect(results).toHaveLength(1)
+      expect(results[0].covered).toBe(2) // honest count untouched
+      expect(results[0].coverage).toBeCloseTo(1 - 0.1, 10) // ranking fraction dropped one band
+      expect(results[0].avoided).toEqual([
+        { slug: 'chicken_breast', name: 'chicken breast', mode: 'lower' },
+      ])
+    })
+  })
 })

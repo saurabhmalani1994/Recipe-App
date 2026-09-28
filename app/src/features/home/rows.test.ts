@@ -3,6 +3,7 @@ import { afterAll, beforeAll, describe, expect, it } from 'vitest'
 import type { Cuisine } from '../../corpus/types'
 import type { WebDb } from '../../db/webDb'
 import { openFixtureDb } from '../../test/fixtureDb'
+import { newHiddenTally } from '../cook/avoid'
 import { loadTaxonomy, type Taxonomy } from '../cook/taxonomy'
 import {
   buildCookRow,
@@ -82,6 +83,23 @@ describe('buildCookRow (S11 #2a)', () => {
       count: NO_WINDOW,
     })
     expect(row.cards.some((c) => c.key === 'themealdb:53191')).toBe(false)
+  })
+
+  // S16: "ingredients I avoid" applied to the Cook row (it just forwards `avoid` to
+  // `matchRecipes`, which already hides/lowers — this checks the wiring, not the mechanism).
+  it('drops a hide-mode avoided recipe and tallies it (S16)', async () => {
+    const tally = newHiddenTally()
+    const row = await buildCookRow(db, {
+      have: K1,
+      diet: 'everything',
+      seed: 1,
+      count: NO_WINDOW,
+      avoid: new Map([['shrimp', 'hide']]),
+      hiddenTally: tally,
+    })
+    expect(row.cards.some((c) => c.key === 'themealdb:53191')).toBe(false)
+    expect(tally.count).toBeGreaterThan(0)
+    expect(tally.bySlug.has('shrimp')).toBe(true)
   })
 })
 
@@ -186,6 +204,24 @@ describe('buildFavoritesRow (S11 #2c)', () => {
     const b = await buildFavoritesRow(db, tax, params)
     expect(a.cards.map((c) => c.key)).toEqual(b.cards.map((c) => c.key))
   })
+
+  // S16: both top neighbours (52953, 53368) use shrimp as a core ingredient.
+  it('drops a hide-mode avoided candidate and tallies it (S16)', async () => {
+    const tally = newHiddenTally()
+    const row = await buildFavoritesRow(db, tax, {
+      have: [],
+      diet: 'everything',
+      favoriteKeys: ['themealdb:53191'],
+      seed: 5,
+      count: NO_WINDOW,
+      avoid: new Map([['shrimp', 'hide']]),
+      hiddenTally: tally,
+    })
+    const keys = row.cards.map((c) => c.key)
+    expect(keys).not.toContain('themealdb:52953')
+    expect(keys).not.toContain('themealdb:53368')
+    expect(tally.bySlug.has('shrimp')).toBe(true)
+  })
 })
 
 describe('buildSeasonalRow (S11 #2d)', () => {
@@ -223,6 +259,35 @@ describe('buildSeasonalRow (S11 #2d)', () => {
       'foodcom:000334',
       'foodcom:000777',
     ])
+  })
+
+  // S16: applyAvoid (rows.ts) is exercised through the seasonal row's own candidate list.
+  it('drops a hide-mode avoided candidate and tallies it (S16)', async () => {
+    const withoutAvoid = await buildSeasonalRow(db, tax, {
+      have: [],
+      diet: 'everything',
+      date: weekday,
+      seed: 1,
+      count: NO_WINDOW,
+    })
+    const avoidedKey = withoutAvoid.cards[0].key
+    const { rows: coreRows } = await db.query<{ slug: string }>(
+      `SELECT slug FROM recipe_slugs
+        WHERE core = 1 AND recipe_id = (SELECT id FROM recipes WHERE key = ?)`,
+      [avoidedKey],
+    )
+    const tally = newHiddenTally()
+    const row = await buildSeasonalRow(db, tax, {
+      have: [],
+      diet: 'everything',
+      date: weekday,
+      seed: 1,
+      count: NO_WINDOW,
+      avoid: new Map([[coreRows[0].slug, 'hide']]),
+      hiddenTally: tally,
+    })
+    expect(row.cards.some((c) => c.key === avoidedKey)).toBe(false)
+    expect(tally.count).toBeGreaterThan(0)
   })
 
   it('is deterministic for the same date and seed', async () => {

@@ -2,7 +2,9 @@ import { beforeEach, describe, expect, it } from 'vitest'
 import { resetUserDbForTests } from '../../db'
 import {
   getSettings,
+  listAvoidIngredients,
   listKitchenEquipment,
+  setAvoidIngredient,
   setKitchenEquipment,
   updateSettings,
 } from './settingsRepo'
@@ -60,5 +62,30 @@ describe('settings round trip', () => {
 
     await setKitchenEquipment('oven', false)
     expect(await listKitchenEquipment()).toEqual(new Set(['wok']))
+  })
+})
+
+// S16: "ingredients I avoid".
+describe('avoid ingredients round trip', () => {
+  it('starts empty', async () => {
+    expect(await listAvoidIngredients()).toEqual([])
+  })
+
+  it('adds an ingredient at a mode and reads it back', async () => {
+    await setAvoidIngredient('sour_cream', 'hide')
+    expect(await listAvoidIngredients()).toEqual([{ slug: 'sour_cream', mode: 'hide' }])
+  })
+
+  it('changing the mode replaces it, not adds a second row', async () => {
+    await setAvoidIngredient('sour_cream', 'hide')
+    await setAvoidIngredient('sour_cream', 'lower')
+    expect(await listAvoidIngredients()).toEqual([{ slug: 'sour_cream', mode: 'lower' }])
+  })
+
+  it('setting mode to null removes it', async () => {
+    await setAvoidIngredient('sour_cream', 'hide')
+    await setAvoidIngredient('cool_whip', 'lower')
+    await setAvoidIngredient('sour_cream', null)
+    expect(await listAvoidIngredients()).toEqual([{ slug: 'cool_whip', mode: 'lower' }])
   })
 })

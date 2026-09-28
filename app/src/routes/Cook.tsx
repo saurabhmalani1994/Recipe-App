@@ -2,6 +2,7 @@ import { useEffect, useMemo, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { searchIngredientSlugs } from '../corpus/slugs'
 import { CUISINE_VALUES, type Cuisine, type Equipment } from '../corpus/types'
+import { avoidListFrom, hiddenNote, mergeHiddenTally, newHiddenTally } from '../features/cook/avoid'
 import {
   compareResults,
   DEFAULT_MATCH_LIMIT,
@@ -20,7 +21,7 @@ import { listMyRecipes } from '../features/myRecipes/myRecipesRepo'
 import { matchMyRecipes, type HiddenMyRecipe } from '../features/myRecipes/myRecipeMatch'
 import type { MyRecipe } from '../features/myRecipes/types'
 import { AddToPlanControl } from '../features/plan/AddToPlanControl'
-import { listKitchenEquipment } from '../features/settings/settingsRepo'
+import { listAvoidIngredients, listKitchenEquipment } from '../features/settings/settingsRepo'
 import { KITCHEN_EQUIPMENT } from '../data/equipment'
 import { PANTRY_DEFAULT_SLUGS } from '../db'
 import { DIET_PRESET_LABELS, useDiet } from '../state/diet'
@@ -102,6 +103,8 @@ export function Cook() {
 
   // S12: My Recipes joined into results below, marked "Mine" (features/myRecipes/myRecipeMatch.ts).
   const [myRecipes, setMyRecipes] = useState<MyRecipe[]>([])
+  // S16: "ingredients I avoid" (Settings). Applied to both the SQL and Mine sides below.
+  const [avoid, setAvoid] = useState<ReturnType<typeof avoidListFrom>>(new Map())
 
   useEffect(() => {
     let mounted = true
@@ -112,6 +115,9 @@ export function Cook() {
     })
     void listMyRecipes().then((recipes) => {
       if (mounted) setMyRecipes(recipes)
+    })
+    void listAvoidIngredients().then((rows) => {
+      if (mounted) setAvoid(avoidListFrom(rows))
     })
     return () => {
       mounted = false
@@ -129,6 +135,7 @@ export function Cook() {
       useOnly,
       onePot,
       maxMinutes: quick ? QUICK_MINUTES : null,
+      avoid,
     }
     void Promise.all([
       matchRecipes(corpus.db, query),
@@ -138,16 +145,19 @@ export function Cook() {
       const results = [...sql.results, ...mine.results]
         .sort(compareResults)
         .slice(0, DEFAULT_MATCH_LIMIT)
+      const hidden = newHiddenTally()
+      mergeHiddenTally(hidden, sql.stats.hidden)
+      mergeHiddenTally(hidden, mine.avoidHidden)
       setOutput({
         results,
-        stats: { candidates: sql.stats.candidates + mine.results.length, scored: sql.stats.scored },
+        stats: { candidates: sql.stats.candidates + mine.results.length, scored: sql.stats.scored, hidden },
       })
       setHiddenMine(mine.hidden)
     })
     return () => {
       current = false
     }
-  }, [corpus, have, cuisine, preset, kitchen, useOnly, onePot, quick, myRecipes])
+  }, [corpus, have, cuisine, preset, kitchen, useOnly, onePot, quick, myRecipes, avoid])
 
   const suggestions = useMemo(
     () => searchIngredientSlugs(query, 8).filter((s) => !have?.includes(s.slug)),
@@ -337,6 +347,11 @@ export function Cook() {
               {hiddenMineReasons(hiddenMine)}
             </p>
           )}
+          {hiddenNote(output.stats.hidden) && (
+            <p className="cook-hidden-avoid" data-testid="cook-hidden-avoid">
+              {hiddenNote(output.stats.hidden)}
+            </p>
+          )}
           <ul className="cook-results" data-testid="cook-results">
             {output.results.map((result) => {
               const summary = missingSummary(result)
@@ -362,6 +377,11 @@ export function Cook() {
                       {result.diet?.status === 'adaptable' ? ' · adaptable' : ''}
                     </span>
                     <span className="cook-result__missing">{summary ?? 'You have everything'}</span>
+                    {result.avoided.length > 0 && (
+                      <span className="cook-result__avoided" data-testid="cook-result-avoided">
+                        avoiding: {result.avoided.map((a) => a.name).join(', ')}
+                      </span>
+                    )}
                     {swapLine && (
                       <span className="cook-result__diet-swap" data-testid="cook-result-diet-swap">
                         {swapLine}

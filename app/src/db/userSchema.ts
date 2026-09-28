@@ -155,6 +155,21 @@ export const USER_DB_MIGRATIONS: Migration[] = [
         CHECK (recipe_source IN ('corpus', 'fixture', 'my'))`,
     ],
   },
+  {
+    // S16: "ingredients I avoid" (R15, owner D17: "many of the apps felt very southern or mid
+    // western, using things like cool whip or sour cream ... which is not my style"). One row per
+    // avoided slug (a corpus.db `ingredients.slug`, same space the kitchen list searches);
+    // `mode` is per item: 'hide' drops a recipe using it, 'lower' just ranks it behind recipes
+    // that don't (features/cook/avoid.ts).
+    version: 7,
+    statements: [
+      `CREATE TABLE avoid_ingredients (
+        slug TEXT PRIMARY KEY,
+        mode TEXT NOT NULL DEFAULT 'hide' CHECK (mode IN ('hide', 'lower')),
+        added_at TEXT NOT NULL DEFAULT (datetime('now'))
+      )`,
+    ],
+  },
 ]
 
 /** Every table `user.db` owns, in migration order. Used by backup export/import. */
@@ -169,4 +184,5 @@ export const USER_DB_TABLES = [
   'plan_entries',
   'grocery_lists',
   'grocery_items',
+  'avoid_ingredients',
 ] as const
