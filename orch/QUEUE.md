@@ -28,3 +28,4 @@ S14 nutrition (USDA FDC) | ingest | DONE merged | sonnet | orch/briefs/S14-nutri
 S12 import from URL + My Recipes in Cook | app | DONE merged | sonnet | orch/briefs/S12-import-url.md | v0.2
 S15 servings estimator | ingest + small app | DONE merged, bar missed (61.9%), shipped per R14 | opus | orch/briefs/S15-servings.md | v0.2
 S12b Mine: favorite-source bug, R12 ranking, R13 filters | app | RUNNING | sonnet | orch/briefs/S12b-mine-fixes.md | v0.2
+S1b fix BBC parser TypeError (11,834 pages lost) + --retry-failed | ingest | RUNNING | sonnet | orch/briefs/S1b-bbc-parser.md | v0.2
