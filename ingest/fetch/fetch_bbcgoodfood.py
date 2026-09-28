@@ -36,6 +36,15 @@ def _iso_duration_to_min(s: str | None) -> int | None:
     return int(h or 0) * 60 + int(mi or 0)
 
 
+def _has_recipe_type(t) -> bool:
+    """@type is usually the string "Recipe" but can be a list of types."""
+    if t == "Recipe":
+        return True
+    if isinstance(t, list):
+        return "Recipe" in t
+    return False
+
+
 def _find_recipe_ld(html_text: str) -> dict | None:
     for block in _LD_JSON_RE.findall(html_text):
         try:
@@ -44,13 +53,40 @@ def _find_recipe_ld(html_text: str) -> dict | None:
             continue
         candidates = data if isinstance(data, list) else [data]
         for d in candidates:
-            if isinstance(d, dict) and d.get("@type") in ("Recipe", ["Recipe"]):
+            if isinstance(d, dict) and _has_recipe_type(d.get("@type")):
                 return d
             # @graph style documents
             if isinstance(d, dict) and "@graph" in d:
                 for g in d["@graph"]:
-                    if isinstance(g, dict) and g.get("@type") == "Recipe":
+                    if isinstance(g, dict) and _has_recipe_type(g.get("@type")):
                         return g
+    return None
+
+
+def _first_str(value) -> str | None:
+    """Best-effort conversion of a schema.org field into a display string.
+
+    Live pages vary this shape per field: a bare number (recipeYield is often a plain
+    int, not "Serves N"), a plain string, a list of either, or an object with a
+    name/text/value. Returns the first usable string, or None.
+    """
+    if value is None or isinstance(value, bool):
+        return None
+    if isinstance(value, (str, int, float)):
+        return str(value)
+    if isinstance(value, list):
+        for item in value:
+            s = _first_str(item)
+            if s:
+                return s
+        return None
+    if isinstance(value, dict):
+        for key in ("name", "text", "value", "url"):
+            if value.get(key) is not None:
+                s = _first_str(value[key])
+                if s:
+                    return s
+        return None
     return None
 
 
@@ -59,6 +95,8 @@ def _instructions_to_steps(instr) -> list[str]:
         return []
     if isinstance(instr, str):
         return clean_list([instr])
+    if isinstance(instr, dict):
+        instr = [instr]
     out = []
     for item in instr:
         if isinstance(item, str):
@@ -68,6 +106,8 @@ def _instructions_to_steps(instr) -> list[str]:
                 for sub in item["itemListElement"]:
                     if isinstance(sub, dict):
                         out.append(sub.get("text") or sub.get("name") or "")
+                    elif isinstance(sub, str):
+                        out.append(sub)
             else:
                 out.append(item.get("text") or item.get("name") or "")
     return clean_list(out)
@@ -92,12 +132,12 @@ def parse_recipe_page(html_text: str, url: str) -> dict | None:
         "ingredients": ingredients,
         "steps": steps,
     }
-    category = ld.get("recipeCategory")
+    category = _first_str(ld.get("recipeCategory"))
     if category:
-        rec["category"] = clean_text(category if isinstance(category, str) else category[0])
-    cuisine = ld.get("recipeCuisine")
+        rec["category"] = clean_text(category)
+    cuisine = _first_str(ld.get("recipeCuisine"))
     if cuisine:
-        rec["cuisine_label"] = clean_text(cuisine if isinstance(cuisine, str) else cuisine[0])
+        rec["cuisine_label"] = clean_text(cuisine)
     rating = ld.get("aggregateRating") or {}
     if isinstance(rating, dict) and rating.get("ratingValue") is not None:
         try:
@@ -118,18 +158,12 @@ def parse_recipe_page(html_text: str, url: str) -> dict | None:
     cook = _iso_duration_to_min(ld.get("cookTime"))
     if cook is not None:
         rec["cook_time_min"] = cook
-    yield_text = ld.get("recipeYield")
+    yield_text = _first_str(ld.get("recipeYield"))
     if yield_text:
-        rec["yield_text"] = clean_text(yield_text if isinstance(yield_text, str) else yield_text[0])
-    image = ld.get("image")
-    if image:
-        if isinstance(image, list):
-            first = image[0]
-            rec["image_url"] = first.get("url") if isinstance(first, dict) else first
-        elif isinstance(image, dict):
-            rec["image_url"] = image.get("url")
-        else:
-            rec["image_url"] = image
+        rec["yield_text"] = clean_text(yield_text)
+    image_url = _first_str(ld.get("image"))
+    if image_url:
+        rec["image_url"] = image_url
     keywords = ld.get("keywords")
     if keywords:
         tags = keywords.split(",") if isinstance(keywords, str) else keywords
@@ -141,13 +175,17 @@ def _is_recipe_sitemap(loc: str) -> bool:
     return loc.endswith(".xml") and "-recipe.xml" in loc
 
 
-def run(cap: int = CAP) -> dict:
-    # Stage 1: find the recipe-only child sitemaps from the root index.
-    from sitemap_crawler import sitemap_locs
+def run(cap: int = CAP, retry_failed: bool = False) -> dict:
+    # Stage 1: find the recipe-only child sitemaps from the root index. Skipped
+    # entirely on a --retry-failed run: it only re-visits URLs already discovered
+    # and recorded in progress.json, so it never needs the sitemaps again.
+    child_sitemaps: list[str] = []
+    if not retry_failed:
+        from sitemap_crawler import sitemap_locs
 
-    child_sitemaps = [u for u in sitemap_locs(ROOT_SITEMAP) if _is_recipe_sitemap(u)]
-    if not child_sitemaps:
-        child_sitemaps = [ROOT_SITEMAP]
+        child_sitemaps = [u for u in sitemap_locs(ROOT_SITEMAP) if _is_recipe_sitemap(u)]
+        if not child_sitemaps:
+            child_sitemaps = [ROOT_SITEMAP]
 
     return crawl(
         SOURCE,
@@ -155,8 +193,20 @@ def run(cap: int = CAP) -> dict:
         parse_recipe_page,
         cap,
         url_filter=lambda u: "/recipes/" in u,
+        retry_failed=retry_failed,
     )
 
 
 if __name__ == "__main__":
-    print(json.dumps(run(), indent=2))
+    import argparse
+
+    ap = argparse.ArgumentParser()
+    ap.add_argument("--cap", type=int, default=CAP)
+    ap.add_argument(
+        "--retry-failed",
+        action="store_true",
+        help="Only re-visit URLs previously dropped for a parse-related reason "
+        "(parse error / no recipe data), capped at --cap attempts this run.",
+    )
+    args = ap.parse_args()
+    print(json.dumps(run(cap=args.cap, retry_failed=args.retry_failed), indent=2))
