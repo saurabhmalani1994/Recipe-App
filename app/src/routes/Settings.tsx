@@ -22,7 +22,7 @@ const AVOID_MODE_LABELS: Record<AvoidMode, string> = {
 }
 
 export function Settings() {
-  const { preset: dietPreset, setPreset: setDietPreset } = useDiet()
+  const { defaultPreset: dietPreset, setDefaultPreset: setDietPreset } = useDiet()
   const [settings, setSettings] = useState<AppSettings | null>(null)
   const [equipment, setEquipment] = useState<Set<string>>(new Set())
   const [pantry, setPantry] = useState<Set<string>>(new Set())
@@ -79,7 +79,7 @@ export function Settings() {
   async function patch(next: Partial<AppSettings>) {
     const updated = await updateSettings(next)
     setSettings(updated)
-    if (next.dietPreset && next.dietPreset !== dietPreset) setDietPreset(next.dietPreset)
+    if (next.dietPreset) setDietPreset(next.dietPreset)
   }
 
   async function toggleEquipment(id: string, owned: boolean) {
@@ -158,7 +158,10 @@ export function Settings() {
       </fieldset>
 
       <fieldset className="settings-group" role="radiogroup" aria-label="Diet preset">
-        <legend>Diet</legend>
+        <legend>Default diet</legend>
+        <p className="settings-hint">
+          Home and Cook start with this. The Diet chip there changes it for the moment.
+        </p>
         {DIET_PRESETS.map((value) => (
           <label key={value} className="settings-radio">
             <input

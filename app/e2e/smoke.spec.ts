@@ -8,7 +8,7 @@ const TABS: { label: string; testId: string }[] = [
   { label: 'My Recipes', testId: 'screen-my-recipes' },
 ]
 
-test('walks all five tabs, keeps the diet switch persisted across a reload, screenshots Home', async ({
+test('walks all five tabs; the Diet chip applies for the session, the Settings default persists', async ({
   page,
 }) => {
   await page.goto('/')
@@ -22,15 +22,21 @@ test('walks all five tabs, keeps the diet switch persisted across a reload, scre
   await page.getByRole('navigation', { name: 'Main' }).getByText('Home').click()
   await expect(page.getByTestId('screen-home')).toBeVisible()
 
-  const noRedMeat = page.getByRole('radio', { name: 'No red meat' })
-  await noRedMeat.click()
-  await expect(noRedMeat).toHaveAttribute('aria-checked', 'true')
+  // S22a (D21): the diet is a "Diet" chip on Home and Cook, opening a sheet; the chip's pick is
+  // for this session, shared by Home and Cook.
+  const dietChip = page.getByTestId('diet-chip')
+  await expect(dietChip).toHaveAccessibleName('Diet: Everything')
+  await dietChip.click()
+  await page.getByRole('dialog', { name: 'Diet' }).getByRole('radio', { name: /No red meat/ }).click()
+  await expect(dietChip).toHaveAccessibleName('Diet: No red meat')
+  await expect(dietChip).toHaveAttribute('data-active', 'true')
+  await page.getByRole('navigation', { name: 'Main' }).getByText('Cook').click()
+  await expect(page.getByTestId('diet-chip')).toHaveAccessibleName('Diet: No red meat')
+  await page.getByRole('navigation', { name: 'Main' }).getByText('Home').click()
 
+  // A reload starts again from the default in Settings (Everything here).
   await page.reload()
-  await expect(page.getByRole('radio', { name: 'No red meat' })).toHaveAttribute(
-    'aria-checked',
-    'true',
-  )
+  await expect(page.getByTestId('diet-chip')).toHaveAccessibleName('Diet: Everything')
 
   await page.screenshot({ path: 'e2e/screens/home-412x915.png' })
 })
@@ -43,15 +49,14 @@ test('S7a walk: diet, kitchen item, favorite, fork with edit and diff, reload pe
   await page.getByRole('link', { name: 'Settings' }).click()
   const settingsScreen = page.getByTestId('screen-settings')
   await expect(settingsScreen).toBeVisible()
-  // The diet switch also lives in the sticky header, so scope to the settings screen's own
-  // "Diet preset" group to avoid matching both.
+  // The default diet lives here (S22a); Home and Cook start from it.
   await settingsScreen.getByRole('radio', { name: 'No red meat' }).click()
   await expect(settingsScreen.getByRole('radio', { name: 'No red meat' })).toBeChecked()
   await page.screenshot({ path: 'e2e/screens/settings-412x915.png' })
 
   // 2. Add a kitchen item by a synonym ("dhania" -> cilantro).
   await page.getByRole('navigation', { name: 'Main' }).getByText('Home').click()
-  await page.getByRole('link', { name: '🧺 What I have' }).click()
+  await page.getByRole('link', { name: 'What I have' }).click()
   await expect(page.getByTestId('screen-kitchen')).toBeVisible()
   await page.getByLabel('Add an ingredient').fill('dhania')
   await page.getByRole('button', { name: 'cilantro' }).click()
@@ -88,14 +93,13 @@ test('S7a walk: diet, kitchen item, favorite, fork with edit and diff, reload pe
   expect(page.url()).toBe(url)
 
   await page.getByRole('navigation', { name: 'Main' }).getByText('Home').click()
-  await page.getByRole('link', { name: '🧺 What I have' }).click()
+  await page.getByRole('link', { name: 'What I have' }).click()
   await expect(page.getByText('cilantro')).toBeVisible()
 
   await page.goto('/#/recipe/r01')
   await expect(page.getByRole('button', { name: 'Remove favorite' })).toBeVisible()
 
-  await expect(page.getByRole('radio', { name: 'No red meat' })).toHaveAttribute(
-    'aria-checked',
-    'true',
-  )
+  // The default diet set in Settings persisted, and Home starts from it.
+  await page.getByRole('navigation', { name: 'Main' }).getByText('Home').click()
+  await expect(page.getByTestId('diet-chip')).toHaveAccessibleName('Diet: No red meat')
 })

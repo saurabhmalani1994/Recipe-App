@@ -1,0 +1,158 @@
+/*
+ * Design tokens (S22a). The one source of truth for colour, type, spacing, radii, elevation and
+ * motion. `src/styles/tokens.test.ts` parses this file and checks every text-on-surface pair
+ * below for WCAG contrast (4.5:1), in light AND dark.
+ *
+ * Look: "photo-led food magazine" (owner, D21) — warm paper, ink, a paprika accent and a herb
+ * green, with a serif for display and a legible sans for UI. Theme: "follow phone setting" (D21),
+ * so dark is driven by prefers-color-scheme only.
+ */
+:root {
+  /* ---- colour: light ---- */
+  --bg: #fbf7f1; /* paper */
+  --surface: #ffffff; /* cards, sheets, bars */
+  --surface-2: #f5eee4; /* sunken wells, inputs, skeleton base */
+  --surface-3: #ede3d5; /* chips at rest, skeleton shimmer */
+  --text: #1f1a17; /* ink */
+  --text-2: #675c52; /* secondary text, meta */
+  --border: #e6dccd;
+  --border-strong: #cdbfac;
+  --accent: #b03f1c; /* paprika: primary actions, "missing" */
+  --on-accent: #ffffff;
+  --accent-soft: #f8e2d6; /* active chip / nav indicator container */
+  --on-accent-soft: #7a2a10;
+  --herb: #386133; /* "you have", swaps */
+  --herb-soft: #e3eddb;
+  --on-herb-soft: #274522;
+  --scrim: rgba(20, 12, 6, 0.62); /* text over photos (hero) */
+  --on-scrim: #ffffff;
+  --backdrop: rgba(24, 16, 10, 0.44); /* behind a bottom sheet */
+  --focus: #b03f1c;
+
+  /* cuisine placeholders: a tint and a deep ink of the same hue */
+  --ph-1-bg: #f6ddd0; /* paprika */
+  --ph-1-fg: #8a3314;
+  --ph-2-bg: #f5e6c4; /* saffron */
+  --ph-2-fg: #7a5208;
+  --ph-3-bg: #e2e8cc; /* olive */
+  --ph-3-fg: #4b5a17;
+  --ph-4-bg: #d8e8dc; /* sage */
+  --ph-4-fg: #2e5a3b;
+  --ph-5-bg: #d3e6e6; /* teal */
+  --ph-5-fg: #1f5657;
+  --ph-6-bg: #e9d9e6; /* plum */
+  --ph-6-fg: #6a3160;
+  --ph-7-bg: #f4d9da; /* rose */
+  --ph-7-fg: #8a2f38;
+  --ph-8-bg: #dde0ec; /* slate */
+  --ph-8-fg: #394670;
+
+  /* ---- type ---- */
+  --font-display: 'Fraunces Variable', 'Iowan Old Style', Georgia, serif;
+  --font-ui: 'Inter Variable', system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+  --text-xs: 0.75rem; /* 12 */
+  --text-sm: 0.8125rem; /* 13 */
+  --text-md: 0.9375rem; /* 15: body */
+  --text-lg: 1.0625rem; /* 17 */
+  --title-sm: 1.125rem; /* 18: card titles (serif) */
+  --title-md: 1.375rem; /* 22: section headers, top bar */
+  --title-lg: 1.875rem; /* 30: screen display titles */
+  --title-xl: 2.25rem; /* 36: hero */
+  --leading-tight: 1.15;
+  --leading-body: 1.45;
+
+  /* ---- spacing (4-pt scale) ---- */
+  --space-1: 4px;
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --space-5: 20px;
+  --space-6: 24px;
+  --space-8: 32px;
+  --space-10: 40px;
+  --gutter: 16px;
+
+  /* ---- radii ---- */
+  --radius-sm: 8px;
+  --radius-md: 12px;
+  --radius-lg: 18px;
+  --radius-xl: 24px;
+  --radius-pill: 999px;
+
+  /* ---- elevation ---- */
+  --shadow-1: 0 1px 2px rgba(60, 40, 20, 0.06), 0 1px 3px rgba(60, 40, 20, 0.08);
+  --shadow-2: 0 2px 6px rgba(60, 40, 20, 0.08), 0 8px 24px rgba(60, 40, 20, 0.1);
+  --shadow-3: 0 -4px 12px rgba(60, 40, 20, 0.08), 0 -12px 40px rgba(60, 40, 20, 0.14);
+
+  /* ---- motion ---- */
+  --ease-standard: cubic-bezier(0.2, 0, 0, 1);
+  --ease-emphasized: cubic-bezier(0.05, 0.7, 0.1, 1);
+  --dur-fast: 120ms;
+  --dur-med: 220ms;
+  --dur-slow: 320ms;
+
+  /* ---- shell metrics ---- */
+  --topbar-h: 56px;
+  --nav-h: 64px;
+  --safe-top: env(safe-area-inset-top, 0px);
+  --safe-bottom: env(safe-area-inset-bottom, 0px);
+  --tap: 48px;
+
+  color-scheme: light;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    /* ---- colour: dark ---- */
+    --bg: #14110f;
+    --surface: #1e1a17;
+    --surface-2: #28221e;
+    --surface-3: #332c26;
+    --text: #f3ece3;
+    --text-2: #b9ac9e;
+    --border: #3a322c;
+    --border-strong: #54493f;
+    --accent: #f08a5d;
+    --on-accent: #1d0e06;
+    --accent-soft: #432518;
+    --on-accent-soft: #ffcdb5;
+    --herb: #9ccb8f;
+    --herb-soft: #223220;
+    --on-herb-soft: #c3e3b7;
+    --scrim: rgba(8, 5, 3, 0.66);
+    --on-scrim: #ffffff;
+    --backdrop: rgba(0, 0, 0, 0.6);
+    --focus: #f08a5d;
+
+    --ph-1-bg: #3d2117;
+    --ph-1-fg: #f5b596;
+    --ph-2-bg: #3a2c12;
+    --ph-2-fg: #ecc873;
+    --ph-3-bg: #2d3217;
+    --ph-3-fg: #cdd894;
+    --ph-4-bg: #1e3326;
+    --ph-4-fg: #a8d6b5;
+    --ph-5-bg: #173334;
+    --ph-5-fg: #9fd3d3;
+    --ph-6-bg: #36202f;
+    --ph-6-fg: #e3b3d8;
+    --ph-7-bg: #3b1d21;
+    --ph-7-fg: #f2afb6;
+    --ph-8-bg: #22273d;
+    --ph-8-fg: #b6c1ea;
+
+    --shadow-1: 0 1px 2px rgba(0, 0, 0, 0.4);
+    --shadow-2: 0 2px 8px rgba(0, 0, 0, 0.45), 0 8px 24px rgba(0, 0, 0, 0.35);
+    --shadow-3: 0 -4px 16px rgba(0, 0, 0, 0.5);
+
+    color-scheme: dark;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  :root {
+    --dur-fast: 0ms;
+    --dur-med: 0ms;
+    --dur-slow: 0ms;
+  }
+}
