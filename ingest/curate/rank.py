@@ -10,7 +10,7 @@ Reads the finished scan (ingest/curate/scan.py) and writes, under <out>:
   stats.json      the numbers the report quotes.
 and ingest/curate/CURATE_REPORT.md.
 
-Run: python3 -m ingest.curate.rank [--target 80000] [--out DIR] [--draw-eval]
+Run: python3 -m ingest.curate.rank [--target 80000] [--out DIR] [--draw-eval] [--compare PREV_OUT_DIR]
 """
 import argparse
 import gzip
@@ -28,32 +28,53 @@ from ingest.curate import dedupe as D  # noqa: E402
 from ingest.curate import scan as SC  # noqa: E402
 from ingest.curate import score as Q  # noqa: E402
 from ingest.curate import select as SEL  # noqa: E402
-from ingest.curate.features import HARD_JUNK  # noqa: E402
+from ingest.curate import textpass as TP  # noqa: E402
+from ingest.curate.features import HARD_JUNK, TEXT_FIELDS  # noqa: E402
 
 OUT = '/home/user/recipe-data/derived/curate'
 REPORT = os.path.join(HERE, 'CURATE_REPORT.md')
 EVAL_DIR = os.path.join(HERE, 'eval')
-EVAL_SEED = 8
+EVAL_SEED = 82              # S8 drew owner_grade.md with seed 8; S8b draws owner_grade_2.md
+EVAL_NAME = 'owner_grade_2'
+EVAL_PER_BAND = 15
+TUNING_KEY = os.path.join(EVAL_DIR, 'owner_grade_key.json')   # the graded 60, never redrawn
 FIELDS = ('key', 'source', 'line', 'domain', 'title', 'ntitle', 'slugs', 'n_lines', 'resolved', 'qty', 'n_steps',
           'step_chars', 'max_step', 'time_source', 'total_min', 'course', 'cuisine', 'veg', 'nrm', 'image',
-          'servings', 'rating', 'rating_count', 'rating_source', 'junk')
+          'servings', 'rating', 'rating_count', 'rating_source', 'junk') + TEXT_FIELDS
 
 
-def log(*a):
+def log(*a, **_):
     print(*a, flush=True)
 
 
-def load(scan_dir):
+def load(scan_dir, text_dir=TP.OUT):
+    """The scan's records; a record made before S8b gets its text fields from textpass."""
     recs = []
     t0 = time.time()
     intern = sys.intern
+    text = None
+    missing = 0
     for i, r in enumerate(SC.iter_records(scan_dir, FIELDS)):
         r['slugs'] = tuple(intern(s) for s in r['slugs'])
         r['domain'] = intern(r['domain'])
         r['source'] = intern(r['source'])
+        if r['style'] is None:
+            if text is None:
+                log('  backfilling text features (textpass)')
+                text = TP.load(scan_dir, text_dir, log=log)
+            t = text.get((r['source'], r['line']))
+            if t is None:
+                missing += 1   # counted, never silent; scored as if no marker was found
+                t = {'style': (), 'n_rich': 0, 'n_short': 0, 'trunc': None, 'n_frag': 0}
+            r.update(t)
+        else:
+            r['style'] = tuple(r['style'])
         recs.append(r)
         if i and i % 250_000 == 0:
             log(f'  loaded {i:,} records ({time.time() - t0:.0f}s)')
+    if missing:
+        log(f'  {missing:,} records had no text features')
+    load.missing_text = missing
     return recs
 
 
@@ -82,11 +103,14 @@ def spearman(xs, ys):
     return float(r.statistic), float(r.pvalue)
 
 
-def run(scan_dir=SC.OUT, out=OUT, target=SEL.TARGET, draw_eval=False, report=REPORT, eval_dir=EVAL_DIR):
+def run(scan_dir=SC.OUT, out=OUT, target=SEL.TARGET, draw_eval=False, report=REPORT, eval_dir=EVAL_DIR,
+        compare=None, text_dir=TP.OUT):
+    """`compare`: a directory holding an earlier run's selection.tsv and pool.tsv.gz; the stats
+    and the report then say how many selected recipes changed and which moved most."""
     os.makedirs(out, exist_ok=True)
     t0 = time.time()
     log('loading scan records')
-    recs = load(scan_dir)
+    recs = load(scan_dir, text_dir)
     log(f'{len(recs):,} records ({time.time() - t0:.0f}s)')
 
     rated = [r for r in recs if r['rating_source'] and r['rating_count']]
@@ -94,7 +118,8 @@ def run(scan_dir=SC.OUT, out=OUT, target=SEL.TARGET, draw_eval=False, report=REP
 
     base = {}
     for r in recs:
-        base[r['key']] = -1.0 if hard_flag(r) else Q.quality(r)
+        # an excluded source never leads a cluster, so it cannot hide an eligible copy
+        base[r['key']] = -1.0 if hard_flag(r) else (-0.5 if r['source'] in SEL.EXCLUDED_SOURCES else Q.quality(r))
     log(f'clustering ({time.time() - t0:.0f}s)')
     cl = D.cluster(((r['key'], r['ntitle'], r['slugs']) for r in recs), base)
     log(f'clustered ({time.time() - t0:.0f}s)')
@@ -126,6 +151,9 @@ def run(scan_dir=SC.OUT, out=OUT, target=SEL.TARGET, draw_eval=False, report=REP
         cid, size, leader = cl[r['key']]
         if hf:
             drop(r['source'], f'curate_junk_{hf}', r['key'])
+            continue
+        if r['source'] in SEL.EXCLUDED_SOURCES:
+            drop(r['source'], 'curate_excluded_source', r['key'])
             continue
         if not leader:
             drop(r['source'], 'curate_duplicate', r['key'])
@@ -172,6 +200,8 @@ def run(scan_dir=SC.OUT, out=OUT, target=SEL.TARGET, draw_eval=False, report=REP
             if k != 'rating':
                 per_term[k] = round(spearman([t[k] for t in ts], y)[0], 4)
         per_term['copies (cluster size - 1)'] = round(spearman([r['cluster_size'] - 1 for r in joined], y)[0], 4)
+    tuning = tuning_eval(recs, cl, ranked)
+    moved = compare_runs(compare, ranked, chosen) if compare else None
     fc_urls = [r for r in recs if r['source'] == 'recipenlg' and r['domain'] == 'food.com']
     fc_joined = sum(1 for r in fc_urls if r['rating_source'] == 'foodcom_interactions')
 
@@ -210,6 +240,18 @@ def run(scan_dir=SC.OUT, out=OUT, target=SEL.TARGET, draw_eval=False, report=REP
         'drops': {s: dict(sorted(v.items())) for s, v in sorted(drops.items())},
         'score_quantiles_pool': [ranked[int(q * (len(ranked) - 1))]['score']
                                  for q in (0, .01, .05, .25, .5, .75, .95, .99, 1)] if ranked else [],
+        'weights': Q.WEIGHTS,
+        'style': style_stats(sel, pool),
+        'fresh_mean': {'selected': _mean(Q.fresh_term(r['slugs'], r['n_short'], r['n_lines'], r['course']) for r in sel),
+                       'pool': _mean(Q.fresh_term(r['slugs'], r['n_short'], r['n_lines'], r['course']) for r in pool)},
+        'trunc_pool': dict(Counter(r['trunc'] for r in pool if r['trunc'])),
+        'trunc_selected': dict(Counter(r['trunc'] for r in sel if r['trunc'])),
+        'text_backfill_missing': getattr(load, 'missing_text', 0),
+        'ceiling': {'cuisines': list(SEL.CEILING_CUISINES), 'ceiling': SEL.CEILING,
+                    'selected': sum(1 for r in sel if r['cuisine'] in SEL.CEILING_CUISINES),
+                    'pool': sum(1 for r in pool if r['cuisine'] in SEL.CEILING_CUISINES)},
+        'tuning': tuning,
+        'compare': moved,
     }
     with open(os.path.join(out, 'stats.json'), 'w', encoding='utf-8') as fh:
         json.dump(stats, fh, indent=1, sort_keys=True, default=str)
@@ -219,9 +261,99 @@ def run(scan_dir=SC.OUT, out=OUT, target=SEL.TARGET, draw_eval=False, report=REP
     log(f'wrote {out}/selection.tsv, drops.json, pool.tsv.gz, stats.json and {report} ({time.time() - t0:.0f}s)')
     if draw_eval:
         from ingest.curate.eval import draw
-        draw.draw(ranked, scan_dir, eval_dir, seed=EVAL_SEED)
-        log(f'wrote {eval_dir}/owner_grade.md')
+        exclude = [k['key'] for k in json.load(open(TUNING_KEY, encoding='utf-8'))] if os.path.exists(TUNING_KEY) else []
+        draw.draw(ranked, scan_dir, eval_dir, seed=EVAL_SEED, per_band=EVAL_PER_BAND, name=EVAL_NAME, exclude=exclude)
+        log(f'wrote {eval_dir}/{EVAL_NAME}.md')
     return stats
+
+
+def _mean(xs):
+    xs = list(xs)
+    return round(sum(xs) / len(xs), 4) if xs else None
+
+
+def style_stats(sel, pool):
+    def count(rows):
+        c = Counter()
+        any_ = 0
+        for r in rows:
+            m = Q.style_markers(r['style'], r['n_rich'], r['n_lines'], r['course'])
+            any_ += bool(m)
+            c.update(m)
+        return {'any': any_, 'by_marker': dict(c.most_common())}
+    return {'selected': count(sel), 'pool': count(pool)}
+
+
+def tuning_eval(recs, cl, ranked):
+    """The graded 60 (the tuning set) under this score: mean grade by tertile of the score,
+    Spearman rho against the grade, and each recipe's percentile in the ranked pool."""
+    gpath = os.path.join(EVAL_DIR, 'owner_grade.md')
+    if not (os.path.exists(TUNING_KEY) and os.path.exists(gpath)):
+        return None
+    from ingest.curate.eval import draw
+    key = json.load(open(TUNING_KEY, encoding='utf-8'))
+    grades = draw.read_grades(open(gpath, encoding='utf-8').read())
+    want = {k['key']: k for k in key if k['n'] in grades}
+    pos = {r['key']: i for i, r in enumerate(ranked)}
+    rows = []
+    for r in recs:
+        k = want.get(r['key'])
+        if k is None:
+            continue
+        size = cl[r['key']][1]
+        rows.append({'n': k['n'], 'grade': grades[k['n']], 'old_band': k['band'], 'old_score': k['score'],
+                     'score': Q.quality(r, copies=size - 1), 'title': r['title'],
+                     'pct': round(pos[r['key']] / len(ranked), 4) if r['key'] in pos else None})
+    if len(rows) < 3:
+        return None
+    by_new = sorted(rows, key=lambda x: (-x['score'], x['n']))
+    t = len(rows) // 3
+    tert = [by_new[:t], by_new[t:len(rows) - t], by_new[len(rows) - t:]]
+    old = {}
+    for x in rows:
+        old.setdefault(x['old_band'], []).append(x['grade'])
+    return {
+        'n': len(rows),
+        'old_band_means': {b: round(sum(v) / len(v), 3) for b, v in old.items()},
+        'new_tertile_means': {name: round(sum(x['grade'] for x in g) / len(g), 3)
+                              for name, g in zip(('top', 'middle', 'bottom'), tert) if g},
+        'spearman_old': round(spearman([x['old_score'] for x in rows], [x['grade'] for x in rows])[0], 4),
+        'spearman_new': round(spearman([x['score'] for x in rows], [x['grade'] for x in rows])[0], 4),
+        'in_new_bands': {name: [x['grade'] for x in rows if x['pct'] is not None and lo <= x['pct'] < hi]
+                         for name, (lo, hi) in (('top5', (0, .05)), ('middle5', (.475, .525)),
+                                                ('bottom5', (.95, 1.01)))},
+        'rows': by_new,
+    }
+
+
+def compare_runs(prev_dir, ranked, chosen):
+    """How this run differs from the one in prev_dir (its selection.tsv and pool.tsv.gz)."""
+    prev_sel = set()
+    with open(os.path.join(prev_dir, 'selection.tsv'), encoding='utf-8') as fh:
+        next(fh)
+        for ln in fh:
+            prev_sel.add(ln.split('\t', 3)[2])
+    prev_rank = {}
+    with gzip.open(os.path.join(prev_dir, 'pool.tsv.gz'), 'rt', encoding='utf-8') as fh:
+        next(fh)
+        for ln in fh:
+            p = ln.rstrip('\n').split('\t')
+            prev_rank[p[1]] = (int(p[0]), float(p[4]))
+    n_prev = len(prev_rank) or 1
+    n = len(ranked) or 1
+    moves = []
+    for i, r in enumerate(ranked):
+        got = prev_rank.get(r['key'])
+        if got:
+            moves.append((got[0] / n_prev - i / n, r['key'], r['domain'], r['title'], got[1], r['score'],
+                          round(got[0] / n_prev, 4), round(i / n, 4)))
+    moves.sort(key=lambda m: (-m[0], m[1]))
+
+    def fmt(ms):
+        return [{'key': m[1], 'site': m[2], 'title': m[3], 'old_score': m[4], 'new_score': m[5],
+                 'old_pct': m[6], 'new_pct': m[7]} for m in ms]
+    return {'prev_selected': len(prev_sel), 'kept': len(prev_sel & chosen), 'left': len(prev_sel - chosen),
+            'entered': len(chosen - prev_sel), 'up': fmt(moves[:10]), 'down': fmt(moves[::-1][:10])}
 
 
 def _pct(c, n):
@@ -256,6 +388,38 @@ def report_md(st):
                        ('no_red_meat', 'by_nrm'), ('total time (min)', 'by_time')):
         L.append(f'By {title}: ' + ', '.join(f'{k} {_pct(v, n)}' for k, v in st[key].items()) + '\n')
     L.append('Pool by cuisine (available): ' + ', '.join(f'{k} {v:,}' for k, v in st['pool_by_cuisine'].items()) + '\n')
+    L.append('## Score (S8b)\n')
+    L.append('Weights: ' + ', '.join(f'{k} {v}' for k, v in st['weights'].items()) + '. Formula and terms: score.py.\n')
+    tu = st.get('tuning')
+    if tu:
+        L.append(f"Tuning set (the {tu['n']} graded recipes of owner_grade.md; the weights were set on them, so "
+                 f"this is fit, not a test): mean grade by the S8 bands " +
+                 ', '.join(f'{k} {v}' for k, v in tu['old_band_means'].items()) +
+                 '; by tertile of this score ' + ', '.join(f'{k} {v}' for k, v in tu['new_tertile_means'].items()) +
+                 f". Spearman rho score vs grade: S8 {tu['spearman_old']}, now {tu['spearman_new']}. Grades of those "
+                 'that fall in the new pool bands: ' +
+                 ', '.join(f'{k} {v}' for k, v in tu['in_new_bands'].items()) + '.\n')
+    sy = st['style']
+    L.append(f"Style markers (D17): {_pct(sy['selected']['any'], n)} of the selection carry one "
+             f"({sy['pool']['any']:,} of {st['pool']:,} in the pool). Selected by marker: " +
+             ', '.join(f'{k} {v:,}' for k, v in sy['selected']['by_marker'].items()) + '. Pool by marker: ' +
+             ', '.join(f'{k} {v:,}' for k, v in sy['pool']['by_marker'].items()) + '.\n')
+    L.append(f"Freshness term mean (D18): selected {st['fresh_mean']['selected']}, pool {st['fresh_mean']['pool']}.\n")
+    L.append('Truncated methods in the pool: ' + ', '.join(f'{k} {v:,}' for k, v in st['trunc_pool'].items()) +
+             '; selected: ' + (', '.join(f'{k} {v:,}' for k, v in st['trunc_selected'].items()) or 'none') + '.\n')
+    ce = st['ceiling']
+    L.append(f"Cuisine ceiling: {' + '.join(ce['cuisines'])} at most {ce['ceiling']:.0%} of the target; selected "
+             f"{_pct(ce['selected'], n)} (pool {ce['pool']:,}).\n")
+    cm = st.get('compare')
+    if cm:
+        L.append(f"Against the previous selection ({cm['prev_selected']:,}): kept {cm['kept']:,}, left "
+                 f"{cm['left']:,}, entered {cm['entered']:,}.\n")
+        for title, k in (('Moved up most (pool percentile, old -> new)', 'up'), ('Moved down most', 'down')):
+            L.append(title + ':\n')
+            for m in cm[k]:
+                L.append(f"- {m['title']} ({m['site']}, `{m['key']}`): {m['old_pct']:.1%} -> {m['new_pct']:.1%}, "
+                         f"score {m['old_score']} -> {m['new_score']}")
+            L.append('')
     L.append('## Dedupe\n')
     c = st['clusters']
     L.append(f"Pool recipes that lead a cluster of 2+: {c['multi_member']:,}; copies dropped as duplicates: "
@@ -287,9 +451,10 @@ def main(argv=None):
     ap.add_argument('--scan', default=SC.OUT)
     ap.add_argument('--out', default=OUT)
     ap.add_argument('--target', type=int, default=SEL.TARGET)
-    ap.add_argument('--draw-eval', action='store_true')
+    ap.add_argument('--draw-eval', action='store_true', help=f'draw eval/{EVAL_NAME}.md from the new ranking')
+    ap.add_argument('--compare', default=None, help="an earlier run's out dir, to count what changed")
     args = ap.parse_args(argv)
-    run(args.scan, args.out, args.target, args.draw_eval)
+    run(args.scan, args.out, args.target, args.draw_eval, compare=args.compare)
     return 0
 
 

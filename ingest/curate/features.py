@@ -214,6 +214,94 @@ TITLE_FILLER = {'the', 'a', 'an', 'recipe', 'easy', 'best', 'homemade', 'quick',
                 'i', 'ii', 'iii', 'iv', '1', '2', '3', 'no'}
 
 
+# ---- text features (brief S8b): style markers, shortcut lines, the truncated-method check ----
+# They read only the raw text, so textpass.py can backfill them onto a scan made before they
+# existed; features() writes them too, so a new scan carries them.
+TEXT_FIELDS = ('style', 'n_rich', 'n_short', 'trunc', 'n_frag')
+
+# Convenience and heartland markers (owner, D17). Each is matched on the ingredient lines,
+# lowercased; a recipe records each marker once.
+STYLE_MARKERS = (
+    ('whipped_topping', r'cool ?whip|whipped topping|dream whip'),
+    ('gelatin_mix', r'jell-?o\b|\bjello\b|(?<!unflavored )(?<!unflavoured )\bgelatin (?:dessert|mix)|'
+                    r'(?:strawberry|lime|cherry|raspberry|orange|lemon|peach|grape|black cherry|berry) '
+                    r'(?:flavou?red )?gelatin'),
+    ('pudding_mix', r'pudding mix|instant [a-z -]*pudding|pudding (?:and pie )?filling mix|'
+                    r'(?:pkg|package|box|pack|packet|oz|ounce)[^,;:]*\bpudding\b'),
+    ('box_mix', r'\b(?:cake|brownie|muffin|cookie|cornbread|biscuit|pancake|stuffing|frosting) mix\b|'
+                r'bisquick|\bjiffy\b|\bduncan hines\b|\bbetty crocker\b|stove ?top stuffing'),
+    ('cream_of_soup', r'cream[- ]of[- ](?:mushroom|chicken|celery|potato|shrimp|broccoli|asparagus|onion)|'
+                      r'(?:cheddar cheese|golden mushroom|mushroom|nacho cheese) soup|condensed [a-z ]*soup'),
+    ('processed_cheese', r'velveeta|process(?:ed)? cheese|american cheese|chee[sz]e? whiz|kraft singles|'
+                         r'cheese food'),
+    ('canned_dough', r'crescent|refrigerated (?:biscuit|dough|pizza|pie ?crust|roll)|can(?:ned)? biscuits|'
+                     r'can of biscuits|pillsbury|\bgrands\b|tube of|(?:biscuits?|rolls?) \(\d+[^)]*(?:oz|ounce)[^)]*\) '
+                     r'(?:can|tube)'),
+    ('miracle_whip', r'miracle whip'),
+    ('seasoning_packet', r'onion soup mix|dry onion soup|soup mix|dressing mix|ranch (?:dip )?mix|hidden valley|'
+                         r'seasoning (?:mix|packet)|(?:envelope|packet|pkg\.?) (?:of )?(?:dry )?'
+                         r'(?:taco|ranch|italian|onion|chili|gravy)'),
+    ('marshmallow', r'marshmallow|\bfluff\b'),
+)
+_STYLE_RES = tuple((name, re.compile(rx)) for name, rx in STYLE_MARKERS)
+# A creamy base: sour cream, mayonnaise, cream cheese or Miracle Whip (heavy use is a style marker
+# when it makes up much of the recipe; see score.style_term).
+_RICH_RE = re.compile(r'sour cream|mayonnaise|\bmayo\b|cream cheese|miracle whip|salad dressing')
+# A line bought canned, jarred or boxed ("1 (15 oz) can black beans", "1 pkg. frozen peas").
+_SHORT_RE = re.compile(r'\bcans?\b|\bcanned\b|\btins?\b|\btinned\b|\bjars?\b|\bjarred\b|\bpkgs?\b|\bpackages?\b|'
+                       r'\bpackets?\b|\bpkts?\b|\bboxe?s?\b|\benvelopes?\b|\bcartons?\b|\bfrozen\b|\bfrzn\b|\binstant\b|'
+                       r'\bcondensed\b|\bmix\b|\bready[- ]made\b|\bstore[- ]bought\b|\bbottled\b')
+# A step that is only a header: "1st Layer:", "Topping:", "For the sauce:".
+_FRAG_RE = re.compile(r"^(?:\(?\d+\)?[.)]?\s*)?(?:\d+(?:st|nd|rd|th)\s+)?[a-z &/'-]{0,30}:\s*$", re.I)
+# Headers that end a complete method on the source's page (the note under them was not scraped).
+_NOTE_HEADERS = re.compile(r"^(?:do ahead|make ahead|note|notes|cook'?s notes?|tips?|variations?|storage|"
+                           r"to store|nutrition(?:al)?(?: info(?:rmation)?)?|per serving|serves?|yield)\s*:\s*$",
+                           re.I)
+# Words a cut-off method stops on. Only lowercase ones count, so a photo credit ending "by Sang An"
+# is not a cut.
+_DANGLING = {'and', 'or', 'with', 'the', 'to', 'of', 'a', 'in', 'into', 'until', 'then', 'add', 'etc'}
+
+
+def truncated_method(steps):
+    """Why the method looks cut off, or None: 'header_end' (the last step is a header such as
+    "1st Layer:"), 'fragments' (half or more of the steps are headers), 'dangling' (the method
+    stops on a connective, "... and" or "... add flour etc")."""
+    steps = [s.strip() for s in steps if isinstance(s, str) and s.strip()]
+    if not steps:
+        return None
+    while len(steps) > 1 and _NOTE_HEADERS.match(steps[-1]):
+        steps = steps[:-1]
+    last = steps[-1]
+    # "... Serve hot. DO AHEAD:" (the header ends the last step rather than being its own step)
+    if _NOTE_HEADERS.match(re.split(r'(?<=[.!?])\s+', last)[-1]):
+        return None
+    if last.endswith(':') or _FRAG_RE.match(last):
+        return 'header_end'
+    frags = [s for s in steps if _FRAG_RE.match(s)]
+    if frags and len(frags) * 2 >= len(steps) and sum(len(s) for s in steps if not _FRAG_RE.match(s)) < 100:
+        return 'fragments'
+    words = last.split()
+    tail = words[-1].strip('.,;') if words else ''
+    if last[-1] not in '.!?)"\'' and tail in _DANGLING:
+        return 'dangling'
+    return None
+
+
+def text_features(raw):
+    """The raw-text fields (TEXT_FIELDS) for one recipe."""
+    lines = [x.lower() for x in (raw.get('ingredients') or []) if isinstance(x, str) and x.strip()]
+    steps = [s for s in (raw.get('steps') or []) if isinstance(s, str) and s.strip()]
+    joined = '\n'.join(lines)
+    style = [name for name, rx in _STYLE_RES if rx.search(joined)]
+    return {
+        'style': style,
+        'n_rich': sum(1 for ln in lines if _RICH_RE.search(ln) and not ln.rstrip().endswith(':')),
+        'n_short': sum(1 for ln in lines if _SHORT_RE.search(ln)),
+        'trunc': truncated_method(steps),
+        'n_frag': sum(1 for s in steps if _FRAG_RE.match(s.strip())),
+    }
+
+
 def features(raw, derived, ratings=None):
     """The flat record the scan writes for one recipe (see module docstring)."""
     items, tags, course, (cuisine, cconf, csrc) = derived
@@ -260,4 +348,5 @@ def features(raw, derived, ratings=None):
         'rating_count': rcount,
         'rating_source': rsrc,
         'junk': junk_flags(raw, set(slugs)),
+        **text_features(raw),
     }

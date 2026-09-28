@@ -30,6 +30,7 @@ DROP_REASONS = (
     'curate_junk_bad_title',         # over 120 characters, or under 3 letters
     'curate_duplicate',              # a near-duplicate of a better copy (same title, slug Jaccard >= 0.8)
     'curate_below_cut',              # passed everything, ranked below the selection
+    'curate_excluded_source',        # R11: a source the selection never takes (foodcom, S8b)
 )
 
 _DOUBLED_RE = re.compile(r'^\s*(.+?)\s+\1\s*$')
