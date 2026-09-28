@@ -281,27 +281,40 @@ describe('engine invariants over the whole fixture', () => {
   })
 })
 
-describe('latency on fixture.db', () => {
-  it('reports p50 and p95 over 60 searches', async () => {
-    const kitchens = [K1, await coreOf(278), ['chicken', 'onion', 'garlic', 'rice', 'tomatoes']]
-    const queries: MatchQuery[] = []
-    for (const have of kitchens) {
-      queries.push({ ...BASE, have })
-      queries.push({ ...BASE, have, diet: 'vegetarian', maxMinutes: 30 })
-      queries.push({ ...BASE, have, onePot: true, kitchen: ['stovetop', 'oven'] })
-      queries.push({ ...BASE, have, useOnly: ['oven'] })
-    }
-    await matchRecipes(db, queries[0]) // warm the taxonomy cache
-    const times: number[] = []
-    for (let i = 0; i < 60; i++) {
-      const start = performance.now()
-      await matchRecipes(db, queries[i % queries.length])
-      times.push(performance.now() - start)
-    }
-    times.sort((a, b) => a - b)
-    const p50 = times[Math.floor(times.length * 0.5)]
-    const p95 = times[Math.floor(times.length * 0.95)]
+async function latency(target: WebDb, kitchens: string[][]): Promise<[number, number]> {
+  const queries: MatchQuery[] = []
+  for (const have of kitchens) {
+    queries.push({ ...BASE, have })
+    queries.push({ ...BASE, have, diet: 'vegetarian', maxMinutes: 30 })
+    queries.push({ ...BASE, have, onePot: true, kitchen: ['stovetop', 'oven'] })
+    queries.push({ ...BASE, have, useOnly: ['oven'] })
+  }
+  await matchRecipes(target, queries[0]) // warm the taxonomy cache
+  const times: number[] = []
+  for (let i = 0; i < 60; i++) {
+    const start = performance.now()
+    await matchRecipes(target, queries[i % queries.length])
+    times.push(performance.now() - start)
+  }
+  times.sort((a, b) => a - b)
+  return [times[Math.floor(times.length * 0.5)], times[Math.floor(times.length * 0.95)]]
+}
+
+const PANTRY = ['chicken', 'onion', 'garlic', 'rice', 'tomatoes', 'eggs', 'milk', 'cheddar']
+
+describe('latency', () => {
+  it('on fixture.db: p50 and p95 over 60 searches', async () => {
+    const [p50, p95] = await latency(db, [K1, await coreOf(278), PANTRY])
     console.log(`ENGINE_LATENCY fixture.db p50=${p50.toFixed(1)}ms p95=${p95.toFixed(1)}ms n=60`)
     expect(p95).toBeLessThan(250)
+  })
+
+  // Skipped unless S6_BENCH_DB names a bigger corpus.db build (e.g. the 5k sample).
+  const bench = process.env.S6_BENCH_DB
+  it.skipIf(!bench)('on $S6_BENCH_DB: p50 and p95 over 60 searches', async () => {
+    const big = await openFixtureDb(bench)
+    const [p50, p95] = await latency(big, [K1, PANTRY])
+    console.log(`ENGINE_LATENCY ${bench} p50=${p50.toFixed(1)}ms p95=${p95.toFixed(1)}ms n=60`)
+    await big.close()
   })
 })

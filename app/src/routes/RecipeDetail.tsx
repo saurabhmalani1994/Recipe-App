@@ -10,9 +10,21 @@ import {
   type Units,
 } from '../features/scaling/scale'
 import { getSettings, type AppSettings } from '../features/settings/settingsRepo'
+import { CorpusRecipeDetail } from './CorpusRecipeDetail'
 
+/**
+ * `/recipe/:id`: a hand-written fixture recipe by its id (r01..r20, still used by Home and
+ * Favorites), else a corpus recipe by its stable `recipes.key` (S6, linked from Cook).
+ */
 export function RecipeDetail() {
   const { id } = useParams<{ id: string }>()
+  if (id && !FIXTURE_RECIPES.some((r) => r.id === id)) {
+    return <CorpusRecipeDetail key={id} recipeKey={id} />
+  }
+  return <FixtureRecipeDetail id={id} />
+}
+
+function FixtureRecipeDetail({ id }: { id: string | undefined }) {
   const navigate = useNavigate()
   const recipe = FIXTURE_RECIPES.find((r) => r.id === id)
 

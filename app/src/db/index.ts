@@ -6,6 +6,13 @@ import { USER_DB_MIGRATIONS } from './userSchema'
 import { hydrateFromLocalStorage, openWebUserDb, withLocalStoragePersistence } from './persistence'
 
 export * from './types'
+export {
+  CorpusMissingError,
+  getCorpusDb,
+  getCorpusStatus,
+  subscribeCorpusStatus,
+  type CorpusStatus,
+} from './corpusDb'
 export { USER_DB_MIGRATIONS, USER_DB_TABLES, PANTRY_DEFAULT_SLUGS } from './userSchema'
 
 export function createDb(name: string): Db {
@@ -41,11 +48,4 @@ export function getUserDb(): Promise<Db> {
 /** Test-only: forces the next `getUserDb()` call to open a fresh connection. */
 export function resetUserDbForTests(): void {
   userDbSingleton = null
-}
-
-/** Opens `corpus.db` read-only. Throws until `ingest` ships a real file to bundle. */
-export function getCorpusDb(): Promise<Db> {
-  throw new Error(
-    'corpus.db is not bundled yet — see src/corpus/fixture.db (schema: src/corpus/types.ts)',
-  )
 }

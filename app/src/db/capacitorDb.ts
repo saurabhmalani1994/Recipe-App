@@ -14,21 +14,30 @@ export class CapacitorDb implements VersionedDb {
   readonly name: string
   private connection: SQLiteConnection
   private db: SQLiteDBConnection | null = null
+  private readonly readonly: boolean
 
-  constructor(name: string) {
+  /** `readonly` opens an existing file read-only (corpus.db, S6). */
+  constructor(name: string, readonly = false) {
     this.name = name
+    this.readonly = readonly
     this.connection = new SQLiteConnection(CapacitorSQLite)
   }
 
   async open(): Promise<void> {
-    this.db = await this.connection.createConnection(this.name, false, 'no-encryption', 1, false)
+    this.db = await this.connection.createConnection(
+      this.name,
+      false,
+      'no-encryption',
+      1,
+      this.readonly,
+    )
     await this.db.open()
   }
 
   async close(): Promise<void> {
     if (!this.db) return
     await this.db.close()
-    await this.connection.closeConnection(this.name, false)
+    await this.connection.closeConnection(this.name, this.readonly)
     this.db = null
   }
 
