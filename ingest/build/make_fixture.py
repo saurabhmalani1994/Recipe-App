@@ -37,7 +37,7 @@ _ROOT = os.path.dirname(os.path.dirname(HERE))
 if _ROOT not in sys.path:
     sys.path.insert(0, _ROOT)
 from ingest.build import sample as S  # noqa: E402
-from ingest.build.build_corpus import DERIVED, SCHEMA_PATH, build  # noqa: E402
+from ingest.build.build_corpus import DERIVED, PRESETS, SCHEMA_PATH, build, pack_swaps  # noqa: E402
 
 OUT = os.path.join(_ROOT, 'app', 'src', 'corpus', 'fixture.db')
 MAX = 300
@@ -73,7 +73,10 @@ def main(argv=None):
     ap.add_argument('--refresh', action='store_true', help='with --keys-from and --corpus: the S10 refresh')
     ap.add_argument('--corpus', default='/home/user/recipe-data/out/corpus.db')
     ap.add_argument('--keep-all', action='store_true', help='with --refresh: migrate every old row, add nothing')
+    ap.add_argument('--migrate', metavar='OLD', help='S19: carry every row of OLD into the current schema, no rebuild')
     args = ap.parse_args(argv)
+    if args.migrate:
+        return migrate_schema(args.migrate, args.out)
     if args.keys_from and args.refresh:
         return refresh(args.keys_from, args.out, args.corpus, args.n, keep_all=args.keep_all)
     if args.keys_from and args.keep_rows:
@@ -176,6 +179,61 @@ def migrate_keep_rows(old, out):
         with open(new, 'rb') as src, open(out, 'wb') as dst:
             dst.write(src.read())
     print(f'migrated {out}: {n} recipes kept, {len(MIGRATED_COLUMNS)} recipes columns from the rebuild')
+    return 0
+
+
+def migrate_schema(old, out):
+    """S19 (schema 4): write `out` from the current schema holding every row of `old` as it was,
+    without a rebuild, so no tag the app's tests pin changes. recipe_diet keeps only the stored
+    PRESETS (vegetarian_strict rows are counted and dropped) and its swaps are repacked in the
+    short form (pack_swaps; an element already short is kept)."""
+    old = os.path.abspath(old)
+    with tempfile.TemporaryDirectory() as tmp:
+        new = os.path.join(tmp, 'new.db')
+        con = sqlite3.connect(new)
+        with open(SCHEMA_PATH, encoding='utf-8') as fh:
+            con.executescript(fh.read())
+        version = con.execute("SELECT value FROM corpus_meta WHERE key = 'schema_version'").fetchone()[0]
+        con.execute('ATTACH ? AS old', (f'file:{old}?mode=ro',))
+        tables = [r[0] for r in con.execute("SELECT name FROM main.sqlite_master WHERE type = 'table' AND "
+                                            "name NOT LIKE 'sqlite_%' AND name != 'recipes_fts' ORDER BY name")]
+        for t in tables:
+            cols = [r[1] for r in con.execute(f'PRAGMA main.table_info({t})')]
+            keep = [c for c in cols if c in {r[1] for r in con.execute(f'PRAGMA old.table_info({t})')}]
+            con.execute(f'DELETE FROM main.{t}')
+            if t == 'recipe_diet':
+                continue
+            if t == 'corpus_meta':   # every old key but the version, which is the schema's
+                con.execute("INSERT INTO main.corpus_meta (key, value) SELECT key, CASE key WHEN 'schema_version' "
+                            'THEN ? ELSE value END FROM old.corpus_meta', (version,))
+                continue
+            con.execute(f'INSERT INTO main.{t} ({", ".join(keep)}) SELECT {", ".join(keep)} FROM old.{t}')
+        rows = con.execute('SELECT recipe_id, preset, status, swaps FROM old.recipe_diet').fetchall()
+        kept = []
+        for rid, preset, status, swaps in rows:
+            if preset not in PRESETS:
+                continue
+            items = json.loads(swaps)
+            if items and 'item' in items[0]:
+                swaps = pack_swaps(items)
+            kept.append((rid, preset, status, swaps))
+        con.executemany('INSERT INTO main.recipe_diet (recipe_id, preset, status, swaps) VALUES (?,?,?,?)', kept)
+        n_old = con.execute('SELECT count(*) FROM old.recipes').fetchone()[0]
+        n = con.execute('SELECT count(*) FROM main.recipes').fetchone()[0]
+        con.commit()
+        con.execute('DETACH old')
+        con.execute('ANALYZE')
+        con.commit()
+        con.execute('VACUUM')
+        con.close()
+        if n != n_old:
+            print(f'FAIL: {n} of {n_old} recipes migrated', file=sys.stderr)
+            return 1
+        with open(new, 'rb') as src, open(out, 'wb') as dst:
+            dst.write(src.read())
+    print(f'migrated {out} to schema {version}: {n} recipes, {len(kept)} of {len(rows)} '
+          f'recipe_diet rows kept ({len(rows) - len(kept)} not in {PRESETS} dropped), '
+          f'{os.path.getsize(out):,} bytes')
     return 0
 
 

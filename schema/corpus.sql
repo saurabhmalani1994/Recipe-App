@@ -10,7 +10,7 @@
 -- Booleans are 0/1 integers. A nullable tag is NULL when it could not be determined (for example
 -- one_pot when the recipe has no usable steps), never a guessed 0.
 
-PRAGMA user_version = 3;
+PRAGMA user_version = 4;
 
 -- type IngredientFlag: 'red_meat', 'poultry', 'fish', 'shellfish', 'animal_derived', 'explicit_meat', 'dairy', 'egg', 'gluten', 'nuts', 'alcohol'
 -- type SubContext: 'baking', 'sauce', 'marinade', 'dressing', 'stir_fry', 'braise', 'soup', 'frying', 'garnish', 'dessert', 'beverage', 'any'
@@ -22,7 +22,7 @@ CREATE TABLE corpus_meta (
   key TEXT PRIMARY KEY,
   value TEXT NOT NULL
 ) WITHOUT ROWID;
-INSERT INTO corpus_meta (key, value) VALUES ('schema_version', '3');
+INSERT INTO corpus_meta (key, value) VALUES ('schema_version', '4');
 
 -- One row per recipe that passed the build's drops (ingest/build/curate.py).
 CREATE TABLE recipes (
@@ -40,8 +40,8 @@ CREATE TABLE recipes (
   time_source TEXT CHECK (time_source IN ('source', 'source_partial', 'estimated')), -- enum: TimeSource
   weeknight INTEGER CHECK (weeknight IN (0, 1)), -- bool: total_min <= 30; NULL when total_min is unknown
   cuisine TEXT CHECK (cuisine IN ('indian', 'chinese', 'japanese', 'korean', 'thai', 'vietnamese', 'filipino', 'indonesian_malaysian', 'middle_eastern', 'persian', 'turkish', 'greek', 'italian', 'french', 'spanish', 'mediterranean', 'mexican', 'latin_american', 'caribbean', 'american', 'southern_us', 'british_irish', 'german_central_eu', 'north_african', 'east_west_african', 'fusion_other')), -- enum: Cuisine
-  cuisine_confidence REAL, -- 1.0 for a mapped source label, else the classifier's posterior; NULL with cuisine
-  cuisine_source TEXT CHECK (cuisine_source IN ('source_label', 'classifier')), -- enum: CuisineSource
+  cuisine_confidence REAL, -- 1.0 for a mapped source label or a title marker (R20), else the classifier's posterior; NULL with cuisine
+  cuisine_source TEXT CHECK (cuisine_source IN ('source_label', 'classifier', 'title_marker')), -- enum: CuisineSource
   course TEXT NOT NULL CHECK (course IN ('main', 'side', 'dessert', 'breakfast', 'snack', 'drink', 'sauce_condiment', 'baking')), -- enum: Course
   one_pot INTEGER CHECK (one_pot IN (0, 1)), -- bool: a single heated vessel (literal, R9); "one pot meals" is one_pot AND course = 'main'
   one_pan INTEGER CHECK (one_pan IN (0, 1)), -- bool
@@ -120,12 +120,15 @@ CREATE TABLE recipe_equipment_alternatives (
 ) WITHOUT ROWID;
 
 -- Diet per preset (ingest/tag/diet.py, rulings R7 and R8). "Everything" has no row. The app
--- offers vegetarian and no_red_meat; vegetarian_strict is kept for a later strict mode (R7).
+-- offers vegetarian and no_red_meat. The tagger's vegetarian_strict (R7) is not stored (S19).
+-- swaps is stored in a short form: each DietSwap's keys item, slug, use, use_slug, via, sub_id,
+-- quality, from_steps are written i, s, u, x, v, b, q, f; via 'substitution', 'alternative',
+-- 'omit' as 's', 'a', 'o'; a null value is left out. model.ts decodeDietSwaps reads it.
 CREATE TABLE recipe_diet (
   recipe_id INTEGER NOT NULL REFERENCES recipes (id),
-  preset TEXT NOT NULL CHECK (preset IN ('vegetarian', 'no_red_meat', 'vegetarian_strict')), -- enum: DietPreset
+  preset TEXT NOT NULL CHECK (preset IN ('vegetarian', 'no_red_meat')), -- enum: DietPreset
   status TEXT NOT NULL CHECK (status IN ('ok', 'adaptable', 'no', 'unknown')), -- enum: DietStatus
-  swaps TEXT NOT NULL DEFAULT '[]', -- json: DietSwap[]: what makes an adaptable recipe work; [] unless status = 'adaptable'
+  swaps TEXT NOT NULL DEFAULT '[]', -- json: DietSwap[]: stored in the short form, read with decodeDietSwaps (model.ts); what makes an adaptable recipe work; [] unless status = 'adaptable'
   PRIMARY KEY (recipe_id, preset)
 ) WITHOUT ROWID;
 

@@ -64,7 +64,16 @@ DERIVED = '/home/user/recipe-data/derived'
 CURATED_OUT = '/home/user/recipe-data/out/corpus.db'   # the curated build (brief S8), --select
 BATCH = 500
 PER_RECIPE_TIMEOUT_S = 5
-PRESETS = ('vegetarian', 'no_red_meat', 'vegetarian_strict')
+# The presets stored in recipe_diet. The tagger also computes vegetarian_strict (R7), but no app
+# reads it, so S19 stopped storing it (8.2 MB of swaps in the S10 build).
+PRESETS = ('vegetarian', 'no_red_meat')
+# recipe_diet.swaps is stored with short keys and via codes (S19): a DietSwap's
+# {item, slug, use, use_slug, via, sub_id, quality, from_steps} is written as
+# {i, s, u, x, v, b, q, f}, via 'substitution'/'alternative'/'omit' as 's'/'a'/'o', and a key
+# whose value is null is left out. app/src/corpus/model.ts decodeDietSwaps reads it back.
+SWAP_KEYS = {'item': 'i', 'slug': 's', 'use': 'u', 'use_slug': 'x', 'via': 'v', 'sub_id': 'b',
+             'quality': 'q', 'from_steps': 'f'}
+SWAP_VIA = {'substitution': 's', 'alternative': 'a', 'omit': 'o'}
 
 
 class Timeout(Exception):
@@ -77,6 +86,35 @@ def _alarm(signum, frame):
 
 def _json(v):
     return json.dumps(v, ensure_ascii=False, sort_keys=True, separators=(',', ':'))
+
+
+def pack_swaps(swaps):
+    """recipe_diet.swaps text for a list of DietSwap dicts, in the short form (SWAP_KEYS). Raises
+    KeyError on a key or via value the short form has no code for, so a new tagger field cannot
+    be dropped silently."""
+    out = []
+    for sw in swaps:
+        d = {}
+        for k, v in sw.items():
+            if v is None:
+                continue
+            d[SWAP_KEYS[k]] = SWAP_VIA[v] if k == 'via' else v
+        out.append(d)
+    return _json(out)
+
+
+def unpack_swaps(text):
+    """The DietSwap dicts back from pack_swaps text (for tests and reports); a null comes back as
+    an absent key, except slug and use, which are always present."""
+    keys = {v: k for k, v in SWAP_KEYS.items()}
+    via = {v: k for k, v in SWAP_VIA.items()}
+    out = []
+    for d in json.loads(text):
+        sw = {'slug': None, 'use': None}
+        for k, v in d.items():
+            sw[keys[k]] = via[v] if k == 'v' else v
+        out.append(sw)
+    return out
 
 
 _INVISIBLE = dict.fromkeys(map(ord, '\u200b\u200c\u200d\u2060\ufeff'))
@@ -168,12 +206,9 @@ def derive(raw, model):
     items = parse_items(raw)
     tags = tag_recipe(raw, items)
     course = tag_course(raw, items)['course']
-    cuisine = CU.to_canonical(raw.get('source'), raw.get('cuisine_label'))
-    if cuisine:
-        cz = (cuisine, 1.0, 'source_label')
-    else:
-        got = classify(raw.get('ingredients'), raw.get('title'), model)
-        cz = (None, None, None) if got['label'] == 'unknown' else (got['label'], round(got['confidence'], 4), 'classifier')
+    # R20: source label > title demonym > confident classifier > title dish marker > none
+    cz = CU.resolve(CU.to_canonical(raw.get('source'), raw.get('cuisine_label')), raw.get('title'),
+                    lambda: classify(raw.get('ingredients'), raw.get('title'), model))
     return items, tags, course, cz
 
 
@@ -305,7 +340,7 @@ class Writer:
         self.con.executemany('INSERT INTO recipe_equipment_alternatives (recipe_id, grp, equipment) VALUES (?,?,?)',
                              alts)
         self.con.executemany('INSERT INTO recipe_diet (recipe_id, preset, status, swaps) VALUES (?,?,?,?)',
-                             [(rid, p, tags['diet'][p]['status'], _json(tags['diet'][p]['swaps']))
+                             [(rid, p, tags['diet'][p]['status'], pack_swaps(tags['diet'][p]['swaps']))
                               for p in PRESETS])
         self.con.execute('INSERT INTO recipes_fts (rowid, title, ingredients, cuisine) VALUES (?,?,?,?)',
                          (rid, clean_title(raw['title']), '\n'.join(ln for ln in lines if isinstance(ln, str)),
@@ -526,7 +561,7 @@ def distributions(con, n):
     L.append('By cuisine source: ' + _dist(q("SELECT coalesce(cuisine_source, '(none)'), count(*) FROM recipes "
                                              'GROUP BY 1 ORDER BY 2 DESC'), n) + '\n')
     L.append('By course: ' + _dist(q('SELECT course, count(*) FROM recipes GROUP BY 1 ORDER BY 2 DESC, 1'), n) + '\n')
-    for preset in ('vegetarian', 'no_red_meat', 'vegetarian_strict'):
+    for preset in PRESETS:
         L.append(f'Diet {preset}: ' + _dist(q('SELECT status, count(*) FROM recipe_diet WHERE preset = ? GROUP BY 1 '
                                               'ORDER BY 2 DESC', preset), n) + '\n')
     for label, sql in (
@@ -577,7 +612,7 @@ def report(path, target=100_000):
     for col in ('one_pot', 'weeknight', 'no_cook'):
         rows = q(f"SELECT coalesce({col}, '(null)'), count(*) FROM recipes GROUP BY 1 ORDER BY 1")
         L.append(f'{col}: ' + ', '.join(f'{k} {v}' for k, v in rows) + '\n')
-    rows = q("SELECT preset, status, count(*) FROM recipe_diet WHERE preset != 'vegetarian_strict' GROUP BY 1, 2 "
+    rows = q("SELECT preset, status, count(*) FROM recipe_diet GROUP BY 1, 2 "
              'ORDER BY 1, 3 DESC')
     L.append('diet: ' + ', '.join(f'{p}.{s} {c}' for p, s, c in rows) + '\n')
     nn = q('SELECT count(*) FROM recipes WHERE kcal IS NOT NULL')[0][0]

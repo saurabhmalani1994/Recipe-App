@@ -224,7 +224,7 @@ def test_build_rows(built):
     assert [h[0] for h in hit] == [r['id']]
     # per-slug recipe counts
     assert con.execute("SELECT recipe_count FROM ingredients WHERE slug = 'onion'").fetchone()[0] == 4
-    assert con.execute("SELECT value FROM corpus_meta WHERE key = 'schema_version'").fetchone()[0] == '3'
+    assert con.execute("SELECT value FROM corpus_meta WHERE key = 'schema_version'").fetchone()[0] == '4'
     # servings (S15): the source's own is 'source'; every other recipe here is estimated, and
     # servings and servings_source are NULL together
     assert r['servings_source'] == 'source'
@@ -326,8 +326,8 @@ def test_fixture_db_matches_schema():
     with open(B.SCHEMA_PATH, encoding='utf-8') as fh:
         fresh.executescript(fh.read())
     v = "SELECT value FROM corpus_meta WHERE key = 'schema_version'"
-    assert con.execute(v).fetchone() == fresh.execute(v).fetchone() == ('3',)
-    assert con.execute('PRAGMA user_version').fetchone() == (3,)
+    assert con.execute(v).fetchone() == fresh.execute(v).fetchone() == ('4',)
+    assert con.execute('PRAGMA user_version').fetchone() == (4,)
     q = "SELECT name, sql FROM sqlite_master WHERE sql IS NOT NULL AND name NOT LIKE 'sqlite_stat%' ORDER BY name"
     assert con.execute(q).fetchall() == fresh.execute(q).fetchall()
 
@@ -357,3 +357,18 @@ def test_clean_title_drops_zero_width_characters():
     # archanaskitchen:recipe_caramel-bread-pudding, verbatim
     assert B.clean_title('\u200b' * 7 + 'Caramel Bread Pudding Recipe ') == 'Caramel Bread Pudding Recipe'
     assert B.clean_title(' Pad thai\ufeff') == 'Pad thai'
+
+
+# ---------- S19: compact recipe_diet ----------
+
+def test_swaps_short_form_round_trips_and_strict_is_not_stored():
+    assert B.PRESETS == ('vegetarian', 'no_red_meat')
+    swaps = [{'item': 'diced pancetta', 'quality': 3, 'slug': 'pancetta', 'sub_id': 'pork__vegetarian_meat',
+              'use': 'meat substitute', 'use_slug': ['vegetarian_meat'], 'via': 'substitution'},
+             {'item': 'anchovy', 'slug': None, 'use': None, 'via': 'omit', 'from_steps': True}]
+    text = B.pack_swaps(swaps)
+    assert text == ('[{"b":"pork__vegetarian_meat","i":"diced pancetta","q":3,"s":"pancetta","u":"meat substitute",'
+                    '"v":"s","x":["vegetarian_meat"]},{"f":true,"i":"anchovy","v":"o"}]')
+    assert B.unpack_swaps(text) == swaps
+    with pytest.raises(KeyError):
+        B.pack_swaps([{'item': 'x', 'via': 'substitution', 'new_field': 1}])

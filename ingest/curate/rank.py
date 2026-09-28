@@ -31,6 +31,7 @@ from ingest.curate import score as Q  # noqa: E402
 from ingest.curate import select as SEL  # noqa: E402
 from ingest.curate import textpass as TP  # noqa: E402
 from ingest.curate.features import HARD_JUNK, TEXT_FIELDS  # noqa: E402
+from ingest.cuisine import cuisines as CU  # noqa: E402
 
 OUT = '/home/user/recipe-data/derived/curate'
 REPORT = os.path.join(HERE, 'CURATE_REPORT.md')
@@ -40,7 +41,8 @@ EVAL_NAME = 'owner_grade_2'
 EVAL_PER_BAND = 15
 TUNING_KEY = os.path.join(EVAL_DIR, 'owner_grade_key.json')   # the graded 60, never redrawn
 FIELDS = ('key', 'source', 'line', 'domain', 'title', 'ntitle', 'slugs', 'n_lines', 'resolved', 'qty', 'n_steps',
-          'step_chars', 'max_step', 'time_source', 'total_min', 'course', 'cuisine', 'veg', 'nrm', 'image',
+          'step_chars', 'max_step', 'time_source', 'total_min', 'course', 'cuisine', 'cuisine_conf', 'veg',
+          'nrm', 'image',
           'servings', 'rating', 'rating_count', 'rating_source', 'junk') + TEXT_FIELDS
 
 
@@ -55,6 +57,7 @@ def load(scan_dir, text_dir=TP.OUT):
     intern = sys.intern
     text = None
     missing = 0
+    retitled = 0
     for i, r in enumerate(SC.iter_records(scan_dir, FIELDS)):
         r['slugs'] = tuple(intern(s) for s in r['slugs'])
         r['domain'] = intern(r['domain'])
@@ -70,12 +73,20 @@ def load(scan_dir, text_dir=TP.OUT):
             r.update(t)
         else:
             r['style'] = tuple(r['style'])
+        # R20 (S19): records scanned before derive() applied the title override get it here, so
+        # the cuisine floors count what the build will write
+        got = CU.retitle(r['cuisine'], r['cuisine_conf'], r['title'])
+        if got[0] != r['cuisine']:
+            retitled += 1
+            r['cuisine'], r['cuisine_conf'] = got
         recs.append(r)
         if i and i % 250_000 == 0:
             log(f'  loaded {i:,} records ({time.time() - t0:.0f}s)')
     if missing:
         log(f'  {missing:,} records had no text features')
+    log(f'  {retitled:,} records took a title-marker cuisine (R20)')
     load.missing_text = missing
+    load.retitled = retitled
     return recs
 
 

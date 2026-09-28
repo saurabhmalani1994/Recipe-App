@@ -1,5 +1,5 @@
 import type { Db } from '../../db/types'
-import type { DietSwap } from '../../corpus/model'
+import { decodeDietSwaps, type DietSwap } from '../../corpus/model'
 import type { Course, Cuisine, DietStatus, Equipment } from '../../corpus/types'
 import {
   avoidHits,
@@ -360,7 +360,7 @@ export async function matchRecipes(db: Db, query: MatchQuery): Promise<MatchOutp
       diet: candidate.diet_status
         ? {
             status: candidate.diet_status,
-            swaps: JSON.parse(candidate.diet_swaps ?? '[]') as DietSwap[],
+            swaps: decodeDietSwaps(candidate.diet_swaps),
           }
         : null,
     })

@@ -135,6 +135,44 @@ def find_label(title):
     return None, None
 
 
+# Ruling R20 (brief S19): the markers that are demonyms (a nationality, or the owner's
+# "General Tso"), as against dish markers. A demonym in the title always overrides the
+# classifier; a dish marker only fills in when the classifier is unknown.
+DEMONYMS = frozenset(m for m, _ in MARKERS[MARKERS.index(('general tso', 'chinese')):]) | {
+    'vietnamese', 'korean', 'persian', 'turkish', 'jamaican', 'moroccan', 'tunisian'}
+# Ingredient names that carry a demonym but name no cuisine ("Greek yogurt" goes in parfaits;
+# "German chocolate cake" is American). Blanked out of the title before the demonym check.
+DEMONYM_INGREDIENTS = (
+    'greek yogurt', 'greek yoghurt', 'greek-style yogurt', 'greek style yogurt', 'german chocolate',
+    'irish cream', 'persian cucumber', 'japanese eggplant', 'chinese eggplant', 'chinese cabbage',
+    'chinese five spice', 'chinese 5 spice', 'chinese five-spice', 'thai chili', 'thai chile',
+    'thai chilies', 'thai chiles', 'indian corn', 'korean chili flakes')
+_DEMONYM_RE = [(re.compile(r"(?<![a-z])" + re.escape(m) + r"(?![a-z])"), m, lab)
+               for m, lab in MARKERS if m in DEMONYMS]
+
+
+def find_demonym(title):
+    """(canonical label, demonym) for the first demonym in `title`, matched as a whole word
+    ("Indiana" is not "indian"), after DEMONYM_INGREDIENTS are blanked out; else (None, None)."""
+    t = _norm.sub(' ', (title or '').lower())
+    for phrase in DEMONYM_INGREDIENTS:
+        t = t.replace(phrase, ' ')
+    for rx, marker, label in _DEMONYM_RE:
+        if rx.search(t):
+            return label, marker
+    return None, None
+
+
+def find_dish(title):
+    """(canonical label, marker) for the first dish marker (not a demonym) in `title`, else
+    (None, None). The same substring rules as find_label."""
+    t = _norm.sub(' ', (title or '').lower()) + ' '
+    for marker, label in MARKERS:
+        if marker not in DEMONYMS and marker in t:
+            return label, marker
+    return None, None
+
+
 def marker_words(marker):
     """The lowercase word tokens making up one marker, for stripping from that row's own
     title features (leakage guard, brief S5b-2 #2)."""

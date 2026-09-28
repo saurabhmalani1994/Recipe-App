@@ -50,14 +50,54 @@ def site_label(raw_label, path=CUISINES_PATH):
     return {'cuisine': got['cuisine'], 'sub': got.get('sub')} if got else None
 
 
-def title_cuisine(title):
-    """The canonical label a cuisine demonym or dish marker in `title` names, or None (brief
-    S10b #1). Precedence for a recipe's cuisine is: a source's own label (to_canonical, above)
-    > this title override > the classifier -- callers check to_canonical first and only fall
-    here when the source gave no label."""
+def title_marker(title):
+    """(label, kind) from the title (ruling R20): kind 'demonym' when an explicit demonym names
+    the cuisine ("Thai", "Korean", "General Tso"), 'dish' for a dish marker (chutney, roti,
+    tabbouleh), (None, None) for neither. When both appear the demonym wins: "Moroccan Lamb With
+    Tabbouleh" is north_african."""
     from ingest.cuisine import lexicon as L
-    label, _ = L.find_label(title)
-    return label
+    label, _ = L.find_demonym(title)
+    if label:
+        return label, 'demonym'
+    label, _ = L.find_dish(title)
+    return (label, 'dish') if label else (None, None)
+
+
+def title_cuisine(title):
+    """The canonical label a demonym or dish marker in `title` names (demonym first), or None."""
+    return title_marker(title)[0]
+
+
+def resolve(label_cuisine, title, classify_fn):
+    """(cuisine, confidence, cuisine_source) for one recipe (ruling R20). Precedence: the source's
+    own label ('source_label') > a demonym in the title ('title_marker') > the classifier when it
+    clears its threshold ('classifier') > a dish marker in the title ('title_marker') > none.
+    `classify_fn()` returns the classifier's {'label', 'confidence'} and is called only when
+    needed. A title marker is stored with confidence 1.0."""
+    if label_cuisine:
+        return label_cuisine, 1.0, 'source_label'
+    label, kind = title_marker(title)
+    if kind == 'demonym':
+        return label, 1.0, 'title_marker'
+    got = classify_fn()
+    if got['label'] != 'unknown':
+        return got['label'], round(got['confidence'], 4), 'classifier'
+    if label:
+        return label, 1.0, 'title_marker'
+    return None, None, None
+
+
+def retitle(cuisine, confidence, title):
+    """R20 applied to a scan record that stored only (cuisine, confidence), for records scanned
+    before resolve() existed: a label at confidence 1.0 is a source label (or already a title
+    marker) and stays; otherwise a demonym overrides and a dish marker fills an empty cuisine.
+    Idempotent on records scanned with resolve()."""
+    if cuisine and confidence == 1.0:
+        return cuisine, confidence
+    label, kind = title_marker(title)
+    if kind == 'demonym' or (kind == 'dish' and not cuisine):
+        return label, 1.0
+    return cuisine, confidence
 
 
 def to_canonical(source, raw_label, path=CUISINES_PATH):
