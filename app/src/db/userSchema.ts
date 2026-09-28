@@ -119,6 +119,18 @@ export const USER_DB_MIGRATIONS: Migration[] = [
       `ALTER TABLE grocery_items ADD COLUMN manual INTEGER NOT NULL DEFAULT 0`,
     ],
   },
+  {
+    // S7c: the shoppable list. A line is shown in shop units ("lemons", "garlic 1 head") and can
+    // be tapped to show which planned recipes asked for it.
+    // - grocery_items.display_name: the name as shown to the shopper (plural when more than one
+    //   piece: "lemons"); null for rows written before v4, which fall back to the slug's name.
+    // - grocery_items.sources: JSON array of the recipe titles the line came from.
+    version: 4,
+    statements: [
+      `ALTER TABLE grocery_items ADD COLUMN display_name TEXT`,
+      `ALTER TABLE grocery_items ADD COLUMN sources TEXT`,
+    ],
+  },
 ]
 
 /** Every table `user.db` owns, in migration order. Used by backup export/import. */

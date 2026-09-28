@@ -35,7 +35,17 @@ CATEGORIES = (
 AISLES = ('produce', 'dairy', 'meat', 'seafood', 'bakery', 'pantry', 'spices', 'international',
           'frozen', 'beverages', 'other')
 REQUIRED = ('name', 'synonyms', 'category', 'aisle', 'flags', 'is_staple')
-OPTIONAL = ('parent', 'density_g_per_ml', 'each_g', 'usda_hint', 'hidden_animal', 'note')
+OPTIONAL = ('parent', 'density_g_per_ml', 'each_g', 'usda_hint', 'hidden_animal', 'note',
+            'buy_as', 'shop_unit', 'yield')
+# Purchase fields (S7c, the shoppable grocery list). shop_unit is what the shopper sees on the
+# list; yield is how much of THIS slug one shop_unit (of buy_as, when set) gives; buy_as is the
+# slug actually bought (lemon_juice -> lemon).
+SHOP_UNITS = ('piece', 'bunch', 'head', 'g', 'ml', 'can', 'bottle', 'jar', 'pack')
+# Shop units that only make sense with a stated size ("a can of how much?").
+SIZED_SHOP_UNITS = ('bunch', 'head', 'can', 'bottle', 'jar', 'pack')
+# Yield units: a subset of the parser's canonical units (schema Unit enum).
+YIELD_UNITS = ('g', 'ml', 'piece', 'clove', 'cup', 'tbsp', 'tsp', 'sprig', 'leaf', 'slice',
+               'stalk', 'sheet')
 # Flags that make an ingredient non-vegetarian under the strict reading. hidden_animal must be
 # consistent with them.
 NON_VEG = ('red_meat', 'poultry', 'fish', 'shellfish', 'animal_derived')
@@ -131,6 +141,7 @@ def validate(ingredients, full=True):
         for k in ('usda_hint', 'note', 'name'):
             if k in rec and (not isinstance(rec[k], str) or not rec[k].strip()):
                 errors.append(f'{where}: {k} must be a non-empty string')
+        errors += _purchase_errors(where, slug, rec, ingredients)
         parent = rec.get('parent')
         if parent is not None:
             if parent not in ingredients:
@@ -164,6 +175,49 @@ def validate(ingredients, full=True):
                 break
             seen.add(p)
             p = ingredients[p].get('parent')
+    return errors
+
+
+def _purchase_errors(where, slug, rec, ingredients):
+    """buy_as / shop_unit / yield: all optional, but consistent when present."""
+    errors = []
+    shop = rec.get('shop_unit')
+    has_buy = 'buy_as' in rec
+    has_yield = 'yield' in rec
+    if shop is None:
+        if has_buy or has_yield:
+            errors.append(f'{where}: buy_as/yield need a shop_unit')
+        return errors
+    if shop not in SHOP_UNITS:
+        errors.append(f'{where}: unknown shop_unit {shop!r}')
+    if has_yield:
+        y = rec['yield']
+        if not isinstance(y, dict) or set(y) != {'qty', 'unit'}:
+            errors.append(f'{where}: yield must be {{qty, unit}}')
+        else:
+            if not _is_num(y['qty']) or y['qty'] <= 0:
+                errors.append(f'{where}: yield qty must be a positive number')
+            if y['unit'] not in YIELD_UNITS:
+                errors.append(f'{where}: unknown yield unit {y["unit"]!r}')
+        if shop in ('g', 'ml'):
+            errors.append(f'{where}: a {shop} shop_unit takes no yield')
+    elif shop in SIZED_SHOP_UNITS:
+        errors.append(f'{where}: shop_unit {shop!r} needs a yield')
+    if has_buy:
+        target = rec['buy_as']
+        trec = ingredients.get(target) if isinstance(target, str) else None
+        if not isinstance(trec, dict):
+            errors.append(f'{where}: unknown buy_as {target!r}')
+        elif target == slug:
+            errors.append(f'{where}: buy_as is itself')
+        else:
+            if 'buy_as' in trec:
+                errors.append(f'{where}: buy_as {target!r} is itself bought as something else')
+            if trec.get('shop_unit') != shop:
+                errors.append(f"{where}: shop_unit {shop!r} differs from buy_as {target!r}'s "
+                              f"{trec.get('shop_unit')!r}")
+        if not has_yield:
+            errors.append(f'{where}: buy_as needs a yield (how much one {shop} gives)')
     return errors
 
 
@@ -207,7 +261,8 @@ def main(argv):
     n_syn = sum(len(r.get('synonyms') or []) for r in ing.values())
     n_parent = sum(1 for r in ing.values() if r.get('parent'))
     print(f'taxonomy: {len(errors)} errors, {len(ing)} slugs, {n_syn} synonyms, '
-          f'{n_parent} with a parent, {sum(1 for r in ing.values() if r.get("is_staple"))} staples')
+          f'{n_parent} with a parent, {sum(1 for r in ing.values() if r.get("is_staple"))} staples, '
+          f'{sum(1 for r in ing.values() if r.get("shop_unit"))} with a shop_unit')
     return 1 if errors else 0
 
 

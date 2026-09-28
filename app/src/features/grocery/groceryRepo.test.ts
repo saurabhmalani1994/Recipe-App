@@ -22,8 +22,15 @@ describe('grocery list persistence (S7 #3)', () => {
     const listId = await buildGroceryList(
       null,
       [
-        { slug: 'onion', name: 'onion', aisle: 'produce', amount: '350 g', have: false },
-        { slug: 'salt', name: 'salt', aisle: 'spices', amount: '1 tsp', have: true },
+        {
+          slug: 'onion',
+          name: 'onion',
+          aisle: 'produce',
+          amount: '350 g',
+          have: false,
+          sources: [],
+        },
+        { slug: 'salt', name: 'salt', aisle: 'spices', amount: '1 tsp', have: true, sources: [] },
       ],
       [{ raw: 'a splash of something', reason: 'no canonical ingredient matched' }],
     )
@@ -47,7 +54,16 @@ describe('grocery list persistence (S7 #3)', () => {
   it('ticks an item, adds it to the kitchen, and removes it from the list', async () => {
     const listId = await buildGroceryList(
       null,
-      [{ slug: 'onion', name: 'onion', aisle: 'produce', amount: '350 g', have: false }],
+      [
+        {
+          slug: 'onion',
+          name: 'onion',
+          aisle: 'produce',
+          amount: '350 g',
+          have: false,
+          sources: [],
+        },
+      ],
       [],
     )
     const before = await getCurrentGroceryList(nameOf)
@@ -60,6 +76,33 @@ describe('grocery list persistence (S7 #3)', () => {
 
     const after = await getCurrentGroceryList(nameOf)
     expect(after?.items).toEqual([])
+  })
+
+  it('keeps the shopper-facing name and the source recipes of each line (S7c)', async () => {
+    await buildGroceryList(
+      null,
+      [
+        {
+          slug: 'lemon',
+          name: 'lemons',
+          aisle: 'produce',
+          amount: '2 (need 90 ml juice)',
+          have: false,
+          sources: ['Green Mango Salad', 'Lemon Tart'],
+        },
+      ],
+      [],
+    )
+    const list = await getCurrentGroceryList(nameOf)
+    expect(list?.items).toMatchObject([
+      {
+        text: 'lemon',
+        name: 'lemons',
+        amount: '2 (need 90 ml juice)',
+        sources: ['Green Mango Salad', 'Lemon Tart'],
+        isSlug: true,
+      },
+    ])
   })
 
   it('allows a manual extra item, and clears the whole list', async () => {

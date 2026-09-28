@@ -1,6 +1,10 @@
 import { useEffect, useState } from 'react'
-import { ingredientAisle, ingredientName } from '../corpus/slugs'
-import { aggregateGroceryLines, type GroceryLineInput, type SlugMeta } from '../features/grocery/aggregate'
+import { ingredientAisle, ingredientName, ingredientPurchase } from '../corpus/slugs'
+import {
+  aggregateGroceryLines,
+  type GroceryLineInput,
+  type SlugMeta,
+} from '../features/grocery/aggregate'
 import {
   addManualGroceryItem,
   addTickedToKitchen,
@@ -34,6 +38,17 @@ export function GroceryList() {
   const [list, setList] = useState<GroceryList | null>(null)
   const [manualText, setManualText] = useState('')
   const [message, setMessage] = useState<string | null>(null)
+  // List lines whose source recipes are showing (tapped open).
+  const [openSources, setOpenSources] = useState<ReadonlySet<string>>(new Set())
+
+  function toggleSources(id: string) {
+    setOpenSources((prev) => {
+      const next = new Set(prev)
+      if (next.has(id)) next.delete(id)
+      else next.add(id)
+      return next
+    })
+  }
 
   useEffect(() => {
     void getSettings().then(setSettings)
@@ -66,7 +81,9 @@ export function GroceryList() {
       for (const entry of entries) {
         const recipe = await lookupPlanRecipe(corpus, entry)
         if (!recipe) continue
-        const factor = recipe.servings ? scaleFactor(recipe.servings, entry.people, settings.servingsPerPerson) : 1
+        const factor = recipe.servings
+          ? scaleFactor(recipe.servings, entry.people, settings.servingsPerPerson)
+          : 1
         for (const line of recipe.lines) {
           lines.push({
             slug: line.slug,
@@ -76,6 +93,8 @@ export function GroceryList() {
             unit: line.unit,
             pkgQty: line.pkgQty,
             pkgUnit: line.pkgUnit,
+            recipe: entry.recipeTitle || null,
+            unitStripped: line.unitStripped,
           })
         }
       }
@@ -86,6 +105,7 @@ export function GroceryList() {
         isStaple: corpus.tax.staples.has(slug),
         density: corpus.tax.density.get(slug) ?? null,
         eachG: corpus.tax.eachG.get(slug) ?? null,
+        purchase: ingredientPurchase(slug),
       })
 
       const { items, checkThese } = aggregateGroceryLines(lines, {
@@ -97,10 +117,15 @@ export function GroceryList() {
 
       await buildGroceryList(null, items, checkThese)
       await refresh()
+      // "Have" items (staples, the kitchen list) are left off the list; say which, so nothing
+      // disappears without a word (rule 11).
+      const had = items.filter((i) => i.have).map((i) => i.name)
       setMessage(
         entries.length === 0
           ? 'Nothing planned for this range yet — add some recipes to Plan first.'
-          : null,
+          : had.length > 0
+            ? `Left off ${had.length} you already have: ${had.join(', ')}.`
+            : null,
       )
     } finally {
       setBuilding(false)
@@ -112,7 +137,10 @@ export function GroceryList() {
     // trip to the db. Ticked items still drop to the bottom, via `groupByAisle`'s sort below.
     setList((prev) =>
       prev
-        ? { ...prev, items: prev.items.map((i) => (i.id === item.id ? { ...i, checked: !i.checked } : i)) }
+        ? {
+            ...prev,
+            items: prev.items.map((i) => (i.id === item.id ? { ...i, checked: !i.checked } : i)),
+          }
         : prev,
     )
     await setGroceryItemChecked(item.id, !item.checked)
@@ -159,7 +187,11 @@ export function GroceryList() {
         </button>
       </div>
 
-      {message && <p className="screen__placeholder" data-testid="list-message">{message}</p>}
+      {message && (
+        <p className="screen__placeholder" data-testid="list-message">
+          {message}
+        </p>
+      )}
 
       {!list && !message && (
         <p className="screen__placeholder">
@@ -202,17 +234,44 @@ export function GroceryList() {
                 {aisleItems.map((item) => (
                   <li
                     key={item.id}
-                    className={item.checked ? 'shopping-item shopping-item--checked' : 'shopping-item'}
+                    className={
+                      item.checked ? 'shopping-item shopping-item--checked' : 'shopping-item'
+                    }
                   >
-                    <label className="shopping-item__label">
-                      <input
-                        type="checkbox"
-                        checked={item.checked}
-                        onChange={() => void toggle(item)}
-                      />
-                      <span className="shopping-item__name">{item.name}</span>
-                      {item.amount && <span className="shopping-item__amount">{item.amount}</span>}
-                    </label>
+                    <div className="shopping-item__row">
+                      <label className="shopping-item__label">
+                        <input
+                          type="checkbox"
+                          checked={item.checked}
+                          onChange={() => void toggle(item)}
+                        />
+                        <span className="shopping-item__name">{item.name}</span>
+                        {item.amount && (
+                          <span className="shopping-item__amount">{item.amount}</span>
+                        )}
+                      </label>
+                      {item.sources.length > 0 && (
+                        <button
+                          type="button"
+                          className="shopping-item__sources-toggle"
+                          aria-expanded={openSources.has(item.id)}
+                          aria-controls={`sources-${item.id}`}
+                          aria-label={`Recipes for ${item.name}`}
+                          onClick={() => toggleSources(item.id)}
+                        >
+                          {item.sources.length === 1
+                            ? '1 recipe'
+                            : `${item.sources.length} recipes`}
+                        </button>
+                      )}
+                    </div>
+                    {openSources.has(item.id) && (
+                      <ul className="shopping-item__sources" id={`sources-${item.id}`}>
+                        {item.sources.map((title) => (
+                          <li key={title}>{title}</li>
+                        ))}
+                      </ul>
+                    )}
                   </li>
                 ))}
               </ul>

@@ -37,7 +37,12 @@
       "酵母",
       "干酵母"
     ],
-    "aisle": "pantry"
+    "aisle": "pantry",
+    "shopUnit": "pack",
+    "yield": {
+      "qty": 2.25,
+      "unit": "tsp"
+    }
   },
   {
     "slug": "adobo_sauce",
@@ -148,7 +153,12 @@
       "中筋面粉",
       "普通面粉"
     ],
-    "aisle": "pantry"
+    "aisle": "pantry",
+    "shopUnit": "pack",
+    "yield": {
+      "qty": 1000,
+      "unit": "g"
+    }
   },
   {
     "slug": "alligator",
@@ -166,7 +176,12 @@
       "pimento berries",
       "jamaica pepper"
     ],
-    "aisle": "spices"
+    "aisle": "spices",
+    "shopUnit": "jar",
+    "yield": {
+      "qty": 50,
+      "unit": "ml"
+    }
   },
   {
     "slug": "almond_butter",
@@ -185,13 +200,23 @@
       "almond flavor",
       "bitter almond extract"
     ],
-    "aisle": "pantry"
+    "aisle": "pantry",
+    "shopUnit": "bottle",
+    "yield": {
+      "qty": 60,
+      "unit": "ml"
+    }
   },
   {
     "slug": "almond_flour",
     "name": "almond flour",
     "synonyms": ["almond meal", "ground almonds", "blanched almond flour", "almond powder"],
-    "aisle": "pantry"
+    "aisle": "pantry",
+    "shopUnit": "pack",
+    "yield": {
+      "qty": 500,
+      "unit": "g"
+    }
   },
   {
     "slug": "almond_milk",
@@ -225,7 +250,12 @@
       "smoked almonds",
       "杏仁"
     ],
-    "aisle": "pantry"
+    "aisle": "pantry",
+    "shopUnit": "pack",
+    "yield": {
+      "qty": 200,
+      "unit": "g"
+    }
   },
   {
     "slug": "alum",
@@ -328,7 +358,12 @@
       "white anchovies",
       "boquerones"
     ],
-    "aisle": "seafood"
+    "aisle": "seafood",
+    "shopUnit": "can",
+    "yield": {
+      "qty": 10,
+      "unit": "piece"
+    }
   },
   {
     "slug": "anchovy_paste",
@@ -405,7 +440,8 @@
     "slug": "apple",
     "name": "apple",
     "synonyms": ["red apples", "peeled apples", "apple slices", "seb", "crisp apples", "苹果"],
-    "aisle": "produce"
+    "aisle": "produce",
+    "shopUnit": "piece"
   },
   {
     "slug": "apple_butter",
@@ -417,7 +453,12 @@
     "slug": "apple_cider_vinegar",
     "name": "apple cider vinegar",
     "synonyms": ["cider vinegar", "apple cider vinegar raw", "acv", "apple vinegar"],
-    "aisle": "pantry"
+    "aisle": "pantry",
+    "shopUnit": "bottle",
+    "yield": {
+      "qty": 500,
+      "unit": "ml"
+    }
   },
   {
     "slug": "apple_juice",
@@ -432,7 +473,12 @@
       "cloudy apple juice",
       "spiced cider"
     ],
-    "aisle": "beverages"
+    "aisle": "beverages",
+    "shopUnit": "bottle",
+    "yield": {
+      "qty": 1000,
+      "unit": "ml"
+    }
   },
   {
     "slug": "apple_pie_spice",
@@ -513,7 +559,12 @@
     "slug": "arugula",
     "name": "arugula",
     "synonyms": ["rocket", "baby arugula", "wild rocket", "rocket leaves", "roquette", "rucola"],
-    "aisle": "produce"
+    "aisle": "produce",
+    "shopUnit": "pack",
+    "yield": {
+      "qty": 100,
+      "unit": "g"
+    }
   },
   {
     "slug": "asafoetida",
@@ -569,7 +620,12 @@
       "fresh asparagus",
       "asparagus stalks"
     ],
-    "aisle": "produce"
+    "aisle": "produce",
+    "shopUnit": "bunch",
+    "yield": {
+      "qty": 250,
+      "unit": "g"
+    }
   },
   {
     "slug": "atsuage",
@@ -581,7 +637,8 @@
     "slug": "avocado",
     "name": "avocado",
     "synonyms": ["hass avocado", "ripe avocado", "avocado pureed", "avocado flesh", "牛油果"],
-    "aisle": "produce"
+    "aisle": "produce",
+    "shopUnit": "piece"
   },
   {
     "slug": "avocado_oil",
@@ -616,7 +673,12 @@
     "slug": "baby_spinach",
     "name": "baby spinach",
     "synonyms": ["baby spinach leaves", "fresh baby spinach", "bagged baby spinach"],
-    "aisle": "produce"
+    "aisle": "produce",
+    "shopUnit": "pack",
+    "yield": {
+      "qty": 200,
+      "unit": "g"
+    }
   },
   {
     "slug": "bacon",
@@ -644,7 +706,12 @@
       "turkey or pork bacon",
       "培根"
     ],
-    "aisle": "meat"
+    "aisle": "meat",
+    "shopUnit": "pack",
+    "yield": {
+      "qty": 8,
+      "unit": "slice"
+    }
   },
   {
     "slug": "bacon_bits",
@@ -691,7 +758,12 @@
     "slug": "baking_powder",
     "name": "baking powder",
     "synonyms": ["double-acting baking powder", "aluminum-free baking powder"],
-    "aisle": "pantry"
+    "aisle": "pantry",
+    "shopUnit": "pack",
+    "yield": {
+      "qty": 200,
+      "unit": "g"
+    }
   },
   {
     "slug": "baking_soda",
@@ -707,7 +779,12 @@
       "meetha soda",
       "soda"
     ],
-    "aisle": "pantry"
+    "aisle": "pantry",
+    "shopUnit": "pack",
+    "yield": {
+      "qty": 450,
+      "unit": "g"
+    }
   },
   {
     "slug": "balsamic_vinegar",
@@ -721,7 +798,12 @@
       "white balsamic vinegar",
       "golden balsamic vinegar"
     ],
-    "aisle": "pantry"
+    "aisle": "pantry",
+    "shopUnit": "bottle",
+    "yield": {
+      "qty": 250,
+      "unit": "ml"
+    }
   },
   {
     "slug": "bamboo_shoots",
@@ -742,7 +824,8 @@
       "frozen bananas",
       "香蕉"
     ],
-    "aisle": "produce"
+    "aisle": "produce",
+    "shopUnit": "piece"
   },
   {
     "slug": "banana_chips",
@@ -815,7 +898,12 @@
       "basil sprigs",
       "罗勒"
     ],
-    "aisle": "produce"
+    "aisle": "produce",
+    "shopUnit": "bunch",
+    "yield": {
+      "qty": 1,
+      "unit": "cup"
+    }
   },
   {
     "slug": "basmati_rice",
@@ -827,7 +915,12 @@
       "aged basmati rice",
       "indian basmati rice"
     ],
-    "aisle": "pantry"
+    "aisle": "pantry",
+    "shopUnit": "pack",
+    "yield": {
+      "qty": 1000,
+      "unit": "g"
+    }
   },
   {
     "slug": "bay_leaf",
@@ -842,7 +935,12 @@
       "香叶",
       "月桂叶"
     ],
-    "aisle": "spices"
+    "aisle": "spices",
+    "shopUnit": "jar",
+    "yield": {
+      "qty": 20,
+      "unit": "piece"
+    }
   },
   {
     "slug": "bbq_sauce",
@@ -862,7 +960,12 @@
       "bar-b-q sauce",
       "smoky bbq sauce"
     ],
-    "aisle": "pantry"
+    "aisle": "pantry",
+    "shopUnit": "bottle",
+    "yield": {
+      "qty": 500,
+      "unit": "ml"
+    }
   },
   {
     "slug": "bean_sprouts",
@@ -891,7 +994,8 @@
       "cubed beef",
       "牛肉"
     ],
-    "aisle": "meat"
+    "aisle": "meat",
+    "shopUnit": "g"
   },
   {
     "slug": "beef_bouillon",
@@ -1021,7 +1125,12 @@
       "canned beef broth",
       "beef stock concentrate"
     ],
-    "aisle": "pantry"
+    "aisle": "pantry",
+    "shopUnit": "pack",
+    "yield": {
+      "qty": 1000,
+      "unit": "ml"
+    }
   },
   {
     "slug": "beef_tenderloin",
@@ -1077,7 +1186,8 @@
       "pickled beets",
       "baby beets"
     ],
-    "aisle": "produce"
+    "aisle": "produce",
+    "shopUnit": "piece"
   },
   {
     "slug": "bell_pepper",
@@ -1096,7 +1206,8 @@
       "甜椒",
       "彩椒"
     ],
-    "aisle": "produce"
+    "aisle": "produce",
+    "shopUnit": "piece"
   },
   {
     "slug": "berbere",
@@ -1172,7 +1283,12 @@
       "extra-dark chocolate",
       "dark chocolate bar"
     ],
-    "aisle": "pantry"
+    "aisle": "pantry",
+    "shopUnit": "pack",
+    "yield": {
+      "qty": 100,
+      "unit": "g"
+    }
   },
   {
     "slug": "black_bean_sauce",
@@ -1190,7 +1306,12 @@
       "frijoles negros",
       "fermented black soybeans"
     ],
-    "aisle": "pantry"
+    "aisle": "pantry",
+    "shopUnit": "can",
+    "yield": {
+      "qty": 400,
+      "unit": "g"
+    }
   },
   {
     "slug": "black_cardamom",
@@ -1248,7 +1369,12 @@
       "black pepper to taste",
       "黑胡椒"
     ],
-    "aisle": "spices"
+    "aisle": "spices",
+    "shopUnit": "jar",
+    "yield": {
+      "qty": 100,
+      "unit": "ml"
+    }
   },
   {
     "slug": "black_rice",
@@ -1327,7 +1453,12 @@
     "slug": "blueberries",
     "name": "blueberries",
     "synonyms": ["fresh blueberries", "frozen blueberries"],
-    "aisle": "produce"
+    "aisle": "produce",
+    "shopUnit": "pack",
+    "yield": {
+      "qty": 125,
+      "unit": "g"
+    }
   },
   {
     "slug": "bluefish",
@@ -1439,7 +1570,12 @@
     "slug": "brandy",
     "name": "brandy",
     "synonyms": ["brandy or cognac"],
-    "aisle": "beverages"
+    "aisle": "beverages",
+    "shopUnit": "bottle",
+    "yield": {
+      "qty": 700,
+      "unit": "ml"
+    }
   },
   {
     "slug": "bratwurst",
@@ -1492,7 +1628,12 @@
       "texas toast",
       "面包"
     ],
-    "aisle": "bakery"
+    "aisle": "bakery",
+    "shopUnit": "piece",
+    "yield": {
+      "qty": 20,
+      "unit": "slice"
+    }
   },
   {
     "slug": "bread_dough",
@@ -1522,7 +1663,12 @@
       "high protein flour",
       "高筋面粉"
     ],
-    "aisle": "pantry"
+    "aisle": "pantry",
+    "shopUnit": "pack",
+    "yield": {
+      "qty": 1000,
+      "unit": "g"
+    }
   },
   {
     "slug": "bread_rolls",
@@ -1573,7 +1719,12 @@
       "dried white breadcrumbs",
       "面包糠"
     ],
-    "aisle": "pantry"
+    "aisle": "pantry",
+    "shopUnit": "pack",
+    "yield": {
+      "qty": 250,
+      "unit": "g"
+    }
   },
   {
     "slug": "breadfruit",
@@ -1637,7 +1788,8 @@
       "chopped broccoli",
       "西兰花"
     ],
-    "aisle": "produce"
+    "aisle": "produce",
+    "shopUnit": "piece"
   },
   {
     "slug": "broccoli_rabe",
@@ -1718,7 +1870,12 @@
       "golden sugar",
       "红糖"
     ],
-    "aisle": "pantry"
+    "aisle": "pantry",
+    "shopUnit": "pack",
+    "yield": {
+      "qty": 500,
+      "unit": "g"
+    }
   },
   {
     "slug": "brownie_mix",
@@ -1803,7 +1960,12 @@
       "butter or margarine",
       "butter block"
     ],
-    "aisle": "dairy"
+    "aisle": "dairy",
+    "shopUnit": "pack",
+    "yield": {
+      "qty": 250,
+      "unit": "g"
+    }
   },
   {
     "slug": "butter_extract",
@@ -1835,7 +1997,12 @@
       "sour milk",
       "nonfat buttermilk"
     ],
-    "aisle": "dairy"
+    "aisle": "dairy",
+    "shopUnit": "pack",
+    "yield": {
+      "qty": 500,
+      "unit": "ml"
+    }
   },
   {
     "slug": "buttermilk_powder",
@@ -1889,7 +2056,12 @@
       "卷心菜",
       "包菜"
     ],
-    "aisle": "produce"
+    "aisle": "produce",
+    "shopUnit": "head",
+    "yield": {
+      "qty": 1,
+      "unit": "piece"
+    }
   },
   {
     "slug": "caesar_dressing",
@@ -1961,7 +2133,12 @@
       "carrot cake mix",
       "red velvet cake mix"
     ],
-    "aisle": "pantry"
+    "aisle": "pantry",
+    "shopUnit": "pack",
+    "yield": {
+      "qty": 500,
+      "unit": "g"
+    }
   },
   {
     "slug": "calamansi_fruit",
@@ -2155,7 +2332,12 @@
       "tomatoes canned",
       "crushed or pureed italian plum tomatoes"
     ],
-    "aisle": "pantry"
+    "aisle": "pantry",
+    "shopUnit": "can",
+    "yield": {
+      "qty": 400,
+      "unit": "g"
+    }
   },
   {
     "slug": "canned_tuna",
@@ -2187,7 +2369,12 @@
     "slug": "canola_oil",
     "name": "canola oil",
     "synonyms": ["rapeseed oil", "canola"],
-    "aisle": "pantry"
+    "aisle": "pantry",
+    "shopUnit": "bottle",
+    "yield": {
+      "qty": 1000,
+      "unit": "ml"
+    }
   },
   {
     "slug": "cantaloupe",
@@ -2211,7 +2398,12 @@
       "small capers",
       "capers drained"
     ],
-    "aisle": "pantry"
+    "aisle": "pantry",
+    "shopUnit": "jar",
+    "yield": {
+      "qty": 100,
+      "unit": "ml"
+    }
   },
   {
     "slug": "caramels",
@@ -2246,7 +2438,12 @@
       "elaichi",
       "elachi"
     ],
-    "aisle": "spices"
+    "aisle": "spices",
+    "shopUnit": "jar",
+    "yield": {
+      "qty": 50,
+      "unit": "ml"
+    }
   },
   {
     "slug": "cardamom_pods",
@@ -2292,7 +2489,8 @@
       "rainbow carrots",
       "胡萝卜"
     ],
-    "aisle": "produce"
+    "aisle": "produce",
+    "shopUnit": "piece"
   },
   {
     "slug": "cascabel_chile",
@@ -2365,7 +2563,12 @@
       "花菜",
       "菜花"
     ],
-    "aisle": "produce"
+    "aisle": "produce",
+    "shopUnit": "head",
+    "yield": {
+      "qty": 1,
+      "unit": "piece"
+    }
   },
   {
     "slug": "cavatappi",
@@ -2386,7 +2589,12 @@
       "red cayenne pepper",
       "cayenne pepper powder"
     ],
-    "aisle": "spices"
+    "aisle": "spices",
+    "shopUnit": "jar",
+    "yield": {
+      "qty": 50,
+      "unit": "ml"
+    }
   },
   {
     "slug": "cayenne_chile",
@@ -2407,7 +2615,12 @@
       "diced celery",
       "芹菜"
     ],
-    "aisle": "produce"
+    "aisle": "produce",
+    "shopUnit": "head",
+    "yield": {
+      "qty": 8,
+      "unit": "stalk"
+    }
   },
   {
     "slug": "celery_leaves",
@@ -2431,7 +2644,12 @@
     "slug": "celery_seed",
     "name": "celery seed",
     "synonyms": ["celery seed ground"],
-    "aisle": "spices"
+    "aisle": "spices",
+    "shopUnit": "jar",
+    "yield": {
+      "qty": 50,
+      "unit": "ml"
+    }
   },
   {
     "slug": "century_egg",
@@ -2541,7 +2759,12 @@
       "cheddar cheese soup powder",
       "yellow cheddar"
     ],
-    "aisle": "dairy"
+    "aisle": "dairy",
+    "shopUnit": "pack",
+    "yield": {
+      "qty": 200,
+      "unit": "g"
+    }
   },
   {
     "slug": "cheddar_cheese_soup",
@@ -2573,7 +2796,12 @@
       "芝士",
       "奶酪"
     ],
-    "aisle": "dairy"
+    "aisle": "dairy",
+    "shopUnit": "pack",
+    "yield": {
+      "qty": 200,
+      "unit": "g"
+    }
   },
   {
     "slug": "cheese_curds",
@@ -2618,7 +2846,12 @@
       "red cherries",
       "rainier cherries"
     ],
-    "aisle": "produce"
+    "aisle": "produce",
+    "shopUnit": "pack",
+    "yield": {
+      "qty": 300,
+      "unit": "g"
+    }
   },
   {
     "slug": "cherry_juice",
@@ -2644,7 +2877,12 @@
       "mixed cherry tomatoes",
       "sweet 100 tomatoes"
     ],
-    "aisle": "produce"
+    "aisle": "produce",
+    "shopUnit": "pack",
+    "yield": {
+      "qty": 250,
+      "unit": "g"
+    }
   },
   {
     "slug": "chervil",
@@ -2709,7 +2947,8 @@
       "鸡",
       "鸡块"
     ],
-    "aisle": "meat"
+    "aisle": "meat",
+    "shopUnit": "g"
   },
   {
     "slug": "chicken_bouillon",
@@ -2752,7 +2991,8 @@
       "half chicken breasts",
       "鸡胸肉"
     ],
-    "aisle": "meat"
+    "aisle": "meat",
+    "shopUnit": "piece"
   },
   {
     "slug": "chicken_cutlet",
@@ -2817,7 +3057,12 @@
       "鸡汤",
       "高汤"
     ],
-    "aisle": "pantry"
+    "aisle": "pantry",
+    "shopUnit": "pack",
+    "yield": {
+      "qty": 1000,
+      "unit": "ml"
+    }
   },
   {
     "slug": "chicken_tenders",
@@ -2844,7 +3089,8 @@
       "bone-in skin-on chicken thighs",
       "鸡腿肉"
     ],
-    "aisle": "meat"
+    "aisle": "meat",
+    "shopUnit": "piece"
   },
   {
     "slug": "chicken_wings",
@@ -2882,7 +3128,12 @@
       "safed chana",
       "鹰嘴豆"
     ],
-    "aisle": "pantry"
+    "aisle": "pantry",
+    "shopUnit": "can",
+    "yield": {
+      "qty": 400,
+      "unit": "g"
+    }
   },
   {
     "slug": "chicory_root",
@@ -2975,7 +3226,8 @@
       "红辣椒",
       "小米辣"
     ],
-    "aisle": "produce"
+    "aisle": "produce",
+    "shopUnit": "piece"
   },
   {
     "slug": "chili_powder",
@@ -2993,13 +3245,23 @@
       "chilli powder mild",
       "chili spice"
     ],
-    "aisle": "spices"
+    "aisle": "spices",
+    "shopUnit": "jar",
+    "yield": {
+      "qty": 100,
+      "unit": "ml"
+    }
   },
   {
     "slug": "chili_sauce",
     "name": "chili sauce",
     "synonyms": ["heinz chili sauce", "bottled chili sauce", "chilli sauce", "辣椒酱"],
-    "aisle": "pantry"
+    "aisle": "pantry",
+    "shopUnit": "bottle",
+    "yield": {
+      "qty": 250,
+      "unit": "ml"
+    }
   },
   {
     "slug": "chimichurri",
@@ -3075,7 +3337,12 @@
       "garlic chives chinese",
       "chive stems"
     ],
-    "aisle": "produce"
+    "aisle": "produce",
+    "shopUnit": "bunch",
+    "yield": {
+      "qty": 0.5,
+      "unit": "cup"
+    }
   },
   {
     "slug": "chocolate",
@@ -3094,7 +3361,12 @@
       "chopped chocolate",
       "巧克力"
     ],
-    "aisle": "pantry"
+    "aisle": "pantry",
+    "shopUnit": "pack",
+    "yield": {
+      "qty": 100,
+      "unit": "g"
+    }
   },
   {
     "slug": "chocolate_chips",
@@ -3114,7 +3386,12 @@
       "chocolate drops",
       "mini semisweet chocolate chips"
     ],
-    "aisle": "pantry"
+    "aisle": "pantry",
+    "shopUnit": "pack",
+    "yield": {
+      "qty": 340,
+      "unit": "g"
+    }
   },
   {
     "slug": "chocolate_kisses",
@@ -3171,7 +3448,8 @@
       "sobrasada",
       "sobrasada de mallorca"
     ],
-    "aisle": "meat"
+    "aisle": "meat",
+    "shopUnit": "g"
   },
   {
     "slug": "chutney",
@@ -3229,7 +3507,12 @@
       "香菜",
       "芫荽"
     ],
-    "aisle": "produce"
+    "aisle": "produce",
+    "shopUnit": "bunch",
+    "yield": {
+      "qty": 1,
+      "unit": "cup"
+    }
   },
   {
     "slug": "cinnamon",
@@ -3245,13 +3528,23 @@
       "saigon cinnamon",
       "肉桂粉"
     ],
-    "aisle": "spices"
+    "aisle": "spices",
+    "shopUnit": "jar",
+    "yield": {
+      "qty": 100,
+      "unit": "ml"
+    }
   },
   {
     "slug": "cinnamon_stick",
     "name": "cinnamon stick",
     "synonyms": ["cinnamon quills", "cinnamon bark", "cassia bark", "dalchini stick", "桂皮"],
-    "aisle": "spices"
+    "aisle": "spices",
+    "shopUnit": "jar",
+    "yield": {
+      "qty": 10,
+      "unit": "piece"
+    }
   },
   {
     "slug": "citric_acid",
@@ -3305,7 +3598,12 @@
     "slug": "cloves",
     "name": "cloves",
     "synonyms": ["ground cloves", "whole cloves", "laung", "lavang", "clove powder", "丁香"],
-    "aisle": "spices"
+    "aisle": "spices",
+    "shopUnit": "jar",
+    "yield": {
+      "qty": 50,
+      "unit": "ml"
+    }
   },
   {
     "slug": "coarse_sugar",
@@ -3378,7 +3676,12 @@
       "pure cocoa powder",
       "可可粉"
     ],
-    "aisle": "pantry"
+    "aisle": "pantry",
+    "shopUnit": "pack",
+    "yield": {
+      "qty": 250,
+      "unit": "g"
+    }
   },
   {
     "slug": "coconut_aminos",
@@ -3421,7 +3724,12 @@
       "椰奶",
       "椰浆"
     ],
-    "aisle": "international"
+    "aisle": "international",
+    "shopUnit": "can",
+    "yield": {
+      "qty": 400,
+      "unit": "ml"
+    }
   },
   {
     "slug": "coconut_milk_beverage",
@@ -3491,7 +3799,12 @@
       "coffee grounds",
       "strong black coffee"
     ],
-    "aisle": "beverages"
+    "aisle": "beverages",
+    "shopUnit": "pack",
+    "yield": {
+      "qty": 250,
+      "unit": "g"
+    }
   },
   {
     "slug": "coffee_creamer",
@@ -3615,7 +3928,8 @@
       "white chicken meat",
       "chunk chicken"
     ],
-    "aisle": "meat"
+    "aisle": "meat",
+    "shopUnit": "g"
   },
   {
     "slug": "cookie_dough",
@@ -3705,13 +4019,23 @@
       "ground coriander seed",
       "coriander ground"
     ],
-    "aisle": "spices"
+    "aisle": "spices",
+    "shopUnit": "jar",
+    "yield": {
+      "qty": 100,
+      "unit": "ml"
+    }
   },
   {
     "slug": "coriander_seeds",
     "name": "coriander seeds",
     "synonyms": ["whole coriander", "whole coriander seeds", "dhania seeds", "sabut dhania"],
-    "aisle": "spices"
+    "aisle": "spices",
+    "shopUnit": "jar",
+    "yield": {
+      "qty": 100,
+      "unit": "ml"
+    }
   },
   {
     "slug": "corn",
@@ -3740,7 +4064,12 @@
       "frozen corn kernels",
       "玉米"
     ],
-    "aisle": "produce"
+    "aisle": "produce",
+    "shopUnit": "can",
+    "yield": {
+      "qty": 400,
+      "unit": "g"
+    }
   },
   {
     "slug": "corn_chex",
@@ -3833,7 +4162,12 @@
       "maize meal",
       "makki ka atta"
     ],
-    "aisle": "pantry"
+    "aisle": "pantry",
+    "shopUnit": "pack",
+    "yield": {
+      "qty": 500,
+      "unit": "g"
+    }
   },
   {
     "slug": "cornstarch",
@@ -3849,7 +4183,12 @@
       "淀粉",
       "生粉"
     ],
-    "aisle": "pantry"
+    "aisle": "pantry",
+    "shopUnit": "pack",
+    "yield": {
+      "qty": 400,
+      "unit": "g"
+    }
   },
   {
     "slug": "cotija",
@@ -3869,7 +4208,12 @@
       "creamed cottage cheese",
       "lowfat cottage cheese"
     ],
-    "aisle": "dairy"
+    "aisle": "dairy",
+    "shopUnit": "pack",
+    "yield": {
+      "qty": 450,
+      "unit": "g"
+    }
   },
   {
     "slug": "couscous",
@@ -3904,7 +4248,10 @@
       "backfin crab meat",
       "canned crab",
       "jumbo lump crab meat",
-      "claw crabmeat"
+      "claw crabmeat",
+      "crab brown and white meat",
+      "brown and white crab meat",
+      "brown and white crabmeat"
     ],
     "aisle": "seafood"
   },
@@ -3944,13 +4291,23 @@
       "townhouse crackers",
       "table water crackers"
     ],
-    "aisle": "pantry"
+    "aisle": "pantry",
+    "shopUnit": "pack",
+    "yield": {
+      "qty": 30,
+      "unit": "piece"
+    }
   },
   {
     "slug": "cranberries",
     "name": "cranberries",
     "synonyms": ["fresh cranberries", "frozen cranberries", "whole cranberries"],
-    "aisle": "produce"
+    "aisle": "produce",
+    "shopUnit": "pack",
+    "yield": {
+      "qty": 340,
+      "unit": "g"
+    }
   },
   {
     "slug": "cranberry_beans",
@@ -4007,7 +4364,12 @@
       "cream cheese softened",
       "neufchatel cream cheese"
     ],
-    "aisle": "dairy"
+    "aisle": "dairy",
+    "shopUnit": "pack",
+    "yield": {
+      "qty": 225,
+      "unit": "g"
+    }
   },
   {
     "slug": "cream_cheese_spread",
@@ -4053,7 +4415,12 @@
       "chicken noodle soup",
       "cream of chicken and mushroom soup"
     ],
-    "aisle": "pantry"
+    "aisle": "pantry",
+    "shopUnit": "can",
+    "yield": {
+      "qty": 298,
+      "unit": "g"
+    }
   },
   {
     "slug": "cream_of_mushroom_soup",
@@ -4071,7 +4438,12 @@
       "98% fat free cream of mushroom soup",
       "cream mushroom soup"
     ],
-    "aisle": "pantry"
+    "aisle": "pantry",
+    "shopUnit": "can",
+    "yield": {
+      "qty": 298,
+      "unit": "g"
+    }
   },
   {
     "slug": "cream_of_potato_soup",
@@ -4095,7 +4467,12 @@
     "slug": "cream_of_tartar",
     "name": "cream of tartar",
     "synonyms": ["tartaric acid"],
-    "aisle": "spices"
+    "aisle": "spices",
+    "shopUnit": "jar",
+    "yield": {
+      "qty": 50,
+      "unit": "ml"
+    }
   },
   {
     "slug": "cream_soda",
@@ -4131,7 +4508,12 @@
     "slug": "creme_fraiche",
     "name": "creme fraiche",
     "synonyms": ["half-fat creme fraiche"],
-    "aisle": "dairy"
+    "aisle": "dairy",
+    "shopUnit": "pack",
+    "yield": {
+      "qty": 200,
+      "unit": "ml"
+    }
   },
   {
     "slug": "cremini_mushrooms",
@@ -4213,7 +4595,8 @@
     "slug": "cucumber",
     "name": "cucumber",
     "synonyms": ["kheera", "kakdi", "黄瓜"],
-    "aisle": "produce"
+    "aisle": "produce",
+    "shopUnit": "piece"
   },
   {
     "slug": "culantro",
@@ -4232,13 +4615,23 @@
       "roasted cumin powder",
       "bhuna jeera"
     ],
-    "aisle": "spices"
+    "aisle": "spices",
+    "shopUnit": "jar",
+    "yield": {
+      "qty": 100,
+      "unit": "ml"
+    }
   },
   {
     "slug": "cumin_seeds",
     "name": "cumin seeds",
     "synonyms": ["whole cumin", "jeera", "zeera", "whole cumin seeds", "孜然"],
-    "aisle": "spices"
+    "aisle": "spices",
+    "shopUnit": "jar",
+    "yield": {
+      "qty": 100,
+      "unit": "ml"
+    }
   },
   {
     "slug": "cupcakes",
@@ -4325,7 +4718,12 @@
       "jamaican curry powder",
       "curry powder mild"
     ],
-    "aisle": "spices"
+    "aisle": "spices",
+    "shopUnit": "jar",
+    "yield": {
+      "qty": 100,
+      "unit": "ml"
+    }
   },
   {
     "slug": "custard",
@@ -4380,7 +4778,12 @@
       "dark brown sugar packed",
       "soft dark brown sugar"
     ],
-    "aisle": "pantry"
+    "aisle": "pantry",
+    "shopUnit": "pack",
+    "yield": {
+      "qty": 500,
+      "unit": "g"
+    }
   },
   {
     "slug": "dark_rum",
@@ -4394,7 +4797,12 @@
       "rum for soaking fruit",
       "overproof rum"
     ],
-    "aisle": "beverages"
+    "aisle": "beverages",
+    "shopUnit": "bottle",
+    "yield": {
+      "qty": 700,
+      "unit": "ml"
+    }
   },
   {
     "slug": "dark_soy_sauce",
@@ -4425,7 +4833,12 @@
       "khajoor",
       "dried dates"
     ],
-    "aisle": "pantry"
+    "aisle": "pantry",
+    "shopUnit": "pack",
+    "yield": {
+      "qty": 250,
+      "unit": "g"
+    }
   },
   {
     "slug": "deli_roast_beef",
@@ -4463,7 +4876,12 @@
       "coarse brown sugar",
       "sanding sugar brown"
     ],
-    "aisle": "pantry"
+    "aisle": "pantry",
+    "shopUnit": "pack",
+    "yield": {
+      "qty": 500,
+      "unit": "g"
+    }
   },
   {
     "slug": "desiccated_coconut",
@@ -4490,7 +4908,12 @@
       "dessicated coconut",
       "sweetened coconut flakes"
     ],
-    "aisle": "pantry"
+    "aisle": "pantry",
+    "shopUnit": "pack",
+    "yield": {
+      "qty": 200,
+      "unit": "g"
+    }
   },
   {
     "slug": "deviled_ham",
@@ -4521,7 +4944,12 @@
       "grey poupon dijon mustard",
       "smooth dijon mustard"
     ],
-    "aisle": "pantry"
+    "aisle": "pantry",
+    "shopUnit": "jar",
+    "yield": {
+      "qty": 200,
+      "unit": "ml"
+    }
   },
   {
     "slug": "dill",
@@ -4536,7 +4964,12 @@
       "shepu",
       "莳萝"
     ],
-    "aisle": "produce"
+    "aisle": "produce",
+    "shopUnit": "bunch",
+    "yield": {
+      "qty": 1,
+      "unit": "cup"
+    }
   },
   {
     "slug": "dill_pickles",
@@ -4555,7 +4988,12 @@
       "pickle juice",
       "dill pickle juice"
     ],
-    "aisle": "pantry"
+    "aisle": "pantry",
+    "shopUnit": "jar",
+    "yield": {
+      "qty": 10,
+      "unit": "piece"
+    }
   },
   {
     "slug": "dill_seed",
@@ -4679,7 +5117,12 @@
     "slug": "dried_cranberries",
     "name": "dried cranberries",
     "synonyms": ["craisins", "sweetened dried cranberries"],
-    "aisle": "pantry"
+    "aisle": "pantry",
+    "shopUnit": "pack",
+    "yield": {
+      "qty": 150,
+      "unit": "g"
+    }
   },
   {
     "slug": "dried_dill",
@@ -4731,7 +5174,12 @@
       "candied orange peel",
       "tutti frutti"
     ],
-    "aisle": "pantry"
+    "aisle": "pantry",
+    "shopUnit": "pack",
+    "yield": {
+      "qty": 250,
+      "unit": "g"
+    }
   },
   {
     "slug": "dried_herbs",
@@ -4824,13 +5272,23 @@
       "oregano dry",
       "italian oregano"
     ],
-    "aisle": "spices"
+    "aisle": "spices",
+    "shopUnit": "jar",
+    "yield": {
+      "qty": 50,
+      "unit": "ml"
+    }
   },
   {
     "slug": "dried_parsley",
     "name": "dried parsley",
     "synonyms": ["parsley flakes", "dried parsley flakes", "dry parsley", "parsley dried"],
-    "aisle": "spices"
+    "aisle": "spices",
+    "shopUnit": "jar",
+    "yield": {
+      "qty": 50,
+      "unit": "ml"
+    }
   },
   {
     "slug": "dried_red_chili",
@@ -4912,7 +5370,12 @@
       "leaf thyme",
       "powdered thyme"
     ],
-    "aisle": "spices"
+    "aisle": "spices",
+    "shopUnit": "jar",
+    "yield": {
+      "qty": 50,
+      "unit": "ml"
+    }
   },
   {
     "slug": "dried_tofu_skin",
@@ -4950,7 +5413,12 @@
       "dried mustard",
       "ground mustard seed"
     ],
-    "aisle": "spices"
+    "aisle": "spices",
+    "shopUnit": "jar",
+    "yield": {
+      "qty": 50,
+      "unit": "ml"
+    }
   },
   {
     "slug": "dry_sherry",
@@ -4968,7 +5436,12 @@
       "oloroso sherry",
       "pedro ximenez"
     ],
-    "aisle": "beverages"
+    "aisle": "beverages",
+    "shopUnit": "bottle",
+    "yield": {
+      "qty": 750,
+      "unit": "ml"
+    }
   },
   {
     "slug": "dry_vermouth",
@@ -4994,7 +5467,12 @@
       "cooking white wine",
       "white cooking wine"
     ],
-    "aisle": "beverages"
+    "aisle": "beverages",
+    "shopUnit": "bottle",
+    "yield": {
+      "qty": 750,
+      "unit": "ml"
+    }
   },
   {
     "slug": "duck",
@@ -5093,7 +5571,8 @@
       "northern spy apples",
       "winesap apples"
     ],
-    "aisle": "produce"
+    "aisle": "produce",
+    "shopUnit": "piece"
   },
   {
     "slug": "edam",
@@ -5179,7 +5658,12 @@
       "room temperature eggs",
       "whole large eggs"
     ],
-    "aisle": "dairy"
+    "aisle": "dairy",
+    "shopUnit": "pack",
+    "yield": {
+      "qty": 12,
+      "unit": "piece"
+    }
   },
   {
     "slug": "egg_noodles",
@@ -5223,13 +5707,25 @@
     "slug": "egg_white",
     "name": "egg white",
     "synonyms": ["white of egg", "whites", "large egg whites", "liquid egg whites", "蛋白"],
-    "aisle": "dairy"
+    "aisle": "dairy",
+    "shopUnit": "pack",
+    "yield": {
+      "qty": 12,
+      "unit": "piece"
+    },
+    "buyAs": "egg"
   },
   {
     "slug": "egg_yolk",
     "name": "egg yolk",
     "synonyms": ["yolks", "large egg yolks", "蛋黄"],
-    "aisle": "dairy"
+    "aisle": "dairy",
+    "shopUnit": "pack",
+    "yield": {
+      "qty": 12,
+      "unit": "piece"
+    },
+    "buyAs": "egg"
   },
   {
     "slug": "eggnog",
@@ -5250,7 +5746,8 @@
       "graffiti eggplant",
       "茄子"
     ],
-    "aisle": "produce"
+    "aisle": "produce",
+    "shopUnit": "piece"
   },
   {
     "slug": "elderberries",
@@ -5364,7 +5861,12 @@
       "unsweetened condensed milk",
       "carnation"
     ],
-    "aisle": "dairy"
+    "aisle": "dairy",
+    "shopUnit": "can",
+    "yield": {
+      "qty": 354,
+      "unit": "ml"
+    }
   },
   {
     "slug": "everything_bagel_seasoning",
@@ -5419,7 +5921,8 @@
     "slug": "fennel",
     "name": "fennel",
     "synonyms": ["fennel bulb", "florence fennel", "finocchio", "baby fennel"],
-    "aisle": "produce"
+    "aisle": "produce",
+    "shopUnit": "piece"
   },
   {
     "slug": "fennel_fronds",
@@ -5438,7 +5941,12 @@
       "fennel powder",
       "crushed fennel seeds"
     ],
-    "aisle": "spices"
+    "aisle": "spices",
+    "shopUnit": "jar",
+    "yield": {
+      "qty": 100,
+      "unit": "ml"
+    }
   },
   {
     "slug": "fenugreek_leaves",
@@ -5480,7 +5988,12 @@
       "greek feta",
       "reduced-fat feta cheese"
     ],
-    "aisle": "dairy"
+    "aisle": "dairy",
+    "shopUnit": "pack",
+    "yield": {
+      "qty": 200,
+      "unit": "g"
+    }
   },
   {
     "slug": "fettuccine",
@@ -5588,7 +6101,12 @@
       "vietnamese fish sauce",
       "鱼露"
     ],
-    "aisle": "pantry"
+    "aisle": "pantry",
+    "shopUnit": "bottle",
+    "yield": {
+      "qty": 200,
+      "unit": "ml"
+    }
   },
   {
     "slug": "fish_stock",
@@ -5697,7 +6215,12 @@
       "tortilla wraps",
       "soft taco shells"
     ],
-    "aisle": "bakery"
+    "aisle": "bakery",
+    "shopUnit": "pack",
+    "yield": {
+      "qty": 8,
+      "unit": "piece"
+    }
   },
   {
     "slug": "focaccia",
@@ -5740,7 +6263,12 @@
       "paste food colouring",
       "色素"
     ],
-    "aisle": "pantry"
+    "aisle": "pantry",
+    "shopUnit": "bottle",
+    "yield": {
+      "qty": 30,
+      "unit": "ml"
+    }
   },
   {
     "slug": "freekeh",
@@ -5876,7 +6404,12 @@
       "coconut pecan frosting",
       "prepared chocolate frosting"
     ],
-    "aisle": "pantry"
+    "aisle": "pantry",
+    "shopUnit": "jar",
+    "yield": {
+      "qty": 450,
+      "unit": "g"
+    }
   },
   {
     "slug": "frozen_chopped_onion",
@@ -5893,7 +6426,12 @@
       "chopped spinach",
       "frozen spinach thawed"
     ],
-    "aisle": "frozen"
+    "aisle": "frozen",
+    "shopUnit": "pack",
+    "yield": {
+      "qty": 300,
+      "unit": "g"
+    }
   },
   {
     "slug": "fructose",
@@ -5996,7 +6534,12 @@
       "蒜瓣",
       "蒜蓉"
     ],
-    "aisle": "produce"
+    "aisle": "produce",
+    "shopUnit": "head",
+    "yield": {
+      "qty": 10,
+      "unit": "clove"
+    }
   },
   {
     "slug": "garlic_chives",
@@ -6014,13 +6557,23 @@
     "slug": "garlic_powder",
     "name": "garlic powder",
     "synonyms": ["dehydrated garlic", "garlic flakes", "garlic powder seasoning"],
-    "aisle": "spices"
+    "aisle": "spices",
+    "shopUnit": "jar",
+    "yield": {
+      "qty": 100,
+      "unit": "ml"
+    }
   },
   {
     "slug": "garlic_salt",
     "name": "garlic salt",
     "synonyms": [],
-    "aisle": "spices"
+    "aisle": "spices",
+    "shopUnit": "jar",
+    "yield": {
+      "qty": 100,
+      "unit": "ml"
+    }
   },
   {
     "slug": "garlic_scapes",
@@ -6048,7 +6601,12 @@
       "吉利丁",
       "明胶"
     ],
-    "aisle": "pantry"
+    "aisle": "pantry",
+    "shopUnit": "pack",
+    "yield": {
+      "qty": 2.5,
+      "unit": "tsp"
+    }
   },
   {
     "slug": "gelatin_dessert_mix",
@@ -6088,7 +6646,12 @@
       "jelly cubes",
       "strawberry banana jello"
     ],
-    "aisle": "pantry"
+    "aisle": "pantry",
+    "shopUnit": "pack",
+    "yield": {
+      "qty": 85,
+      "unit": "g"
+    }
   },
   {
     "slug": "gemelli",
@@ -6134,7 +6697,12 @@
       "姜末",
       "老姜"
     ],
-    "aisle": "produce"
+    "aisle": "produce",
+    "shopUnit": "piece",
+    "yield": {
+      "qty": 2,
+      "unit": "tbsp"
+    }
   },
   {
     "slug": "ginger_ale",
@@ -6297,7 +6865,12 @@
     "slug": "golden_syrup",
     "name": "golden syrup",
     "synonyms": ["lyles golden syrup", "light treacle", "cane syrup"],
-    "aisle": "pantry"
+    "aisle": "pantry",
+    "shopUnit": "jar",
+    "yield": {
+      "qty": 340,
+      "unit": "ml"
+    }
   },
   {
     "slug": "gongura",
@@ -6344,7 +6917,12 @@
       "digestive biscuit crumbs",
       "graham wafer crumbs"
     ],
-    "aisle": "pantry"
+    "aisle": "pantry",
+    "shopUnit": "pack",
+    "yield": {
+      "qty": 400,
+      "unit": "g"
+    }
   },
   {
     "slug": "graham_cracker_crust",
@@ -6372,7 +6950,12 @@
       "digestive biscuits",
       "digestives"
     ],
-    "aisle": "pantry"
+    "aisle": "pantry",
+    "shopUnit": "pack",
+    "yield": {
+      "qty": 400,
+      "unit": "g"
+    }
   },
   {
     "slug": "grains_of_paradise",
@@ -6390,7 +6973,8 @@
     "slug": "granny_smith_apple",
     "name": "granny smith apple",
     "synonyms": ["granny smith", "green apples", "tart apples", "tart green apples"],
-    "aisle": "produce"
+    "aisle": "produce",
+    "shopUnit": "piece"
   },
   {
     "slug": "granola",
@@ -6441,7 +7025,12 @@
       "white grapes",
       "seedless red grapes"
     ],
-    "aisle": "produce"
+    "aisle": "produce",
+    "shopUnit": "pack",
+    "yield": {
+      "qty": 500,
+      "unit": "g"
+    }
   },
   {
     "slug": "grapeseed_oil",
@@ -6498,7 +7087,12 @@
       "greek-style yoghurt",
       "thick yogurt"
     ],
-    "aisle": "dairy"
+    "aisle": "dairy",
+    "shopUnit": "pack",
+    "yield": {
+      "qty": 500,
+      "unit": "g"
+    }
   },
   {
     "slug": "green_beans",
@@ -6516,7 +7110,8 @@
       "四季豆",
       "豆角"
     ],
-    "aisle": "produce"
+    "aisle": "produce",
+    "shopUnit": "g"
   },
   {
     "slug": "green_bell_pepper",
@@ -6529,7 +7124,8 @@
       "青椒",
       "青椒丝"
     ],
-    "aisle": "produce"
+    "aisle": "produce",
+    "shopUnit": "piece"
   },
   {
     "slug": "green_cabbage",
@@ -6562,7 +7158,12 @@
       "roasted green chiles",
       "anaheim chiles canned"
     ],
-    "aisle": "international"
+    "aisle": "international",
+    "shopUnit": "can",
+    "yield": {
+      "qty": 115,
+      "unit": "g"
+    }
   },
   {
     "slug": "green_chili",
@@ -6575,7 +7176,8 @@
       "green chilly",
       "青辣椒"
     ],
-    "aisle": "produce"
+    "aisle": "produce",
+    "shopUnit": "piece"
   },
   {
     "slug": "green_leaf_lettuce",
@@ -6625,7 +7227,12 @@
       "大葱",
       "葱白"
     ],
-    "aisle": "produce"
+    "aisle": "produce",
+    "shopUnit": "bunch",
+    "yield": {
+      "qty": 6,
+      "unit": "piece"
+    }
   },
   {
     "slug": "green_peas_dried",
@@ -6667,7 +7274,12 @@
       "bitter greens",
       "salad"
     ],
-    "aisle": "produce"
+    "aisle": "produce",
+    "shopUnit": "bunch",
+    "yield": {
+      "qty": 250,
+      "unit": "g"
+    }
   },
   {
     "slug": "grenadine",
@@ -6716,7 +7328,8 @@
       "lean beef mince",
       "牛肉末"
     ],
-    "aisle": "meat"
+    "aisle": "meat",
+    "shopUnit": "g"
   },
   {
     "slug": "ground_chicken",
@@ -6737,7 +7350,12 @@
       "ground dried ginger",
       "ginger ground"
     ],
-    "aisle": "spices"
+    "aisle": "spices",
+    "shopUnit": "jar",
+    "yield": {
+      "qty": 50,
+      "unit": "ml"
+    }
   },
   {
     "slug": "ground_lamb",
@@ -6762,7 +7380,8 @@
       "猪肉末",
       "肉末"
     ],
-    "aisle": "meat"
+    "aisle": "meat",
+    "shopUnit": "g"
   },
   {
     "slug": "ground_turkey",
@@ -6846,7 +7465,12 @@
     "slug": "half_and_half",
     "name": "half and half",
     "synonyms": ["half and half cream", "fat free half and half"],
-    "aisle": "dairy"
+    "aisle": "dairy",
+    "shopUnit": "pack",
+    "yield": {
+      "qty": 500,
+      "unit": "ml"
+    }
   },
   {
     "slug": "halibut",
@@ -6895,7 +7519,8 @@
       "virginia ham",
       "ham cubes"
     ],
-    "aisle": "meat"
+    "aisle": "meat",
+    "shopUnit": "g"
   },
   {
     "slug": "ham_hock",
@@ -7028,7 +7653,12 @@
       "dairy cream",
       "淡奶油"
     ],
-    "aisle": "dairy"
+    "aisle": "dairy",
+    "shopUnit": "pack",
+    "yield": {
+      "qty": 300,
+      "unit": "ml"
+    }
   },
   {
     "slug": "heirloom_tomatoes",
@@ -7114,7 +7744,12 @@
       "蜂蜜",
       "shahad"
     ],
-    "aisle": "pantry"
+    "aisle": "pantry",
+    "shopUnit": "jar",
+    "yield": {
+      "qty": 340,
+      "unit": "g"
+    }
   },
   {
     "slug": "honey_mustard",
@@ -7240,7 +7875,12 @@
       "tapatio",
       "hot sauce of choice"
     ],
-    "aisle": "pantry"
+    "aisle": "pantry",
+    "shopUnit": "bottle",
+    "yield": {
+      "qty": 150,
+      "unit": "ml"
+    }
   },
   {
     "slug": "huckleberries",
@@ -7279,7 +7919,12 @@
       "butter pecan ice cream",
       "mint chocolate chip ice cream"
     ],
-    "aisle": "frozen"
+    "aisle": "frozen",
+    "shopUnit": "pack",
+    "yield": {
+      "qty": 1000,
+      "unit": "ml"
+    }
   },
   {
     "slug": "iceberg_lettuce",
@@ -7389,7 +8034,12 @@
       "rapid-rise dry yeast",
       "saf-instant"
     ],
-    "aisle": "pantry"
+    "aisle": "pantry",
+    "shopUnit": "pack",
+    "yield": {
+      "qty": 7,
+      "unit": "g"
+    }
   },
   {
     "slug": "invert_sugar",
@@ -7426,7 +8076,12 @@
       "fat-free italian dressing",
       "wishbone italian dressing"
     ],
-    "aisle": "pantry"
+    "aisle": "pantry",
+    "shopUnit": "bottle",
+    "yield": {
+      "qty": 250,
+      "unit": "ml"
+    }
   },
   {
     "slug": "italian_dressing_mix",
@@ -7500,7 +8155,8 @@
       "red jalapeno",
       "green jalapeno"
     ],
-    "aisle": "produce"
+    "aisle": "produce",
+    "shopUnit": "piece"
   },
   {
     "slug": "jam",
@@ -7541,7 +8197,12 @@
       "raspberry seedless jam",
       "lingonberry jam"
     ],
-    "aisle": "pantry"
+    "aisle": "pantry",
+    "shopUnit": "jar",
+    "yield": {
+      "qty": 340,
+      "unit": "g"
+    }
   },
   {
     "slug": "japanese_eggplant",
@@ -7650,7 +8311,12 @@
       "red russian kale",
       "black kale"
     ],
-    "aisle": "produce"
+    "aisle": "produce",
+    "shopUnit": "bunch",
+    "yield": {
+      "qty": 200,
+      "unit": "g"
+    }
   },
   {
     "slug": "kasha",
@@ -7716,7 +8382,12 @@
     "slug": "ketchup",
     "name": "ketchup",
     "synonyms": ["tomato ketchup", "catsup", "tomato catsup", "heinz ketchup", "番茄酱"],
-    "aisle": "pantry"
+    "aisle": "pantry",
+    "shopUnit": "bottle",
+    "yield": {
+      "qty": 500,
+      "unit": "ml"
+    }
   },
   {
     "slug": "key_lime",
@@ -7740,7 +8411,12 @@
       "rajma",
       "canned kidney beans"
     ],
-    "aisle": "pantry"
+    "aisle": "pantry",
+    "shopUnit": "can",
+    "yield": {
+      "qty": 400,
+      "unit": "g"
+    }
   },
   {
     "slug": "kidney_meat",
@@ -7829,7 +8505,12 @@
       "coarse kosher salt",
       "kosher"
     ],
-    "aisle": "spices"
+    "aisle": "spices",
+    "shopUnit": "pack",
+    "yield": {
+      "qty": 1000,
+      "unit": "g"
+    }
   },
   {
     "slug": "kumquat",
@@ -7873,7 +8554,8 @@
       "lamb cubes",
       "羊肉"
     ],
-    "aisle": "meat"
+    "aisle": "meat",
+    "shopUnit": "g"
   },
   {
     "slug": "lamb_chops",
@@ -7957,7 +8639,8 @@
     "slug": "leek",
     "name": "leek",
     "synonyms": ["baby leeks"],
-    "aisle": "produce"
+    "aisle": "produce",
+    "shopUnit": "piece"
   },
   {
     "slug": "lemon",
@@ -7973,7 +8656,8 @@
       "lemon twist",
       "柠檬"
     ],
-    "aisle": "produce"
+    "aisle": "produce",
+    "shopUnit": "piece"
   },
   {
     "slug": "lemon_curd",
@@ -8004,7 +8688,13 @@
       "lemon juice concentrate",
       "柠檬汁"
     ],
-    "aisle": "produce"
+    "aisle": "produce",
+    "shopUnit": "piece",
+    "yield": {
+      "qty": 45,
+      "unit": "ml"
+    },
+    "buyAs": "lemon"
   },
   {
     "slug": "lemon_lime_soda",
@@ -8041,7 +8731,13 @@
       "lemon skin",
       "candied lemon peel"
     ],
-    "aisle": "produce"
+    "aisle": "produce",
+    "shopUnit": "piece",
+    "yield": {
+      "qty": 1,
+      "unit": "tbsp"
+    },
+    "buyAs": "lemon"
   },
   {
     "slug": "lemonade",
@@ -8090,7 +8786,12 @@
     "slug": "lettuce",
     "name": "lettuce",
     "synonyms": ["lettuce leaves", "head lettuce", "shredded lettuce", "lettuce head", "生菜"],
-    "aisle": "produce"
+    "aisle": "produce",
+    "shopUnit": "head",
+    "yield": {
+      "qty": 1,
+      "unit": "piece"
+    }
   },
   {
     "slug": "light_corn_syrup",
@@ -8109,7 +8810,12 @@
       "dark corn syrup",
       "dark karo syrup"
     ],
-    "aisle": "pantry"
+    "aisle": "pantry",
+    "shopUnit": "bottle",
+    "yield": {
+      "qty": 500,
+      "unit": "ml"
+    }
   },
   {
     "slug": "light_cream",
@@ -8152,7 +8858,12 @@
       "frozen baby limas",
       "fordhook lima beans"
     ],
-    "aisle": "pantry"
+    "aisle": "pantry",
+    "shopUnit": "can",
+    "yield": {
+      "qty": 400,
+      "unit": "g"
+    }
   },
   {
     "slug": "lime",
@@ -8166,7 +8877,8 @@
       "persian limes",
       "kaffir lime fruit"
     ],
-    "aisle": "produce"
+    "aisle": "produce",
+    "shopUnit": "piece"
   },
   {
     "slug": "lime_juice",
@@ -8181,7 +8893,13 @@
       "bottled lime juice",
       "fresh squeezed lime juice"
     ],
-    "aisle": "produce"
+    "aisle": "produce",
+    "shopUnit": "piece",
+    "yield": {
+      "qty": 30,
+      "unit": "ml"
+    },
+    "buyAs": "lime"
   },
   {
     "slug": "lime_zest",
@@ -8195,7 +8913,13 @@
       "lime zested",
       "grated lime zest"
     ],
-    "aisle": "produce"
+    "aisle": "produce",
+    "shopUnit": "piece",
+    "yield": {
+      "qty": 2,
+      "unit": "tsp"
+    },
+    "buyAs": "lime"
   },
   {
     "slug": "limoncello",
@@ -8363,7 +9087,12 @@
       "cooked elbow macaroni",
       "whole wheat macaroni"
     ],
-    "aisle": "pantry"
+    "aisle": "pantry",
+    "shopUnit": "pack",
+    "yield": {
+      "qty": 500,
+      "unit": "g"
+    }
   },
   {
     "slug": "macaroons",
@@ -8476,7 +9205,8 @@
       "aam",
       "mango puree"
     ],
-    "aisle": "produce"
+    "aisle": "produce",
+    "shopUnit": "piece"
   },
   {
     "slug": "mangosteen",
@@ -8514,7 +9244,12 @@
       "amber maple syrup",
       "maple"
     ],
-    "aisle": "pantry"
+    "aisle": "pantry",
+    "shopUnit": "bottle",
+    "yield": {
+      "qty": 250,
+      "unit": "ml"
+    }
   },
   {
     "slug": "maraschino_cherries",
@@ -8545,7 +9280,12 @@
       "stork",
       "oleomargarine"
     ],
-    "aisle": "pantry"
+    "aisle": "pantry",
+    "shopUnit": "pack",
+    "yield": {
+      "qty": 500,
+      "unit": "g"
+    }
   },
   {
     "slug": "margarita_mix",
@@ -8583,7 +9323,12 @@
       "tomato pasta sauce",
       "traditional pasta sauce"
     ],
-    "aisle": "pantry"
+    "aisle": "pantry",
+    "shopUnit": "jar",
+    "yield": {
+      "qty": 680,
+      "unit": "g"
+    }
   },
   {
     "slug": "marjoram",
@@ -8624,7 +9369,12 @@
       "jet-puffed miniature marshmallows",
       "jumbo marshmallows"
     ],
-    "aisle": "pantry"
+    "aisle": "pantry",
+    "shopUnit": "pack",
+    "yield": {
+      "qty": 250,
+      "unit": "g"
+    }
   },
   {
     "slug": "masa_harina",
@@ -8636,7 +9386,12 @@
     "slug": "mascarpone",
     "name": "mascarpone",
     "synonyms": ["mascarpone cheese"],
-    "aisle": "dairy"
+    "aisle": "dairy",
+    "shopUnit": "pack",
+    "yield": {
+      "qty": 250,
+      "unit": "g"
+    }
   },
   {
     "slug": "mashed_potatoes",
@@ -8680,7 +9435,12 @@
       "mayonnaise light",
       "蛋黄酱"
     ],
-    "aisle": "pantry"
+    "aisle": "pantry",
+    "shopUnit": "jar",
+    "yield": {
+      "qty": 400,
+      "unit": "ml"
+    }
   },
   {
     "slug": "meat",
@@ -8855,7 +9615,12 @@
       "dairy milk",
       "牛奶"
     ],
-    "aisle": "dairy"
+    "aisle": "dairy",
+    "shopUnit": "bottle",
+    "yield": {
+      "qty": 1000,
+      "unit": "ml"
+    }
   },
   {
     "slug": "milk_chocolate",
@@ -8869,7 +9634,12 @@
       "hershey bar",
       "hersheys chocolate bar"
     ],
-    "aisle": "pantry"
+    "aisle": "pantry",
+    "shopUnit": "pack",
+    "yield": {
+      "qty": 100,
+      "unit": "g"
+    }
   },
   {
     "slug": "millet",
@@ -8923,7 +9693,12 @@
       "garden mint",
       "薄荷"
     ],
-    "aisle": "produce"
+    "aisle": "produce",
+    "shopUnit": "bunch",
+    "yield": {
+      "qty": 1,
+      "unit": "cup"
+    }
   },
   {
     "slug": "mint_sauce",
@@ -8993,7 +9768,12 @@
       "herb bundle",
       "soup greens"
     ],
-    "aisle": "produce"
+    "aisle": "produce",
+    "shopUnit": "bunch",
+    "yield": {
+      "qty": 1,
+      "unit": "cup"
+    }
   },
   {
     "slug": "mixed_nuts",
@@ -9011,7 +9791,12 @@
       "nuts chopped",
       "assorted nuts"
     ],
-    "aisle": "pantry"
+    "aisle": "pantry",
+    "shopUnit": "pack",
+    "yield": {
+      "qty": 200,
+      "unit": "g"
+    }
   },
   {
     "slug": "mixed_seeds",
@@ -9023,7 +9808,12 @@
     "slug": "mixed_spice",
     "name": "mixed spice",
     "synonyms": ["mixed spice uk", "british mixed spice", "pudding spice"],
-    "aisle": "spices"
+    "aisle": "spices",
+    "shopUnit": "jar",
+    "yield": {
+      "qty": 50,
+      "unit": "ml"
+    }
   },
   {
     "slug": "mixed_vegetables",
@@ -9053,7 +9843,12 @@
       "seasonal vegetables",
       "cooked vegetables"
     ],
-    "aisle": "frozen"
+    "aisle": "frozen",
+    "shopUnit": "pack",
+    "yield": {
+      "qty": 500,
+      "unit": "g"
+    }
   },
   {
     "slug": "mizuna",
@@ -9080,7 +9875,12 @@
       "sorghum molasses",
       "sorghum syrup"
     ],
-    "aisle": "pantry"
+    "aisle": "pantry",
+    "shopUnit": "bottle",
+    "yield": {
+      "qty": 350,
+      "unit": "ml"
+    }
   },
   {
     "slug": "mole_paste",
@@ -9098,7 +9898,12 @@
     "slug": "monterey_jack",
     "name": "monterey jack",
     "synonyms": ["monterey jack cheese", "jack cheese", "monterey"],
-    "aisle": "dairy"
+    "aisle": "dairy",
+    "shopUnit": "pack",
+    "yield": {
+      "qty": 200,
+      "unit": "g"
+    }
   },
   {
     "slug": "moong_dal",
@@ -9128,7 +9933,12 @@
       "low-moisture mozzarella",
       "shredded mozzarella"
     ],
-    "aisle": "dairy"
+    "aisle": "dairy",
+    "shopUnit": "pack",
+    "yield": {
+      "qty": 200,
+      "unit": "g"
+    }
   },
   {
     "slug": "msg",
@@ -9220,7 +10030,12 @@
       "little mushrooms",
       "蘑菇"
     ],
-    "aisle": "produce"
+    "aisle": "produce",
+    "shopUnit": "pack",
+    "yield": {
+      "qty": 250,
+      "unit": "g"
+    }
   },
   {
     "slug": "mussels",
@@ -9239,7 +10054,12 @@
       "mild mustard",
       "hot dog mustard"
     ],
-    "aisle": "pantry"
+    "aisle": "pantry",
+    "shopUnit": "jar",
+    "yield": {
+      "qty": 200,
+      "unit": "ml"
+    }
   },
   {
     "slug": "mustard_greens",
@@ -9332,7 +10152,12 @@
       "oil for frying",
       "oil for deep frying"
     ],
-    "aisle": "pantry"
+    "aisle": "pantry",
+    "shopUnit": "bottle",
+    "yield": {
+      "qty": 1000,
+      "unit": "ml"
+    }
   },
   {
     "slug": "new_mexico_chile",
@@ -9394,7 +10219,12 @@
       "light whipped topping",
       "fat free whipped topping"
     ],
-    "aisle": "frozen"
+    "aisle": "frozen",
+    "shopUnit": "pack",
+    "yield": {
+      "qty": 225,
+      "unit": "g"
+    }
   },
   {
     "slug": "nonfood_chemicals",
@@ -9487,7 +10317,12 @@
       "面条",
       "面"
     ],
-    "aisle": "pantry"
+    "aisle": "pantry",
+    "shopUnit": "pack",
+    "yield": {
+      "qty": 400,
+      "unit": "g"
+    }
   },
   {
     "slug": "nopales",
@@ -9528,7 +10363,12 @@
       "freshly ground nutmeg",
       "fresh nutmeg"
     ],
-    "aisle": "spices"
+    "aisle": "spices",
+    "shopUnit": "jar",
+    "yield": {
+      "qty": 50,
+      "unit": "ml"
+    }
   },
   {
     "slug": "nutritional_yeast",
@@ -9573,7 +10413,12 @@
       "instant oatmeal",
       "燕麦"
     ],
-    "aisle": "pantry"
+    "aisle": "pantry",
+    "shopUnit": "pack",
+    "yield": {
+      "qty": 500,
+      "unit": "g"
+    }
   },
   {
     "slug": "oaxaca_cheese",
@@ -9628,7 +10473,12 @@
       "good olive oil",
       "good quality olive oil"
     ],
-    "aisle": "pantry"
+    "aisle": "pantry",
+    "shopUnit": "bottle",
+    "yield": {
+      "qty": 500,
+      "unit": "ml"
+    }
   },
   {
     "slug": "olives",
@@ -9650,19 +10500,30 @@
       "sliced olives",
       "medium pitted ripe olives"
     ],
-    "aisle": "pantry"
+    "aisle": "pantry",
+    "shopUnit": "jar",
+    "yield": {
+      "qty": 200,
+      "unit": "g"
+    }
   },
   {
     "slug": "onion",
     "name": "onion",
     "synonyms": ["medium onion", "large onion", "pyaz", "pyaaz", "kanda", "洋葱"],
-    "aisle": "produce"
+    "aisle": "produce",
+    "shopUnit": "piece"
   },
   {
     "slug": "onion_powder",
     "name": "onion powder",
     "synonyms": ["onion granules", "granulated onion", "onion powder seasoning"],
-    "aisle": "spices"
+    "aisle": "spices",
+    "shopUnit": "jar",
+    "yield": {
+      "qty": 100,
+      "unit": "ml"
+    }
   },
   {
     "slug": "onion_salt",
@@ -9689,7 +10550,8 @@
     "slug": "orange",
     "name": "orange",
     "synonyms": ["orange segments", "orange sections", "orange slices", "santra", "橙子"],
-    "aisle": "produce"
+    "aisle": "produce",
+    "shopUnit": "piece"
   },
   {
     "slug": "orange_bell_pepper",
@@ -9722,7 +10584,12 @@
       "oranges juiced",
       "blood orange juice"
     ],
-    "aisle": "produce"
+    "aisle": "produce",
+    "shopUnit": "bottle",
+    "yield": {
+      "qty": 1000,
+      "unit": "ml"
+    }
   },
   {
     "slug": "orange_juice_concentrate",
@@ -9766,7 +10633,13 @@
       "grated orange zest",
       "orange skin"
     ],
-    "aisle": "produce"
+    "aisle": "produce",
+    "shopUnit": "piece",
+    "yield": {
+      "qty": 1,
+      "unit": "tbsp"
+    },
+    "buyAs": "orange"
   },
   {
     "slug": "orecchiette",
@@ -9778,7 +10651,12 @@
     "slug": "oregano",
     "name": "oregano",
     "synonyms": ["fresh oregano", "fresh oregano leaves", "oregano leaves", "oregano sprigs"],
-    "aisle": "produce"
+    "aisle": "produce",
+    "shopUnit": "bunch",
+    "yield": {
+      "qty": 0.5,
+      "unit": "cup"
+    }
   },
   {
     "slug": "oreos",
@@ -9951,7 +10829,12 @@
       "mild paprika",
       "spanish paprika"
     ],
-    "aisle": "spices"
+    "aisle": "spices",
+    "shopUnit": "jar",
+    "yield": {
+      "qty": 100,
+      "unit": "ml"
+    }
   },
   {
     "slug": "paraffin_wax",
@@ -9980,7 +10863,12 @@
       "reggiano",
       "parm"
     ],
-    "aisle": "dairy"
+    "aisle": "dairy",
+    "shopUnit": "pack",
+    "yield": {
+      "qty": 200,
+      "unit": "g"
+    }
   },
   {
     "slug": "parsley",
@@ -10003,7 +10891,12 @@
       "flat-leaf",
       "欧芹"
     ],
-    "aisle": "produce"
+    "aisle": "produce",
+    "shopUnit": "bunch",
+    "yield": {
+      "qty": 1,
+      "unit": "cup"
+    }
   },
   {
     "slug": "parsnip",
@@ -10078,7 +10971,8 @@
       "peaches in syrup",
       "peaches in juice"
     ],
-    "aisle": "produce"
+    "aisle": "produce",
+    "shopUnit": "piece"
   },
   {
     "slug": "peanut_butter",
@@ -10095,7 +10989,12 @@
       "skippy",
       "peanut paste"
     ],
-    "aisle": "pantry"
+    "aisle": "pantry",
+    "shopUnit": "jar",
+    "yield": {
+      "qty": 340,
+      "unit": "g"
+    }
   },
   {
     "slug": "peanut_butter_chips",
@@ -10139,7 +11038,12 @@
       "花生",
       "花生米"
     ],
-    "aisle": "pantry"
+    "aisle": "pantry",
+    "shopUnit": "pack",
+    "yield": {
+      "qty": 200,
+      "unit": "g"
+    }
   },
   {
     "slug": "pear",
@@ -10177,7 +11081,12 @@
       "baby peas",
       "豌豆"
     ],
-    "aisle": "produce"
+    "aisle": "produce",
+    "shopUnit": "pack",
+    "yield": {
+      "qty": 500,
+      "unit": "g"
+    }
   },
   {
     "slug": "pecans",
@@ -10191,7 +11100,12 @@
       "candied pecans",
       "pecan meal"
     ],
-    "aisle": "pantry"
+    "aisle": "pantry",
+    "shopUnit": "pack",
+    "yield": {
+      "qty": 200,
+      "unit": "g"
+    }
   },
   {
     "slug": "pecorino_romano",
@@ -10422,7 +11336,8 @@
       "sweet shortcrust pastry",
       "pate brisee"
     ],
-    "aisle": "bakery"
+    "aisle": "bakery",
+    "shopUnit": "piece"
   },
   {
     "slug": "pie_filling",
@@ -10442,7 +11357,12 @@
       "pie filling of choice",
       "lemon pie filling mix"
     ],
-    "aisle": "pantry"
+    "aisle": "pantry",
+    "shopUnit": "can",
+    "yield": {
+      "qty": 595,
+      "unit": "g"
+    }
   },
   {
     "slug": "pierogies",
@@ -10480,7 +11400,12 @@
       "pine kernels",
       "chilgoza"
     ],
-    "aisle": "pantry"
+    "aisle": "pantry",
+    "shopUnit": "pack",
+    "yield": {
+      "qty": 100,
+      "unit": "g"
+    }
   },
   {
     "slug": "pineapple",
@@ -10499,7 +11424,12 @@
       "ananas",
       "菠萝"
     ],
-    "aisle": "produce"
+    "aisle": "produce",
+    "shopUnit": "can",
+    "yield": {
+      "qty": 400,
+      "unit": "g"
+    }
   },
   {
     "slug": "pineapple_juice",
@@ -10540,7 +11470,12 @@
       "unsalted pistachios",
       "pistachio slivers"
     ],
-    "aisle": "pantry"
+    "aisle": "pantry",
+    "shopUnit": "pack",
+    "yield": {
+      "qty": 150,
+      "unit": "g"
+    }
   },
   {
     "slug": "pita_bread",
@@ -10567,7 +11502,12 @@
       "bhatura",
       "tandoori roti"
     ],
-    "aisle": "bakery"
+    "aisle": "bakery",
+    "shopUnit": "pack",
+    "yield": {
+      "qty": 6,
+      "unit": "piece"
+    }
   },
   {
     "slug": "pizza_dough",
@@ -10616,7 +11556,12 @@
       "fat free yogurt",
       "酸奶"
     ],
-    "aisle": "dairy"
+    "aisle": "dairy",
+    "shopUnit": "pack",
+    "yield": {
+      "qty": 500,
+      "unit": "g"
+    }
   },
   {
     "slug": "plant_based_ground",
@@ -10783,7 +11728,8 @@
       "diced pork",
       "猪肉"
     ],
-    "aisle": "meat"
+    "aisle": "meat",
+    "shopUnit": "g"
   },
   {
     "slug": "pork_and_beans",
@@ -10817,7 +11763,8 @@
       "pork steaks",
       "pork cutlets"
     ],
-    "aisle": "meat"
+    "aisle": "meat",
+    "shopUnit": "piece"
   },
   {
     "slug": "pork_feet",
@@ -10899,7 +11846,8 @@
       "pork blade roast",
       "boston pork butt"
     ],
-    "aisle": "meat"
+    "aisle": "meat",
+    "shopUnit": "g"
   },
   {
     "slug": "pork_stock",
@@ -10954,7 +11902,8 @@
       "马铃薯",
       "黄皮土豆"
     ],
-    "aisle": "produce"
+    "aisle": "produce",
+    "shopUnit": "piece"
   },
   {
     "slug": "potato_chips",
@@ -11024,7 +11973,12 @@
       "snow sugar",
       "糖粉"
     ],
-    "aisle": "pantry"
+    "aisle": "pantry",
+    "shopUnit": "pack",
+    "yield": {
+      "qty": 500,
+      "unit": "g"
+    }
   },
   {
     "slug": "praline",
@@ -11127,7 +12081,12 @@
       "custard powder",
       "birds custard powder"
     ],
-    "aisle": "pantry"
+    "aisle": "pantry",
+    "shopUnit": "pack",
+    "yield": {
+      "qty": 100,
+      "unit": "g"
+    }
   },
   {
     "slug": "puff_pastry",
@@ -11140,7 +12099,12 @@
       "rough puff pastry",
       "vol-au-vent cases"
     ],
-    "aisle": "frozen"
+    "aisle": "frozen",
+    "shopUnit": "pack",
+    "yield": {
+      "qty": 320,
+      "unit": "g"
+    }
   },
   {
     "slug": "puffed_rice",
@@ -11275,7 +12239,12 @@
     "slug": "radish",
     "name": "radish",
     "synonyms": ["red radishes", "french breakfast radishes", "watermelon radish"],
-    "aisle": "produce"
+    "aisle": "produce",
+    "shopUnit": "bunch",
+    "yield": {
+      "qty": 10,
+      "unit": "piece"
+    }
   },
   {
     "slug": "raisins",
@@ -11290,7 +12259,12 @@
       "thompson seedless raisins",
       "raisins chopped"
     ],
-    "aisle": "pantry"
+    "aisle": "pantry",
+    "shopUnit": "pack",
+    "yield": {
+      "qty": 250,
+      "unit": "g"
+    }
   },
   {
     "slug": "rambutan",
@@ -11356,7 +12330,12 @@
     "slug": "raspberries",
     "name": "raspberries",
     "synonyms": ["fresh raspberries", "frozen raspberries", "golden raspberries"],
-    "aisle": "produce"
+    "aisle": "produce",
+    "shopUnit": "pack",
+    "yield": {
+      "qty": 125,
+      "unit": "g"
+    }
   },
   {
     "slug": "raspberry_liqueur",
@@ -11389,7 +12368,8 @@
       "红椒",
       "红甜椒"
     ],
-    "aisle": "produce"
+    "aisle": "produce",
+    "shopUnit": "piece"
   },
   {
     "slug": "red_cabbage",
@@ -11451,7 +12431,8 @@
     "slug": "red_onion",
     "name": "red onion",
     "synonyms": ["purple onion", "bermuda onion", "spanish red onion"],
-    "aisle": "produce"
+    "aisle": "produce",
+    "shopUnit": "piece"
   },
   {
     "slug": "red_pepper_flakes",
@@ -11474,7 +12455,12 @@
       "辣椒面",
       "辣椒碎"
     ],
-    "aisle": "spices"
+    "aisle": "spices",
+    "shopUnit": "jar",
+    "yield": {
+      "qty": 50,
+      "unit": "ml"
+    }
   },
   {
     "slug": "red_potatoes",
@@ -11514,13 +12500,23 @@
       "cooking red wine",
       "red cooking wine"
     ],
-    "aisle": "beverages"
+    "aisle": "beverages",
+    "shopUnit": "bottle",
+    "yield": {
+      "qty": 750,
+      "unit": "ml"
+    }
   },
   {
     "slug": "red_wine_vinegar",
     "name": "red wine vinegar",
     "synonyms": ["red vinegar", "wine vinegar"],
-    "aisle": "pantry"
+    "aisle": "pantry",
+    "shopUnit": "bottle",
+    "yield": {
+      "qty": 500,
+      "unit": "ml"
+    }
   },
   {
     "slug": "refried_beans",
@@ -11555,7 +12551,12 @@
       "pizza crust dough refrigerated",
       "refrigerated pizza crust"
     ],
-    "aisle": "dairy"
+    "aisle": "dairy",
+    "shopUnit": "can",
+    "yield": {
+      "qty": 8,
+      "unit": "piece"
+    }
   },
   {
     "slug": "relish",
@@ -11621,7 +12622,12 @@
       "大米",
       "米"
     ],
-    "aisle": "pantry"
+    "aisle": "pantry",
+    "shopUnit": "pack",
+    "yield": {
+      "qty": 1000,
+      "unit": "g"
+    }
   },
   {
     "slug": "rice_bran_oil",
@@ -11715,7 +12721,12 @@
       "white rice vinegar",
       "米醋"
     ],
-    "aisle": "pantry"
+    "aisle": "pantry",
+    "shopUnit": "bottle",
+    "yield": {
+      "qty": 300,
+      "unit": "ml"
+    }
   },
   {
     "slug": "ricotta",
@@ -11731,7 +12742,12 @@
       "whole-milk ricotta cheese",
       "skim milk ricotta"
     ],
-    "aisle": "dairy"
+    "aisle": "dairy",
+    "shopUnit": "pack",
+    "yield": {
+      "qty": 250,
+      "unit": "g"
+    }
   },
   {
     "slug": "ricotta_salata",
@@ -11752,6 +12768,12 @@
     "aisle": "pantry"
   },
   {
+    "slug": "roast",
+    "name": "roast",
+    "synonyms": [],
+    "aisle": "meat"
+  },
+  {
     "slug": "roasted_red_peppers",
     "name": "roasted red peppers",
     "synonyms": [
@@ -11763,7 +12785,12 @@
       "pimento",
       "piquillo"
     ],
-    "aisle": "pantry"
+    "aisle": "pantry",
+    "shopUnit": "jar",
+    "yield": {
+      "qty": 300,
+      "unit": "g"
+    }
   },
   {
     "slug": "rock_sugar",
@@ -11788,7 +12815,12 @@
       "jumbo rolled oats",
       "large flake oats"
     ],
-    "aisle": "pantry"
+    "aisle": "pantry",
+    "shopUnit": "pack",
+    "yield": {
+      "qty": 500,
+      "unit": "g"
+    }
   },
   {
     "slug": "roma_tomato",
@@ -11800,7 +12832,8 @@
       "san marzano tomatoes",
       "roma"
     ],
-    "aisle": "produce"
+    "aisle": "produce",
+    "shopUnit": "piece"
   },
   {
     "slug": "romaine_lettuce",
@@ -11862,7 +12895,12 @@
       "fresh rosemary sprigs",
       "rosemary needles"
     ],
-    "aisle": "produce"
+    "aisle": "produce",
+    "shopUnit": "bunch",
+    "yield": {
+      "qty": 10,
+      "unit": "sprig"
+    }
   },
   {
     "slug": "rotini",
@@ -11894,7 +12932,8 @@
       "floury potatoes",
       "jacket potatoes"
     ],
-    "aisle": "produce"
+    "aisle": "produce",
+    "shopUnit": "piece"
   },
   {
     "slug": "rutabaga",
@@ -11946,13 +12985,23 @@
       "powdered saffron",
       "saffron powder"
     ],
-    "aisle": "spices"
+    "aisle": "spices",
+    "shopUnit": "jar",
+    "yield": {
+      "qty": 1,
+      "unit": "tsp"
+    }
   },
   {
     "slug": "sage",
     "name": "sage",
     "synonyms": ["fresh sage", "sage leaves", "fresh sage leaves", "sage sprigs"],
-    "aisle": "produce"
+    "aisle": "produce",
+    "shopUnit": "bunch",
+    "yield": {
+      "qty": 20,
+      "unit": "leaf"
+    }
   },
   {
     "slug": "sago",
@@ -12016,7 +13065,8 @@
       "salmon filet",
       "三文鱼"
     ],
-    "aisle": "seafood"
+    "aisle": "seafood",
+    "shopUnit": "g"
   },
   {
     "slug": "salsa",
@@ -12039,7 +13089,12 @@
       "restaurant-style salsa",
       "ro-tel salsa"
     ],
-    "aisle": "pantry"
+    "aisle": "pantry",
+    "shopUnit": "jar",
+    "yield": {
+      "qty": 450,
+      "unit": "ml"
+    }
   },
   {
     "slug": "salsa_verde",
@@ -12076,7 +13131,12 @@
       "盐",
       "食盐"
     ],
-    "aisle": "spices"
+    "aisle": "spices",
+    "shopUnit": "pack",
+    "yield": {
+      "qty": 1000,
+      "unit": "g"
+    }
   },
   {
     "slug": "salt_cod",
@@ -12169,7 +13229,8 @@
       "link sausage",
       "香肠"
     ],
-    "aisle": "meat"
+    "aisle": "meat",
+    "shopUnit": "piece"
   },
   {
     "slug": "savory",
@@ -12307,7 +13368,12 @@
       "lawry seasoned salt",
       "seasoned salt blend"
     ],
-    "aisle": "spices"
+    "aisle": "spices",
+    "shopUnit": "jar",
+    "yield": {
+      "qty": 100,
+      "unit": "ml"
+    }
   },
   {
     "slug": "seasoning_blend",
@@ -12326,7 +13392,12 @@
       "spice mix",
       "调料"
     ],
-    "aisle": "spices"
+    "aisle": "spices",
+    "shopUnit": "jar",
+    "yield": {
+      "qty": 100,
+      "unit": "ml"
+    }
   },
   {
     "slug": "seaweed_snack",
@@ -12344,7 +13415,12 @@
     "slug": "self_raising_flour",
     "name": "self raising flour",
     "synonyms": ["self rising flour", "sr flour", "self-raising white flour"],
-    "aisle": "pantry"
+    "aisle": "pantry",
+    "shopUnit": "pack",
+    "yield": {
+      "qty": 1000,
+      "unit": "g"
+    }
   },
   {
     "slug": "semisweet_chocolate",
@@ -12358,7 +13434,12 @@
       "bakers chocolate semisweet",
       "sweet baking chocolate"
     ],
-    "aisle": "pantry"
+    "aisle": "pantry",
+    "shopUnit": "pack",
+    "yield": {
+      "qty": 100,
+      "unit": "g"
+    }
   },
   {
     "slug": "semolina",
@@ -12403,7 +13484,12 @@
       "芝麻",
       "白芝麻"
     ],
-    "aisle": "pantry"
+    "aisle": "pantry",
+    "shopUnit": "jar",
+    "yield": {
+      "qty": 100,
+      "unit": "ml"
+    }
   },
   {
     "slug": "sev",
@@ -12437,7 +13523,8 @@
       "small onions",
       "红葱头"
     ],
-    "aisle": "produce"
+    "aisle": "produce",
+    "shopUnit": "piece"
   },
   {
     "slug": "shaoxing_wine",
@@ -12601,7 +13688,8 @@
       "虾仁",
       "大虾"
     ],
-    "aisle": "seafood"
+    "aisle": "seafood",
+    "shopUnit": "g"
   },
   {
     "slug": "shrimp_paste",
@@ -12681,7 +13769,12 @@
       "hot smoked paprika",
       "pimenton de la vera"
     ],
-    "aisle": "spices"
+    "aisle": "spices",
+    "shopUnit": "jar",
+    "yield": {
+      "qty": 50,
+      "unit": "ml"
+    }
   },
   {
     "slug": "smoked_salmon",
@@ -12790,7 +13883,12 @@
       "reduced-fat sour cream",
       "dairy sour cream"
     ],
-    "aisle": "dairy"
+    "aisle": "dairy",
+    "shopUnit": "pack",
+    "yield": {
+      "qty": 300,
+      "unit": "g"
+    }
   },
   {
     "slug": "sourdough_bread",
@@ -12847,7 +13945,12 @@
       "chinese soy sauce",
       "酱油"
     ],
-    "aisle": "pantry"
+    "aisle": "pantry",
+    "shopUnit": "bottle",
+    "yield": {
+      "qty": 250,
+      "unit": "ml"
+    }
   },
   {
     "slug": "soy_yogurt",
@@ -12878,7 +13981,12 @@
       "cooked spaghetti",
       "spaghetti pasta"
     ],
-    "aisle": "pantry"
+    "aisle": "pantry",
+    "shopUnit": "pack",
+    "yield": {
+      "qty": 500,
+      "unit": "g"
+    }
   },
   {
     "slug": "spaghetti_squash",
@@ -12965,7 +14073,12 @@
       "bagged spinach",
       "菠菜"
     ],
-    "aisle": "produce"
+    "aisle": "produce",
+    "shopUnit": "pack",
+    "yield": {
+      "qty": 250,
+      "unit": "g"
+    }
   },
   {
     "slug": "split_peas",
@@ -13041,7 +14154,12 @@
     "slug": "star_anise",
     "name": "star anise",
     "synonyms": ["star anise pods", "chakri phool", "badian", "八角"],
-    "aisle": "spices"
+    "aisle": "spices",
+    "shopUnit": "jar",
+    "yield": {
+      "qty": 20,
+      "unit": "piece"
+    }
   },
   {
     "slug": "star_fruit",
@@ -13068,7 +14186,8 @@
       "flat iron steak",
       "tri-tip"
     ],
-    "aisle": "meat"
+    "aisle": "meat",
+    "shopUnit": "piece"
   },
   {
     "slug": "steak_sauce",
@@ -13171,7 +14290,12 @@
       "frozen sliced strawberries",
       "草莓"
     ],
-    "aisle": "produce"
+    "aisle": "produce",
+    "shopUnit": "pack",
+    "yield": {
+      "qty": 400,
+      "unit": "g"
+    }
   },
   {
     "slug": "string_cheese",
@@ -13248,7 +14372,12 @@
       "砂糖",
       "细砂糖"
     ],
-    "aisle": "pantry"
+    "aisle": "pantry",
+    "shopUnit": "pack",
+    "yield": {
+      "qty": 1000,
+      "unit": "g"
+    }
   },
   {
     "slug": "sugar_substitute",
@@ -13309,7 +14438,12 @@
     "slug": "sunflower_oil",
     "name": "sunflower oil",
     "synonyms": ["sunflower seed oil"],
-    "aisle": "pantry"
+    "aisle": "pantry",
+    "shopUnit": "bottle",
+    "yield": {
+      "qty": 1000,
+      "unit": "ml"
+    }
   },
   {
     "slug": "sunflower_seed_butter",
@@ -13337,7 +14471,12 @@
       "ultrafine sugar",
       "细白糖"
     ],
-    "aisle": "pantry"
+    "aisle": "pantry",
+    "shopUnit": "pack",
+    "yield": {
+      "qty": 500,
+      "unit": "g"
+    }
   },
   {
     "slug": "sushi_rice",
@@ -13404,7 +14543,8 @@
       "candied yams",
       "红薯"
     ],
-    "aisle": "produce"
+    "aisle": "produce",
+    "shopUnit": "piece"
   },
   {
     "slug": "sweet_vermouth",
@@ -13445,7 +14585,12 @@
       "milkmaid",
       "condensed milk sweetened"
     ],
-    "aisle": "dairy"
+    "aisle": "dairy",
+    "shopUnit": "can",
+    "yield": {
+      "qty": 397,
+      "unit": "g"
+    }
   },
   {
     "slug": "swiss_chard",
@@ -13465,7 +14610,12 @@
     "slug": "swiss_cheese",
     "name": "swiss cheese",
     "synonyms": ["swiss", "baby swiss", "lacy swiss"],
-    "aisle": "dairy"
+    "aisle": "dairy",
+    "shopUnit": "pack",
+    "yield": {
+      "qty": 200,
+      "unit": "g"
+    }
   },
   {
     "slug": "swordfish",
@@ -13492,7 +14642,12 @@
       "fajita seasoning mix",
       "burrito seasoning"
     ],
-    "aisle": "spices"
+    "aisle": "spices",
+    "shopUnit": "pack",
+    "yield": {
+      "qty": 2,
+      "unit": "tbsp"
+    }
   },
   {
     "slug": "taco_shells",
@@ -13510,7 +14665,12 @@
     "slug": "tahini",
     "name": "tahini",
     "synonyms": ["tahina", "tahini paste", "sesame paste", "sesame tahini"],
-    "aisle": "pantry"
+    "aisle": "pantry",
+    "shopUnit": "jar",
+    "yield": {
+      "qty": 300,
+      "unit": "ml"
+    }
   },
   {
     "slug": "tajin",
@@ -13610,7 +14770,12 @@
     "slug": "tarragon",
     "name": "tarragon",
     "synonyms": ["fresh tarragon", "tarragon leaves", "french tarragon"],
-    "aisle": "produce"
+    "aisle": "produce",
+    "shopUnit": "bunch",
+    "yield": {
+      "qty": 0.5,
+      "unit": "cup"
+    }
   },
   {
     "slug": "tarragon_vinegar",
@@ -13765,7 +14930,12 @@
       "fresh thyme sprigs",
       "sprigs thyme"
     ],
-    "aisle": "produce"
+    "aisle": "produce",
+    "shopUnit": "bunch",
+    "yield": {
+      "qty": 20,
+      "unit": "sprig"
+    }
   },
   {
     "slug": "tilapia",
@@ -13785,7 +14955,12 @@
       "香油",
       "oriental sesame oil"
     ],
-    "aisle": "pantry"
+    "aisle": "pantry",
+    "shopUnit": "bottle",
+    "yield": {
+      "qty": 250,
+      "unit": "ml"
+    }
   },
   {
     "slug": "toffee_bits",
@@ -13837,7 +15012,12 @@
       "tomato paste tube",
       "番茄膏"
     ],
-    "aisle": "pantry"
+    "aisle": "pantry",
+    "shopUnit": "can",
+    "yield": {
+      "qty": 170,
+      "unit": "g"
+    }
   },
   {
     "slug": "tomato_puree",
@@ -13852,7 +15032,12 @@
       "tomato pulp",
       "puréed italian plum tomatoes"
     ],
-    "aisle": "pantry"
+    "aisle": "pantry",
+    "shopUnit": "pack",
+    "yield": {
+      "qty": 200,
+      "unit": "g"
+    }
   },
   {
     "slug": "tomato_sauce",
@@ -13866,7 +15051,12 @@
       "tomato sauce low sodium",
       "8 oz tomato sauce"
     ],
-    "aisle": "pantry"
+    "aisle": "pantry",
+    "shopUnit": "can",
+    "yield": {
+      "qty": 425,
+      "unit": "g"
+    }
   },
   {
     "slug": "tomato_soup",
@@ -13892,7 +15082,8 @@
       "番茄",
       "西红柿"
     ],
-    "aisle": "produce"
+    "aisle": "produce",
+    "shopUnit": "piece"
   },
   {
     "slug": "tonic_water",
@@ -13941,7 +15132,12 @@
       "crushed tortilla chips",
       "restaurant style tortilla chips"
     ],
-    "aisle": "pantry"
+    "aisle": "pantry",
+    "shopUnit": "pack",
+    "yield": {
+      "qty": 300,
+      "unit": "g"
+    }
   },
   {
     "slug": "trail_mix",
@@ -14064,7 +15260,12 @@
     "slug": "turmeric",
     "name": "turmeric",
     "synonyms": ["ground turmeric", "turmeric powder", "haldi", "haldi powder"],
-    "aisle": "spices"
+    "aisle": "spices",
+    "shopUnit": "jar",
+    "yield": {
+      "qty": 100,
+      "unit": "ml"
+    }
   },
   {
     "slug": "turnip",
@@ -14158,13 +15359,23 @@
     "slug": "vanilla_bean",
     "name": "vanilla bean",
     "synonyms": ["vanilla pod", "whole vanilla bean", "vanilla seeds"],
-    "aisle": "pantry"
+    "aisle": "pantry",
+    "shopUnit": "pack",
+    "yield": {
+      "qty": 2,
+      "unit": "piece"
+    }
   },
   {
     "slug": "vanilla_bean_paste",
     "name": "vanilla bean paste",
     "synonyms": ["vanilla paste"],
-    "aisle": "pantry"
+    "aisle": "pantry",
+    "shopUnit": "jar",
+    "yield": {
+      "qty": 60,
+      "unit": "ml"
+    }
   },
   {
     "slug": "vanilla_extract",
@@ -14185,7 +15396,12 @@
       "vanilla liquid",
       "香草精"
     ],
-    "aisle": "pantry"
+    "aisle": "pantry",
+    "shopUnit": "bottle",
+    "yield": {
+      "qty": 60,
+      "unit": "ml"
+    }
   },
   {
     "slug": "vanilla_powder",
@@ -14320,7 +15536,12 @@
       "soya oil",
       "refined oil"
     ],
-    "aisle": "pantry"
+    "aisle": "pantry",
+    "shopUnit": "bottle",
+    "yield": {
+      "qty": 1000,
+      "unit": "ml"
+    }
   },
   {
     "slug": "vegetable_shortening",
@@ -14340,7 +15561,12 @@
       "butter flavor shortening",
       "crisco shortening"
     ],
-    "aisle": "pantry"
+    "aisle": "pantry",
+    "shopUnit": "pack",
+    "yield": {
+      "qty": 450,
+      "unit": "g"
+    }
   },
   {
     "slug": "vegetable_soup",
@@ -14368,7 +15594,12 @@
       "vegetable stock concentrate",
       "vegetable bone broth"
     ],
-    "aisle": "pantry"
+    "aisle": "pantry",
+    "shopUnit": "pack",
+    "yield": {
+      "qty": 1000,
+      "unit": "ml"
+    }
   },
   {
     "slug": "vegetable_suet",
@@ -14487,7 +15718,12 @@
       "salad supreme",
       "salad supreme seasoning"
     ],
-    "aisle": "pantry"
+    "aisle": "pantry",
+    "shopUnit": "bottle",
+    "yield": {
+      "qty": 250,
+      "unit": "ml"
+    }
   },
   {
     "slug": "vinegar",
@@ -14503,7 +15739,12 @@
       "白醋",
       "醋"
     ],
-    "aisle": "pantry"
+    "aisle": "pantry",
+    "shopUnit": "bottle",
+    "yield": {
+      "qty": 500,
+      "unit": "ml"
+    }
   },
   {
     "slug": "vital_wheat_gluten",
@@ -14523,7 +15764,12 @@
       "lemon vodka",
       "vodka plain"
     ],
-    "aisle": "beverages"
+    "aisle": "beverages",
+    "shopUnit": "bottle",
+    "yield": {
+      "qty": 700,
+      "unit": "ml"
+    }
   },
   {
     "slug": "wafer_cones",
@@ -14563,7 +15809,12 @@
       "candied walnuts",
       "核桃"
     ],
-    "aisle": "pantry"
+    "aisle": "pantry",
+    "shopUnit": "pack",
+    "yield": {
+      "qty": 200,
+      "unit": "g"
+    }
   },
   {
     "slug": "wasabi",
@@ -14603,7 +15854,12 @@
     "slug": "water_chestnuts",
     "name": "water chestnuts",
     "synonyms": ["sliced water chestnuts", "canned water chestnuts", "马蹄"],
-    "aisle": "international"
+    "aisle": "international",
+    "shopUnit": "can",
+    "yield": {
+      "qty": 225,
+      "unit": "g"
+    }
   },
   {
     "slug": "watercress",
@@ -14699,7 +15955,12 @@
       "white chocolate bar",
       "white chocolate buttons"
     ],
-    "aisle": "pantry"
+    "aisle": "pantry",
+    "shopUnit": "pack",
+    "yield": {
+      "qty": 100,
+      "unit": "g"
+    }
   },
   {
     "slug": "white_fish",
@@ -14751,7 +16012,8 @@
     "slug": "white_onion",
     "name": "white onion",
     "synonyms": ["spanish onion"],
-    "aisle": "produce"
+    "aisle": "produce",
+    "shopUnit": "piece"
   },
   {
     "slug": "white_peach",
@@ -14763,7 +16025,12 @@
     "slug": "white_pepper",
     "name": "white pepper",
     "synonyms": ["ground white pepper", "white peppercorns", "白胡椒", "白胡椒粉"],
-    "aisle": "spices"
+    "aisle": "spices",
+    "shopUnit": "jar",
+    "yield": {
+      "qty": 50,
+      "unit": "ml"
+    }
   },
   {
     "slug": "white_rum",
@@ -14781,7 +16048,12 @@
     "slug": "white_wine_vinegar",
     "name": "white wine vinegar",
     "synonyms": ["white wine vinegar or champagne vinegar"],
-    "aisle": "pantry"
+    "aisle": "pantry",
+    "shopUnit": "bottle",
+    "yield": {
+      "qty": 500,
+      "unit": "ml"
+    }
   },
   {
     "slug": "whole_grain_mustard",
@@ -14814,7 +16086,12 @@
       "stoneground wholemeal flour",
       "全麦面粉"
     ],
-    "aisle": "pantry"
+    "aisle": "pantry",
+    "shopUnit": "pack",
+    "yield": {
+      "qty": 1000,
+      "unit": "g"
+    }
   },
   {
     "slug": "wild_boar",
@@ -14877,7 +16154,12 @@
       "worcestershire sauce low sodium",
       "worcestershire sauce to taste"
     ],
-    "aisle": "pantry"
+    "aisle": "pantry",
+    "shopUnit": "bottle",
+    "yield": {
+      "qty": 150,
+      "unit": "ml"
+    }
   },
   {
     "slug": "xanthan_gum",
@@ -14919,7 +16201,8 @@
     "slug": "yellow_onion",
     "name": "yellow onion",
     "synonyms": ["brown onion", "cooking onion"],
-    "aisle": "produce"
+    "aisle": "produce",
+    "shopUnit": "piece"
   },
   {
     "slug": "yellow_squash",
@@ -14998,6 +16281,7 @@
       "marrow",
       "西葫芦"
     ],
-    "aisle": "produce"
+    "aisle": "produce",
+    "shopUnit": "piece"
   }
 ]

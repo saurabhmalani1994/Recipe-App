@@ -15,6 +15,13 @@
 #   parent      optional: the broader slug a variety falls back to (roma_tomato -> tomatoes)
 #   density_g_per_ml, each_g, usda_hint   optional: unit conversion and the later USDA match
 #   hidden_animal, note   optional free text
+#   shop_unit, yield, buy_as   optional purchase fields for the grocery list (S7c; set on the ~300
+#               most-used slugs). shop_unit is what the shopper sees: piece, bunch, head, g, ml,
+#               can, bottle, jar, pack. yield {qty, unit} is how much of THIS slug one shop_unit
+#               gives (garlic: a head gives 10 clove; soy_sauce: a bottle gives 250 ml); required
+#               for bunch/head/can/bottle/jar/pack, absent for g/ml, optional for piece (each_g is
+#               used instead). buy_as is the slug actually bought (lemon_juice -> lemon, egg_yolk
+#               -> egg); it needs a yield and the same shop_unit as its target.
 #
 # flags lists only the flags that are true. Meaning of each flag:
 #   red_meat, poultry, fish, shellfish: the ingredient is, or is made from, that animal
@@ -71,6 +78,8 @@ ingredients:
     flags: []
     aisle: pantry
     is_staple: false
+    shop_unit: pack
+    yield: {qty: 2.25, unit: tsp}
   adobo_sauce:
     name: adobo sauce
     synonyms: [adobo sauce from chipotles, adobo from canned chipotles]
@@ -167,6 +176,8 @@ ingredients:
     is_staple: false
     density_g_per_ml: 0.53
     usda_hint: Wheat flour, white, all-purpose, unenriched
+    shop_unit: pack
+    yield: {qty: 1000, unit: g}
   alligator:
     name: alligator
     synonyms: [alligator meat, gator]
@@ -185,6 +196,8 @@ ingredients:
     flags: []
     aisle: spices
     is_staple: false
+    shop_unit: jar
+    yield: {qty: 50, unit: ml}
   almond_butter:
     name: almond butter
     synonyms: []
@@ -199,6 +212,8 @@ ingredients:
     flags: [alcohol]
     aisle: pantry
     is_staple: false
+    shop_unit: bottle
+    yield: {qty: 60, unit: ml}
   almond_flour:
     name: almond flour
     synonyms: [almond meal, ground almonds, blanched almond flour, almond powder]
@@ -206,6 +221,8 @@ ingredients:
     flags: [nuts]
     aisle: pantry
     is_staple: false
+    shop_unit: pack
+    yield: {qty: 500, unit: g}
   almond_milk:
     name: almond milk
     synonyms: [unsweetened almond milk, vanilla almond milk, almond beverage]
@@ -230,6 +247,8 @@ ingredients:
     is_staple: false
     density_g_per_ml: 0.6
     usda_hint: Nuts, almonds
+    shop_unit: pack
+    yield: {qty: 200, unit: g}
   alum:
     name: alum
     synonyms: [powdered alum, alum powder]
@@ -325,6 +344,8 @@ ingredients:
     aisle: seafood
     is_staple: false
     parent: fish
+    shop_unit: can
+    yield: {qty: 10, unit: piece}
   anchovy_paste:
     name: anchovy paste
     synonyms: []
@@ -396,6 +417,7 @@ ingredients:
     is_staple: false
     each_g: 180
     usda_hint: Apples, raw, with skin
+    shop_unit: piece
   apple_butter:
     name: apple butter
     synonyms: [apple butter spread]
@@ -411,6 +433,8 @@ ingredients:
     aisle: pantry
     is_staple: false
     parent: vinegar
+    shop_unit: bottle
+    yield: {qty: 500, unit: ml}
   apple_juice:
     name: apple juice
     synonyms: [apple juice concentrate, frozen apple juice concentrate, unsweetened apple juice, apple cider, fresh apple cider, sweet cider, cloudy apple juice, spiced cider]
@@ -418,6 +442,8 @@ ingredients:
     flags: []
     aisle: beverages
     is_staple: false
+    shop_unit: bottle
+    yield: {qty: 1000, unit: ml}
   apple_pie_spice:
     name: apple pie spice
     synonyms: []
@@ -491,6 +517,8 @@ ingredients:
     flags: []
     aisle: produce
     is_staple: false
+    shop_unit: pack
+    yield: {qty: 100, unit: g}
   asafoetida:
     name: asafoetida
     synonyms: [hing, asafetida, heeng]
@@ -536,6 +564,8 @@ ingredients:
     flags: []
     aisle: produce
     is_staple: false
+    shop_unit: bunch
+    yield: {qty: 250, unit: g}
   atsuage:
     name: atsuage
     synonyms: [thick fried tofu]
@@ -553,6 +583,7 @@ ingredients:
     is_staple: false
     each_g: 150
     usda_hint: Avocados, raw, all commercial varieties
+    shop_unit: piece
   avocado_oil:
     name: avocado oil
     synonyms: []
@@ -591,6 +622,8 @@ ingredients:
     aisle: produce
     is_staple: false
     parent: spinach
+    shop_unit: pack
+    yield: {qty: 200, unit: g}
   bacon:
     name: bacon
     synonyms: [bacon strips, bacon slices, streaky bacon, back bacon, smoked bacon, thick-cut bacon, lean bacon, bacon rashers, rashers, center cut bacon, applewood smoked bacon, hickory smoked bacon, maple bacon, slab bacon, lardons, bacon lardons, bacon pieces, cooked bacon, crumbled bacon, turkey or pork bacon, 培根]
@@ -599,6 +632,8 @@ ingredients:
     aisle: meat
     is_staple: false
     parent: pork
+    shop_unit: pack
+    yield: {qty: 8, unit: slice}
   bacon_bits:
     name: bacon bits
     synonyms: [real bacon bits, bacon crumbles, bacon pieces bits]
@@ -653,6 +688,8 @@ ingredients:
     aisle: pantry
     is_staple: false
     density_g_per_ml: 0.9
+    shop_unit: pack
+    yield: {qty: 200, unit: g}
   baking_soda:
     name: baking soda
     synonyms: [bicarbonate of soda, bicarb soda, bicarb, sodium bicarbonate, bicarbonate soda, soda bicarbonate, cooking soda, meetha soda, soda]
@@ -661,6 +698,8 @@ ingredients:
     aisle: pantry
     is_staple: false
     density_g_per_ml: 1.0
+    shop_unit: pack
+    yield: {qty: 450, unit: g}
   balsamic_vinegar:
     name: balsamic vinegar
     synonyms: [balsamic, aged balsamic vinegar, balsamic reduction, balsamic glaze, balsamic syrup, white balsamic vinegar, golden balsamic vinegar]
@@ -669,6 +708,8 @@ ingredients:
     aisle: pantry
     is_staple: false
     parent: vinegar
+    shop_unit: bottle
+    yield: {qty: 250, unit: ml}
   bamboo_shoots:
     name: bamboo shoots
     synonyms: [canned bamboo shoots, sliced bamboo shoots, 竹笋]
@@ -685,6 +726,7 @@ ingredients:
     is_staple: false
     each_g: 118
     usda_hint: Bananas, raw
+    shop_unit: piece
   banana_chips:
     name: banana chips
     synonyms: [dried banana chips]
@@ -743,6 +785,8 @@ ingredients:
     flags: []
     aisle: produce
     is_staple: false
+    shop_unit: bunch
+    yield: {qty: 1, unit: cup}
   basmati_rice:
     name: basmati rice
     synonyms: [basmati, white basmati rice, brown basmati rice, aged basmati rice, indian basmati rice]
@@ -751,6 +795,8 @@ ingredients:
     aisle: pantry
     is_staple: false
     parent: rice
+    shop_unit: pack
+    yield: {qty: 1000, unit: g}
   bay_leaf:
     name: bay leaf
     synonyms: [bay leaf dried, dried bay leaves, fresh bay leaves, laurel leaves, bay leaves whole, turkish bay leaves, 香叶, 月桂叶]
@@ -758,6 +804,8 @@ ingredients:
     flags: []
     aisle: spices
     is_staple: false
+    shop_unit: jar
+    yield: {qty: 20, unit: piece}
   bbq_sauce:
     name: bbq sauce
     synonyms: [barbecue sauce, barbeque sauce, bbq sauce of choice, kraft barbecue sauce, kraft original barbecue sauce, bulls-eye barbecue sauce, bulls-eye original barbecue sauce, sweet baby rays, hickory barbecue sauce, honey barbecue sauce, tex-mex barbecue sauce, bar-b-q sauce, smoky bbq sauce]
@@ -767,6 +815,8 @@ ingredients:
     is_staple: false
     hidden_animal: Worcestershire (anchovy) in many brands
     note: Flagged conservatively; check the label
+    shop_unit: bottle
+    yield: {qty: 500, unit: ml}
   bean_sprouts:
     name: bean sprouts
     synonyms: [mung bean sprouts, beansprouts, soybean sprouts, fresh bean sprouts, alfalfa sprouts, sprouts alfalfa, 豆芽]
@@ -782,6 +832,7 @@ ingredients:
     aisle: meat
     is_staple: false
     usda_hint: Beef, raw
+    shop_unit: g
   beef_bouillon:
     name: beef bouillon
     synonyms: [beef bouillon cubes, beef bouillon granules, beef stock cube, instant beef bouillon, beef bouillon powder, oxo cube, beef flavor bouillon, bovril]
@@ -879,6 +930,8 @@ ingredients:
     density_g_per_ml: 1.0
     usda_hint: Soup, stock, beef, home-prepared
     hidden_animal: beef
+    shop_unit: pack
+    yield: {qty: 1000, unit: ml}
   beef_tenderloin:
     name: beef tenderloin
     synonyms: [tenderloin, filet mignon, fillet steak, beef fillet, beef tenderloin steaks, filet, fillet of beef, chateaubriand]
@@ -901,6 +954,7 @@ ingredients:
     flags: []
     aisle: produce
     is_staple: false
+    shop_unit: piece
   bell_pepper:
     name: bell pepper
     synonyms: [sweet pepper, capsicum, mixed peppers, shimla mirch, mixed bell peppers, bell pepper strips, frozen pepper strips, mini sweet peppers, romano pepper, pointed peppers, 甜椒, 彩椒]
@@ -910,6 +964,7 @@ ingredients:
     is_staple: false
     each_g: 120
     usda_hint: Peppers, sweet, green, raw
+    shop_unit: piece
   berbere:
     name: berbere
     synonyms: [berbere spice]
@@ -969,6 +1024,8 @@ ingredients:
     is_staple: false
     parent: chocolate
     note: May contain milk; check the label
+    shop_unit: pack
+    yield: {qty: 100, unit: g}
   black_bean_sauce:
     name: black bean sauce
     synonyms: [black bean garlic sauce, 豆豉酱]
@@ -984,6 +1041,8 @@ ingredients:
     flags: []
     aisle: pantry
     is_staple: false
+    shop_unit: can
+    yield: {qty: 400, unit: g}
   black_cardamom:
     name: black cardamom
     synonyms: [black cardamom pods, badi elaichi, kali elaichi]
@@ -1030,6 +1089,8 @@ ingredients:
     is_staple: true
     density_g_per_ml: 0.5
     usda_hint: Spices, pepper, black
+    shop_unit: jar
+    yield: {qty: 100, unit: ml}
   black_rice:
     name: black rice
     synonyms: [forbidden rice, red rice, camargue red rice]
@@ -1111,6 +1172,8 @@ ingredients:
     flags: []
     aisle: produce
     is_staple: false
+    shop_unit: pack
+    yield: {qty: 125, unit: g}
   bluefish:
     name: bluefish
     synonyms: [bluefish fillets]
@@ -1207,6 +1270,8 @@ ingredients:
     flags: [alcohol]
     aisle: beverages
     is_staple: false
+    shop_unit: bottle
+    yield: {qty: 700, unit: ml}
   bratwurst:
     name: bratwurst
     synonyms: [brats, bratwurst sausages, german sausage]
@@ -1230,6 +1295,8 @@ ingredients:
     aisle: bakery
     is_staple: false
     usda_hint: Bread, white, commercially prepared
+    shop_unit: piece
+    yield: {qty: 20, unit: slice}
   bread_dough:
     name: bread dough
     synonyms: [frozen bread dough, dough, white bread mix, bread mix, rhodes rolls, frozen roll dough]
@@ -1246,6 +1313,8 @@ ingredients:
     is_staple: false
     parent: all_purpose_flour
     density_g_per_ml: 0.55
+    shop_unit: pack
+    yield: {qty: 1000, unit: g}
   bread_rolls:
     name: bread rolls
     synonyms: [rolls, dinner rolls, crusty rolls, hard rolls, soft rolls, kaiser rolls, hoagie rolls, sub rolls, french rolls, bolillos, sandwich rolls, crusty bread rolls, submarine rolls, bap, finger rolls, slider buns, hawaiian rolls, kings hawaiian rolls, potato rolls, parker house rolls, brown and serve rolls]
@@ -1262,6 +1331,8 @@ ingredients:
     aisle: pantry
     is_staple: false
     density_g_per_ml: 0.45
+    shop_unit: pack
+    yield: {qty: 250, unit: g}
   breadfruit:
     name: breadfruit
     synonyms: []
@@ -1308,6 +1379,7 @@ ingredients:
     is_staple: false
     each_g: 300
     usda_hint: Broccoli, raw
+    shop_unit: piece
   broccoli_rabe:
     name: broccoli rabe
     synonyms: [rapini, broccoli raab, cime di rapa]
@@ -1380,6 +1452,8 @@ ingredients:
     is_staple: false
     density_g_per_ml: 0.9
     usda_hint: Sugars, brown
+    shop_unit: pack
+    yield: {qty: 500, unit: g}
   brownie_mix:
     name: brownie mix
     synonyms: [fudge brownie mix, brownie mix box, box brownie mix, chocolate brownie mix]
@@ -1454,6 +1528,8 @@ ingredients:
     is_staple: false
     density_g_per_ml: 0.96
     usda_hint: Butter, salted
+    shop_unit: pack
+    yield: {qty: 250, unit: g}
   butter_extract:
     name: butter extract
     synonyms: [butter flavoring, butter flavor, butter extract flavoring]
@@ -1478,6 +1554,8 @@ ingredients:
     is_staple: false
     density_g_per_ml: 1.03
     usda_hint: Buttermilk, low fat
+    shop_unit: pack
+    yield: {qty: 500, unit: ml}
   buttermilk_powder:
     name: buttermilk powder
     synonyms: [dried buttermilk, dry buttermilk]
@@ -1517,6 +1595,8 @@ ingredients:
     aisle: produce
     is_staple: false
     usda_hint: Cabbage, raw
+    shop_unit: head
+    yield: {qty: 1, unit: piece}
   caesar_dressing:
     name: caesar dressing
     synonyms: [caesar salad dressing, creamy caesar dressing]
@@ -1562,6 +1642,8 @@ ingredients:
     flags: [gluten]
     aisle: pantry
     is_staple: false
+    shop_unit: pack
+    yield: {qty: 500, unit: g}
   calamansi_fruit:
     name: calamansi fruit
     synonyms: [calamansi limes]
@@ -1666,6 +1748,8 @@ ingredients:
     flags: []
     aisle: pantry
     is_staple: false
+    shop_unit: can
+    yield: {qty: 400, unit: g}
   canned_tuna:
     name: canned tuna
     synonyms: [tuna fish, canned tuna fish, oil-packed tuna, tuna in water, tuna in oil, solid white tuna, chunk light tuna, tinned tuna, water-packed tuna, white tuna, chunk tuna, tuna canned, solid white albacore tuna]
@@ -1692,6 +1776,8 @@ ingredients:
     parent: neutral_oil
     density_g_per_ml: 0.92
     usda_hint: Oil, canola
+    shop_unit: bottle
+    yield: {qty: 1000, unit: ml}
   cantaloupe:
     name: cantaloupe
     synonyms: [rockmelon, muskmelon, melon, charentais melon]
@@ -1713,6 +1799,8 @@ ingredients:
     flags: []
     aisle: pantry
     is_staple: false
+    shop_unit: jar
+    yield: {qty: 100, unit: ml}
   caramels:
     name: caramels
     synonyms: [caramel candies, kraft caramels, soft caramels, caramel bits, caramel squares, werthers]
@@ -1735,6 +1823,8 @@ ingredients:
     flags: []
     aisle: spices
     is_staple: false
+    shop_unit: jar
+    yield: {qty: 50, unit: ml}
   cardamom_pods:
     name: cardamom pods
     synonyms: [green cardamom pods, whole cardamom, whole green cardamom]
@@ -1782,6 +1872,7 @@ ingredients:
     is_staple: false
     each_g: 61
     usda_hint: Carrots, raw
+    shop_unit: piece
   cascabel_chile:
     name: cascabel chile
     synonyms: []
@@ -1849,6 +1940,8 @@ ingredients:
     is_staple: false
     each_g: 575
     usda_hint: Cauliflower, raw
+    shop_unit: head
+    yield: {qty: 1, unit: piece}
   cavatappi:
     name: cavatappi
     synonyms: [cellentani]
@@ -1864,6 +1957,8 @@ ingredients:
     flags: []
     aisle: spices
     is_staple: false
+    shop_unit: jar
+    yield: {qty: 50, unit: ml}
   cayenne_chile:
     name: cayenne chile
     synonyms: [fresh cayenne pepper, fresh cayenne chiles]
@@ -1880,6 +1975,8 @@ ingredients:
     is_staple: false
     each_g: 40
     usda_hint: Celery, raw
+    shop_unit: head
+    yield: {qty: 8, unit: stalk}
   celery_leaves:
     name: celery leaves
     synonyms: []
@@ -1908,6 +2005,8 @@ ingredients:
     flags: []
     aisle: spices
     is_staple: false
+    shop_unit: jar
+    yield: {qty: 50, unit: ml}
   century_egg:
     name: century egg
     synonyms: [preserved duck eggs, pidan, 皮蛋]
@@ -2005,6 +2104,8 @@ ingredients:
     aisle: dairy
     is_staple: false
     usda_hint: Cheese, cheddar
+    shop_unit: pack
+    yield: {qty: 200, unit: g}
   cheddar_cheese_soup:
     name: cheddar cheese soup
     synonyms: [cheese soup, condensed cheddar cheese soup, nacho cheese soup]
@@ -2028,6 +2129,8 @@ ingredients:
     aisle: dairy
     is_staple: false
     usda_hint: Cheese, cheddar
+    shop_unit: pack
+    yield: {qty: 200, unit: g}
   cheese_curds:
     name: cheese curds
     synonyms: [squeaky cheese]
@@ -2073,6 +2176,8 @@ ingredients:
     flags: []
     aisle: produce
     is_staple: false
+    shop_unit: pack
+    yield: {qty: 300, unit: g}
   cherry_juice:
     name: cherry juice
     synonyms: [tart cherry juice, cherry juice concentrate]
@@ -2096,6 +2201,8 @@ ingredients:
     is_staple: false
     parent: tomatoes
     each_g: 17
+    shop_unit: pack
+    yield: {qty: 250, unit: g}
   chervil:
     name: chervil
     synonyms: [fresh chervil]
@@ -2132,6 +2239,7 @@ ingredients:
     aisle: meat
     is_staple: false
     usda_hint: Chicken, broilers or fryers, meat and skin, raw
+    shop_unit: g
   chicken_bouillon:
     name: chicken bouillon
     synonyms: [chicken bouillon cubes, chicken bouillon granules, chicken stock cube, instant chicken bouillon, chicken stock powder, chicken bouillon powder, chicken flavor bouillon, chicken granules, chicken flavored bouillon, chicken seasoning powder, knorr chicken bouillon, chicken cube, 鸡精]
@@ -2149,6 +2257,7 @@ ingredients:
     is_staple: false
     parent: chicken
     usda_hint: Chicken, broiler or fryers, breast, skinless, boneless, meat only, raw
+    shop_unit: piece
   chicken_cutlet:
     name: chicken cutlet
     synonyms: [thin-sliced chicken breasts, chicken escalopes, chicken scallopini]
@@ -2207,6 +2316,8 @@ ingredients:
     density_g_per_ml: 1.0
     usda_hint: Soup, stock, chicken, home-prepared
     hidden_animal: chicken
+    shop_unit: pack
+    yield: {qty: 1000, unit: ml}
   chicken_tenders:
     name: chicken tenders
     synonyms: [chicken tenderloins, chicken strips, chicken breast tenders, chicken fingers]
@@ -2223,6 +2334,7 @@ ingredients:
     aisle: meat
     is_staple: false
     parent: chicken
+    shop_unit: piece
   chicken_wings:
     name: chicken wings
     synonyms: [wings, chicken wing sections, chicken wingettes, wingettes, party wings, 鸡翅, 鸡翅中]
@@ -2246,6 +2358,8 @@ ingredients:
     aisle: pantry
     is_staple: false
     usda_hint: Chickpeas (garbanzo beans, bengal gram), mature seeds, canned
+    shop_unit: can
+    yield: {qty: 400, unit: g}
   chicory_root:
     name: chicory root
     synonyms: []
@@ -2303,6 +2417,7 @@ ingredients:
     flags: []
     aisle: produce
     is_staple: false
+    shop_unit: piece
   chili_powder:
     name: chili powder
     synonyms: [chili mix, chili seasoning packet, chilli powder, chile powder, chili seasoning, chili powder blend, mild chili powder, american chili powder, chili seasoning mix, chilli powder mild, chili spice]
@@ -2310,6 +2425,8 @@ ingredients:
     flags: []
     aisle: spices
     is_staple: false
+    shop_unit: jar
+    yield: {qty: 100, unit: ml}
   chili_sauce:
     name: chili sauce
     synonyms: [heinz chili sauce, bottled chili sauce, chilli sauce, 辣椒酱]
@@ -2317,6 +2434,8 @@ ingredients:
     flags: []
     aisle: pantry
     is_staple: false
+    shop_unit: bottle
+    yield: {qty: 250, unit: ml}
   chimichurri:
     name: chimichurri
     synonyms: [chimichurri sauce]
@@ -2382,6 +2501,8 @@ ingredients:
     flags: []
     aisle: produce
     is_staple: false
+    shop_unit: bunch
+    yield: {qty: 0.5, unit: cup}
   chocolate:
     name: chocolate
     synonyms: [chocolate bar, baking chocolate, chocolate squares, chocolate pieces, good quality chocolate, chocolate of your choice, melted chocolate, chocolate shavings, chocolate curls, grated chocolate, chopped chocolate, 巧克力]
@@ -2389,6 +2510,8 @@ ingredients:
     flags: []
     aisle: pantry
     is_staple: false
+    shop_unit: pack
+    yield: {qty: 100, unit: g}
   chocolate_chips:
     name: chocolate chips
     synonyms: [semi-sweet chocolate chips, semisweet chocolate chips, chocolate morsels, semi-sweet chocolate morsels, semisweet chocolate morsels, chocolate chunks, semi-sweet chocolate pieces, chocolate bits, semi-sweet chocolate bits, mini chocolate chips, nestle toll house morsels, chocolate drops, mini semisweet chocolate chips]
@@ -2398,6 +2521,8 @@ ingredients:
     is_staple: false
     parent: semisweet_chocolate
     density_g_per_ml: 0.7
+    shop_unit: pack
+    yield: {qty: 340, unit: g}
   chocolate_kisses:
     name: chocolate kisses
     synonyms: [hersheys kisses, kisses, hershey kisses]
@@ -2444,6 +2569,7 @@ ingredients:
     aisle: meat
     is_staple: false
     parent: sausage
+    shop_unit: g
   chutney:
     name: chutney
     synonyms: [mango chutney, major greys chutney, apple chutney, tomato chutney, sweet chutney, onion chutney, cranberry chutney, green chutney, mint chutney, coriander chutney, tamarind chutney, imli chutney, date and tamarind chutney, chutney of choice, peach chutney, fruit chutney, mint coriander chutney, hari chutney]
@@ -2467,6 +2593,8 @@ ingredients:
     aisle: produce
     is_staple: false
     usda_hint: Coriander (cilantro) leaves, raw
+    shop_unit: bunch
+    yield: {qty: 1, unit: cup}
   cinnamon:
     name: cinnamon
     synonyms: [ground cinnamon, cinnamon powder, powdered cinnamon, cinnamon ground, ceylon cinnamon, cassia, dalchini, saigon cinnamon, 肉桂粉]
@@ -2476,6 +2604,8 @@ ingredients:
     is_staple: false
     density_g_per_ml: 0.56
     usda_hint: Spices, cinnamon, ground
+    shop_unit: jar
+    yield: {qty: 100, unit: ml}
   cinnamon_stick:
     name: cinnamon stick
     synonyms: [cinnamon quills, cinnamon bark, cassia bark, dalchini stick, 桂皮]
@@ -2484,6 +2614,8 @@ ingredients:
     aisle: spices
     is_staple: false
     parent: cinnamon
+    shop_unit: jar
+    yield: {qty: 10, unit: piece}
   citric_acid:
     name: citric acid
     synonyms: [sour salt, lemon salt]
@@ -2536,6 +2668,8 @@ ingredients:
     flags: []
     aisle: spices
     is_staple: false
+    shop_unit: jar
+    yield: {qty: 50, unit: ml}
   coarse_sugar:
     name: coarse sugar
     synonyms: [sanding sugar, pearl sugar, nib sugar, decorating sugar, sparkling sugar, crystal sugar, sugar crystals]
@@ -2588,6 +2722,8 @@ ingredients:
     is_staple: false
     density_g_per_ml: 0.42
     usda_hint: Cocoa, dry powder, unsweetened
+    shop_unit: pack
+    yield: {qty: 250, unit: g}
   coconut_aminos:
     name: coconut aminos
     synonyms: []
@@ -2628,6 +2764,8 @@ ingredients:
     density_g_per_ml: 0.97
     usda_hint: Nuts, coconut milk, canned
     note: Coconut is listed as a tree nut by the FDA but most tree-nut-allergic people tolerate it
+    shop_unit: can
+    yield: {qty: 400, unit: ml}
   coconut_milk_beverage:
     name: coconut milk beverage
     synonyms: [carton coconut milk]
@@ -2690,6 +2828,8 @@ ingredients:
     aisle: beverages
     is_staple: false
     density_g_per_ml: 1.0
+    shop_unit: pack
+    yield: {qty: 250, unit: g}
   coffee_creamer:
     name: coffee creamer
     synonyms: [creamer, non-dairy creamer, nondairy creamer, coffee mate, powdered creamer, powdered coffee creamer, liquid coffee creamer, flavored coffee creamer]
@@ -2780,6 +2920,7 @@ ingredients:
     aisle: meat
     is_staple: false
     parent: chicken
+    shop_unit: g
   cookie_dough:
     name: cookie dough
     synonyms: [refrigerated cookie dough, sugar cookie dough, chocolate chip cookie dough, sugar cookie mix, cookie mix]
@@ -2832,6 +2973,8 @@ ingredients:
     flags: []
     aisle: spices
     is_staple: false
+    shop_unit: jar
+    yield: {qty: 100, unit: ml}
   coriander_seeds:
     name: coriander seeds
     synonyms: [whole coriander, whole coriander seeds, dhania seeds, sabut dhania]
@@ -2840,6 +2983,8 @@ ingredients:
     aisle: spices
     is_staple: false
     parent: coriander
+    shop_unit: jar
+    yield: {qty: 100, unit: ml}
   corn:
     name: corn
     synonyms: [sweet corn, sweetcorn, corn kernels, whole kernel corn, kernel corn, fresh corn, frozen corn, corn on the cob, ears of corn, corn cobs, fresh corn kernels, canned corn, niblets, white corn, yellow corn, mexicorn, bhutta, makai, peg corn, shoepeg corn, frozen corn kernels, 玉米]
@@ -2848,6 +2993,8 @@ ingredients:
     aisle: produce
     is_staple: false
     usda_hint: Corn, sweet, yellow, raw
+    shop_unit: can
+    yield: {qty: 400, unit: g}
   corn_chex:
     name: corn chex
     synonyms: [chex cereal, rice chex, wheat chex, crispix, chex]
@@ -2934,6 +3081,8 @@ ingredients:
     aisle: pantry
     is_staple: false
     density_g_per_ml: 0.6
+    shop_unit: pack
+    yield: {qty: 500, unit: g}
   cornstarch:
     name: cornstarch
     synonyms: [corn starch, cornflour, corn flour, maize starch, maizena, corn starch powder, 玉米淀粉, 淀粉, 生粉]
@@ -2943,6 +3092,8 @@ ingredients:
     is_staple: false
     density_g_per_ml: 0.54
     usda_hint: Cornstarch
+    shop_unit: pack
+    yield: {qty: 400, unit: g}
   cotija:
     name: cotija
     synonyms: [cotija cheese, queso anejo]
@@ -2959,6 +3110,8 @@ ingredients:
     aisle: dairy
     is_staple: false
     usda_hint: Cheese, cottage, creamed
+    shop_unit: pack
+    yield: {qty: 450, unit: g}
   couscous:
     name: couscous
     synonyms: [israeli couscous, pearl couscous, giant couscous, moghrabieh, whole wheat couscous, instant couscous]
@@ -2988,6 +3141,8 @@ ingredients:
     flags: [gluten]
     aisle: pantry
     is_staple: false
+    shop_unit: pack
+    yield: {qty: 30, unit: piece}
   cranberries:
     name: cranberries
     synonyms: [fresh cranberries, frozen cranberries, whole cranberries]
@@ -2995,6 +3150,8 @@ ingredients:
     flags: []
     aisle: produce
     is_staple: false
+    shop_unit: pack
+    yield: {qty: 340, unit: g}
   cranberry_beans:
     name: cranberry beans
     synonyms: [borlotti beans, borlotti, roman beans]
@@ -3033,6 +3190,8 @@ ingredients:
     is_staple: false
     density_g_per_ml: 1.0
     usda_hint: Cheese, cream
+    shop_unit: pack
+    yield: {qty: 225, unit: g}
   cream_cheese_spread:
     name: cream cheese spread
     synonyms: [herb and garlic cream cheese, chive and onion cream cheese, flavored cream cheese, cream cheese with chives, philadelphia cooking creme, cream cheese product]
@@ -3070,6 +3229,8 @@ ingredients:
     aisle: pantry
     is_staple: false
     hidden_animal: chicken and chicken stock
+    shop_unit: can
+    yield: {qty: 298, unit: g}
   cream_of_mushroom_soup:
     name: cream of mushroom soup
     synonyms: [cream of mushroom, condensed cream of mushroom soup, cream of mushroom soup condensed, campbells cream of mushroom soup, mushroom soup, condensed mushroom soup, cream of mushroom with roasted garlic soup, campbells condensed cream of mushroom with roasted garlic soup, healthy request cream of mushroom soup, 98% fat free cream of mushroom soup, cream mushroom soup]
@@ -3077,6 +3238,8 @@ ingredients:
     flags: []
     aisle: pantry
     is_staple: false
+    shop_unit: can
+    yield: {qty: 298, unit: g}
   cream_of_potato_soup:
     name: cream of potato soup
     synonyms: [cream of potato, potato soup, condensed cream of potato soup]
@@ -3099,6 +3262,8 @@ ingredients:
     flags: []
     aisle: spices
     is_staple: false
+    shop_unit: jar
+    yield: {qty: 50, unit: ml}
   cream_soda:
     name: cream soda
     synonyms: []
@@ -3147,6 +3312,8 @@ ingredients:
     aisle: dairy
     is_staple: false
     density_g_per_ml: 1.0
+    shop_unit: pack
+    yield: {qty: 200, unit: ml}
   cremini_mushrooms:
     name: cremini mushrooms
     synonyms: [crimini mushrooms, cremini, crimini, baby bella mushrooms, baby bellas, baby portobello mushrooms, chestnut mushrooms, brown mushrooms, swiss brown mushrooms]
@@ -3221,6 +3388,7 @@ ingredients:
     is_staple: false
     each_g: 300
     usda_hint: Cucumber, with peel, raw
+    shop_unit: piece
   culantro:
     name: culantro
     synonyms: [sawtooth coriander, recao, ngo gai]
@@ -3236,6 +3404,8 @@ ingredients:
     aisle: spices
     is_staple: false
     density_g_per_ml: 0.5
+    shop_unit: jar
+    yield: {qty: 100, unit: ml}
   cumin_seeds:
     name: cumin seeds
     synonyms: [whole cumin, jeera, zeera, whole cumin seeds, 孜然]
@@ -3244,6 +3414,8 @@ ingredients:
     aisle: spices
     is_staple: false
     parent: cumin
+    shop_unit: jar
+    yield: {qty: 100, unit: ml}
   cupcakes:
     name: cupcakes
     synonyms: []
@@ -3294,6 +3466,8 @@ ingredients:
     flags: []
     aisle: spices
     is_staple: false
+    shop_unit: jar
+    yield: {qty: 100, unit: ml}
   custard:
     name: custard
     synonyms: [vanilla custard, ready-made custard, crème anglaise, fresh custard]
@@ -3346,6 +3520,8 @@ ingredients:
     aisle: pantry
     is_staple: false
     parent: brown_sugar
+    shop_unit: pack
+    yield: {qty: 500, unit: g}
   dark_rum:
     name: dark rum
     synonyms: [rum, gold rum, jamaican rum, rum dark, black rum, rum for soaking fruit, overproof rum]
@@ -3353,6 +3529,8 @@ ingredients:
     flags: [alcohol]
     aisle: beverages
     is_staple: false
+    shop_unit: bottle
+    yield: {qty: 700, unit: ml}
   dark_soy_sauce:
     name: dark soy sauce
     synonyms: [thick soy sauce, black soy sauce, dark soya sauce, 老抽]
@@ -3384,6 +3562,8 @@ ingredients:
     flags: []
     aisle: pantry
     is_staple: false
+    shop_unit: pack
+    yield: {qty: 250, unit: g}
   deli_roast_beef:
     name: deli roast beef
     synonyms: [sliced roast beef, roast beef slices]
@@ -3416,6 +3596,8 @@ ingredients:
     aisle: pantry
     is_staple: false
     parent: brown_sugar
+    shop_unit: pack
+    yield: {qty: 500, unit: g}
   desiccated_coconut:
     name: desiccated coconut
     synonyms: [coconut, shredded coconut, flaked coconut, sweetened shredded coconut, unsweetened shredded coconut, sweetened flaked coconut, coconut flakes, unsweetened coconut, sweetened coconut, angel flake coconut, toasted coconut, grated coconut, dried coconut, coconut chips, unsweetened coconut flakes, frozen grated coconut, frozen coconut, coconut shreds, dessicated coconut, sweetened coconut flakes]
@@ -3424,6 +3606,8 @@ ingredients:
     aisle: pantry
     is_staple: false
     note: See coconut_milk
+    shop_unit: pack
+    yield: {qty: 200, unit: g}
   deviled_ham:
     name: deviled ham
     synonyms: [underwood deviled ham]
@@ -3448,6 +3632,8 @@ ingredients:
     is_staple: false
     parent: mustard
     note: Traditionally made with white wine or verjuice
+    shop_unit: jar
+    yield: {qty: 200, unit: ml}
   dill:
     name: dill
     synonyms: [fresh dill, dill weed, dill sprigs, dill fronds, fresh dill weed, suva, shepu, 莳萝]
@@ -3455,6 +3641,8 @@ ingredients:
     flags: []
     aisle: produce
     is_staple: false
+    shop_unit: bunch
+    yield: {qty: 1, unit: cup}
   dill_pickles:
     name: dill pickles
     synonyms: [pickles, dill pickle spears, pickle slices, pickled cucumbers, sweet pickles, bread and butter pickles, gherkins, pickled gherkins, kosher dill pickles, sweet gherkins, pickle juice, dill pickle juice]
@@ -3462,6 +3650,8 @@ ingredients:
     flags: []
     aisle: pantry
     is_staple: false
+    shop_unit: jar
+    yield: {qty: 10, unit: piece}
   dill_seed:
     name: dill seed
     synonyms: []
@@ -3590,6 +3780,8 @@ ingredients:
     flags: []
     aisle: pantry
     is_staple: false
+    shop_unit: pack
+    yield: {qty: 150, unit: g}
   dried_dill:
     name: dried dill
     synonyms: [dill weed dried, dried dill weed, dry dill, dried dillweed]
@@ -3621,6 +3813,8 @@ ingredients:
     flags: []
     aisle: pantry
     is_staple: false
+    shop_unit: pack
+    yield: {qty: 250, unit: g}
   dried_herbs:
     name: mixed dried herbs
     synonyms: [mixed herbs, dried mixed herbs, herbs de provence mix, dried herbs, fines herbes]
@@ -3702,6 +3896,8 @@ ingredients:
     aisle: spices
     is_staple: false
     parent: oregano
+    shop_unit: jar
+    yield: {qty: 50, unit: ml}
   dried_parsley:
     name: dried parsley
     synonyms: [parsley flakes, dried parsley flakes, dry parsley, parsley dried]
@@ -3710,6 +3906,8 @@ ingredients:
     aisle: spices
     is_staple: false
     parent: parsley
+    shop_unit: jar
+    yield: {qty: 50, unit: ml}
   dried_red_chili:
     name: dried red chili
     synonyms: [dried red chillies, whole dried red chilies, dry red chilli, dried chilies, dried chili peppers, whole red chilies, sabut lal mirch, dried chillies, dried chiles, dried red chile, dried whole chiles, 干辣椒]
@@ -3763,6 +3961,8 @@ ingredients:
     aisle: spices
     is_staple: false
     parent: thyme
+    shop_unit: jar
+    yield: {qty: 50, unit: ml}
   dried_tofu_skin:
     name: dried tofu skin
     synonyms: [yuba, bean curd sheets, tofu skin, bean curd skin, 腐竹, 豆腐皮]
@@ -3791,6 +3991,8 @@ ingredients:
     flags: []
     aisle: spices
     is_staple: false
+    shop_unit: jar
+    yield: {qty: 50, unit: ml}
   dry_sherry:
     name: dry sherry
     synonyms: [sherry, cooking sherry, dry cooking sherry, fino sherry, amontillado sherry, sherry wine, medium sherry, cream sherry, sweet sherry, oloroso sherry, pedro ximenez]
@@ -3798,6 +4000,8 @@ ingredients:
     flags: [alcohol]
     aisle: beverages
     is_staple: false
+    shop_unit: bottle
+    yield: {qty: 750, unit: ml}
   dry_vermouth:
     name: dry vermouth
     synonyms: [vermouth, white vermouth, extra dry vermouth, noilly prat]
@@ -3814,6 +4018,8 @@ ingredients:
     is_staple: false
     density_g_per_ml: 0.99
     note: Some wines are fined with isinglass, gelatin, egg or casein
+    shop_unit: bottle
+    yield: {qty: 750, unit: ml}
   duck:
     name: duck
     synonyms: [whole duck, duck legs, duckling, squab, 鸭肉]
@@ -3890,6 +4096,7 @@ ingredients:
     aisle: produce
     is_staple: false
     parent: apple
+    shop_unit: piece
   edam:
     name: edam
     synonyms: [edam cheese]
@@ -3935,6 +4142,8 @@ ingredients:
     is_staple: false
     each_g: 50
     usda_hint: Egg, whole, raw, fresh
+    shop_unit: pack
+    yield: {qty: 12, unit: piece}
   egg_noodles:
     name: egg noodles
     synonyms: [wide egg noodles, extra wide egg noodles, medium egg noodles, fine egg noodles, dried egg noodles, fresh egg noodles, 鸡蛋面]
@@ -3974,6 +4183,9 @@ ingredients:
     density_g_per_ml: 1.03
     each_g: 33
     usda_hint: Egg, white, raw, fresh
+    buy_as: egg
+    shop_unit: pack
+    yield: {qty: 12, unit: piece}
   egg_yolk:
     name: egg yolk
     synonyms: [yolks, large egg yolks, 蛋黄]
@@ -3983,6 +4195,9 @@ ingredients:
     is_staple: false
     each_g: 17
     usda_hint: Egg, yolk, raw, fresh
+    buy_as: egg
+    shop_unit: pack
+    yield: {qty: 12, unit: piece}
   eggnog:
     name: eggnog
     synonyms: [egg nog]
@@ -3999,6 +4214,7 @@ ingredients:
     is_staple: false
     each_g: 450
     usda_hint: Eggplant, raw
+    shop_unit: piece
   elderberries:
     name: elderberries
     synonyms: []
@@ -4128,6 +4344,8 @@ ingredients:
     is_staple: false
     density_g_per_ml: 1.07
     usda_hint: Milk, canned, evaporated
+    shop_unit: can
+    yield: {qty: 354, unit: ml}
   everything_bagel_seasoning:
     name: everything bagel seasoning
     synonyms: [everything seasoning]
@@ -4186,6 +4404,7 @@ ingredients:
     flags: []
     aisle: produce
     is_staple: false
+    shop_unit: piece
   fennel_fronds:
     name: fennel fronds
     synonyms: [fennel tops, fennel leaves]
@@ -4200,6 +4419,8 @@ ingredients:
     flags: []
     aisle: spices
     is_staple: false
+    shop_unit: jar
+    yield: {qty: 100, unit: ml}
   fenugreek_leaves:
     name: fenugreek leaves
     synonyms: [methi, methi leaves, fresh methi, fresh fenugreek leaves]
@@ -4237,6 +4458,8 @@ ingredients:
     is_staple: false
     usda_hint: Cheese, feta
     note: Rennet type varies by brand
+    shop_unit: pack
+    yield: {qty: 200, unit: g}
   fettuccine:
     name: fettuccine
     synonyms: [fettuccine noodles, fettuccine pasta]
@@ -4321,6 +4544,8 @@ ingredients:
     aisle: pantry
     is_staple: false
     hidden_animal: fermented anchovies
+    shop_unit: bottle
+    yield: {qty: 200, unit: ml}
   fish_stock:
     name: fish stock
     synonyms: [fish broth, fish stock cube, fish bouillon, fumet, seafood stock, seafood broth, shrimp stock, lobster stock]
@@ -4397,6 +4622,8 @@ ingredients:
     flags: [gluten]
     aisle: bakery
     is_staple: false
+    shop_unit: pack
+    yield: {qty: 8, unit: piece}
   focaccia:
     name: focaccia
     synonyms: []
@@ -4429,6 +4656,8 @@ ingredients:
     aisle: pantry
     is_staple: false
     note: Treated as optional garnish; carmine-based reds are not tracked
+    shop_unit: bottle
+    yield: {qty: 30, unit: ml}
   freekeh:
     name: freekeh
     synonyms: []
@@ -4537,6 +4766,8 @@ ingredients:
     flags: [dairy]
     aisle: pantry
     is_staple: false
+    shop_unit: jar
+    yield: {qty: 450, unit: g}
   frozen_chopped_onion:
     name: frozen chopped onion
     synonyms: [frozen diced onion]
@@ -4552,6 +4783,8 @@ ingredients:
     aisle: frozen
     is_staple: false
     parent: spinach
+    shop_unit: pack
+    yield: {qty: 300, unit: g}
   fructose:
     name: fructose
     synonyms: [fructose powder, fruit sugar]
@@ -4620,6 +4853,8 @@ ingredients:
     each_g: 5
     usda_hint: Garlic, raw
     note: each_g is one clove
+    shop_unit: head
+    yield: {qty: 10, unit: clove}
   garlic_chives:
     name: garlic chives
     synonyms: [chinese chives, chinese garlic chives, 韭菜]
@@ -4641,6 +4876,8 @@ ingredients:
     flags: []
     aisle: spices
     is_staple: false
+    shop_unit: jar
+    yield: {qty: 100, unit: ml}
   garlic_salt:
     name: garlic salt
     synonyms: []
@@ -4648,6 +4885,8 @@ ingredients:
     flags: []
     aisle: spices
     is_staple: false
+    shop_unit: jar
+    yield: {qty: 100, unit: ml}
   garlic_scapes:
     name: garlic scapes
     synonyms: [green garlic, spring garlic]
@@ -4664,6 +4903,8 @@ ingredients:
     aisle: pantry
     is_staple: false
     hidden_animal: usually pork skin or beef hide
+    shop_unit: pack
+    yield: {qty: 2.5, unit: tsp}
   gelatin_dessert_mix:
     name: flavored gelatin mix
     synonyms: [jello, jell-o, gelatin dessert, flavored gelatin, strawberry jello, lemon jello, lime jello, orange jello, cherry jello, raspberry jello, strawberry gelatin, raspberry gelatin, lemon gelatin, lime gelatin, orange gelatin, cherry gelatin, apricot jello, jello mix, sugar-free jello, jell-o gelatin, orange-pineapple jello, black cherry jello, peach jello, watermelon jello, strawberry jell-o, lemon jell-o, orange jell-o, cranberry jello, grape jello, blue raspberry jello, jelly crystals, jelly cubes, strawberry banana jello]
@@ -4672,6 +4913,8 @@ ingredients:
     aisle: pantry
     is_staple: false
     hidden_animal: gelatin (usually pork or beef)
+    shop_unit: pack
+    yield: {qty: 85, unit: g}
   gemelli:
     name: gemelli
     synonyms: [campanelle, radiatori, wagon wheel pasta]
@@ -4705,6 +4948,8 @@ ingredients:
     aisle: produce
     is_staple: false
     usda_hint: Ginger root, raw
+    shop_unit: piece
+    yield: {qty: 2, unit: tbsp}
   ginger_ale:
     name: ginger ale
     synonyms: [canada dry ginger ale, diet ginger ale, ginger beer, non-alcoholic ginger beer]
@@ -4854,6 +5099,8 @@ ingredients:
     flags: []
     aisle: pantry
     is_staple: false
+    shop_unit: jar
+    yield: {qty: 340, unit: ml}
   gongura:
     name: gongura
     synonyms: [sorrel leaves indian, ambadi]
@@ -4906,6 +5153,8 @@ ingredients:
     flags: [gluten]
     aisle: pantry
     is_staple: false
+    shop_unit: pack
+    yield: {qty: 400, unit: g}
   graham_cracker_crust:
     name: graham cracker crust
     synonyms: [graham cracker pie crust, graham cracker pie shell, graham cracker crumb crust, prepared graham cracker crust, chocolate cookie crumb crust, oreo pie crust, chocolate crumb crust, shortbread crust, ready-made graham cracker crust]
@@ -4920,6 +5169,8 @@ ingredients:
     flags: [gluten]
     aisle: pantry
     is_staple: false
+    shop_unit: pack
+    yield: {qty: 400, unit: g}
   grains_of_paradise:
     name: grains of paradise
     synonyms: [melegueta pepper]
@@ -4943,6 +5194,7 @@ ingredients:
     aisle: produce
     is_staple: false
     parent: apple
+    shop_unit: piece
   granola:
     name: granola
     synonyms: [muesli, granola clusters, low-fat granola, granola bars]
@@ -4994,6 +5246,8 @@ ingredients:
     flags: []
     aisle: produce
     is_staple: false
+    shop_unit: pack
+    yield: {qty: 500, unit: g}
   grapeseed_oil:
     name: grapeseed oil
     synonyms: [grapeseed]
@@ -5036,6 +5290,8 @@ ingredients:
     is_staple: false
     parent: plain_yogurt
     density_g_per_ml: 1.05
+    shop_unit: pack
+    yield: {qty: 500, unit: g}
   green_beans:
     name: green beans
     synonyms: [string beans, snap beans, frozen green beans, french style green beans, french-cut green beans, bush beans, pole beans, fresh green beans, beans green, 四季豆, 豆角]
@@ -5044,6 +5300,7 @@ ingredients:
     aisle: produce
     is_staple: false
     usda_hint: Beans, snap, green, raw
+    shop_unit: g
   green_bell_pepper:
     name: green bell pepper
     synonyms: [green pepper, green capsicum, sweet green pepper, green sweet pepper, 青椒, 青椒丝]
@@ -5053,6 +5310,7 @@ ingredients:
     is_staple: false
     parent: bell_pepper
     each_g: 120
+    shop_unit: piece
   green_cabbage:
     name: green cabbage
     synonyms: [head green cabbage, white cabbage, pointed cabbage, sweetheart cabbage, hispi cabbage]
@@ -5068,6 +5326,8 @@ ingredients:
     flags: []
     aisle: international
     is_staple: false
+    shop_unit: can
+    yield: {qty: 115, unit: g}
   green_chili:
     name: green chilli
     synonyms: [hari mirch, fresh green chilli, green chilli pepper, indian green chilli, green chilly, 青辣椒]
@@ -5075,6 +5335,7 @@ ingredients:
     flags: []
     aisle: produce
     is_staple: false
+    shop_unit: piece
   green_leaf_lettuce:
     name: green leaf lettuce
     synonyms: [red leaf lettuce, leaf lettuce, red leaf, green leaf, lollo rosso, oak leaf lettuce]
@@ -5099,6 +5360,8 @@ ingredients:
     aisle: produce
     is_staple: false
     each_g: 15
+    shop_unit: bunch
+    yield: {qty: 6, unit: piece}
   green_peas_dried:
     name: green peas dried
     synonyms: [dried green peas, dried peas, marrowfat peas, mushy peas, vatana]
@@ -5127,6 +5390,8 @@ ingredients:
     flags: []
     aisle: produce
     is_staple: false
+    shop_unit: bunch
+    yield: {qty: 250, unit: g}
   grenadine:
     name: grenadine
     synonyms: [grenadine syrup, pomegranate grenadine]
@@ -5150,6 +5415,7 @@ ingredients:
     is_staple: false
     parent: beef
     usda_hint: Beef, ground, 80% lean meat / 20% fat, raw
+    shop_unit: g
   ground_chicken:
     name: ground chicken
     synonyms: [minced chicken, chicken mince, chicken keema]
@@ -5165,6 +5431,8 @@ ingredients:
     flags: []
     aisle: spices
     is_staple: false
+    shop_unit: jar
+    yield: {qty: 50, unit: ml}
   ground_lamb:
     name: ground lamb
     synonyms: [minced lamb, lamb mince, ground lamb shoulder, lamb keema, mutton mince]
@@ -5189,6 +5457,7 @@ ingredients:
     aisle: meat
     is_staple: false
     parent: pork
+    shop_unit: g
   ground_turkey:
     name: ground turkey
     synonyms: [minced turkey, turkey mince, lean ground turkey, extra lean ground turkey, 93% lean ground turkey]
@@ -5288,6 +5557,8 @@ ingredients:
     is_staple: false
     density_g_per_ml: 1.03
     usda_hint: Cream, fluid, half and half
+    shop_unit: pack
+    yield: {qty: 500, unit: ml}
   halibut:
     name: halibut
     synonyms: []
@@ -5319,6 +5590,7 @@ ingredients:
     aisle: meat
     is_staple: false
     parent: pork
+    shop_unit: g
   ham_hock:
     name: ham hock
     synonyms: [smoked ham hock, pork hock, ham shank, smoked hocks, pork knuckle]
@@ -5423,6 +5695,8 @@ ingredients:
     is_staple: false
     density_g_per_ml: 1.0
     usda_hint: Cream, fluid, heavy whipping
+    shop_unit: pack
+    yield: {qty: 300, unit: ml}
   heirloom_tomatoes:
     name: heirloom tomatoes
     synonyms: [heritage tomatoes]
@@ -5507,6 +5781,8 @@ ingredients:
     density_g_per_ml: 1.42
     usda_hint: Honey
     note: Not vegan
+    shop_unit: jar
+    yield: {qty: 340, unit: g}
   honey_mustard:
     name: honey mustard
     synonyms: [honey dijon mustard, honey mustard dressing, honey-mustard sauce]
@@ -5598,6 +5874,8 @@ ingredients:
     flags: []
     aisle: pantry
     is_staple: false
+    shop_unit: bottle
+    yield: {qty: 150, unit: ml}
   huckleberries:
     name: huckleberries
     synonyms: [bilberries, whortleberries, wild blueberries]
@@ -5636,6 +5914,8 @@ ingredients:
     flags: [dairy]
     aisle: frozen
     is_staple: false
+    shop_unit: pack
+    yield: {qty: 1000, unit: ml}
   iceberg_lettuce:
     name: iceberg lettuce
     synonyms: [iceberg, head of iceberg lettuce]
@@ -5711,6 +5991,8 @@ ingredients:
     flags: []
     aisle: pantry
     is_staple: false
+    shop_unit: pack
+    yield: {qty: 7, unit: g}
   invert_sugar:
     name: invert sugar
     synonyms: [inverted sugar syrup, trimoline, isomalt]
@@ -5739,6 +6021,8 @@ ingredients:
     flags: []
     aisle: pantry
     is_staple: false
+    shop_unit: bottle
+    yield: {qty: 250, unit: ml}
   italian_dressing_mix:
     name: italian dressing mix
     synonyms: [dry italian dressing mix, good seasons italian dressing mix, zesty italian dressing mix]
@@ -5798,6 +6082,7 @@ ingredients:
     aisle: produce
     is_staple: false
     each_g: 14
+    shop_unit: piece
   jam:
     name: jam
     synonyms: [jelly, preserves, fruit preserves, strawberry jam, raspberry jam, apricot jam, apricot preserves, grape jelly, strawberry preserves, raspberry preserves, blackcurrant jam, cherry preserves, seedless raspberry jam, currant jelly, red currant jelly, apple jelly, orange marmalade, marmalade, fig jam, peach preserves, pepper jelly, hot pepper jelly, jalapeno jelly, blackberry jam, blueberry jam, cherry jam, plum jam, seedless blackberry jam, all-fruit spread, fruit spread, sugar-free jam, jam of choice, raspberry seedless jam, lingonberry jam]
@@ -5805,6 +6090,8 @@ ingredients:
     flags: []
     aisle: pantry
     is_staple: false
+    shop_unit: jar
+    yield: {qty: 340, unit: g}
   japanese_eggplant:
     name: japanese eggplant
     synonyms: [chinese eggplant, asian eggplant, thai eggplant, baby eggplant, indian eggplant]
@@ -5903,6 +6190,8 @@ ingredients:
     flags: []
     aisle: produce
     is_staple: false
+    shop_unit: bunch
+    yield: {qty: 200, unit: g}
   kasha:
     name: kasha
     synonyms: [buckwheat groats, roasted buckwheat, kasha groats]
@@ -5970,6 +6259,8 @@ ingredients:
     aisle: pantry
     is_staple: false
     density_g_per_ml: 1.15
+    shop_unit: bottle
+    yield: {qty: 500, unit: ml}
   key_lime:
     name: key lime
     synonyms: [mexican limes]
@@ -5992,6 +6283,8 @@ ingredients:
     flags: []
     aisle: pantry
     is_staple: false
+    shop_unit: can
+    yield: {qty: 400, unit: g}
   kidney_meat:
     name: kidney (offal)
     synonyms: [kidneys, lamb kidneys, beef kidney, ox kidney, steak and kidney]
@@ -6096,6 +6389,8 @@ ingredients:
     is_staple: true
     parent: salt
     density_g_per_ml: 0.6
+    shop_unit: pack
+    yield: {qty: 1000, unit: g}
   kumquat:
     name: kumquat
     synonyms: []
@@ -6140,6 +6435,7 @@ ingredients:
     aisle: meat
     is_staple: false
     usda_hint: Lamb, raw
+    shop_unit: g
   lamb_chops:
     name: lamb chops
     synonyms: [lamb rib chops, lamb cutlets, lamb loin chops, racks of lamb, lamb rack, lamb top sirloins, lamb loin]
@@ -6229,6 +6525,7 @@ ingredients:
     aisle: produce
     is_staple: false
     each_g: 90
+    shop_unit: piece
   lemon:
     name: lemon
     synonyms: [whole lemon, lemon slices, lemon wedges, lemon halves, unwaxed lemon, fresh lemon, nimbu, lemon twist, 柠檬]
@@ -6238,6 +6535,7 @@ ingredients:
     is_staple: false
     each_g: 84
     usda_hint: Lemons, raw, without peel
+    shop_unit: piece
   lemon_curd:
     name: lemon curd
     synonyms: [lime curd, passion fruit curd, orange curd]
@@ -6261,6 +6559,9 @@ ingredients:
     is_staple: false
     density_g_per_ml: 1.03
     usda_hint: Lemon juice, raw
+    buy_as: lemon
+    shop_unit: piece
+    yield: {qty: 45, unit: ml}
   lemon_lime_soda:
     name: lemon lime soda
     synonyms: [sprite, 7up, 7-up, lemon-lime carbonated beverage, lemon-lime beverage, sierra mist, lemon-lime]
@@ -6282,6 +6583,9 @@ ingredients:
     flags: []
     aisle: produce
     is_staple: false
+    buy_as: lemon
+    shop_unit: piece
+    yield: {qty: 1, unit: tbsp}
   lemonade:
     name: lemonade
     synonyms: [lemonade concentrate, frozen lemonade concentrate, frozen lemonade, pink lemonade, pink lemonade concentrate, lemonade mix, country time lemonade, cloudy lemonade, limeade, frozen limeade, frozen limeade concentrate, limeade concentrate]
@@ -6318,6 +6622,8 @@ ingredients:
     aisle: produce
     is_staple: false
     usda_hint: Lettuce, green leaf, raw
+    shop_unit: head
+    yield: {qty: 1, unit: piece}
   light_corn_syrup:
     name: light corn syrup
     synonyms: [corn syrup, light karo syrup, karo syrup, white corn syrup, white karo syrup, light karo, white karo, karo, clear corn syrup, white syrup, dark corn syrup, dark karo syrup]
@@ -6326,6 +6632,8 @@ ingredients:
     aisle: pantry
     is_staple: false
     density_g_per_ml: 1.38
+    shop_unit: bottle
+    yield: {qty: 500, unit: ml}
   light_cream:
     name: light cream
     synonyms: [single cream, coffee cream, table cream, light whipping cream, cooking cream, culinary cream]
@@ -6361,6 +6669,8 @@ ingredients:
     aisle: pantry
     is_staple: false
     parent: white_beans
+    shop_unit: can
+    yield: {qty: 400, unit: g}
   lime:
     name: lime
     synonyms: [whole limes, lime wedges, lime slices, lime halves, fresh lime, persian limes, kaffir lime fruit]
@@ -6370,6 +6680,7 @@ ingredients:
     is_staple: false
     each_g: 67
     usda_hint: Limes, raw
+    shop_unit: piece
   lime_juice:
     name: lime juice
     synonyms: [fresh lime juice, freshly squeezed lime juice, juice of lime, lime juiced, key lime juice, reallime, bottled lime juice, fresh squeezed lime juice]
@@ -6379,6 +6690,9 @@ ingredients:
     is_staple: false
     density_g_per_ml: 1.03
     usda_hint: Lime juice, raw
+    buy_as: lime
+    shop_unit: piece
+    yield: {qty: 30, unit: ml}
   lime_zest:
     name: lime zest
     synonyms: [lime rind, grated lime rind, lime peel, zest of lime, key lime zest, lime zested, grated lime zest]
@@ -6386,6 +6700,9 @@ ingredients:
     flags: []
     aisle: produce
     is_staple: false
+    buy_as: lime
+    shop_unit: piece
+    yield: {qty: 2, unit: tsp}
   limoncello:
     name: limoncello
     synonyms: []
@@ -6558,6 +6875,8 @@ ingredients:
     aisle: pantry
     is_staple: false
     parent: penne
+    shop_unit: pack
+    yield: {qty: 500, unit: g}
   macaroons:
     name: macaroons
     synonyms: [coconut macaroons, almond macaroons, macarons]
@@ -6663,6 +6982,7 @@ ingredients:
     aisle: produce
     is_staple: false
     each_g: 200
+    shop_unit: piece
   mangosteen:
     name: mangosteen
     synonyms: []
@@ -6701,6 +7021,8 @@ ingredients:
     is_staple: false
     density_g_per_ml: 1.32
     usda_hint: Syrups, maple
+    shop_unit: bottle
+    yield: {qty: 250, unit: ml}
   maraschino_cherries:
     name: maraschino cherries
     synonyms: [maraschino cherries with stems, cocktail cherries, luxardo cherries, maraschino cherry juice]
@@ -6717,6 +7039,8 @@ ingredients:
     is_staple: false
     density_g_per_ml: 0.96
     usda_hint: Margarine
+    shop_unit: pack
+    yield: {qty: 500, unit: g}
   margarita_mix:
     name: margarita mix
     synonyms: [sour mix, sweet and sour mix, sweet sour mix, pina colada mix, colada mix, daiquiri mix, strawberry daiquiri mix, frozen daiquiri mix, collins mix, mojito mix]
@@ -6732,6 +7056,8 @@ ingredients:
     aisle: pantry
     is_staple: false
     density_g_per_ml: 1.04
+    shop_unit: jar
+    yield: {qty: 680, unit: g}
   marjoram:
     name: marjoram
     synonyms: [fresh marjoram, marjoram leaves, sweet marjoram]
@@ -6769,6 +7095,8 @@ ingredients:
     aisle: pantry
     is_staple: false
     hidden_animal: gelatin (usually pork)
+    shop_unit: pack
+    yield: {qty: 250, unit: g}
   masa_harina:
     name: masa harina
     synonyms: [masa, masa flour, instant corn masa flour, maseca, masa preparada]
@@ -6783,6 +7111,8 @@ ingredients:
     flags: [dairy]
     aisle: dairy
     is_staple: false
+    shop_unit: pack
+    yield: {qty: 250, unit: g}
   mashed_potatoes:
     name: mashed potatoes
     synonyms: [leftover mashed potatoes, prepared mashed potatoes, mash, potato mash, refrigerated mashed potatoes]
@@ -6812,6 +7142,8 @@ ingredients:
     aisle: pantry
     is_staple: false
     density_g_per_ml: 0.91
+    shop_unit: jar
+    yield: {qty: 400, unit: ml}
   meat:
     name: meat
     synonyms: [cooked meat, leftover meat, chopped meat, stewing meat, lean meat, meat of choice, raw meat, chop meat, sliced meat, meat pieces, boneless meat, mixed meat]
@@ -6956,6 +7288,8 @@ ingredients:
     is_staple: false
     density_g_per_ml: 1.03
     usda_hint: Milk, whole, 3.25% milkfat
+    shop_unit: bottle
+    yield: {qty: 1000, unit: ml}
   milk_chocolate:
     name: milk chocolate
     synonyms: [milk chocolate chips, milk chocolate bar, milk chocolate pieces, milk chocolate morsels, milk chocolate chunks, hershey bar, hersheys chocolate bar]
@@ -6964,6 +7298,8 @@ ingredients:
     aisle: pantry
     is_staple: false
     parent: chocolate
+    shop_unit: pack
+    yield: {qty: 100, unit: g}
   millet:
     name: millet
     synonyms: [bajra, jowar, sorghum, ragi, foxtail millet, finger millet]
@@ -7003,6 +7339,8 @@ ingredients:
     flags: []
     aisle: produce
     is_staple: false
+    shop_unit: bunch
+    yield: {qty: 1, unit: cup}
   mint_sauce:
     name: mint sauce
     synonyms: [mint jelly]
@@ -7046,6 +7384,8 @@ ingredients:
     flags: []
     aisle: produce
     is_staple: false
+    shop_unit: bunch
+    yield: {qty: 1, unit: cup}
   mixed_nuts:
     name: mixed nuts
     synonyms: [nuts, chopped nuts, nut meats, nutmeats, nut pieces, ground nuts, nuts of choice, toasted nuts, broken nuts, nuts chopped, assorted nuts]
@@ -7053,6 +7393,8 @@ ingredients:
     flags: [nuts]
     aisle: pantry
     is_staple: false
+    shop_unit: pack
+    yield: {qty: 200, unit: g}
   mixed_seeds:
     name: mixed seeds
     synonyms: [seed mix, seed mixture, mixed seed topping]
@@ -7067,6 +7409,8 @@ ingredients:
     flags: []
     aisle: spices
     is_staple: false
+    shop_unit: jar
+    yield: {qty: 50, unit: ml}
   mixed_vegetables:
     name: mixed vegetables
     synonyms: [frozen mixed vegetables, stir-fry vegetables, frozen stir-fry vegetables, california blend vegetables, vegetables, veggies, vegetable medley, veg-all, frozen vegetable medley, peas and carrots, frozen peas and carrots, frozen corn and peas, soup vegetables, stew vegetables, vegetables of choice, chopped vegetables, fresh vegetables, assorted vegetables, italian vegetables, vegetable mix, frozen veg, seasonal vegetables, cooked vegetables]
@@ -7074,6 +7418,8 @@ ingredients:
     flags: []
     aisle: frozen
     is_staple: false
+    shop_unit: pack
+    yield: {qty: 500, unit: g}
   mizuna:
     name: mizuna
     synonyms: [mizuna greens]
@@ -7096,6 +7442,8 @@ ingredients:
     aisle: pantry
     is_staple: false
     density_g_per_ml: 1.4
+    shop_unit: bottle
+    yield: {qty: 350, unit: ml}
   mole_paste:
     name: mole paste
     synonyms: [mole, mole sauce, dona maria mole, mole poblano paste]
@@ -7119,6 +7467,8 @@ ingredients:
     aisle: dairy
     is_staple: false
     usda_hint: Cheese, monterey
+    shop_unit: pack
+    yield: {qty: 200, unit: g}
   moong_dal:
     name: moong dal
     synonyms: [yellow moong dal, split mung beans, mung dal, green moong dal]
@@ -7150,6 +7500,8 @@ ingredients:
     is_staple: false
     usda_hint: Cheese, mozzarella, whole milk
     note: Rennet type varies by brand
+    shop_unit: pack
+    yield: {qty: 200, unit: g}
   msg:
     name: msg
     synonyms: [monosodium glutamate, accent, accent seasoning, ajinomoto, umami seasoning, 味精]
@@ -7238,6 +7590,8 @@ ingredients:
     aisle: produce
     is_staple: false
     usda_hint: Mushrooms, white, raw
+    shop_unit: pack
+    yield: {qty: 250, unit: g}
   mussels:
     name: mussels
     synonyms: [green lipped mussels, blue mussels, pei mussels]
@@ -7254,6 +7608,8 @@ ingredients:
     aisle: pantry
     is_staple: false
     density_g_per_ml: 1.05
+    shop_unit: jar
+    yield: {qty: 200, unit: ml}
   mustard_greens:
     name: mustard greens
     synonyms: [sarson, sarson ka saag, mustard leaves, gai choy, turnip greens]
@@ -7337,6 +7693,8 @@ ingredients:
     is_staple: true
     density_g_per_ml: 0.92
     usda_hint: Oil, vegetable, soybean
+    shop_unit: bottle
+    yield: {qty: 1000, unit: ml}
   new_mexico_chile:
     name: new mexico chile
     synonyms: [dried new mexico chiles, new mexico red chile]
@@ -7374,6 +7732,8 @@ ingredients:
     flags: []
     aisle: frozen
     is_staple: false
+    shop_unit: pack
+    yield: {qty: 225, unit: g}
   nonfood_chemicals:
     name: non-food chemical
     synonyms: [ammonia, borax, powdered borax, lye, food-grade lye, baking ammonia, ammonium carbonate, rubbing alcohol, white glue, glue, liquid soap, dish detergent, detergent, liquid starch]
@@ -7397,6 +7757,8 @@ ingredients:
     aisle: pantry
     is_staple: false
     usda_hint: Noodles, egg, dry, enriched
+    shop_unit: pack
+    yield: {qty: 400, unit: g}
   nopales:
     name: nopales
     synonyms: [nopalitos, cactus paddles, nopal]
@@ -7426,6 +7788,8 @@ ingredients:
     aisle: spices
     is_staple: false
     density_g_per_ml: 0.5
+    shop_unit: jar
+    yield: {qty: 50, unit: ml}
   nutritional_yeast:
     name: nutritional yeast
     synonyms: [nooch, nutritional yeast flakes]
@@ -7462,6 +7826,8 @@ ingredients:
     aisle: pantry
     is_staple: false
     density_g_per_ml: 0.36
+    shop_unit: pack
+    yield: {qty: 500, unit: g}
   oaxaca_cheese:
     name: oaxaca cheese
     synonyms: [queso oaxaca, quesillo]
@@ -7515,6 +7881,8 @@ ingredients:
     is_staple: false
     density_g_per_ml: 0.91
     usda_hint: Oil, olive, salad or cooking
+    shop_unit: bottle
+    yield: {qty: 500, unit: ml}
   olives:
     name: olives
     synonyms: [black olives, ripe olives, pitted black olives, sliced black olives, kalamata olives, nicoise olives, gaeta olives, castelvetrano olives, pitted olives, mixed olives, chopped ripe olives, oil-cured olives, canned black olives, sliced olives, medium pitted ripe olives]
@@ -7523,6 +7891,8 @@ ingredients:
     aisle: pantry
     is_staple: false
     usda_hint: Olives, ripe, canned (small-extra large)
+    shop_unit: jar
+    yield: {qty: 200, unit: g}
   onion:
     name: onion
     synonyms: [medium onion, large onion, pyaz, pyaaz, kanda, 洋葱]
@@ -7532,6 +7902,7 @@ ingredients:
     is_staple: false
     each_g: 150
     usda_hint: Onions, raw
+    shop_unit: piece
   onion_powder:
     name: onion powder
     synonyms: [onion granules, granulated onion, onion powder seasoning]
@@ -7539,6 +7910,8 @@ ingredients:
     flags: []
     aisle: spices
     is_staple: false
+    shop_unit: jar
+    yield: {qty: 100, unit: ml}
   onion_salt:
     name: onion salt
     synonyms: []
@@ -7562,6 +7935,7 @@ ingredients:
     is_staple: false
     each_g: 140
     usda_hint: Oranges, raw, all commercial varieties
+    shop_unit: piece
   orange_bell_pepper:
     name: orange bell pepper
     synonyms: [orange pepper, orange capsicum]
@@ -7594,6 +7968,8 @@ ingredients:
     is_staple: false
     density_g_per_ml: 1.04
     usda_hint: Orange juice, raw
+    shop_unit: bottle
+    yield: {qty: 1000, unit: ml}
   orange_juice_concentrate:
     name: orange juice concentrate
     synonyms: [frozen orange juice concentrate, orange juice concentrate thawed, frozen oj concentrate]
@@ -7623,6 +7999,9 @@ ingredients:
     flags: []
     aisle: produce
     is_staple: false
+    buy_as: orange
+    shop_unit: piece
+    yield: {qty: 1, unit: tbsp}
   orecchiette:
     name: orecchiette
     synonyms: [cavatelli, strozzapreti, casarecce]
@@ -7638,6 +8017,8 @@ ingredients:
     flags: []
     aisle: produce
     is_staple: false
+    shop_unit: bunch
+    yield: {qty: 0.5, unit: cup}
   oreos:
     name: oreos
     synonyms: [oreo cookies, chocolate sandwich cookies, oreo cookie crumbs, crushed oreos, double stuf oreos]
@@ -7788,6 +8169,8 @@ ingredients:
     flags: []
     aisle: spices
     is_staple: false
+    shop_unit: jar
+    yield: {qty: 100, unit: ml}
   paraffin_wax:
     name: paraffin wax
     synonyms: [paraffin, gulf wax, canning wax, beeswax, food grade wax]
@@ -7804,6 +8187,8 @@ ingredients:
     is_staple: false
     usda_hint: Cheese, parmesan, grated
     hidden_animal: calf rennet (required by the DOP rules)
+    shop_unit: pack
+    yield: {qty: 200, unit: g}
   parsley:
     name: parsley
     synonyms: [fresh parsley, flat leaf parsley, flatleaf parsley, italian parsley, fresh italian parsley, curly parsley, parsley leaves, parsley sprigs, fresh flat-leaf parsley, chopped parsley, fresh parsley leaves, italian flat leaf parsley, continental parsley, parsley stalks, flat-leaf, 欧芹]
@@ -7812,6 +8197,8 @@ ingredients:
     aisle: produce
     is_staple: false
     usda_hint: Parsley, fresh
+    shop_unit: bunch
+    yield: {qty: 1, unit: cup}
   parsnip:
     name: parsnip
     synonyms: []
@@ -7872,6 +8259,7 @@ ingredients:
     flags: []
     aisle: produce
     is_staple: false
+    shop_unit: piece
   peanut_butter:
     name: peanut butter
     synonyms: [creamy peanut butter, crunchy peanut butter, chunky peanut butter, smooth peanut butter, natural peanut butter, reduced fat peanut butter, peanut butter creamy, jif, skippy, peanut paste]
@@ -7882,6 +8270,8 @@ ingredients:
     density_g_per_ml: 1.08
     usda_hint: Peanut butter, smooth style
     note: Peanut is a legume, flagged for allergy
+    shop_unit: jar
+    yield: {qty: 340, unit: g}
   peanut_butter_chips:
     name: peanut butter chips
     synonyms: [peanut butter morsels, reeses pieces]
@@ -7922,6 +8312,8 @@ ingredients:
     flags: [nuts]
     aisle: pantry
     is_staple: false
+    shop_unit: pack
+    yield: {qty: 200, unit: g}
   pear:
     name: pear
     synonyms: [conference pears, red pears]
@@ -7946,6 +8338,8 @@ ingredients:
     aisle: produce
     is_staple: false
     usda_hint: Peas, green, frozen, unprepared
+    shop_unit: pack
+    yield: {qty: 500, unit: g}
   pecans:
     name: pecans
     synonyms: [pecan halves, pecan pieces, chopped pecans, pecan nuts, ground pecans, candied pecans, pecan meal]
@@ -7953,6 +8347,8 @@ ingredients:
     flags: [nuts]
     aisle: pantry
     is_staple: false
+    shop_unit: pack
+    yield: {qty: 200, unit: g}
   pecorino_romano:
     name: pecorino romano
     synonyms: [pecorino, pecorino cheese, romano, romano cheese, pecorino romano cheese, grated romano, locatelli]
@@ -8116,6 +8512,7 @@ ingredients:
     flags: [gluten, dairy]
     aisle: bakery
     is_staple: false
+    shop_unit: piece
   pie_filling:
     name: pie filling
     synonyms: [cherry pie filling, apple pie filling, blueberry pie filling, peach pie filling, strawberry pie filling, lemon pie filling, pumpkin pie filling, canned pie filling, fruit pie filling, blackberry pie filling, raspberry pie filling, pie filling of choice, lemon pie filling mix]
@@ -8123,6 +8520,8 @@ ingredients:
     flags: []
     aisle: pantry
     is_staple: false
+    shop_unit: can
+    yield: {qty: 595, unit: g}
   pierogies:
     name: pierogies
     synonyms: [pierogi, perogies, frozen pierogies]
@@ -8159,6 +8558,8 @@ ingredients:
     flags: [nuts]
     aisle: pantry
     is_staple: false
+    shop_unit: pack
+    yield: {qty: 100, unit: g}
   pineapple:
     name: pineapple
     synonyms: [fresh pineapple, pineapple chunks, pineapple tidbits, crushed pineapple, canned pineapple, pineapple rings, pineapple slices, pineapple chunks in juice, crushed pineapple in juice, pineapple pieces, ananas, 菠萝]
@@ -8166,6 +8567,8 @@ ingredients:
     flags: []
     aisle: produce
     is_staple: false
+    shop_unit: can
+    yield: {qty: 400, unit: g}
   pineapple_juice:
     name: pineapple juice
     synonyms: [pineapple juice unsweetened, canned pineapple juice, pineapple juice reserved]
@@ -8201,6 +8604,8 @@ ingredients:
     flags: [nuts]
     aisle: pantry
     is_staple: false
+    shop_unit: pack
+    yield: {qty: 150, unit: g}
   pita_bread:
     name: pita bread
     synonyms: [pita, pita pockets, pitta bread, pitta, whole wheat pita bread, greek pita, flatbread, flat bread, lavash, lavash bread, naan, naan bread, garlic naan, roti, chapati, chapatti, paratha, kulcha, bhatura, tandoori roti]
@@ -8209,6 +8614,8 @@ ingredients:
     aisle: bakery
     is_staple: false
     parent: bread
+    shop_unit: pack
+    yield: {qty: 6, unit: piece}
   pizza_dough:
     name: pizza dough
     synonyms: [pizza base, pizza crust, pre-made pizza dough, refrigerated pizza dough, prepared pizza crust, pizza dough ball, boboli, store-bought pizza dough, pizza crust mix, frozen pizza dough]
@@ -8232,6 +8639,8 @@ ingredients:
     is_staple: false
     density_g_per_ml: 1.03
     usda_hint: Yogurt, plain, whole milk
+    shop_unit: pack
+    yield: {qty: 500, unit: g}
   plant_based_ground:
     name: plant based ground
     synonyms: [beyond meat, impossible burger, vegan mince, meatless crumbles, veggie crumbles, plant-based mince, quorn mince, soy crumbles, vegetarian ground beef substitute, meatless ground]
@@ -8385,6 +8794,7 @@ ingredients:
     aisle: meat
     is_staple: false
     usda_hint: Pork, fresh, raw
+    shop_unit: g
   pork_and_beans:
     name: pork and beans
     synonyms: [bushs baked beans, van camps pork and beans, pork n beans]
@@ -8418,6 +8828,7 @@ ingredients:
     aisle: meat
     is_staple: false
     parent: pork
+    shop_unit: piece
   pork_feet:
     name: pork feet
     synonyms: [pigs feet, trotters, pig trotters]
@@ -8482,6 +8893,7 @@ ingredients:
     aisle: meat
     is_staple: false
     parent: pork
+    shop_unit: g
   pork_stock:
     name: pork stock
     synonyms: [pork broth, ham stock, ham broth, tonkotsu broth]
@@ -8529,6 +8941,7 @@ ingredients:
     is_staple: false
     each_g: 213
     usda_hint: Potatoes, flesh and skin, raw
+    shop_unit: piece
   potato_chips:
     name: potato chips
     synonyms: [crisps, chips, kettle chips, crushed potato chips, lays, pringles, sour cream and onion chips, salt and vinegar crisps]
@@ -8575,6 +8988,8 @@ ingredients:
     is_staple: false
     density_g_per_ml: 0.5
     usda_hint: Sugars, powdered
+    shop_unit: pack
+    yield: {qty: 500, unit: g}
   praline:
     name: praline
     synonyms: [praline paste, nougat]
@@ -8648,6 +9063,8 @@ ingredients:
     flags: []
     aisle: pantry
     is_staple: false
+    shop_unit: pack
+    yield: {qty: 100, unit: g}
   puff_pastry:
     name: puff pastry
     synonyms: [puff pastry sheets, frozen puff pastry, ready-rolled puff pastry, all-butter puff pastry, rough puff pastry, vol-au-vent cases]
@@ -8655,6 +9072,8 @@ ingredients:
     flags: [gluten, dairy]
     aisle: frozen
     is_staple: false
+    shop_unit: pack
+    yield: {qty: 320, unit: g}
   puffed_rice:
     name: puffed rice
     synonyms: [murmura, kurmura, puffed wheat]
@@ -8794,6 +9213,8 @@ ingredients:
     flags: []
     aisle: produce
     is_staple: false
+    shop_unit: bunch
+    yield: {qty: 10, unit: piece}
   raisins:
     name: raisins
     synonyms: [golden raisins, sultanas, seedless raisins, dark raisins, white raisins, kishmish, thompson seedless raisins, raisins chopped]
@@ -8801,6 +9222,8 @@ ingredients:
     flags: []
     aisle: pantry
     is_staple: false
+    shop_unit: pack
+    yield: {qty: 250, unit: g}
   rambutan:
     name: rambutan
     synonyms: []
@@ -8851,6 +9274,8 @@ ingredients:
     flags: []
     aisle: produce
     is_staple: false
+    shop_unit: pack
+    yield: {qty: 125, unit: g}
   raspberry_liqueur:
     name: raspberry liqueur
     synonyms: [chambord, raspberry liquor, chambord raspberry liquor]
@@ -8885,6 +9310,7 @@ ingredients:
     parent: bell_pepper
     each_g: 120
     usda_hint: Peppers, sweet, red, raw
+    shop_unit: piece
   red_cabbage:
     name: red cabbage
     synonyms: [purple cabbage, red cabbage head]
@@ -8949,6 +9375,7 @@ ingredients:
     is_staple: false
     parent: onion
     each_g: 150
+    shop_unit: piece
   red_pepper_flakes:
     name: red pepper flakes
     synonyms: [crushed red pepper, crushed red pepper flakes, red chili flakes, chili flakes, chilli flakes, red chilli flakes, hot pepper flakes, crushed chilies, crushed chillies, dried chili flakes, pizza chili flakes, crushed red chili, chile flakes, red chile flakes, 辣椒面, 辣椒碎]
@@ -8956,6 +9383,8 @@ ingredients:
     flags: []
     aisle: spices
     is_staple: false
+    shop_unit: jar
+    yield: {qty: 50, unit: ml}
   red_potatoes:
     name: red potatoes
     synonyms: [red-skinned potatoes, red bliss potatoes]
@@ -8980,6 +9409,8 @@ ingredients:
     aisle: beverages
     is_staple: false
     note: Some wines are fined with isinglass, gelatin, egg or casein
+    shop_unit: bottle
+    yield: {qty: 750, unit: ml}
   red_wine_vinegar:
     name: red wine vinegar
     synonyms: [red vinegar, wine vinegar]
@@ -8988,6 +9419,8 @@ ingredients:
     aisle: pantry
     is_staple: false
     parent: vinegar
+    shop_unit: bottle
+    yield: {qty: 500, unit: ml}
   refried_beans:
     name: refried beans
     synonyms: [canned refried beans, vegetarian refried beans, fat-free refried beans, bean dip, frijoles refritos]
@@ -9003,6 +9436,8 @@ ingredients:
     flags: [gluten]
     aisle: dairy
     is_staple: false
+    shop_unit: can
+    yield: {qty: 8, unit: piece}
   relish:
     name: relish
     synonyms: [sweet relish, pickle relish, sweet pickle relish, dill relish, hot dog relish, corn relish, hamburger relish, chow chow, piccalilli]
@@ -9041,6 +9476,8 @@ ingredients:
     is_staple: false
     density_g_per_ml: 0.85
     usda_hint: Rice, white, long-grain, regular, raw, enriched
+    shop_unit: pack
+    yield: {qty: 1000, unit: g}
   rice_bran_oil:
     name: rice bran oil
     synonyms: []
@@ -9107,6 +9544,8 @@ ingredients:
     aisle: pantry
     is_staple: false
     parent: vinegar
+    shop_unit: bottle
+    yield: {qty: 300, unit: ml}
   ricotta:
     name: ricotta
     synonyms: [ricotta cheese, whole milk ricotta, part-skim ricotta, part skim ricotta cheese, fresh ricotta, low-fat ricotta cheese, milk ricotta cheese, whole-milk ricotta cheese, skim milk ricotta]
@@ -9115,6 +9554,8 @@ ingredients:
     aisle: dairy
     is_staple: false
     usda_hint: Cheese, ricotta, whole milk
+    shop_unit: pack
+    yield: {qty: 250, unit: g}
   ricotta_salata:
     name: ricotta salata
     synonyms: []
@@ -9154,6 +9595,8 @@ ingredients:
     aisle: pantry
     is_staple: false
     parent: red_bell_pepper
+    shop_unit: jar
+    yield: {qty: 300, unit: g}
   rock_sugar:
     name: rock sugar
     synonyms: [rock candy, 冰糖, rock sugar crystals]
@@ -9178,6 +9621,8 @@ ingredients:
     is_staple: false
     parent: oats
     note: Oats are often cross-contaminated with wheat
+    shop_unit: pack
+    yield: {qty: 500, unit: g}
   roma_tomato:
     name: roma tomato
     synonyms: [plum tomato, italian plum tomatoes, italian tomatoes, san marzano tomatoes, roma]
@@ -9187,6 +9632,7 @@ ingredients:
     is_staple: false
     parent: tomatoes
     each_g: 62
+    shop_unit: piece
   romaine_lettuce:
     name: romaine lettuce
     synonyms: [romaine, romaine hearts, romaine lettuce hearts, cos lettuce, cos, torn romaine lettuce, head romaine lettuce]
@@ -9246,6 +9692,8 @@ ingredients:
     flags: []
     aisle: produce
     is_staple: false
+    shop_unit: bunch
+    yield: {qty: 10, unit: sprig}
   rotini:
     name: rotini
     synonyms: [rotini pasta, tri-color rotini, spirals, rotelle]
@@ -9277,6 +9725,7 @@ ingredients:
     aisle: produce
     is_staple: false
     parent: potato
+    shop_unit: piece
   rutabaga:
     name: rutabaga
     synonyms: [swede]
@@ -9322,6 +9771,8 @@ ingredients:
     flags: []
     aisle: spices
     is_staple: false
+    shop_unit: jar
+    yield: {qty: 1, unit: tsp}
   sage:
     name: sage
     synonyms: [fresh sage, sage leaves, fresh sage leaves, sage sprigs]
@@ -9329,6 +9780,8 @@ ingredients:
     flags: []
     aisle: produce
     is_staple: false
+    shop_unit: bunch
+    yield: {qty: 20, unit: leaf}
   sago:
     name: sago
     synonyms: [sago pearls]
@@ -9367,6 +9820,7 @@ ingredients:
     is_staple: false
     parent: fish
     usda_hint: Fish, salmon, Atlantic, farmed, raw
+    shop_unit: g
   salsa:
     name: salsa
     synonyms: [chunky salsa, tomato salsa, salsa fresca, pico de gallo, jarred salsa, picante sauce, mild salsa, medium salsa, hot salsa, chipotle salsa, salsa roja, thick and chunky salsa, pace picante sauce, fresh salsa, restaurant-style salsa, ro-tel salsa]
@@ -9374,6 +9828,8 @@ ingredients:
     flags: []
     aisle: pantry
     is_staple: false
+    shop_unit: jar
+    yield: {qty: 450, unit: ml}
   salsa_verde:
     name: salsa verde
     synonyms: [green salsa, tomatillo salsa, salsa verde sauce, green chile salsa]
@@ -9397,6 +9853,8 @@ ingredients:
     is_staple: true
     density_g_per_ml: 1.2
     usda_hint: Salt, table
+    shop_unit: pack
+    yield: {qty: 1000, unit: g}
   salt_cod:
     name: salt cod
     synonyms: [bacalao, bacalhau, baccala, dried salt cod, salted cod]
@@ -9492,6 +9950,7 @@ ingredients:
     flags: [red_meat, explicit_meat]
     aisle: meat
     is_staple: false
+    shop_unit: piece
   savory:
     name: savory
     synonyms: [summer savory, winter savory, ground savory, fresh savory, dried savory]
@@ -9621,6 +10080,8 @@ ingredients:
     flags: []
     aisle: spices
     is_staple: false
+    shop_unit: jar
+    yield: {qty: 100, unit: ml}
   seasoning_blend:
     name: seasoning blend
     synonyms: [natures seasons, seasoning, all purpose seasoning, seasoning mix, mrs dash, mrs dash seasoning, salt-free seasoning, vegetable seasoning, herb seasoning, spice blend, spice mix, 调料]
@@ -9628,6 +10089,8 @@ ingredients:
     flags: []
     aisle: spices
     is_staple: false
+    shop_unit: jar
+    yield: {qty: 100, unit: ml}
   seaweed_snack:
     name: seaweed snack
     synonyms: []
@@ -9652,6 +10115,8 @@ ingredients:
     is_staple: false
     parent: all_purpose_flour
     density_g_per_ml: 0.53
+    shop_unit: pack
+    yield: {qty: 1000, unit: g}
   semisweet_chocolate:
     name: semisweet chocolate
     synonyms: [semi-sweet chocolate, semisweet baking chocolate, semi-sweet baking chocolate, sweet chocolate, german sweet chocolate, bakers chocolate semisweet, sweet baking chocolate]
@@ -9661,6 +10126,8 @@ ingredients:
     is_staple: false
     parent: chocolate
     note: May contain milk; check the label
+    shop_unit: pack
+    yield: {qty: 100, unit: g}
   semolina:
     name: semolina
     synonyms: [semolina flour, sooji, suji, rava, durum wheat semolina, fine semolina, coarse semolina, semolina rava, cream of wheat, farina, durum flour]
@@ -9690,6 +10157,8 @@ ingredients:
     flags: []
     aisle: pantry
     is_staple: false
+    shop_unit: jar
+    yield: {qty: 100, unit: ml}
   sev:
     name: sev
     synonyms: [nylon sev, namkeen, farsan, bhujia, aloo bhujia, boondi, khara boondi]
@@ -9713,6 +10182,7 @@ ingredients:
     aisle: produce
     is_staple: false
     each_g: 30
+    shop_unit: piece
   shaoxing_wine:
     name: shaoxing wine
     synonyms: [shaoxing rice wine, shao hsing wine, chinese rice wine, chinese cooking wine, shaoxing, huangjiu, hua tiao wine, 绍兴酒, 花雕酒, 黄酒]
@@ -9836,6 +10306,7 @@ ingredients:
     is_staple: false
     parent: shellfish
     usda_hint: Crustaceans, shrimp, raw
+    shop_unit: g
   shrimp_paste:
     name: shrimp paste
     synonyms: [belacan, terasi, kapi, bagoong, shrimp sauce]
@@ -9912,6 +10383,8 @@ ingredients:
     aisle: spices
     is_staple: false
     parent: paprika
+    shop_unit: jar
+    yield: {qty: 50, unit: ml}
   smoked_salmon:
     name: smoked salmon
     synonyms: [lox, gravlax, cold-smoked salmon, hot-smoked salmon, smoked salmon slices, nova lox]
@@ -10013,6 +10486,8 @@ ingredients:
     is_staple: false
     density_g_per_ml: 0.96
     usda_hint: Cream, sour, cultured
+    shop_unit: pack
+    yield: {qty: 300, unit: g}
   sourdough_bread:
     name: sourdough bread
     synonyms: [sourdough, sourdough loaf, sourdough boule, sourdough slices]
@@ -10052,6 +10527,8 @@ ingredients:
     density_g_per_ml: 1.15
     usda_hint: Soy sauce made from soy and wheat (shoyu)
     note: Brewed with wheat
+    shop_unit: bottle
+    yield: {qty: 250, unit: ml}
   soy_yogurt:
     name: soy yogurt
     synonyms: []
@@ -10081,6 +10558,8 @@ ingredients:
     aisle: pantry
     is_staple: false
     parent: pasta
+    shop_unit: pack
+    yield: {qty: 500, unit: g}
   spaghetti_squash:
     name: spaghetti squash
     synonyms: []
@@ -10156,6 +10635,8 @@ ingredients:
     aisle: produce
     is_staple: false
     usda_hint: Spinach, raw
+    shop_unit: pack
+    yield: {qty: 250, unit: g}
   split_peas:
     name: split peas
     synonyms: [green split peas, yellow split peas, dried split peas]
@@ -10223,6 +10704,8 @@ ingredients:
     flags: []
     aisle: spices
     is_staple: false
+    shop_unit: jar
+    yield: {qty: 20, unit: piece}
   star_fruit:
     name: star fruit
     synonyms: [starfruit, carambola]
@@ -10238,6 +10721,7 @@ ingredients:
     aisle: meat
     is_staple: false
     parent: beef
+    shop_unit: piece
   steak_sauce:
     name: steak sauce
     synonyms: [a1 steak sauce, a.1. steak sauce, a1 sauce, heinz 57, hp sauce]
@@ -10315,6 +10799,8 @@ ingredients:
     aisle: produce
     is_staple: false
     usda_hint: Strawberries, raw
+    shop_unit: pack
+    yield: {qty: 400, unit: g}
   string_cheese:
     name: string cheese
     synonyms: [mozzarella string cheese]
@@ -10363,6 +10849,8 @@ ingredients:
     is_staple: false
     density_g_per_ml: 0.85
     usda_hint: Sugars, granulated
+    shop_unit: pack
+    yield: {qty: 1000, unit: g}
   sugar_substitute:
     name: sugar substitute
     synonyms: [sugar twin, splenda, splenda sugar substitute, granular no-calorie sucralose sweetener, sucralose, artificial sweetener, equal, sweet n low, erythritol, monk fruit sweetener, xylitol, swerve, sweetener, granulated sweetener, sugar replacement, liquid sweetener, splenda granular, sugar-free sweetener]
@@ -10408,6 +10896,8 @@ ingredients:
     is_staple: false
     parent: neutral_oil
     density_g_per_ml: 0.92
+    shop_unit: bottle
+    yield: {qty: 1000, unit: ml}
   sunflower_seed_butter:
     name: sunflower seed butter
     synonyms: [sunbutter, sunflower butter]
@@ -10431,6 +10921,8 @@ ingredients:
     is_staple: false
     parent: sugar
     density_g_per_ml: 0.85
+    shop_unit: pack
+    yield: {qty: 500, unit: g}
   sushi_rice:
     name: sushi rice
     synonyms: [japanese rice, short-grain rice, short grain white rice, calrose rice, japanese short-grain rice, cooked sushi rice]
@@ -10478,6 +10970,7 @@ ingredients:
     is_staple: false
     each_g: 130
     usda_hint: Sweet potato, raw, unprepared
+    shop_unit: piece
   sweet_vermouth:
     name: sweet vermouth
     synonyms: [red vermouth, rosso vermouth]
@@ -10508,6 +11001,8 @@ ingredients:
     is_staple: false
     density_g_per_ml: 1.3
     usda_hint: Milk, canned, condensed, sweetened
+    shop_unit: can
+    yield: {qty: 397, unit: g}
   swiss_chard:
     name: swiss chard
     synonyms: [chard, rainbow chard, red chard, silverbeet, silver beet, swiss chard leaves, beet greens]
@@ -10523,6 +11018,8 @@ ingredients:
     aisle: dairy
     is_staple: false
     note: Rennet type varies by brand
+    shop_unit: pack
+    yield: {qty: 200, unit: g}
   swordfish:
     name: swordfish
     synonyms: [swordfish steaks]
@@ -10545,6 +11042,8 @@ ingredients:
     flags: []
     aisle: spices
     is_staple: false
+    shop_unit: pack
+    yield: {qty: 2, unit: tbsp}
   taco_shells:
     name: taco shells
     synonyms: [hard taco shells, crispy taco shells, tostada shells, tostadas]
@@ -10568,6 +11067,8 @@ ingredients:
     aisle: pantry
     is_staple: false
     note: Sesame is a major allergen
+    shop_unit: jar
+    yield: {qty: 300, unit: ml}
   tajin:
     name: tajin
     synonyms: [tajin seasoning, chile lime seasoning, chili lime seasoning]
@@ -10662,6 +11163,8 @@ ingredients:
     flags: []
     aisle: produce
     is_staple: false
+    shop_unit: bunch
+    yield: {qty: 0.5, unit: cup}
   tarragon_vinegar:
     name: tarragon vinegar
     synonyms: [herb vinegar, raspberry vinegar, fruit vinegar]
@@ -10763,6 +11266,8 @@ ingredients:
     flags: []
     aisle: produce
     is_staple: false
+    shop_unit: bunch
+    yield: {qty: 20, unit: sprig}
   tilapia:
     name: tilapia
     synonyms: [tilapia fillets]
@@ -10780,6 +11285,8 @@ ingredients:
     is_staple: false
     density_g_per_ml: 0.92
     usda_hint: Oil, sesame, salad or cooking
+    shop_unit: bottle
+    yield: {qty: 250, unit: ml}
   toffee_bits:
     name: toffee bits
     synonyms: [heath bits, heath bars, english toffee bits, toffee, skor bars, skor, chocolate covered english toffee bar, toffee pieces, heath toffee bits]
@@ -10810,6 +11317,8 @@ ingredients:
     aisle: pantry
     is_staple: false
     density_g_per_ml: 1.1
+    shop_unit: can
+    yield: {qty: 170, unit: g}
   tomato_puree:
     name: tomato puree
     synonyms: [passata, tomato passata, strained tomatoes, sieved tomatoes, pureed tomatoes, crushed tomato puree, tomato pulp, puréed italian plum tomatoes]
@@ -10818,6 +11327,8 @@ ingredients:
     aisle: pantry
     is_staple: false
     density_g_per_ml: 1.04
+    shop_unit: pack
+    yield: {qty: 200, unit: g}
   tomato_sauce:
     name: tomato sauce
     synonyms: [canned tomato sauce, tomato sauce canned, hunts tomato sauce, plain tomato sauce, no-salt-added tomato sauce, tomato sauce low sodium, 8 oz tomato sauce]
@@ -10826,6 +11337,8 @@ ingredients:
     aisle: pantry
     is_staple: false
     density_g_per_ml: 1.03
+    shop_unit: can
+    yield: {qty: 425, unit: g}
   tomato_soup:
     name: tomato soup
     synonyms: [condensed tomato soup, cream of tomato soup, campbells tomato soup]
@@ -10842,6 +11355,7 @@ ingredients:
     is_staple: false
     each_g: 120
     usda_hint: Tomatoes, red, ripe, raw, year round average
+    shop_unit: piece
   tonic_water:
     name: tonic water
     synonyms: [tonic, indian tonic water]
@@ -10879,6 +11393,8 @@ ingredients:
     flags: []
     aisle: pantry
     is_staple: false
+    shop_unit: pack
+    yield: {qty: 300, unit: g}
   trail_mix:
     name: trail mix
     synonyms: [party mix, chex mix, bombay mix, chivda]
@@ -11010,6 +11526,8 @@ ingredients:
     flags: []
     aisle: spices
     is_staple: false
+    shop_unit: jar
+    yield: {qty: 100, unit: ml}
   turnip:
     name: turnip
     synonyms: [shalgam, white turnips, baby turnips]
@@ -11098,6 +11616,8 @@ ingredients:
     flags: []
     aisle: pantry
     is_staple: false
+    shop_unit: pack
+    yield: {qty: 2, unit: piece}
   vanilla_bean_paste:
     name: vanilla bean paste
     synonyms: [vanilla paste]
@@ -11106,6 +11626,8 @@ ingredients:
     aisle: pantry
     is_staple: false
     note: Usually contains vanilla extract
+    shop_unit: jar
+    yield: {qty: 60, unit: ml}
   vanilla_extract:
     name: vanilla extract
     synonyms: [vanilla, pure vanilla extract, vanilla essence, vanilla flavoring, vanilla flavouring, pure vanilla, imitation vanilla, clear vanilla, mexican vanilla, vanilla flavor, vanilla extract pure, bourbon vanilla extract, vanilla liquid, 香草精]
@@ -11114,6 +11636,8 @@ ingredients:
     aisle: pantry
     is_staple: false
     density_g_per_ml: 0.88
+    shop_unit: bottle
+    yield: {qty: 60, unit: ml}
   vanilla_powder:
     name: vanilla powder
     synonyms: []
@@ -11244,6 +11768,8 @@ ingredients:
     parent: neutral_oil
     density_g_per_ml: 0.92
     usda_hint: Oil, soybean, salad or cooking
+    shop_unit: bottle
+    yield: {qty: 1000, unit: ml}
   vegetable_shortening:
     name: vegetable shortening
     synonyms: [butter flavor crisco, butter flavored crisco, crisco butter flavor shortening, solid shortening, shortening, crisco, solid vegetable shortening, vegetable fat, trex, white vegetable shortening, butter flavored shortening, butter flavor shortening, crisco shortening]
@@ -11253,6 +11779,8 @@ ingredients:
     is_staple: false
     density_g_per_ml: 0.87
     usda_hint: Shortening, vegetable
+    shop_unit: pack
+    yield: {qty: 450, unit: g}
   vegetable_soup:
     name: vegetable soup
     synonyms: [condensed vegetable soup, minestrone, vegetable soup mix, vegetarian vegetable soup]
@@ -11269,6 +11797,8 @@ ingredients:
     is_staple: false
     density_g_per_ml: 1.0
     usda_hint: Soup, vegetable broth, ready to serve
+    shop_unit: pack
+    yield: {qty: 1000, unit: ml}
   vegetable_suet:
     name: vegetable suet
     synonyms: [vegetarian suet, veggie suet]
@@ -11342,6 +11872,8 @@ ingredients:
     flags: []
     aisle: pantry
     is_staple: false
+    shop_unit: bottle
+    yield: {qty: 250, unit: ml}
   vinegar:
     name: vinegar
     synonyms: [white vinegar, distilled vinegar, plain vinegar, spirit vinegar, table vinegar, cane vinegar, coconut vinegar, 白醋, 醋]
@@ -11350,6 +11882,8 @@ ingredients:
     aisle: pantry
     is_staple: false
     density_g_per_ml: 1.01
+    shop_unit: bottle
+    yield: {qty: 500, unit: ml}
   vital_wheat_gluten:
     name: vital wheat gluten
     synonyms: [wheat gluten, gluten flour]
@@ -11364,6 +11898,8 @@ ingredients:
     flags: [alcohol]
     aisle: beverages
     is_staple: false
+    shop_unit: bottle
+    yield: {qty: 700, unit: ml}
   wafer_cones:
     name: wafer cones
     synonyms: [ice cream cones, sugar cones, waffle cones, wafer cups]
@@ -11400,6 +11936,8 @@ ingredients:
     flags: [nuts]
     aisle: pantry
     is_staple: false
+    shop_unit: pack
+    yield: {qty: 200, unit: g}
   wasabi:
     name: wasabi
     synonyms: [wasabi paste, wasabi powder]
@@ -11423,6 +11961,8 @@ ingredients:
     flags: []
     aisle: international
     is_staple: false
+    shop_unit: can
+    yield: {qty: 225, unit: g}
   watercress:
     name: watercress
     synonyms: [cress, land cress, mustard cress]
@@ -11512,6 +12052,8 @@ ingredients:
     aisle: pantry
     is_staple: false
     parent: chocolate
+    shop_unit: pack
+    yield: {qty: 100, unit: g}
   white_fish:
     name: white fish
     synonyms: [whitefish, firm white fish fillets, flaky white fish, john dory, orange roughy, bream, sea bream, rockfish, bhetki, tilefish, cobia, halibut fillets]
@@ -11551,6 +12093,7 @@ ingredients:
     aisle: produce
     is_staple: false
     parent: onion
+    shop_unit: piece
   white_peach:
     name: white peach
     synonyms: [donut peaches, saturn peaches, flat peaches]
@@ -11568,6 +12111,8 @@ ingredients:
     is_staple: false
     density_g_per_ml: 0.5
     usda_hint: Spices, pepper, white
+    shop_unit: jar
+    yield: {qty: 50, unit: ml}
   white_rum:
     name: white rum
     synonyms: [light rum, silver rum, bacardi, cachaca, rum light]
@@ -11591,6 +12136,8 @@ ingredients:
     aisle: pantry
     is_staple: false
     parent: vinegar
+    shop_unit: bottle
+    yield: {qty: 500, unit: ml}
   whole_grain_mustard:
     name: whole grain mustard
     synonyms: [wholegrain mustard, grainy mustard, coarse grain mustard, seeded mustard, stone ground mustard, moutarde a l ancienne, grain mustard]
@@ -11607,6 +12154,8 @@ ingredients:
     aisle: pantry
     is_staple: false
     density_g_per_ml: 0.51
+    shop_unit: pack
+    yield: {qty: 1000, unit: g}
   wild_boar:
     name: wild boar
     synonyms: [boar]
@@ -11660,6 +12209,8 @@ ingredients:
     is_staple: false
     hidden_animal: anchovies
     note: UK recipe uses malt vinegar; US Lea and Perrins is labeled gluten free
+    shop_unit: bottle
+    yield: {qty: 150, unit: ml}
   xanthan_gum:
     name: xanthan gum
     synonyms: []
@@ -11715,6 +12266,7 @@ ingredients:
     aisle: produce
     is_staple: false
     parent: onion
+    shop_unit: piece
   yellow_squash:
     name: yellow squash
     synonyms: [yellow summer squash, crookneck squash, summer squash, pattypan squash, yellow zucchini]
@@ -11790,3 +12342,4 @@ ingredients:
     is_staple: false
     each_g: 200
     usda_hint: Squash, summer, zucchini, includes skin, raw
+    shop_unit: piece

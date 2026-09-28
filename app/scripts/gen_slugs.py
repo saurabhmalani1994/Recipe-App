@@ -27,12 +27,21 @@ def main() -> int:
 
     out = []
     for slug, rec in sorted(ingredients.items()):
-        out.append({
+        item = {
             'slug': slug,
             'name': rec.get('name', slug.replace('_', ' ')),
             'synonyms': list(rec.get('synonyms') or []),
             'aisle': rec.get('aisle', 'other'),
-        })
+        }
+        # Purchase fields (S7c), only when the taxonomy has them: what the grocery list rounds
+        # up to ("1 head", "1 bunch", "2 lemons").
+        if rec.get('shop_unit'):
+            item['shopUnit'] = rec['shop_unit']
+        if rec.get('yield'):
+            item['yield'] = {'qty': rec['yield']['qty'], 'unit': rec['yield']['unit']}
+        if rec.get('buy_as'):
+            item['buyAs'] = rec['buy_as']
+        out.append(item)
 
     os.makedirs(os.path.dirname(OUT_PATH), exist_ok=True)
     with open(OUT_PATH, 'w', encoding='utf-8') as fh:

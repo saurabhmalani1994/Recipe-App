@@ -712,5 +712,34 @@ button.chip[aria-pressed='true'] {
 .shopping-item__amount {
   font-size: 0.85rem;
   color: var(--color-text-muted);
-  white-space: nowrap;
+  text-align: right;
+  max-width: 55%;
+  overflow-wrap: anywhere;
+}
+
+/* S7c: the line (checkbox + name + amount) and its "n recipes" tap target side by side. */
+.shopping-item__row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.shopping-item__row .shopping-item__label {
+  flex: 1;
+  min-width: 0;
+}
+
+.shopping-item__sources-toggle {
+  flex-shrink: 0;
+  min-height: 44px;
+  padding: 0 10px;
+  font-size: 0.8rem;
+}
+
+.shopping-item__sources {
+  margin: 0 0 8px 34px;
+  padding: 0;
+  list-style: none;
+  font-size: 0.85rem;
+  color: var(--color-text-muted);
 }

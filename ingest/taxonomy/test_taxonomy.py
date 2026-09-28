@@ -104,3 +104,89 @@ def test_normalization_is_shared_and_forgiving():
     assert norm_name('Confectioners’ Sugar') == norm_name('confectioners sugar')
     assert norm_name('jalepenos') == norm_name('jalapeno')
     assert norm_name('garlic pwdr') == norm_name('garlic powder')
+
+
+# --- purchase fields (S7c: the shoppable grocery list) ---------------------------------------
+
+def _base(**extra):
+    rec = {'name': 'x', 'synonyms': [], 'category': 'fruit', 'aisle': 'produce', 'flags': [],
+           'is_staple': False}
+    rec.update(extra)
+    return rec
+
+
+def _purchase_errors(ings):
+    return [e for e in T.validate(ings, full=False)
+            if 'shop_unit' in e or 'buy_as' in e or 'yield' in e]
+
+
+@pytest.mark.parametrize('slug,shop,yld,buy_as', [
+    ('lemon_juice', 'piece', {'qty': 45, 'unit': 'ml'}, 'lemon'),
+    ('garlic', 'head', {'qty': 10, 'unit': 'clove'}, None),
+    ('egg_yolk', 'pack', {'qty': 12, 'unit': 'piece'}, 'egg'),
+    ('cilantro', 'bunch', {'qty': 1, 'unit': 'cup'}, None),
+    ('soy_sauce', 'bottle', {'qty': 250, 'unit': 'ml'}, None),
+    ('carrot', 'piece', None, None),
+])
+def test_brief_purchase_examples(slug, shop, yld, buy_as):
+    rec = ING[slug]
+    assert rec['shop_unit'] == shop
+    assert rec.get('yield') == yld
+    assert rec.get('buy_as') == buy_as
+
+
+def test_purchase_fields_cover_the_frequent_slugs():
+    with_shop = [s for s, r in ING.items() if r.get('shop_unit')]
+    assert len(with_shop) >= 290
+    for s in with_shop:
+        assert ING[s]['shop_unit'] in T.SHOP_UNITS
+
+
+def test_buy_as_targets_share_the_shop_unit():
+    for slug, rec in ING.items():
+        if 'buy_as' in rec:
+            assert ING[rec['buy_as']]['shop_unit'] == rec['shop_unit'], slug
+
+
+@pytest.mark.parametrize('rec,expect', [
+    (_base(shop_unit='crate'), "unknown shop_unit 'crate'"),
+    (_base(shop_unit='bunch'), "shop_unit 'bunch' needs a yield"),
+    (_base(shop_unit='g', **{'yield': {'qty': 1, 'unit': 'g'}}), 'a g shop_unit takes no yield'),
+    (_base(**{'yield': {'qty': 1, 'unit': 'g'}}), 'buy_as/yield need a shop_unit'),
+    (_base(shop_unit='piece', **{'yield': {'qty': 0, 'unit': 'ml'}}),
+     'yield qty must be a positive number'),
+    (_base(shop_unit='piece', **{'yield': {'qty': 1, 'unit': 'furlong'}}),
+     "unknown yield unit 'furlong'"),
+    (_base(shop_unit='piece', **{'yield': 45}), 'yield must be {qty, unit}'),
+    (_base(shop_unit='piece', buy_as='nope', **{'yield': {'qty': 1, 'unit': 'ml'}}),
+     "unknown buy_as 'nope'"),
+    (_base(shop_unit='piece', buy_as='lemon'), 'buy_as needs a yield'),
+    (_base(shop_unit='bunch', buy_as='lemon', **{'yield': {'qty': 1, 'unit': 'ml'}}),
+     "differs from buy_as 'lemon'"),
+])
+def test_purchase_field_errors(rec, expect):
+    ings = {'lemon': _base(shop_unit='piece'), 'thing': rec}
+    errors = _purchase_errors(ings)
+    assert any(expect in e for e in errors), errors
+
+
+def test_buy_as_is_one_hop():
+    ings = {
+        'citrus': _base(shop_unit='piece'),
+        'lemon': _base(shop_unit='piece', buy_as='citrus',
+                       **{'yield': {'qty': 1, 'unit': 'piece'}}),
+        'lemon_juice': _base(shop_unit='piece', buy_as='lemon',
+                             **{'yield': {'qty': 45, 'unit': 'ml'}}),
+    }
+    assert any('is itself bought as something else' in e for e in _purchase_errors(ings))
+
+
+def test_a_valid_purchase_record_has_no_errors():
+    ings = {
+        'lemon': _base(shop_unit='piece'),
+        'lemon_juice': _base(shop_unit='piece', buy_as='lemon',
+                             **{'yield': {'qty': 45, 'unit': 'ml'}}),
+        'garlic': _base(shop_unit='head', **{'yield': {'qty': 10, 'unit': 'clove'}}),
+        'beef': _base(shop_unit='g'),
+    }
+    assert _purchase_errors(ings) == []
