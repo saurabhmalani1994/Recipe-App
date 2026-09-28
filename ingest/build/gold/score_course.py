@@ -13,6 +13,13 @@ tagger was frozen, and scored once.
 Scored once each: holdout 42/50 = 84.0% (before the trigram and protein fixes); blind
 41/50 = 82.0% (frozen tagger). The bar applies to course_gold.jsonl only.
 
+course_blind2.jsonl (brief S10b #2) is a second, later blind set: 60 recipes drawn straight
+from the built S10 corpus (draw_course_blind2.py; a different pool from the 150+50 above, which
+came from the pre-build 5k sample), labelled after the S10b modifier rules (summer/spring
+rolls, dumplings, "breakfast X", jello/pudding salads) were frozen. Also scored once, and this
+one is the one the S10b bar (>= 85%) is checked against -- --blind still reports course_blind.jsonl
+(the S9a one) for comparison, unchanged.
+
 Bar, written before the first run (brief S9a #2): accuracy >= 85% on course_gold.jsonl.
 
 Labelling conventions (one course per recipe; the first rule that fits wins):
@@ -51,6 +58,7 @@ if _ROOT not in sys.path:
 GOLD = os.path.join(HERE, 'course_gold.jsonl')
 HOLDOUT = os.path.join(HERE, 'course_holdout.jsonl')
 BLIND = os.path.join(HERE, 'course_blind.jsonl')
+BLIND2 = os.path.join(HERE, 'course_blind2.jsonl')
 BAR = 0.85
 
 
@@ -78,12 +86,14 @@ def main(argv=None):
     ap = argparse.ArgumentParser()
     ap.add_argument('--holdout', action='store_true')
     ap.add_argument('--blind', action='store_true')
+    ap.add_argument('--blind2', action='store_true')
     ap.add_argument('--misses', action='store_true')
     args = ap.parse_args(argv)
-    rows = load(BLIND if args.blind else HOLDOUT if args.holdout else GOLD)
+    path = BLIND2 if args.blind2 else BLIND if args.blind else HOLDOUT if args.holdout else GOLD
+    rows = load(path)
     hits, misses, _ = score(rows)
     acc = hits / len(rows)
-    name = 'blind' if args.blind else 'holdout' if args.holdout else 'gold'
+    name = 'blind2' if args.blind2 else 'blind' if args.blind else 'holdout' if args.holdout else 'gold'
     if args.misses:
         for n, title, want, got in misses:
             print(f'  [{n}] {title!r}: want {want}, got {got}')
