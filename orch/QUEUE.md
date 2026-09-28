@@ -22,7 +22,7 @@ S9c parser: 'cans tuna packed in water' resolves to water | ingest | fold into n
 S6b Cook fixes: flaky diet persistence, equipment list drift, readability, ranking floor | app | DONE merged | sonnet | orch/briefs/S6b-cook-fixes.md | v0.1
 S7c shoppable grocery list (buy_as, shop units, no-qty items stay on list) | ingest taxonomy + app | DONE merged | opus | orch/briefs/S7c-shoppable-list.md | v0.2
 S10 rebuild after S8: apply R11 (no foodcom), S3b subs, regenerate fixture.db, rerun app tests | ingest | after S8 | sonnet | - | v0.2
-S13 TS ingredient parser port + My Recipes parsed items | app | RUNNING | opus | orch/briefs/S13-ts-parser.md | v0.2
+S13 TS ingredient parser port + My Recipes parsed items | app | DONE merged | opus | orch/briefs/S13-ts-parser.md | v0.2
 S11 home page 4 rows + corpus favorites | app | RUNNING | sonnet | orch/briefs/S11-home.md | v0.2
 S14 nutrition (USDA FDC) | ingest | RUNNING | sonnet | orch/briefs/S14-nutrition.md | v0.2
-S12 import from URL (schema.org) | app | after S13 | sonnet | - | v0.2
+S12 import from URL + My Recipes in Cook | app | RUNNING | sonnet | orch/briefs/S12-import-url.md | v0.2

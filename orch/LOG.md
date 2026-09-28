@@ -20,3 +20,4 @@
 - 2026-09-28: S7 merged (verified 85/26). The list screenshot shows an unshoppable list, so S7c briefed (opus).
 - 2026-09-28: S7c merged (verified). R11 drops foodcom. S10 rebuild queued after S8.
 - 2026-09-28: Demo 1 published as a private artifact https://claude.ai/artifact/FH5WscMtqy8de1y7ogSfxR (web build, fixture.db renamed corpus-db.bin.wasm for serving).
+- 2026-09-28: S13 merged (verified). S12 briefed (import URL + My Recipes in Cook).
