@@ -1,12 +1,17 @@
 """Score the course tagger (ingest/build/course.py) against the hand-labelled gold set.
 
-Run: python3 ingest/build/gold/score_course.py [--holdout] [--misses]
+Run: python3 ingest/build/gold/score_course.py [--holdout | --blind] [--misses]
 
 course_gold.jsonl holds 100 raw recipes and course_holdout.jsonl 50 more, drawn by
 draw_course_gold.py (seed 9) from the 5k build sample after the build's drops. Both were
 labelled by reading each recipe (title, source category, ingredients, steps) before the tagger
 was written. The tagger is tuned on course_gold.jsonl only; the holdout is scored once at the
-end as an estimate for unseen recipes.
+end as an estimate for unseen recipes. The holdout's titles were seen while the word lists
+were written, so course_blind.jsonl (50 more, seed 10) was drawn and labelled only after the
+tagger was frozen, and scored once.
+
+Scored once each: holdout 42/50 = 84.0% (before the trigram and protein fixes); blind
+41/50 = 82.0% (frozen tagger). The bar applies to course_gold.jsonl only.
 
 Bar, written before the first run (brief S9a #2): accuracy >= 85% on course_gold.jsonl.
 
@@ -45,6 +50,7 @@ if _ROOT not in sys.path:
 
 GOLD = os.path.join(HERE, 'course_gold.jsonl')
 HOLDOUT = os.path.join(HERE, 'course_holdout.jsonl')
+BLIND = os.path.join(HERE, 'course_blind.jsonl')
 BAR = 0.85
 
 
@@ -71,19 +77,20 @@ def score(rows):
 def main(argv=None):
     ap = argparse.ArgumentParser()
     ap.add_argument('--holdout', action='store_true')
+    ap.add_argument('--blind', action='store_true')
     ap.add_argument('--misses', action='store_true')
     args = ap.parse_args(argv)
-    rows = load(HOLDOUT if args.holdout else GOLD)
+    rows = load(BLIND if args.blind else HOLDOUT if args.holdout else GOLD)
     hits, misses, _ = score(rows)
     acc = hits / len(rows)
-    name = 'holdout' if args.holdout else 'gold'
+    name = 'blind' if args.blind else 'holdout' if args.holdout else 'gold'
     if args.misses:
         for n, title, want, got in misses:
             print(f'  [{n}] {title!r}: want {want}, got {got}')
     ok = acc >= BAR
     print(f'course {name}: {hits}/{len(rows)} = {acc:.1%} (bar {BAR:.0%}) '
           f'{"PASSED" if ok else "MISSED"}')
-    return 0 if (ok or args.holdout) else 1
+    return 0 if (ok or args.holdout or args.blind) else 1
 
 
 if __name__ == '__main__':

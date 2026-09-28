@@ -7,6 +7,10 @@ Pool: the SAMPLE_QUOTAS selection (ingest/build/sample.py) minus the recipes the
 reaches corpus.db. 150 are drawn with seed 9 and written in draw order: the first 100 become
 course_gold.jsonl (the bar) and the last 50 course_holdout.jsonl. Labels are added by hand,
 before the tagger exists; this script only prints the raw records.
+
+--blind draws 50 more (seed 10) from the same pool minus the 150, for course_blind.jsonl: labelled
+after the tagger was frozen and scored once, since the holdout's titles were seen while the
+tagger's word lists were written.
 """
 import json
 import os
@@ -22,6 +26,8 @@ from ingest.build.curate import drop_reason  # noqa: E402
 
 SEED = 9
 N = 150
+BLIND_SEED = 10
+BLIND_N = 50
 
 
 def main():
@@ -39,10 +45,16 @@ def main():
                 continue
             if drop_reason(raw) is None:
                 pool.append(raw)
-    rng = random.Random(SEED)
-    for raw in rng.sample(pool, N):
+    first = random.Random(SEED).sample(pool, N)
+    if '--blind' in sys.argv[1:]:
+        seen = {r['id'] for r in first}
+        rest = [r for r in pool if r['id'] not in seen]
+        drawn = random.Random(BLIND_SEED).sample(rest, BLIND_N)
+    else:
+        drawn = first
+    for raw in drawn:
         print(json.dumps(raw, ensure_ascii=False))
-    print(f'pool {len(pool)}, drew {N}', file=sys.stderr)
+    print(f'pool {len(pool)}, drew {len(drawn)}', file=sys.stderr)
 
 
 if __name__ == '__main__':
