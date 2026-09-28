@@ -1,5 +1,5 @@
 """Generic, resumable sitemap + schema.org/Recipe JSON-LD fetcher for the cuisine-specialist
-sites in `sites.yaml` (slice S17, D19, R16).
+sites in `sites.yaml` (slice S17, D19, R16; browser mode + Persian/Singaporean sites: S17b).
 
 Unlike the single-source fetchers (`fetch_bbcgoodfood.py`, `fetch_foodwishes.py`), this one
 fetcher drives every site in the registry: each site only needs an entry in `sites.yaml`
@@ -13,10 +13,28 @@ Yoast sitemap index correctly lists `post-sitemap.xml`, but that file itself com
 200 with a 0-byte body from a stale CDN cache -- see ingest/sources_cuisine.md), and
 (3) apply R16 (drop anything that reads as Israeli cuisine) per record, counted.
 
-Politeness, per the brief: 1 request/second per site (a fresh `RateLimiter` per site, so
-running several sites back to back does not compound into faster-than-1rps against any one
-of them), a 20s timeout, and robots.txt is checked before every fetch (not just the root --
-a site that allows `/` but disallows one path is still respected on that path).
+Politeness, per the brief: 1 request/second per site in plain mode (a fresh `RateLimiter` per
+site, so running several sites back to back does not compound into faster-than-1rps against
+any one of them), 1 page per 2 seconds in browser mode (S17b), a 20s timeout, and robots.txt
+is checked before every fetch (not just the root -- a site that allows `/` but disallows one
+path is still respected on that path).
+
+Browser mode (S17b, `fetch: browser` in sites.yaml): some sites WAF-block every plain
+`requests` GET (403) regardless of User-Agent (seen on justonecookbook.com), so those pages
+are instead rendered with a headless Chromium via Playwright (one browser context per site,
+reused for every page of that site's crawl -- a fresh context per page would look more like a
+bot, not less). `BrowserFetcher` returns the same shape `fetch()` does (an object with
+`.status_code` and `.text`) so `discover_page_urls`/`crawl_site` don't need two code paths:
+they take a `fetch_fn` and use whichever one the site's `fetch:` setting selects. robots.txt
+itself is still read with the plain `fetch()` (every browser-mode site's robots.txt has been
+reachable without the browser; see ingest/sources_cuisine.md). Playwright is launched against
+the prebuilt Chromium at `/opt/pw-browsers/chromium` (browsers are never installed at
+runtime), with `--ignore-certificate-errors` because this sandbox's outbound proxy terminates
+TLS with a CA `requests`/`curl` are separately configured to trust but Chromium is not; this
+does not affect the WAF/bot-challenge behavior a site itself returns, only whether the proxy's
+own certificate validates. A real interactive bot challenge (Cloudflare/PerimeterX "checking
+your browser", a CAPTCHA) is left alone, per the brief: `looks_like_bot_challenge` flags it so
+the site can be dropped with reason "bot challenge" rather than the crawler trying to solve it.
 
 Output: raw_recipe JSONL at .../raw/<site id>/recipes.jsonl (schema/raw_recipe.md), same
 sidecar/resume convention as every other fetcher (`common.SourceWriter`).
@@ -27,8 +45,9 @@ import argparse
 import json
 import re
 import sys
+from dataclasses import dataclass
 from pathlib import Path
-from typing import Any
+from typing import Any, Callable
 from urllib import robotparser
 from urllib.parse import urljoin, urlparse
 
@@ -44,7 +63,19 @@ USER_AGENT = (
 )
 TIMEOUT = 20
 PER_SECOND = 1.0
+BROWSER_PER_SECOND = 0.5  # 1 page per 2 seconds, per the brief
+BROWSER_EXECUTABLE = "/opt/pw-browsers/chromium"
 DEFAULT_CAP = 300
+
+_BOT_CHALLENGE_MARKERS = (
+    "captcha",
+    "are you human",
+    "cf-challenge",
+    "checking your browser",
+    "just a moment",
+    "verify you are human",
+    "press and hold",
+)
 
 _LOC_RE = re.compile(r"<loc>\s*([^<\s]+)\s*</loc>")
 _LD_JSON_RE = re.compile(r'<script[^>]*type="application/ld\+json"[^>]*>(.*?)</script>', re.S)
@@ -75,6 +106,89 @@ def fetch(url: str, timeout: int = TIMEOUT) -> requests.Response | None:
         return None
 
 
+@dataclass
+class SimpleResponse:
+    """The subset of `requests.Response` the rest of this module reads, so a browser-backed
+    fetch can stand in for `fetch()` without a second code path in the crawl loop."""
+
+    status_code: int | None
+    text: str
+
+
+def looks_like_bot_challenge(html_text: str) -> bool:
+    """An interactive challenge page (Cloudflare/PerimeterX/etc.), not a normal 403. The brief
+    says not to try to defeat one of these -- a site that only ever returns one is dropped with
+    reason "bot challenge" instead of "page fetch failed"."""
+    lowered = html_text.lower()
+    return any(marker in lowered for marker in _BOT_CHALLENGE_MARKERS)
+
+
+class BrowserFetcher:
+    """Renders pages with headless Chromium (Playwright) for sites that WAF-block every plain
+    `requests` GET. One instance is used for a whole site's crawl (one browser context, per the
+    brief), so cookies/challenge state persist across pages the way a real visit would, and the
+    browser process itself is only launched once per site rather than once per page.
+
+    `get()` returns a `SimpleResponse` so callers don't need to know whether a site is browser-
+    or plain-mode. Import of `playwright` is deferred to `__enter__` so the plain-mode path (and
+    every test that mocks the browser layer per the brief's Checks) never needs it installed.
+    """
+
+    def __init__(self, executable_path: str = BROWSER_EXECUTABLE, timeout: int = TIMEOUT):
+        self.executable_path = executable_path
+        self.timeout = timeout
+        self._pw = None
+        self._browser = None
+        self._context = None
+
+    def __enter__(self) -> "BrowserFetcher":
+        from playwright.sync_api import sync_playwright  # deferred: see class docstring
+
+        self._pw = sync_playwright().start()
+        self._browser = self._pw.chromium.launch(
+            executable_path=self.executable_path,
+            headless=True,
+            # The sandbox's outbound proxy terminates TLS with a CA Chromium doesn't trust by
+            # default (unlike `requests`/`curl`, which are configured for it separately); this
+            # only affects the proxy's own certificate, not a site's WAF/bot-challenge behavior.
+            args=["--ignore-certificate-errors"],
+        )
+        self._context = self._browser.new_context(
+            user_agent=USER_AGENT, ignore_https_errors=True,
+            viewport={"width": 1280, "height": 900},
+        )
+        return self
+
+    def __exit__(self, *exc) -> None:
+        if self._context is not None:
+            self._context.close()
+        if self._browser is not None:
+            self._browser.close()
+        if self._pw is not None:
+            self._pw.stop()
+
+    def get(self, url: str, timeout: int | None = None) -> SimpleResponse | None:
+        page = self._context.new_page()
+        try:
+            resp = page.goto(
+                url, timeout=(timeout or self.timeout) * 1000, wait_until="domcontentloaded"
+            )
+            if resp is None:
+                return None
+            page.wait_for_timeout(1500)  # let a challenge script finish before reading status
+            # The raw response body, not `page.content()`: for an XML sitemap, Chromium's
+            # built-in XML viewer serializes to an effectively empty <body> (seen live on
+            # justonecookbook.com, which forced a homepage-link fallback before this fix), and
+            # for an HTML recipe page the JSON-LD this fetcher looks for is server-rendered
+            # into the same initial response anyway, so nothing is lost by preferring it there.
+            body_text = resp.text()
+            return SimpleResponse(status_code=resp.status, text=body_text)
+        except Exception:
+            return None
+        finally:
+            page.close()
+
+
 class RobotsCache:
     """One RobotFileParser per host, fetched lazily. A missing/unreachable robots.txt is
     treated as allow-all (the same convention `sitemap_crawler`'s sites use implicitly)."""
@@ -103,28 +217,46 @@ class RobotsCache:
 
 # --------------------------------------------------------------------------- URL discovery
 
-def sitemap_locs(url: str) -> list[str] | None:
-    r = fetch(url)
+FetchFn = Callable[[str], "requests.Response | SimpleResponse | None"]
+
+
+def sitemap_locs(url: str, fetch_fn: FetchFn = fetch) -> list[str] | None:
+    r = fetch_fn(url)
     if r is None or r.status_code != 200 or not r.text.strip():
         return None
-    return _LOC_RE.findall(r.text)
+    locs = _LOC_RE.findall(r.text)
+    if locs:
+        return locs
+    # Yoast serves a human-readable HTML table at the same URL instead of raw XML when a full
+    # browser (Accept: text/html) asks for it -- seen live on justonecookbook.com in browser
+    # mode (S17b). Same-host <a href> links stand in for <loc> there; the couple of off-site
+    # links that page always carries (yoa.st, sitemaps.org, in its "generated by Yoast" blurb)
+    # are dropped by the host check.
+    host = urlparse(url).netloc
+    return [h for h in re.findall(r'<a href="([^"]+)"', r.text) if urlparse(h).netloc == host] or None
 
 
-def discover_page_urls(site: dict, limiter: RateLimiter) -> tuple[list[str], str]:
+def discover_page_urls(
+    site: dict, limiter: RateLimiter, fetch_fn: FetchFn = fetch
+) -> tuple[list[str], str]:
     """Returns (page_urls, method) where method is 'sitemap' or 'homepage_fallback', for the
-    progress sidecar and the run summary (rule 17: say which kind of check produced a fact)."""
+    progress sidecar and the run summary (rule 17: say which kind of check produced a fact).
+
+    `fetch_fn` is `fetch()` for a plain-mode site, or a `BrowserFetcher.get` for a browser-mode
+    one (S17b) -- sitemap and homepage discovery need the same WAF workaround the recipe pages
+    do, since several browser-mode sites also WAF-block a plain GET of their sitemap.xml."""
     url_filter = re.compile(site["url_filter"])
     collected: list[str] = []
     for sm in site["sitemap_urls"]:
         limiter.wait()
-        locs = sitemap_locs(sm)
+        locs = sitemap_locs(sm, fetch_fn)
         if not locs:
             continue
         if all(l.endswith(".xml") for l in locs):
             # A <sitemapindex>: expand one level.
             for child in locs:
                 limiter.wait()
-                child_locs = sitemap_locs(child)
+                child_locs = sitemap_locs(child, fetch_fn)
                 if child_locs:
                     collected.extend(child_locs)
         else:
@@ -136,7 +268,7 @@ def discover_page_urls(site: dict, limiter: RateLimiter) -> tuple[list[str], str
     # Fallback: crawl the homepage for internal links that look like content pages, then
     # keep those matching url_filter, then those that at least look post-like if none match.
     limiter.wait()
-    r = fetch(site["base_url"])
+    r = fetch_fn(site["base_url"])
     if r is None or r.status_code != 200:
         return [], "homepage_fallback"
     hrefs = re.findall(r'href="([^"]+)"', r.text)
@@ -161,7 +293,8 @@ def discover_page_urls(site: dict, limiter: RateLimiter) -> tuple[list[str], str
 
 # --------------------------------------------------------------------------- JSON-LD parsing
 
-def _iso_duration_to_min(s: str | None) -> int | None:
+def _iso_duration_to_min(s) -> int | None:
+    s = _first(s)
     if not s:
         return None
     m = _DURATION_RE.match(s.strip())
@@ -307,8 +440,11 @@ def parse_recipe_page(html_text: str, url: str, site: dict) -> dict | None:
 
 # --------------------------------------------------------------------------- crawl loop
 
-def crawl_site(site: dict, cap: int, retry_failed: bool = False) -> dict:
-    limiter = RateLimiter(PER_SECOND)
+def _crawl_with_fetcher(site: dict, cap: int, retry_failed: bool, fetch_fn: FetchFn) -> dict:
+    """The actual crawl loop, parameterized on `fetch_fn` so `crawl_site` can hand it either
+    the plain `fetch()` or a `BrowserFetcher.get` bound to one browser context (S17b)."""
+    is_browser = site.get("fetch") == "browser"
+    limiter = RateLimiter(BROWSER_PER_SECOND if is_browser else PER_SECOND)
     robots = RobotsCache()
     with SourceWriter(site["id"]) as writer:
         progress = writer.load_progress()
@@ -322,7 +458,7 @@ def crawl_site(site: dict, cap: int, retry_failed: bool = False) -> dict:
             failed = set()
 
         if not page_urls:
-            page_urls, discovery_method = discover_page_urls(site, limiter)
+            page_urls, discovery_method = discover_page_urls(site, limiter, fetch_fn)
             writer.save_progress(
                 {
                     "page_urls": page_urls,
@@ -343,10 +479,26 @@ def crawl_site(site: dict, cap: int, retry_failed: bool = False) -> dict:
                 tried.add(url)
                 continue
             limiter.wait()
-            r = fetch(url)
+            r = fetch_fn(url)
             tried.add(url)
-            if r is None or r.status_code != 200 or not r.text:
+            if r is None or not r.text:
                 writer.drops.drop("page fetch failed (non-200, timeout or empty body)")
+                failed.add(url)
+                writer.save_progress(
+                    {
+                        "page_urls": page_urls,
+                        "tried_urls": list(tried),
+                        "failed_urls": list(failed),
+                        "discovery_method": discovery_method,
+                    }
+                )
+                continue
+            if r.status_code != 200:
+                # Per the brief: an interactive bot challenge is not attempted, only counted.
+                reason = "bot challenge" if looks_like_bot_challenge(r.text) else (
+                    "page fetch failed (non-200, timeout or empty body)"
+                )
+                writer.drops.drop(reason)
                 failed.add(url)
                 writer.save_progress(
                     {
@@ -386,6 +538,13 @@ def crawl_site(site: dict, cap: int, retry_failed: bool = False) -> dict:
         summary["cuisine_label"] = site["cuisine_label"]
         summary["discovery_method"] = discovery_method
         return summary
+
+
+def crawl_site(site: dict, cap: int, retry_failed: bool = False) -> dict:
+    if site.get("fetch") == "browser":
+        with BrowserFetcher() as browser:
+            return _crawl_with_fetcher(site, cap, retry_failed, browser.get)
+    return _crawl_with_fetcher(site, cap, retry_failed, fetch)
 
 
 # --------------------------------------------------------------------------- CLI

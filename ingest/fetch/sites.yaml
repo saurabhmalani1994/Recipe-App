@@ -1,4 +1,5 @@
-# Cuisine-specialist site registry (slice S17). Read by fetch_sites.py.
+# Cuisine-specialist site registry (slice S17, browser mode + more sites: S17b). Read by
+# fetch_sites.py.
 #
 # Each entry:
 #   id             stable source id; raw_recipe.id is "<id>:<slug>", raw_recipe.source is <id>
@@ -13,6 +14,9 @@
 #   israeli_check  true if this cuisine bucket needs the per-record R16 title/tag check
 #                  (every "mediterranean" entry does; the others are cuisine-exclusive sites
 #                  so the check is a no-op safety net there too, cheap to always run)
+#   fetch          "plain" (default, omitted below) or "browser" -- browser mode renders the
+#                  page with headless Chromium (S17b) for a site that WAF-blocks every plain
+#                  `requests` GET; see fetch_sites.py's module docstring for how it works.
 #
 # See ingest/sources_cuisine.md for how each site was checked and why the others were dropped.
 
@@ -117,6 +121,18 @@ sites:
     url_filter: '^https://pickledplum\.com/[a-z0-9-]+/$'
     israeli_check: false
 
+  # justonecookbook.com WAF-blocks every plain GET (403, every UA tried -- S17's "Design was
+  # wrong about"), including its own sitemap.xml; browser mode (S17b) reaches it clean: 3/3
+  # smoke-tested recipe pages parsed on the first try, no challenge seen.
+  - id: justonecookbook
+    cuisine_label: japanese
+    base_url: https://www.justonecookbook.com
+    sitemap_urls:
+      - https://www.justonecookbook.com/sitemap_index.xml
+    url_filter: '^https://www\.justonecookbook\.com/[a-z0-9-]+/$'
+    israeli_check: false
+    fetch: browser
+
   # -- Malaysian ----------------------------------------------------------
   - id: malaysianchinesekitchen
     cuisine_label: malaysian
@@ -157,6 +173,17 @@ sites:
     sitemap_urls:
       - https://www.singaporeanmalaysianrecipes.com/sitemap.xml
     url_filter: '^https://www\.singaporeanmalaysianrecipes\.com/[a-z0-9-]+/$'
+    israeli_check: false
+
+  # S17b: third Singaporean site (S17 kept only 2). mysingaporefood.com and islifearecipe.net
+  # were also checked but dropped (no schema.org Recipe JSON-LD / not Singapore-specific; see
+  # ingest/sources_cuisine.md).
+  - id: greedygirlgourmet
+    cuisine_label: singaporean
+    base_url: https://www.greedygirlgourmet.com
+    sitemap_urls:
+      - https://www.greedygirlgourmet.com/post-sitemap.xml
+    url_filter: '^https://www\.greedygirlgourmet\.com/[a-z0-9-]+/$'
     israeli_check: false
 
   # -- Italian --------------------------------------------------------------
@@ -240,4 +267,36 @@ sites:
     sitemap_urls:
       - https://palestineinadish.com/sitemap_index.xml
     url_filter: '^https://palestineinadish\.com/recipes/[a-z0-9-/]+/$'
+    israeli_check: true
+
+  # S17b: Persian (S17 found none that worked -- see its "Open" item 2). persianpot.com's own
+  # LD-JSON is reachable with a plain GET, but a real bug in this fetcher's duration parsing
+  # (totalTime/prepTime/cookTime as a one-item list, not a string) crashed every page here;
+  # fixed in fetch_sites.py's _iso_duration_to_min, covered by
+  # test_fetch_sites_duration_list_coerced. mypersiankitchen.com/familyspice.com/
+  # unicornsinthekitchen.com/persianmama.com are still WAF- or bot-challenge-blocked even in
+  # browser mode (dropped with reason "bot challenge"); thepersianfusion.com is a dead/hijacked
+  # domain now serving unrelated spam. See ingest/sources_cuisine.md.
+  - id: persianpot
+    cuisine_label: persian
+    base_url: https://persianpot.com
+    sitemap_urls:
+      - https://persianpot.com/sitemap.xml
+    url_filter: '^https://persianpot\.com/recipe/[a-z0-9-]+/$'
+    israeli_check: true
+
+  - id: thespicespoon
+    cuisine_label: persian
+    base_url: https://thespicespoon.com
+    sitemap_urls:
+      - https://thespicespoon.com/sitemap_index.xml
+    url_filter: '^https://thespicespoon\.com/[a-z0-9-]+/$'
+    israeli_check: true
+
+  - id: cookingwithsamira
+    cuisine_label: persian
+    base_url: https://cookingwithsamira.com
+    sitemap_urls:
+      - https://cookingwithsamira.com/sitemap_index.xml
+    url_filter: '^https://cookingwithsamira\.com/[a-z0-9-]+/$'
     israeli_check: true

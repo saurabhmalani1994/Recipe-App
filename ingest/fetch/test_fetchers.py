@@ -439,3 +439,121 @@ def test_fetch_sites_sites_yaml_loads():
         for key in ("id", "cuisine_label", "base_url", "sitemap_urls", "url_filter"):
             assert key in s, f"{s.get('id')} missing {key}"
         re.compile(s["url_filter"])  # must be a valid regex
+        assert s.get("fetch", "plain") in ("plain", "browser")
+
+
+# ---- fetch_sites: browser mode (S17b) ---------------------------------------
+
+def test_fetch_sites_duration_list_coerced():
+    """Some sites emit totalTime/prepTime/cookTime as a one-item list of free text rather than
+    an ISO-8601 duration string (seen live on persianpot.com, which crashed an earlier version
+    of this parser with an AttributeError: 'list' object has no attribute 'strip')."""
+    from fetch_sites import parse_recipe_page
+
+    html_text = """
+    <script type="application/ld+json">
+    {"@context":"https://schema.org","@type":"Recipe","name":"Test Stew",
+     "recipeIngredient":["1 onion"],
+     "recipeInstructions":["Cook it."],
+     "totalTime": ["25 min"], "prepTime": ["PT10M"], "cookTime": ["PT15M"]}
+    </script>
+    """
+    rec = parse_recipe_page(html_text, "https://example.com/test-stew/", _TEST_SITE)
+    assert rec is not None
+    # "25 min" isn't a parseable ISO-8601 duration, so it's dropped rather than guessed at.
+    assert "total_time_min" not in rec
+    assert rec["prep_time_min"] == 10
+    assert rec["cook_time_min"] == 15
+
+
+def test_fetch_sites_looks_like_bot_challenge():
+    from fetch_sites import looks_like_bot_challenge
+
+    assert looks_like_bot_challenge("<html>Please complete the CAPTCHA below</html>")
+    assert looks_like_bot_challenge("<title>Just a moment...</title>")
+    assert looks_like_bot_challenge("<h1>Checking your browser before accessing</h1>")
+    assert not looks_like_bot_challenge("<html><body>Tahdig recipe: rice, saffron.</body></html>")
+
+
+class _FakeBrowserFetcher:
+    """Stands in for `BrowserFetcher` in tests, per the brief's Checks ("mock the browser
+    layer in tests") -- no real Playwright/Chromium involved."""
+
+    def __init__(self, pages: dict[str, "SimpleResponseLike"]):
+        self.pages = pages
+        self.calls: list[str] = []
+
+    def get(self, url, timeout=None):
+        self.calls.append(url)
+        return self.pages.get(url)
+
+
+def test_fetch_sites_browser_mode_crawl(tmp_path, monkeypatch):
+    """A browser-mode site (`fetch: browser` in sites.yaml, S17b) is crawled with
+    `BrowserFetcher.get` in place of the plain `fetch()`, end to end through `crawl_site`,
+    including a bot-challenge page being dropped with reason "bot challenge" rather than
+    treated as a parse failure or a generic fetch failure."""
+    import fetch_sites
+    from common import SourceWriter as RealSourceWriter
+    from fetch_sites import SimpleResponse, crawl_site
+
+    # Never let a test write into the shared /home/user/recipe-data/raw/ tree: pin this run's
+    # SourceWriter to a pytest tmp_path instead of patching the module constant (SourceWriter's
+    # `out_root` default is bound at *def* time, so patching common.RAW_DATA_ROOT afterwards
+    # would silently miss it).
+    monkeypatch.setattr(
+        fetch_sites, "SourceWriter", lambda source: RealSourceWriter(source, out_root=tmp_path)
+    )
+    monkeypatch.setattr(fetch_sites, "RateLimiter", lambda per_second: _NoWaitLimiter())
+
+    site = {
+        "id": "browsersite",
+        "cuisine_label": "japanese",
+        "base_url": "https://example.com",
+        "sitemap_urls": ["https://example.com/sitemap.xml"],
+        "url_filter": r"^https://example\.com/[a-z0-9-]+/$",
+        "fetch": "browser",
+    }
+    recipe_html = """
+    <script type="application/ld+json">
+    {"@type":"Recipe","name":"Miso Soup","recipeIngredient":["miso","dashi"],
+     "recipeInstructions":["Simmer."]}
+    </script>
+    """
+    pages = {
+        "https://example.com/sitemap.xml": SimpleResponse(
+            200, "<urlset><url><loc>https://example.com/miso-soup/</loc></url>"
+            "<url><loc>https://example.com/blocked-recipe/</loc></url></urlset>",
+        ),
+        "https://example.com/miso-soup/": SimpleResponse(200, recipe_html),
+        "https://example.com/blocked-recipe/": SimpleResponse(
+            403, "<html>Please complete the CAPTCHA to continue</html>"
+        ),
+    }
+    fake = _FakeBrowserFetcher(pages)
+    monkeypatch.setattr(fetch_sites, "BrowserFetcher", lambda: _FakeBrowserFetcherCtx(fake))
+    # robots.txt is fetched with the plain fetch(), not the browser, per S17b's design.
+    monkeypatch.setattr(fetch_sites, "fetch", lambda url, timeout=20: SimpleResponse(404, ""))
+
+    summary = crawl_site(site, cap=10)
+
+    assert summary["written"] == 1
+    assert summary["drops"].get("bot challenge") == 1
+    assert "https://example.com/miso-soup/" in fake.calls
+    assert "https://example.com/blocked-recipe/" in fake.calls
+
+
+class _NoWaitLimiter:
+    def wait(self):
+        pass
+
+
+class _FakeBrowserFetcherCtx:
+    def __init__(self, fake):
+        self._fake = fake
+
+    def __enter__(self):
+        return self._fake
+
+    def __exit__(self, *exc):
+        return False

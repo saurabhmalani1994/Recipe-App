@@ -1,4 +1,4 @@
-# Cuisine-specialist sources (slice S17)
+# Cuisine-specialist sources (slice S17; browser mode + more sites: S17b)
 
 Per D19 (owner, verbatim): "also find sites that do good indian cooking, chinese cooking,
 korean cooking, japanese cooking, malaysian cooking, singaporean cooking, italian cooking,
@@ -148,7 +148,7 @@ familyspice, persianmama, persianpot) is either WAF-blocked, bot-challenged, or 
 schema.org Recipe markup. Flagged as an open item below. No Israeli site was checked or kept
 (R16).
 
-## Summary: kept sites by cuisine
+## Summary: kept sites by cuisine (S17, before S17b)
 
 | Cuisine | Kept sites | Count |
 |---|---|---|
@@ -163,3 +163,96 @@ schema.org Recipe markup. Flagged as an open item below. No Israeli site was che
 | mediterranean | mygreekdish, dimitrasdishes, thematbakh, palestineinadish | 4 |
 
 26 sites kept in `ingest/fetch/sites.yaml`, out of 58 candidates checked.
+
+## S17b: browser mode for the WAF-blocked sites, Persian, and more Singaporean/French
+
+S17 found ten sites unreachable to a plain HTTP client: vegrecipesofindia.com, maangchi.com,
+mykoreankitchen.com, justonecookbook.com, rasamalaysia.com, themediterraneandish.com,
+amiraspantry.com, unicornsinthekitchen.com, familyspice.com (all 403 WAF-blocks) and
+redhousespice.com. This slice added a `fetch: browser` mode to `fetch_sites.py` (headless
+Chromium via Playwright, one browser context per site, 1 page/2s, `--ignore-certificate-errors`
+because this sandbox's outbound proxy's own CA isn't one Chromium trusts by default) and tried
+each of those ten plus redhousespice.com and the open Persian/Singaporean/French items again,
+each on 3 real recipe pages (or the homepage first, where that was as far as the site got).
+
+| Site | Browser reachable | Result | Verdict |
+|---|---|---|---|
+| vegrecipesofindia.com | no | homepage: 403, interactive CAPTCHA page every time | DROP — bot challenge |
+| maangchi.com | no | homepage: 403, interactive CAPTCHA page every time | DROP — bot challenge |
+| mykoreankitchen.com | homepage only | homepage: 200 (once); all 3 sampled recipe pages: 403, CAPTCHA, 3 attempts each | DROP — bot challenge |
+| justonecookbook.com | yes | 3/3 sampled recipe pages parsed clean (smoked-baby-back-ribs, melon-pan, oyaki); cap-20 smoke test: 20/20 written, 0 fetch failures, 0 bot-challenge drops | **KEEP** (browser mode) |
+| rasamalaysia.com | no | homepage: 403, CAPTCHA | DROP — bot challenge |
+| themediterraneandish.com | no | homepage: 403, CAPTCHA | DROP — bot challenge |
+| amiraspantry.com | no | homepage: 403, CAPTCHA | DROP — bot challenge |
+| unicornsinthekitchen.com | no | homepage: 403, CAPTCHA | DROP — bot challenge |
+| familyspice.com | no | homepage: 403, CAPTCHA | DROP — bot challenge |
+| redhousespice.com | no | homepage: 403, CAPTCHA | DROP — bot challenge |
+
+Only justonecookbook.com is reachable even with a real browser; the other nine return a genuine
+interactive challenge page (Cloudflare/PerimeterX-style, "CAPTCHA"/"checking your browser"
+markers), consistently across 2-3 attempts each with a fresh context, and per the brief those
+are left alone rather than defeated. justonecookbook.com's own sitemap.xml also 403s to a plain
+`requests` GET and, oddly, to a plain browser `page.content()` read too: Yoast serves a human-
+readable HTML table (not raw `<loc>` XML) at the same URL for a full-browser `Accept` header,
+which the first version of this slice's `sitemap_locs()` didn't handle (it fell back to a
+homepage-link crawl, which still worked but found far fewer URLs); `sitemap_locs()` now also
+falls back to same-host `<a href>` links when no `<loc>` tag is found, so justonecookbook.com's
+sitemap discovers its full ~1,400 URLs.
+
+### Persian (S17's open item 2)
+
+Re-checked persianmama.com (still bot-challenged, 2/3 attempts got the CAPTCHA page even with
+the browser) and persianpot.com, then searched for more candidates:
+
+| Site | Reachable | JSON-LD | Verdict |
+|---|---|---|---|
+| persianmama.com | no (browser) | CAPTCHA 2/3 attempts | DROP — bot challenge |
+| persianpot.com | yes (plain) | **Bug found**: `totalTime`/`prepTime`/`cookTime` are a one-item list of free text (`["25 min"]`), not a string; crashed `_iso_duration_to_min()` with `AttributeError` on every page that had a Recipe block. Fixed (coerce with the existing `_first()` helper before parsing); covered by `test_fetch_sites_duration_list_coerced`. After the fix: 7/9 sample pages parsed (2 sampled pages, `lubia-polo` and `stuffed-eggplant`, are on the recipe sitemap but carry no Recipe LD at all — a genuine no-schema page, not a bug) | **KEEP** (plain, with the fix) |
+| thepersianfusion.com | "yes" (200) but the domain is dead/hijacked — its sitemap.xml 301-redirects to `alphakappapsi.org`, a gambling-spam site with no relation to the original blog | n/a | DROP — domain hijacked |
+| bottomofthepot.com | yes (plain, with an `Accept: text/html,...` header — a plain `curl`/`requests` default gets a 406 from its ModSecurity rule) | no — 4/4 sampled posts (narrative essays with embedded recipes) carry no `Recipe` LD block at all | DROP — no schema.org Recipe markup |
+| faeskitchen.com | partially — its `/sitemap.xml` only lists its own homepage (a broken/placeholder sitemap) and the rendered homepage has no server-side links (client-rendered), so no usable URL list was found in the time budget | n/a | DROP — no usable URL discovery found |
+| thespicespoon.com | yes (plain) | 4/4 sampled recipe pages parsed clean (tahdig, khoresh-e-portaghal, borani-esfanaj, mirza-ghasemi) | **KEEP** (plain) |
+| cookingwithsamira.com | yes (plain) | 3/3 sampled recipe pages parsed clean (zereshk-polo, kookoo-sabzi, baghali-polo) | **KEEP** (plain) |
+| turmericsaffron.com, aashpazi.com, persianfoodtour.com, zabzicooks.com, chelokebab.com | no — DNS/TLS/proxy failures on every attempt (dead or unroutable domains), 2 attempts each | n/a | DROP — unreachable |
+
+Three Persian sites kept: persianpot.com, thespicespoon.com, cookingwithsamira.com — meets the
+"at least 2" ask with one to spare.
+
+### Singaporean (S17's open item 1, partial)
+
+| Site | Reachable | JSON-LD | Verdict |
+|---|---|---|---|
+| greedygirlgourmet.com | yes (plain) | 4/4 sampled recipe pages parsed clean (congee, Chinese ribs, sambal mayo, Hainanese chicken porridge) | **KEEP** (plain) |
+| mysingaporefood.com | yes (plain) | no — 4/4 sampled `/recipe/...` pages carry only `WebPage`/`ImageObject`/`BreadcrumbList`/`WebSite` in their `@graph`, no `Recipe` node | DROP — no schema.org Recipe markup |
+| islifearecipe.net | yes (plain) | not checked in depth — its sitemap mixes Estonia restaurant reviews with recipes, i.e. not a Singapore-specific site, so deprioritized in the time budget | — | DROP — not cuisine-specific |
+| delishar.com | reachable (302 redirect) | not checked — deprioritized once greedygirlgourmet.com (a 3rd site) was confirmed | — | not checked |
+
+Singaporean now has 3 kept sites (rotinrice, singaporeanmalaysianrecipes, greedygirlgourmet),
+closing S17's open item.
+
+### French (S17's open item 1, not closed)
+
+Checked simplefrenchcooking.com (proxy/connection failure, 2 attempts), everydayfrenchchef.com,
+traditionalfrenchfood.com and easy-french-food.com (all reachable, but none carries any
+`application/ld+json` block at all on their homepage or robots.txt-listed pages — old-style
+sites with no schema.org markup, predating recipe-card plugins) and lechefswife.com (still
+403, unchanged from S17). No new French site found; French stays at 2 kept sites
+(pardonyourfrench.com, myparisiankitchen.com). This item is left open for a future pass — see
+Open below.
+
+## Summary: kept sites by cuisine (after S17b)
+
+| Cuisine | Kept sites | Count |
+|---|---|---|
+| indian | indianhealthyrecipes, hebbarskitchen, archanaskitchen | 3 |
+| chinese | thewoksoflife, chinasichuanfood, omnivorescookbook | 3 |
+| korean | koreanbapsang, beyondkimchee, kimchimari | 3 |
+| japanese | chopstickchronicles, recipetinjapan, pickledplum, justonecookbook (browser) | 4 |
+| malaysian | malaysianchinesekitchen, nyonyacooking, cookwithipohbunny | 3 |
+| singaporean | rotinrice, singaporeanmalaysianrecipes, greedygirlgourmet | 3 |
+| italian | recipesfromitaly, giallozafferano, anitalianinmykitchen, pinabresciani | 4 |
+| french | pardonyourfrench, myparisiankitchen | **2** (open item, unchanged) |
+| mediterranean (incl. persian) | mygreekdish, dimitrasdishes, thematbakh, palestineinadish, persianpot, thespicespoon, cookingwithsamira | 7 |
+
+31 sites kept in `ingest/fetch/sites.yaml` (26 from S17 + 5 from S17b), out of 58 + ~24 = ~82
+candidates checked across both slices.
