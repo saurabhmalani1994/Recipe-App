@@ -255,6 +255,35 @@ def test_build_resumes_to_the_same_file(built, tmp_path):
     assert _dump(part) == _dump(out)
 
 
+def test_build_killed_before_a_checkpoint_commits_nothing(built, tmp_path, monkeypatch):
+    # S19: the rebuild was killed mid-batch and the resume counted 321 themealdb recipes as
+    # duplicate_id, because each recipe had committed ahead of its checkpoint
+    root, out = built
+    part = str(tmp_path / 'killed.db')
+
+    class Killed(Exception):
+        pass
+
+    real = B._checkpoint
+
+    def kill(con, writer, source, *a):
+        if source == 'alpha':   # the process dies: its open transaction goes with it
+            con.rollback()
+            con.close()
+            raise Killed()
+        return real(con, writer, source, *a)
+
+    monkeypatch.setattr(B, '_checkpoint', kill)
+    with pytest.raises(Killed):
+        B.build(part, raw_root=str(root), quotas=None, fresh=True, log=lambda *_: None)
+    con = sqlite3.connect(part)
+    assert con.execute('SELECT count(*) FROM recipes').fetchone()[0] == 0
+    con.close()
+    monkeypatch.setattr(B, '_checkpoint', real)
+    assert B.build(part, raw_root=str(root), quotas=None, log=lambda *_: None)
+    assert _dump(part) == _dump(out)
+
+
 def test_match_query_filters(built):
     _, out = built
     con = sqlite3.connect(out)

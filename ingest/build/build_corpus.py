@@ -406,6 +406,12 @@ def build_source(con, writer, source, raw_root, quota, stop_after=None, log=prin
             finally:
                 signal.alarm(0)
             if derived is not None:
+                # S19: an outermost SAVEPOINT is its own transaction and RELEASE commits it, so each
+                # recipe was committed ahead of its checkpoint; a run killed mid-batch then resumed
+                # at the old next_line and counted the batch again as duplicate_id. Open the batch's
+                # transaction first, so the recipes, drops and resume point commit together.
+                if not con.in_transaction:
+                    con.execute('BEGIN')
                 con.execute('SAVEPOINT rec')
                 try:
                     writer.write(raw, derived)
