@@ -1,7 +1,8 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import { useNavigate, useParams } from 'react-router-dom'
 import type { Cuisine } from '../corpus/model'
 import type { RecipeDiff } from '../features/myRecipes/diff'
+import { lineFromText, lineText, parseRecipeLines } from '../features/myRecipes/lines'
 import {
   findFixtureRecipe,
   getForkDiff,
@@ -14,9 +15,18 @@ import {
   type MyRecipeData,
   type MyRecipeIngredientLine,
 } from '../features/myRecipes/types'
+import { AddToPlanControl } from '../features/plan/AddToPlanControl'
+import { describeItems, lineStatus } from '../parse'
 
 function emptyLine(): MyRecipeIngredientLine {
-  return { quantity: null, unit: null, canonicalIngredient: '', form: null, optional: false }
+  return {
+    quantity: null,
+    unit: null,
+    canonicalIngredient: '',
+    form: null,
+    optional: false,
+    raw: '',
+  }
 }
 
 export function MyRecipeEditor() {
@@ -64,15 +74,17 @@ export function MyRecipeEditor() {
     }
   }
 
-  function updateIngredient(index: number, patch: Partial<MyRecipeIngredientLine>) {
-    setData((prev) => ({
-      ...prev,
-      ingredients: prev.ingredients.map((line, i) => (i === index ? { ...line, ...patch } : line)),
-    }))
-  }
-
   function addIngredient() {
     setData((prev) => ({ ...prev, ingredients: [...prev.ingredients, emptyLine()] }))
+  }
+
+  function updateIngredientText(index: number, raw: string) {
+    setData((prev) => ({
+      ...prev,
+      ingredients: prev.ingredients.map((line, i) =>
+        i === index ? lineFromText(raw, line) : line,
+      ),
+    }))
   }
 
   function removeIngredient(index: number) {
@@ -90,6 +102,10 @@ export function MyRecipeEditor() {
   function removeStep(index: number) {
     setData((prev) => ({ ...prev, steps: prev.steps.filter((_, i) => i !== index) }))
   }
+
+  // What the parser understood from each line, shown under it (S13 #3). Parsing is cheap and
+  // deterministic, so it follows every keystroke.
+  const parsed = useMemo(() => parseRecipeLines(data), [data])
 
   if (!loaded) {
     return (
@@ -191,38 +207,44 @@ export function MyRecipeEditor() {
 
       <h3>Ingredients</h3>
       <ul className="editor-ingredients">
-        {data.ingredients.map((line, i) => (
-          <li key={i} className="editor-ingredient-row">
-            <input
-              type="number"
-              aria-label={`Ingredient ${i + 1} quantity`}
-              value={line.quantity ?? ''}
-              onChange={(e) =>
-                updateIngredient(i, { quantity: e.target.value ? Number(e.target.value) : null })
-              }
-            />
-            <input
-              type="text"
-              aria-label={`Ingredient ${i + 1} unit`}
-              value={line.unit ?? ''}
-              onChange={(e) => updateIngredient(i, { unit: e.target.value || null })}
-            />
-            <input
-              type="text"
-              aria-label={`Ingredient ${i + 1} name`}
-              value={line.canonicalIngredient}
-              onChange={(e) => updateIngredient(i, { canonicalIngredient: e.target.value })}
-            />
-            <button
-              type="button"
-              className="icon-button"
-              aria-label={`Remove ingredient ${i + 1}`}
-              onClick={() => removeIngredient(i)}
-            >
-              ×
-            </button>
-          </li>
-        ))}
+        {data.ingredients.map((line, i) => {
+          const items = parsed[i]?.items ?? []
+          const status = lineStatus(items)
+          return (
+            <li key={i} className="editor-ingredient">
+              <div className="editor-ingredient-row">
+                <input
+                  type="text"
+                  aria-label={`Ingredient ${i + 1}`}
+                  placeholder="e.g. 2 cups chopped cilantro"
+                  value={lineText(line)}
+                  onChange={(e) => updateIngredientText(i, e.target.value)}
+                />
+                <button
+                  type="button"
+                  className="icon-button"
+                  aria-label={`Remove ingredient ${i + 1}`}
+                  onClick={() => removeIngredient(i)}
+                >
+                  ×
+                </button>
+              </div>
+              {lineText(line).trim() && (
+                <p
+                  className={`editor-understood editor-understood--${status}`}
+                  data-testid={`ingredient-understood-${i + 1}`}
+                  data-status={status}
+                >
+                  {status === 'empty'
+                    ? 'Heading: not an ingredient'
+                    : status === 'none'
+                      ? 'Not understood: this line stays as typed and goes to "Check these"'
+                      : describeItems(items)}
+                </p>
+              )}
+            </li>
+          )
+        })}
       </ul>
       <button type="button" onClick={addIngredient}>
         + Ingredient
@@ -263,6 +285,14 @@ export function MyRecipeEditor() {
       <button type="button" onClick={() => void save()}>
         Save
       </button>
+
+      {!isNew && id && (
+        <AddToPlanControl
+          recipeId={id}
+          recipeSource="my"
+          recipeTitle={title || 'Untitled recipe'}
+        />
+      )}
     </section>
   )
 }

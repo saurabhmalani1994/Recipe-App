@@ -70,7 +70,10 @@ test('S7a walk: diet, kitchen item, favorite, fork with edit and diff, reload pe
   await page.getByRole('button', { name: 'Make my version' }).click()
   await expect(page.getByTestId('screen-my-recipe-editor')).toBeVisible()
   await expect(page.getByTestId('fork-diff')).toBeVisible()
-  await page.getByLabel('Ingredient 1 quantity').fill('4')
+  // S13: each ingredient is one typed line, with what the parser understood under it.
+  await expect(page.getByLabel('Ingredient 1', { exact: true })).toHaveValue('2 tbsp vegetable oil')
+  await page.getByLabel('Ingredient 1', { exact: true }).fill('4 tbsp vegetable oil')
+  await expect(page.getByTestId('ingredient-understood-1')).toHaveText('4 tbsp → vegetable oil')
   await page.getByRole('button', { name: 'Save' }).click()
   await expect(page.getByTestId('fork-diff')).toContainText('Changed')
   await page.screenshot({ path: 'e2e/screens/my-recipe-fork-diff-412x915.png' })

@@ -18,6 +18,9 @@ export interface IngredientSlug {
   shopUnit?: ShopUnit
   yield?: { qty: number; unit: Unit }
   buyAs?: string
+  /** Taxonomy flag `explicit_meat` (S13: the parser turns "veggie X" of such a slug into
+   * `vegetarian_meat`). Absent when false. */
+  explicitMeat?: boolean
 }
 
 /** What a shopper buys an ingredient in (taxonomy `shop_unit`, SHOP_UNITS in taxonomy.py). */

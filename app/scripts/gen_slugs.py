@@ -41,6 +41,9 @@ def main() -> int:
             item['yield'] = {'qty': rec['yield']['qty'], 'unit': rec['yield']['unit']}
         if rec.get('buy_as'):
             item['buyAs'] = rec['buy_as']
+        # The parser's meatless rule (S13: "veggie burger" is not beef) needs this one flag.
+        if 'explicit_meat' in (rec.get('flags') or []):
+            item['explicitMeat'] = True
         out.append(item)
 
     os.makedirs(os.path.dirname(OUT_PATH), exist_ok=True)

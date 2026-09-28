@@ -3,7 +3,8 @@
     "slug": "abalone",
     "name": "abalone",
     "synonyms": [],
-    "aisle": "seafood"
+    "aisle": "seafood",
+    "explicitMeat": true
   },
   {
     "slug": "achiote_paste",
@@ -114,7 +115,8 @@
     "slug": "albacore_tuna",
     "name": "albacore tuna",
     "synonyms": ["albacore", "white albacore tuna", "solid white albacore", "cans albacore"],
-    "aisle": "seafood"
+    "aisle": "seafood",
+    "explicitMeat": true
   },
   {
     "slug": "aleppo_pepper",
@@ -164,7 +166,8 @@
     "slug": "alligator",
     "name": "alligator",
     "synonyms": ["alligator meat", "gator"],
-    "aisle": "meat"
+    "aisle": "meat",
+    "explicitMeat": true
   },
   {
     "slug": "allspice",
@@ -363,7 +366,8 @@
     "yield": {
       "qty": 10,
       "unit": "piece"
-    }
+    },
+    "explicitMeat": true
   },
   {
     "slug": "anchovy_paste",
@@ -375,7 +379,8 @@
     "slug": "andouille",
     "name": "andouille",
     "synonyms": ["andouille sausage", "cajun sausage"],
-    "aisle": "meat"
+    "aisle": "meat",
+    "explicitMeat": true
   },
   {
     "slug": "angel_food_cake",
@@ -530,7 +535,8 @@
     "slug": "arctic_char",
     "name": "arctic char",
     "synonyms": ["char"],
-    "aisle": "seafood"
+    "aisle": "seafood",
+    "explicitMeat": true
   },
   {
     "slug": "arrowroot",
@@ -711,19 +717,22 @@
     "yield": {
       "qty": 8,
       "unit": "slice"
-    }
+    },
+    "explicitMeat": true
   },
   {
     "slug": "bacon_bits",
     "name": "bacon bits",
     "synonyms": ["real bacon bits", "bacon crumbles", "bacon pieces bits"],
-    "aisle": "meat"
+    "aisle": "meat",
+    "explicitMeat": true
   },
   {
     "slug": "bacon_fat",
     "name": "bacon fat",
     "synonyms": ["bacon grease", "bacon drippings", "reserved bacon fat"],
-    "aisle": "pantry"
+    "aisle": "pantry",
+    "explicitMeat": true
   },
   {
     "slug": "bagels",
@@ -875,7 +884,8 @@
     "slug": "barramundi",
     "name": "barramundi",
     "synonyms": [],
-    "aisle": "seafood"
+    "aisle": "seafood",
+    "explicitMeat": true
   },
   {
     "slug": "bartlett_pear",
@@ -995,7 +1005,8 @@
       "牛肉"
     ],
     "aisle": "meat",
-    "shopUnit": "g"
+    "shopUnit": "g",
+    "explicitMeat": true
   },
   {
     "slug": "beef_bouillon",
@@ -1010,19 +1021,22 @@
       "beef flavor bouillon",
       "bovril"
     ],
-    "aisle": "pantry"
+    "aisle": "pantry",
+    "explicitMeat": true
   },
   {
     "slug": "beef_brisket",
     "name": "beef brisket",
     "synonyms": ["brisket", "corned beef brisket", "flat cut brisket"],
-    "aisle": "meat"
+    "aisle": "meat",
+    "explicitMeat": true
   },
   {
     "slug": "beef_cheeks",
     "name": "beef cheeks",
     "synonyms": ["ox cheek"],
-    "aisle": "meat"
+    "aisle": "meat",
+    "explicitMeat": true
   },
   {
     "slug": "beef_chuck",
@@ -1039,25 +1053,29 @@
       "chuck eye roast",
       "beef shoulder"
     ],
-    "aisle": "meat"
+    "aisle": "meat",
+    "explicitMeat": true
   },
   {
     "slug": "beef_dripping",
     "name": "beef dripping",
     "synonyms": ["dripping", "beef tallow", "tallow"],
-    "aisle": "pantry"
+    "aisle": "pantry",
+    "explicitMeat": true
   },
   {
     "slug": "beef_franks",
     "name": "beef franks",
     "synonyms": ["all-beef franks", "beef hot dogs", "kosher hot dogs"],
-    "aisle": "meat"
+    "aisle": "meat",
+    "explicitMeat": true
   },
   {
     "slug": "beef_mince_lean",
     "name": "beef mince lean",
     "synonyms": ["extra lean beef mince", "5% fat beef mince"],
-    "aisle": "meat"
+    "aisle": "meat",
+    "explicitMeat": true
   },
   {
     "slug": "beef_roast",
@@ -1078,19 +1096,22 @@
       "arm roast",
       "round roast"
     ],
-    "aisle": "meat"
+    "aisle": "meat",
+    "explicitMeat": true
   },
   {
     "slug": "beef_round",
     "name": "beef round",
     "synonyms": ["top round", "bottom round", "rump"],
-    "aisle": "meat"
+    "aisle": "meat",
+    "explicitMeat": true
   },
   {
     "slug": "beef_shank",
     "name": "beef shank",
     "synonyms": ["shin of beef", "beef shin", "osso buco"],
-    "aisle": "meat"
+    "aisle": "meat",
+    "explicitMeat": true
   },
   {
     "slug": "beef_soup",
@@ -1104,7 +1125,8 @@
       "canned beef stew",
       "beef stew"
     ],
-    "aisle": "pantry"
+    "aisle": "pantry",
+    "explicitMeat": true
   },
   {
     "slug": "beef_stock",
@@ -1130,7 +1152,8 @@
     "yield": {
       "qty": 1000,
       "unit": "ml"
-    }
+    },
+    "explicitMeat": true
   },
   {
     "slug": "beef_tenderloin",
@@ -1145,7 +1168,8 @@
       "fillet of beef",
       "chateaubriand"
     ],
-    "aisle": "meat"
+    "aisle": "meat",
+    "explicitMeat": true
   },
   {
     "slug": "beer",
@@ -1246,7 +1270,8 @@
     "slug": "bison",
     "name": "bison",
     "synonyms": ["ground bison", "buffalo meat", "bison steak"],
-    "aisle": "meat"
+    "aisle": "meat",
+    "explicitMeat": true
   },
   {
     "slug": "bitter_gourd",
@@ -1323,7 +1348,8 @@
     "slug": "black_cod",
     "name": "black cod",
     "synonyms": ["sablefish"],
-    "aisle": "seafood"
+    "aisle": "seafood",
+    "explicitMeat": true
   },
   {
     "slug": "black_cumin",
@@ -1464,7 +1490,8 @@
     "slug": "bluefish",
     "name": "bluefish",
     "synonyms": ["bluefish fillets"],
-    "aisle": "seafood"
+    "aisle": "seafood",
+    "explicitMeat": true
   },
   {
     "slug": "bok_choy",
@@ -1495,7 +1522,8 @@
       "deli meat",
       "cold cuts"
     ],
-    "aisle": "meat"
+    "aisle": "meat",
+    "explicitMeat": true
   },
   {
     "slug": "bone_marrow",
@@ -1509,7 +1537,8 @@
       "pork bones",
       "bones"
     ],
-    "aisle": "meat"
+    "aisle": "meat",
+    "explicitMeat": true
   },
   {
     "slug": "borage",
@@ -1527,7 +1556,8 @@
     "slug": "boudin",
     "name": "boudin",
     "synonyms": ["boudin sausage", "blood sausage", "black pudding", "morcilla"],
-    "aisle": "meat"
+    "aisle": "meat",
+    "explicitMeat": true
   },
   {
     "slug": "bouquet_garni_sachet",
@@ -1581,7 +1611,8 @@
     "slug": "bratwurst",
     "name": "bratwurst",
     "synonyms": ["brats", "bratwurst sausages", "german sausage"],
-    "aisle": "meat"
+    "aisle": "meat",
+    "explicitMeat": true
   },
   {
     "slug": "brazil_nuts",
@@ -1750,7 +1781,8 @@
       "bob evans sausage",
       "maple sausage"
     ],
-    "aisle": "meat"
+    "aisle": "meat",
+    "explicitMeat": true
   },
   {
     "slug": "brie",
@@ -2162,7 +2194,8 @@
     "slug": "canadian_bacon",
     "name": "canadian bacon",
     "synonyms": ["back bacon slices", "peameal bacon"],
-    "aisle": "meat"
+    "aisle": "meat",
+    "explicitMeat": true
   },
   {
     "slug": "candlenuts",
@@ -2279,7 +2312,8 @@
       "tinned salmon",
       "salmon canned"
     ],
-    "aisle": "seafood"
+    "aisle": "seafood",
+    "explicitMeat": true
   },
   {
     "slug": "canned_soup",
@@ -2357,7 +2391,8 @@
       "tuna canned",
       "solid white albacore tuna"
     ],
-    "aisle": "seafood"
+    "aisle": "seafood",
+    "explicitMeat": true
   },
   {
     "slug": "cannellini_beans",
@@ -2473,7 +2508,8 @@
     "slug": "carp",
     "name": "carp",
     "synonyms": [],
-    "aisle": "seafood"
+    "aisle": "seafood",
+    "explicitMeat": true
   },
   {
     "slug": "carrot",
@@ -2540,13 +2576,15 @@
     "slug": "catfish",
     "name": "catfish",
     "synonyms": ["catfish fillets", "pangasius", "basa", "swai"],
-    "aisle": "seafood"
+    "aisle": "seafood",
+    "explicitMeat": true
   },
   {
     "slug": "caul_fat",
     "name": "caul fat",
     "synonyms": ["pork caul fat", "lace fat", "crepine"],
-    "aisle": "meat"
+    "aisle": "meat",
+    "explicitMeat": true
   },
   {
     "slug": "cauliflower",
@@ -2725,7 +2763,8 @@
     "slug": "char_siu",
     "name": "char siu",
     "synonyms": ["chinese barbecue pork", "barbecued pork", "bbq pork", "roast pork", "叉烧"],
-    "aisle": "meat"
+    "aisle": "meat",
+    "explicitMeat": true
   },
   {
     "slug": "chayote",
@@ -2948,7 +2987,8 @@
       "鸡块"
     ],
     "aisle": "meat",
-    "shopUnit": "g"
+    "shopUnit": "g",
+    "explicitMeat": true
   },
   {
     "slug": "chicken_bouillon",
@@ -2968,7 +3008,8 @@
       "chicken cube",
       "鸡精"
     ],
-    "aisle": "pantry"
+    "aisle": "pantry",
+    "explicitMeat": true
   },
   {
     "slug": "chicken_breast",
@@ -2992,43 +3033,50 @@
       "鸡胸肉"
     ],
     "aisle": "meat",
-    "shopUnit": "piece"
+    "shopUnit": "piece",
+    "explicitMeat": true
   },
   {
     "slug": "chicken_cutlet",
     "name": "chicken cutlet",
     "synonyms": ["thin-sliced chicken breasts", "chicken escalopes", "chicken scallopini"],
-    "aisle": "meat"
+    "aisle": "meat",
+    "explicitMeat": true
   },
   {
     "slug": "chicken_drumsticks",
     "name": "chicken drumsticks",
     "synonyms": ["drumsticks", "鸡腿"],
-    "aisle": "meat"
+    "aisle": "meat",
+    "explicitMeat": true
   },
   {
     "slug": "chicken_feet",
     "name": "chicken feet",
     "synonyms": ["chicken paws"],
-    "aisle": "meat"
+    "aisle": "meat",
+    "explicitMeat": true
   },
   {
     "slug": "chicken_legs",
     "name": "chicken legs",
     "synonyms": ["chicken leg quarters", "leg quarters", "whole chicken legs"],
-    "aisle": "meat"
+    "aisle": "meat",
+    "explicitMeat": true
   },
   {
     "slug": "chicken_livers",
     "name": "chicken livers",
     "synonyms": ["chicken giblets", "giblets", "chicken hearts", "chicken gizzards", "gizzards"],
-    "aisle": "meat"
+    "aisle": "meat",
+    "explicitMeat": true
   },
   {
     "slug": "chicken_sausage",
     "name": "chicken sausage",
     "synonyms": ["chicken apple sausage"],
-    "aisle": "meat"
+    "aisle": "meat",
+    "explicitMeat": true
   },
   {
     "slug": "chicken_stock",
@@ -3062,7 +3110,8 @@
     "yield": {
       "qty": 1000,
       "unit": "ml"
-    }
+    },
+    "explicitMeat": true
   },
   {
     "slug": "chicken_tenders",
@@ -3073,7 +3122,8 @@
       "chicken breast tenders",
       "chicken fingers"
     ],
-    "aisle": "meat"
+    "aisle": "meat",
+    "explicitMeat": true
   },
   {
     "slug": "chicken_thigh",
@@ -3090,7 +3140,8 @@
       "鸡腿肉"
     ],
     "aisle": "meat",
-    "shopUnit": "piece"
+    "shopUnit": "piece",
+    "explicitMeat": true
   },
   {
     "slug": "chicken_wings",
@@ -3104,7 +3155,8 @@
       "鸡翅",
       "鸡翅中"
     ],
-    "aisle": "meat"
+    "aisle": "meat",
+    "explicitMeat": true
   },
   {
     "slug": "chickpea_flour",
@@ -3163,7 +3215,8 @@
       "hormel chili",
       "beef chili"
     ],
-    "aisle": "pantry"
+    "aisle": "pantry",
+    "explicitMeat": true
   },
   {
     "slug": "chili_garlic_sauce",
@@ -3285,7 +3338,8 @@
     "slug": "chinese_sausage",
     "name": "chinese sausage",
     "synonyms": ["lap cheong", "lap chong", "腊肠"],
-    "aisle": "meat"
+    "aisle": "meat",
+    "explicitMeat": true
   },
   {
     "slug": "chinese_sesame_paste",
@@ -3449,7 +3503,8 @@
       "sobrasada de mallorca"
     ],
     "aisle": "meat",
-    "shopUnit": "g"
+    "shopUnit": "g",
+    "explicitMeat": true
   },
   {
     "slug": "chutney",
@@ -3562,7 +3617,8 @@
     "slug": "clam_juice",
     "name": "clam juice",
     "synonyms": ["bottled clam juice", "clam broth"],
-    "aisle": "pantry"
+    "aisle": "pantry",
+    "explicitMeat": true
   },
   {
     "slug": "clams",
@@ -3580,7 +3636,8 @@
       "quahogs",
       "baby clams"
     ],
-    "aisle": "seafood"
+    "aisle": "seafood",
+    "explicitMeat": true
   },
   {
     "slug": "clementine",
@@ -3638,7 +3695,8 @@
     "slug": "cockles",
     "name": "cockles",
     "synonyms": [],
-    "aisle": "seafood"
+    "aisle": "seafood",
+    "explicitMeat": true
   },
   {
     "slug": "cocktail_sauce",
@@ -3771,7 +3829,8 @@
     "slug": "cod",
     "name": "cod",
     "synonyms": ["cod fillets", "codfish", "cod loins", "fresh cod"],
-    "aisle": "seafood"
+    "aisle": "seafood",
+    "explicitMeat": true
   },
   {
     "slug": "coffee",
@@ -3899,7 +3958,8 @@
     "slug": "conch",
     "name": "conch",
     "synonyms": ["conch meat"],
-    "aisle": "seafood"
+    "aisle": "seafood",
+    "explicitMeat": true
   },
   {
     "slug": "concord_grapes",
@@ -3929,7 +3989,8 @@
       "chunk chicken"
     ],
     "aisle": "meat",
-    "shopUnit": "g"
+    "shopUnit": "g",
+    "explicitMeat": true
   },
   {
     "slug": "cookie_dough",
@@ -4006,7 +4067,8 @@
     "slug": "coppa",
     "name": "coppa",
     "synonyms": ["capicola", "capocollo", "gabagool"],
-    "aisle": "meat"
+    "aisle": "meat",
+    "explicitMeat": true
   },
   {
     "slug": "coriander",
@@ -4119,13 +4181,15 @@
     "slug": "corned_beef",
     "name": "corned beef",
     "synonyms": ["salt beef", "canned corned beef"],
-    "aisle": "meat"
+    "aisle": "meat",
+    "explicitMeat": true
   },
   {
     "slug": "corned_beef_hash",
     "name": "corned beef hash",
     "synonyms": [],
-    "aisle": "meat"
+    "aisle": "meat",
+    "explicitMeat": true
   },
   {
     "slug": "cornflakes",
@@ -4143,7 +4207,8 @@
     "slug": "cornish_hen",
     "name": "cornish hen",
     "synonyms": ["cornish game hens", "rock cornish hens", "game hens"],
-    "aisle": "meat"
+    "aisle": "meat",
+    "explicitMeat": true
   },
   {
     "slug": "cornmeal",
@@ -4253,7 +4318,8 @@
       "brown and white crab meat",
       "brown and white crabmeat"
     ],
-    "aisle": "seafood"
+    "aisle": "seafood",
+    "explicitMeat": true
   },
   {
     "slug": "cracker_crumbs",
@@ -4342,7 +4408,8 @@
     "slug": "crawfish",
     "name": "crawfish",
     "synonyms": ["crawfish tails", "crayfish", "crawdads", "crawfish tail meat"],
-    "aisle": "seafood"
+    "aisle": "seafood",
+    "explicitMeat": true
   },
   {
     "slug": "cream_cheese",
@@ -4420,7 +4487,8 @@
     "yield": {
       "qty": 298,
       "unit": "g"
-    }
+    },
+    "explicitMeat": true
   },
   {
     "slug": "cream_of_mushroom_soup",
@@ -4461,7 +4529,8 @@
       "clam chowder",
       "new england clam chowder"
     ],
-    "aisle": "pantry"
+    "aisle": "pantry",
+    "explicitMeat": true
   },
   {
     "slug": "cream_of_tartar",
@@ -4735,7 +4804,8 @@
     "slug": "cuttlefish",
     "name": "cuttlefish",
     "synonyms": [],
-    "aisle": "seafood"
+    "aisle": "seafood",
+    "explicitMeat": true
   },
   {
     "slug": "daikon",
@@ -4814,7 +4884,8 @@
     "slug": "dashi",
     "name": "dashi",
     "synonyms": ["dashi stock", "katsuo dashi", "bonito stock"],
-    "aisle": "pantry"
+    "aisle": "pantry",
+    "explicitMeat": true
   },
   {
     "slug": "date_syrup",
@@ -4844,7 +4915,8 @@
     "slug": "deli_roast_beef",
     "name": "deli roast beef",
     "synonyms": ["sliced roast beef", "roast beef slices"],
-    "aisle": "meat"
+    "aisle": "meat",
+    "explicitMeat": true
   },
   {
     "slug": "deli_turkey",
@@ -4856,7 +4928,8 @@
       "turkey lunch meat",
       "oven roasted turkey breast slices"
     ],
-    "aisle": "meat"
+    "aisle": "meat",
+    "explicitMeat": true
   },
   {
     "slug": "delicata_squash",
@@ -4919,7 +4992,8 @@
     "slug": "deviled_ham",
     "name": "deviled ham",
     "synonyms": ["underwood deviled ham"],
-    "aisle": "meat"
+    "aisle": "meat",
+    "explicitMeat": true
   },
   {
     "slug": "diastatic_malt",
@@ -5087,7 +5161,8 @@
       "bresaola",
       "biltong"
     ],
-    "aisle": "meat"
+    "aisle": "meat",
+    "explicitMeat": true
   },
   {
     "slug": "dried_blueberries",
@@ -5148,7 +5223,8 @@
       "虾米",
       "虾皮"
     ],
-    "aisle": "seafood"
+    "aisle": "seafood",
+    "explicitMeat": true
   },
   {
     "slug": "dried_fruit",
@@ -5338,7 +5414,8 @@
     "slug": "dried_scallops",
     "name": "dried scallops",
     "synonyms": ["conpoy", "干贝", "瑶柱"],
-    "aisle": "seafood"
+    "aisle": "seafood",
+    "explicitMeat": true
   },
   {
     "slug": "dried_shiitake",
@@ -5478,19 +5555,22 @@
     "slug": "duck",
     "name": "duck",
     "synonyms": ["whole duck", "duck legs", "duckling", "squab", "鸭肉"],
-    "aisle": "meat"
+    "aisle": "meat",
+    "explicitMeat": true
   },
   {
     "slug": "duck_breast",
     "name": "duck breast",
     "synonyms": ["magret"],
-    "aisle": "meat"
+    "aisle": "meat",
+    "explicitMeat": true
   },
   {
     "slug": "duck_confit",
     "name": "duck confit",
     "synonyms": ["confit duck legs"],
-    "aisle": "meat"
+    "aisle": "meat",
+    "explicitMeat": true
   },
   {
     "slug": "duck_egg",
@@ -5502,7 +5582,8 @@
     "slug": "duck_fat",
     "name": "duck fat",
     "synonyms": [],
-    "aisle": "pantry"
+    "aisle": "pantry",
+    "explicitMeat": true
   },
   {
     "slug": "dukkah",
@@ -5631,7 +5712,8 @@
     "slug": "eel",
     "name": "eel",
     "synonyms": ["unagi", "smoked eel"],
-    "aisle": "seafood"
+    "aisle": "seafood",
+    "explicitMeat": true
   },
   {
     "slug": "egg",
@@ -6060,13 +6142,15 @@
       "鱼",
       "鱼片"
     ],
-    "aisle": "seafood"
+    "aisle": "seafood",
+    "explicitMeat": true
   },
   {
     "slug": "fish_cake",
     "name": "fish cake",
     "synonyms": ["kamaboko", "chikuwa", "fish balls", "narutomaki"],
-    "aisle": "seafood"
+    "aisle": "seafood",
+    "explicitMeat": true
   },
   {
     "slug": "fish_gelatin",
@@ -6088,7 +6172,8 @@
       "fish eggs",
       "taramasalata"
     ],
-    "aisle": "seafood"
+    "aisle": "seafood",
+    "explicitMeat": true
   },
   {
     "slug": "fish_sauce",
@@ -6121,7 +6206,8 @@
       "shrimp stock",
       "lobster stock"
     ],
-    "aisle": "pantry"
+    "aisle": "pantry",
+    "explicitMeat": true
   },
   {
     "slug": "flageolet_beans",
@@ -6139,7 +6225,8 @@
     "slug": "flank_steak",
     "name": "flank steak",
     "synonyms": ["bavette"],
-    "aisle": "meat"
+    "aisle": "meat",
+    "explicitMeat": true
   },
   {
     "slug": "flavored_syrup",
@@ -6198,7 +6285,8 @@
     "slug": "flounder",
     "name": "flounder",
     "synonyms": ["flounder fillets", "plaice", "fluke", "turbot"],
-    "aisle": "seafood"
+    "aisle": "seafood",
+    "explicitMeat": true
   },
   {
     "slug": "flour_tortillas",
@@ -6232,7 +6320,8 @@
     "slug": "foie_gras",
     "name": "foie gras",
     "synonyms": ["duck liver"],
-    "aisle": "meat"
+    "aisle": "meat",
+    "explicitMeat": true
   },
   {
     "slug": "fontina",
@@ -6306,7 +6395,8 @@
     "slug": "french_onion_soup",
     "name": "french onion soup",
     "synonyms": ["onion soup", "condensed french onion soup", "french onion soup condensed"],
-    "aisle": "pantry"
+    "aisle": "pantry",
+    "explicitMeat": true
   },
   {
     "slug": "fresh_coconut",
@@ -6375,7 +6465,8 @@
     "slug": "frog_legs",
     "name": "frog legs",
     "synonyms": [],
-    "aisle": "meat"
+    "aisle": "meat",
+    "explicitMeat": true
   },
   {
     "slug": "frosting",
@@ -6818,7 +6909,8 @@
     "slug": "goat_meat",
     "name": "goat meat",
     "synonyms": ["goat", "mutton goat", "chevon", "cabrito"],
-    "aisle": "meat"
+    "aisle": "meat",
+    "explicitMeat": true
   },
   {
     "slug": "goat_milk",
@@ -6859,7 +6951,8 @@
     "slug": "golden_mushroom_soup",
     "name": "golden mushroom soup",
     "synonyms": ["condensed golden mushroom soup"],
-    "aisle": "pantry"
+    "aisle": "pantry",
+    "explicitMeat": true
   },
   {
     "slug": "golden_syrup",
@@ -6882,13 +6975,15 @@
     "slug": "goose",
     "name": "goose",
     "synonyms": [],
-    "aisle": "meat"
+    "aisle": "meat",
+    "explicitMeat": true
   },
   {
     "slug": "goose_fat",
     "name": "goose fat",
     "synonyms": ["rendered goose fat"],
-    "aisle": "meat"
+    "aisle": "meat",
+    "explicitMeat": true
   },
   {
     "slug": "gooseberries",
@@ -7056,7 +7151,8 @@
       "pan juices",
       "bisto"
     ],
-    "aisle": "pantry"
+    "aisle": "pantry",
+    "explicitMeat": true
   },
   {
     "slug": "gravy_vegetarian",
@@ -7329,13 +7425,15 @@
       "牛肉末"
     ],
     "aisle": "meat",
-    "shopUnit": "g"
+    "shopUnit": "g",
+    "explicitMeat": true
   },
   {
     "slug": "ground_chicken",
     "name": "ground chicken",
     "synonyms": ["minced chicken", "chicken mince", "chicken keema"],
-    "aisle": "meat"
+    "aisle": "meat",
+    "explicitMeat": true
   },
   {
     "slug": "ground_ginger",
@@ -7361,13 +7459,15 @@
     "slug": "ground_lamb",
     "name": "ground lamb",
     "synonyms": ["minced lamb", "lamb mince", "ground lamb shoulder", "lamb keema", "mutton mince"],
-    "aisle": "meat"
+    "aisle": "meat",
+    "explicitMeat": true
   },
   {
     "slug": "ground_meat_mix",
     "name": "ground meat mix",
     "synonyms": ["meatloaf mix", "meat loaf mix", "ground meatloaf mix", "mixed ground meat"],
-    "aisle": "meat"
+    "aisle": "meat",
+    "explicitMeat": true
   },
   {
     "slug": "ground_pork",
@@ -7381,7 +7481,8 @@
       "肉末"
     ],
     "aisle": "meat",
-    "shopUnit": "g"
+    "shopUnit": "g",
+    "explicitMeat": true
   },
   {
     "slug": "ground_turkey",
@@ -7393,13 +7494,15 @@
       "extra lean ground turkey",
       "93% lean ground turkey"
     ],
-    "aisle": "meat"
+    "aisle": "meat",
+    "explicitMeat": true
   },
   {
     "slug": "grouper",
     "name": "grouper",
     "synonyms": ["grouper fillets"],
-    "aisle": "seafood"
+    "aisle": "seafood",
+    "explicitMeat": true
   },
   {
     "slug": "gruyere",
@@ -7423,7 +7526,8 @@
     "slug": "guanciale",
     "name": "guanciale",
     "synonyms": [],
-    "aisle": "meat"
+    "aisle": "meat",
+    "explicitMeat": true
   },
   {
     "slug": "guar_gum",
@@ -7453,13 +7557,15 @@
     "slug": "haddock",
     "name": "haddock",
     "synonyms": ["smoked haddock", "haddock fillets", "finnan haddie"],
-    "aisle": "seafood"
+    "aisle": "seafood",
+    "explicitMeat": true
   },
   {
     "slug": "hake",
     "name": "hake",
     "synonyms": ["whiting", "hake fillets"],
-    "aisle": "seafood"
+    "aisle": "seafood",
+    "explicitMeat": true
   },
   {
     "slug": "half_and_half",
@@ -7476,7 +7582,8 @@
     "slug": "halibut",
     "name": "halibut",
     "synonyms": [],
-    "aisle": "seafood"
+    "aisle": "seafood",
+    "explicitMeat": true
   },
   {
     "slug": "halloumi",
@@ -7520,13 +7627,15 @@
       "ham cubes"
     ],
     "aisle": "meat",
-    "shopUnit": "g"
+    "shopUnit": "g",
+    "explicitMeat": true
   },
   {
     "slug": "ham_hock",
     "name": "ham hock",
     "synonyms": ["smoked ham hock", "pork hock", "ham shank", "smoked hocks", "pork knuckle"],
-    "aisle": "meat"
+    "aisle": "meat",
+    "explicitMeat": true
   },
   {
     "slug": "hamburger_buns",
@@ -7697,7 +7806,8 @@
     "slug": "herring",
     "name": "herring",
     "synonyms": ["pickled herring", "kipper", "smoked herring", "rollmops"],
-    "aisle": "seafood"
+    "aisle": "seafood",
+    "explicitMeat": true
   },
   {
     "slug": "hi_c",
@@ -7830,7 +7940,8 @@
       "little smokies",
       "cocktail franks"
     ],
-    "aisle": "meat"
+    "aisle": "meat",
+    "explicitMeat": true
   },
   {
     "slug": "hot_dog_buns",
@@ -7963,7 +8074,8 @@
       "krab",
       "kanikama"
     ],
-    "aisle": "seafood"
+    "aisle": "seafood",
+    "explicitMeat": true
   },
   {
     "slug": "indian_bay_leaf",
@@ -8002,7 +8114,8 @@
     "slug": "instant_dashi",
     "name": "instant dashi",
     "synonyms": ["hondashi", "dashi powder", "dashi granules", "instant dashi powder"],
-    "aisle": "pantry"
+    "aisle": "pantry",
+    "explicitMeat": true
   },
   {
     "slug": "instant_mashed_potatoes",
@@ -8111,7 +8224,8 @@
       "spicy italian sausage",
       "salsiccia"
     ],
-    "aisle": "meat"
+    "aisle": "meat",
+    "explicitMeat": true
   },
   {
     "slug": "italian_seasoning",
@@ -8364,7 +8478,8 @@
     "slug": "katsuobushi",
     "name": "katsuobushi",
     "synonyms": ["bonito flakes", "dried bonito flakes", "katsuobushi flakes", "bonito"],
-    "aisle": "international"
+    "aisle": "international",
+    "explicitMeat": true
   },
   {
     "slug": "kecap_manis",
@@ -8422,13 +8537,15 @@
     "slug": "kidney_meat",
     "name": "kidney (offal)",
     "synonyms": ["kidneys", "lamb kidneys", "beef kidney", "ox kidney", "steak and kidney"],
-    "aisle": "meat"
+    "aisle": "meat",
+    "explicitMeat": true
   },
   {
     "slug": "kielbasa",
     "name": "kielbasa",
     "synonyms": ["polish sausage", "kielbasa sausage", "smoked sausage", "smoked kielbasa"],
-    "aisle": "meat"
+    "aisle": "meat",
+    "explicitMeat": true
   },
   {
     "slug": "kimchi",
@@ -8446,7 +8563,8 @@
     "slug": "kingfish",
     "name": "kingfish",
     "synonyms": ["king mackerel", "surmai", "amberjack", "yellowtail", "hamachi"],
-    "aisle": "seafood"
+    "aisle": "seafood",
+    "explicitMeat": true
   },
   {
     "slug": "kitchen_king_masala",
@@ -8555,7 +8673,8 @@
       "羊肉"
     ],
     "aisle": "meat",
-    "shopUnit": "g"
+    "shopUnit": "g",
+    "explicitMeat": true
   },
   {
     "slug": "lamb_chops",
@@ -8569,49 +8688,57 @@
       "lamb top sirloins",
       "lamb loin"
     ],
-    "aisle": "meat"
+    "aisle": "meat",
+    "explicitMeat": true
   },
   {
     "slug": "lamb_leg",
     "name": "lamb leg",
     "synonyms": ["leg of lamb", "boneless leg of lamb", "butterflied leg of lamb"],
-    "aisle": "meat"
+    "aisle": "meat",
+    "explicitMeat": true
   },
   {
     "slug": "lamb_shanks",
     "name": "lamb shanks",
     "synonyms": [],
-    "aisle": "meat"
+    "aisle": "meat",
+    "explicitMeat": true
   },
   {
     "slug": "lamb_shoulder",
     "name": "lamb shoulder",
     "synonyms": ["shoulder of lamb", "boneless lamb shoulder"],
-    "aisle": "meat"
+    "aisle": "meat",
+    "explicitMeat": true
   },
   {
     "slug": "lamb_stock",
     "name": "lamb stock",
     "synonyms": ["lamb broth"],
-    "aisle": "pantry"
+    "aisle": "pantry",
+    "explicitMeat": true
   },
   {
     "slug": "langoustine",
     "name": "langoustine",
     "synonyms": ["scampi", "dublin bay prawns"],
-    "aisle": "seafood"
+    "aisle": "seafood",
+    "explicitMeat": true
   },
   {
     "slug": "lard",
     "name": "lard",
     "synonyms": ["manteca", "pork lard"],
-    "aisle": "pantry"
+    "aisle": "pantry",
+    "explicitMeat": true
   },
   {
     "slug": "lardo",
     "name": "lardo",
     "synonyms": ["cured fatback"],
-    "aisle": "meat"
+    "aisle": "meat",
+    "explicitMeat": true
   },
   {
     "slug": "lasagna_noodles",
@@ -8937,7 +9064,8 @@
     "slug": "linguica",
     "name": "linguica",
     "synonyms": ["chourico", "portuguese sausage"],
-    "aisle": "meat"
+    "aisle": "meat",
+    "explicitMeat": true
   },
   {
     "slug": "linguine",
@@ -8987,19 +9115,22 @@
     "slug": "liver",
     "name": "liver",
     "synonyms": ["beef liver", "calf liver", "pork liver", "lamb liver", "liver pate", "pate"],
-    "aisle": "meat"
+    "aisle": "meat",
+    "explicitMeat": true
   },
   {
     "slug": "liverwurst",
     "name": "liverwurst",
     "synonyms": ["braunschweiger", "liver sausage", "liverwurst spread"],
-    "aisle": "meat"
+    "aisle": "meat",
+    "explicitMeat": true
   },
   {
     "slug": "lobster",
     "name": "lobster",
     "synonyms": ["lobster tails", "lobster meat"],
-    "aisle": "seafood"
+    "aisle": "seafood",
+    "explicitMeat": true
   },
   {
     "slug": "long_beans",
@@ -9116,7 +9247,8 @@
     "slug": "mackerel",
     "name": "mackerel",
     "synonyms": ["smoked mackerel", "mackerel fillets", "spanish mackerel", "bangda"],
-    "aisle": "seafood"
+    "aisle": "seafood",
+    "explicitMeat": true
   },
   {
     "slug": "madeira",
@@ -9140,7 +9272,8 @@
     "slug": "mahi_mahi",
     "name": "mahi mahi",
     "synonyms": ["mahimahi", "dorado", "mahi"],
-    "aisle": "seafood"
+    "aisle": "seafood",
+    "explicitMeat": true
   },
   {
     "slug": "mahleb",
@@ -9459,7 +9592,8 @@
       "boneless meat",
       "mixed meat"
     ],
-    "aisle": "meat"
+    "aisle": "meat",
+    "explicitMeat": true
   },
   {
     "slug": "meat_tenderizer",
@@ -9478,7 +9612,8 @@
       "italian meatballs",
       "turkey meatballs"
     ],
-    "aisle": "frozen"
+    "aisle": "frozen",
+    "explicitMeat": true
   },
   {
     "slug": "melba_toast",
@@ -9508,7 +9643,8 @@
     "slug": "merguez",
     "name": "merguez",
     "synonyms": ["lamb sausage"],
-    "aisle": "meat"
+    "aisle": "meat",
+    "explicitMeat": true
   },
   {
     "slug": "meringue_powder",
@@ -9664,7 +9800,8 @@
     "slug": "mince_pies",
     "name": "mince pies",
     "synonyms": ["mini mince pies"],
-    "aisle": "pantry"
+    "aisle": "pantry",
+    "explicitMeat": true
   },
   {
     "slug": "mincemeat",
@@ -9676,7 +9813,8 @@
       "mince meat",
       "none such mincemeat"
     ],
-    "aisle": "pantry"
+    "aisle": "pantry",
+    "explicitMeat": true
   },
   {
     "slug": "mint",
@@ -9892,7 +10030,8 @@
     "slug": "monkfish",
     "name": "monkfish",
     "synonyms": ["monkfish tail", "monkfish fillets"],
-    "aisle": "seafood"
+    "aisle": "seafood",
+    "explicitMeat": true
   },
   {
     "slug": "monterey_jack",
@@ -10041,7 +10180,8 @@
     "slug": "mussels",
     "name": "mussels",
     "synonyms": ["green lipped mussels", "blue mussels", "pei mussels"],
-    "aisle": "seafood"
+    "aisle": "seafood",
+    "explicitMeat": true
   },
   {
     "slug": "mustard",
@@ -10116,7 +10256,8 @@
     "slug": "nduja",
     "name": "nduja",
     "synonyms": ["spreadable salami"],
-    "aisle": "meat"
+    "aisle": "meat",
+    "explicitMeat": true
   },
   {
     "slug": "nectarines",
@@ -10430,7 +10571,8 @@
     "slug": "octopus",
     "name": "octopus",
     "synonyms": ["baby octopus", "tako"],
-    "aisle": "seafood"
+    "aisle": "seafood",
+    "explicitMeat": true
   },
   {
     "slug": "okara",
@@ -10713,7 +10855,8 @@
     "slug": "oxtail",
     "name": "oxtail",
     "synonyms": [],
-    "aisle": "meat"
+    "aisle": "meat",
+    "explicitMeat": true
   },
   {
     "slug": "oyster_mushrooms",
@@ -10737,7 +10880,8 @@
       "canned oysters",
       "oyster meat"
     ],
-    "aisle": "seafood"
+    "aisle": "seafood",
+    "explicitMeat": true
   },
   {
     "slug": "palm_oil",
@@ -10780,7 +10924,8 @@
     "slug": "pancetta",
     "name": "pancetta",
     "synonyms": ["cubed pancetta", "diced pancetta"],
-    "aisle": "meat"
+    "aisle": "meat",
+    "explicitMeat": true
   },
   {
     "slug": "panch_phoron",
@@ -10941,7 +11086,8 @@
     "slug": "pastrami",
     "name": "pastrami",
     "synonyms": ["sliced pastrami", "beef pastrami"],
-    "aisle": "meat"
+    "aisle": "meat",
+    "explicitMeat": true
   },
   {
     "slug": "pastry_flour",
@@ -11173,13 +11319,15 @@
     "slug": "pepperoni",
     "name": "pepperoni",
     "synonyms": ["pepperoni slices", "sliced pepperoni", "turkey pepperoni"],
-    "aisle": "meat"
+    "aisle": "meat",
+    "explicitMeat": true
   },
   {
     "slug": "perch",
     "name": "perch",
     "synonyms": ["ocean perch", "lake perch", "walleye", "pike", "zander"],
-    "aisle": "seafood"
+    "aisle": "seafood",
+    "explicitMeat": true
   },
   {
     "slug": "perilla_leaf",
@@ -11229,7 +11377,8 @@
     "slug": "pheasant",
     "name": "pheasant",
     "synonyms": ["grouse", "partridge", "guinea fowl"],
-    "aisle": "meat"
+    "aisle": "meat",
+    "explicitMeat": true
   },
   {
     "slug": "phyllo_dough",
@@ -11645,7 +11794,8 @@
     "slug": "pollock",
     "name": "pollock",
     "synonyms": ["pollock fillets", "alaska pollock", "coley"],
-    "aisle": "seafood"
+    "aisle": "seafood",
+    "explicitMeat": true
   },
   {
     "slug": "pomegranate",
@@ -11675,7 +11825,8 @@
     "slug": "pomfret",
     "name": "pomfret",
     "synonyms": ["pompano", "butterfish"],
-    "aisle": "seafood"
+    "aisle": "seafood",
+    "explicitMeat": true
   },
   {
     "slug": "ponzu",
@@ -11729,25 +11880,29 @@
       "猪肉"
     ],
     "aisle": "meat",
-    "shopUnit": "g"
+    "shopUnit": "g",
+    "explicitMeat": true
   },
   {
     "slug": "pork_and_beans",
     "name": "pork and beans",
     "synonyms": ["bushs baked beans", "van camps pork and beans", "pork n beans"],
-    "aisle": "pantry"
+    "aisle": "pantry",
+    "explicitMeat": true
   },
   {
     "slug": "pork_belly",
     "name": "pork belly",
     "synonyms": ["pork belly slices", "belly pork", "samgyeopsal", "五花肉"],
-    "aisle": "meat"
+    "aisle": "meat",
+    "explicitMeat": true
   },
   {
     "slug": "pork_cheeks",
     "name": "pork cheeks",
     "synonyms": [],
-    "aisle": "meat"
+    "aisle": "meat",
+    "explicitMeat": true
   },
   {
     "slug": "pork_chops",
@@ -11764,13 +11919,15 @@
       "pork cutlets"
     ],
     "aisle": "meat",
-    "shopUnit": "piece"
+    "shopUnit": "piece",
+    "explicitMeat": true
   },
   {
     "slug": "pork_feet",
     "name": "pork feet",
     "synonyms": ["pigs feet", "trotters", "pig trotters"],
-    "aisle": "meat"
+    "aisle": "meat",
+    "explicitMeat": true
   },
   {
     "slug": "pork_loin",
@@ -11781,13 +11938,15 @@
       "center cut pork loin",
       "pork loin joint"
     ],
-    "aisle": "meat"
+    "aisle": "meat",
+    "explicitMeat": true
   },
   {
     "slug": "pork_neck",
     "name": "pork neck",
     "synonyms": ["pork neck bones", "neck bones"],
-    "aisle": "meat"
+    "aisle": "meat",
+    "explicitMeat": true
   },
   {
     "slug": "pork_ribs",
@@ -11806,7 +11965,8 @@
       "pork back ribs",
       "rack of ribs"
     ],
-    "aisle": "meat"
+    "aisle": "meat",
+    "explicitMeat": true
   },
   {
     "slug": "pork_rinds",
@@ -11820,19 +11980,22 @@
       "crackling",
       "pork scratchings"
     ],
-    "aisle": "pantry"
+    "aisle": "pantry",
+    "explicitMeat": true
   },
   {
     "slug": "pork_roast",
     "name": "pork roast",
     "synonyms": ["pork leg", "leg of pork", "fresh ham", "pork crown roast"],
-    "aisle": "meat"
+    "aisle": "meat",
+    "explicitMeat": true
   },
   {
     "slug": "pork_shank",
     "name": "pork shank",
     "synonyms": ["pork hind shank"],
-    "aisle": "meat"
+    "aisle": "meat",
+    "explicitMeat": true
   },
   {
     "slug": "pork_shoulder",
@@ -11847,19 +12010,22 @@
       "boston pork butt"
     ],
     "aisle": "meat",
-    "shopUnit": "g"
+    "shopUnit": "g",
+    "explicitMeat": true
   },
   {
     "slug": "pork_stock",
     "name": "pork stock",
     "synonyms": ["pork broth", "ham stock", "ham broth", "tonkotsu broth"],
-    "aisle": "pantry"
+    "aisle": "pantry",
+    "explicitMeat": true
   },
   {
     "slug": "pork_tenderloin",
     "name": "pork tenderloin",
     "synonyms": ["pork fillet", "pork tenderloin fillet"],
-    "aisle": "meat"
+    "aisle": "meat",
+    "explicitMeat": true
   },
   {
     "slug": "port",
@@ -12008,7 +12174,8 @@
     "slug": "prosciutto",
     "name": "prosciutto",
     "synonyms": ["prosciutto di parma", "parma ham", "prosciutto crudo", "cured ham", "speck"],
-    "aisle": "meat"
+    "aisle": "meat",
+    "explicitMeat": true
   },
   {
     "slug": "prosecco",
@@ -12172,7 +12339,8 @@
     "slug": "quail",
     "name": "quail",
     "synonyms": [],
-    "aisle": "meat"
+    "aisle": "meat",
+    "explicitMeat": true
   },
   {
     "slug": "quail_egg",
@@ -12221,7 +12389,8 @@
     "slug": "rabbit",
     "name": "rabbit",
     "synonyms": ["rabbit meat", "hare", "squirrel"],
-    "aisle": "meat"
+    "aisle": "meat",
+    "explicitMeat": true
   },
   {
     "slug": "raclette",
@@ -12472,7 +12641,8 @@
     "slug": "red_snapper",
     "name": "red snapper",
     "synonyms": ["snapper", "red snapper fillets", "snapper fillets"],
-    "aisle": "seafood"
+    "aisle": "seafood",
+    "explicitMeat": true
   },
   {
     "slug": "red_wine",
@@ -12590,7 +12760,8 @@
     "slug": "ribeye_steak",
     "name": "ribeye steak",
     "synonyms": ["rib eye", "ribeye", "rib-eye steak", "scotch fillet", "entrecote"],
-    "aisle": "meat"
+    "aisle": "meat",
+    "explicitMeat": true
   },
   {
     "slug": "rice",
@@ -12771,7 +12942,8 @@
     "slug": "roast",
     "name": "roast",
     "synonyms": [],
-    "aisle": "meat"
+    "aisle": "meat",
+    "explicitMeat": true
   },
   {
     "slug": "roasted_red_peppers",
@@ -12802,7 +12974,8 @@
     "slug": "rohu",
     "name": "rohu",
     "synonyms": ["rui", "katla"],
-    "aisle": "seafood"
+    "aisle": "seafood",
+    "explicitMeat": true
   },
   {
     "slug": "rolled_oats",
@@ -13045,7 +13218,8 @@
       "sliced salami",
       "milano salami"
     ],
-    "aisle": "meat"
+    "aisle": "meat",
+    "explicitMeat": true
   },
   {
     "slug": "salmon",
@@ -13066,7 +13240,8 @@
       "三文鱼"
     ],
     "aisle": "seafood",
-    "shopUnit": "g"
+    "shopUnit": "g",
+    "explicitMeat": true
   },
   {
     "slug": "salsa",
@@ -13142,13 +13317,15 @@
     "slug": "salt_cod",
     "name": "salt cod",
     "synonyms": ["bacalao", "bacalhau", "baccala", "dried salt cod", "salted cod"],
-    "aisle": "seafood"
+    "aisle": "seafood",
+    "explicitMeat": true
   },
   {
     "slug": "salt_pork",
     "name": "salt pork",
     "synonyms": ["fatback", "salt pork belly", "streak o lean"],
-    "aisle": "meat"
+    "aisle": "meat",
+    "explicitMeat": true
   },
   {
     "slug": "salt_substitute",
@@ -13196,7 +13373,8 @@
     "slug": "sardines",
     "name": "sardines",
     "synonyms": ["canned sardines", "pilchards"],
-    "aisle": "seafood"
+    "aisle": "seafood",
+    "explicitMeat": true
   },
   {
     "slug": "satsuma",
@@ -13230,7 +13408,8 @@
       "香肠"
     ],
     "aisle": "meat",
-    "shopUnit": "piece"
+    "shopUnit": "piece",
+    "explicitMeat": true
   },
   {
     "slug": "savory",
@@ -13254,7 +13433,8 @@
     "slug": "scallops",
     "name": "scallops",
     "synonyms": ["sea scallops", "bay scallops", "diver scallops"],
-    "aisle": "seafood"
+    "aisle": "seafood",
+    "explicitMeat": true
   },
   {
     "slug": "scamorza",
@@ -13266,7 +13446,8 @@
     "slug": "schmaltz",
     "name": "schmaltz",
     "synonyms": ["chicken fat", "rendered chicken fat"],
-    "aisle": "pantry"
+    "aisle": "pantry",
+    "explicitMeat": true
   },
   {
     "slug": "schnapps",
@@ -13305,7 +13486,8 @@
     "slug": "scrod",
     "name": "scrod",
     "synonyms": ["young cod"],
-    "aisle": "seafood"
+    "aisle": "seafood",
+    "explicitMeat": true
   },
   {
     "slug": "sea_bass",
@@ -13321,19 +13503,22 @@
       "black sea bass",
       "largemouth bass"
     ],
-    "aisle": "seafood"
+    "aisle": "seafood",
+    "explicitMeat": true
   },
   {
     "slug": "sea_cucumber",
     "name": "sea cucumber",
     "synonyms": ["海参"],
-    "aisle": "seafood"
+    "aisle": "seafood",
+    "explicitMeat": true
   },
   {
     "slug": "sea_urchin",
     "name": "sea urchin",
     "synonyms": ["uni", "sea urchin roe"],
-    "aisle": "seafood"
+    "aisle": "seafood",
+    "explicitMeat": true
   },
   {
     "slug": "sea_vegetables",
@@ -13469,7 +13654,8 @@
     "slug": "serrano_ham",
     "name": "serrano ham",
     "synonyms": ["jamon serrano", "jamon iberico"],
-    "aisle": "meat"
+    "aisle": "meat",
+    "explicitMeat": true
   },
   {
     "slug": "sesame_seeds",
@@ -13570,7 +13756,8 @@
       "seafood medley",
       "frutti di mare"
     ],
-    "aisle": "seafood"
+    "aisle": "seafood",
+    "explicitMeat": true
   },
   {
     "slug": "sherbet",
@@ -13637,7 +13824,8 @@
     "slug": "short_ribs",
     "name": "short ribs",
     "synonyms": ["beef short ribs", "flanken ribs", "galbi"],
-    "aisle": "meat"
+    "aisle": "meat",
+    "explicitMeat": true
   },
   {
     "slug": "shortbread",
@@ -13689,7 +13877,8 @@
       "大虾"
     ],
     "aisle": "seafood",
-    "shopUnit": "g"
+    "shopUnit": "g",
+    "explicitMeat": true
   },
   {
     "slug": "shrimp_paste",
@@ -13733,13 +13922,15 @@
       "sirloin tip",
       "top sirloin steak"
     ],
-    "aisle": "meat"
+    "aisle": "meat",
+    "explicitMeat": true
   },
   {
     "slug": "skirt_steak",
     "name": "skirt steak",
     "synonyms": ["skirt", "hanger steak", "onglet"],
-    "aisle": "meat"
+    "aisle": "meat",
+    "explicitMeat": true
   },
   {
     "slug": "skyr",
@@ -13787,7 +13978,8 @@
       "smoked salmon slices",
       "nova lox"
     ],
-    "aisle": "seafood"
+    "aisle": "seafood",
+    "explicitMeat": true
   },
   {
     "slug": "smoked_salt",
@@ -13799,13 +13991,15 @@
     "slug": "smoked_trout",
     "name": "smoked trout",
     "synonyms": [],
-    "aisle": "seafood"
+    "aisle": "seafood",
+    "explicitMeat": true
   },
   {
     "slug": "smoked_turkey",
     "name": "smoked turkey",
     "synonyms": ["smoked turkey breast", "smoked turkey legs"],
-    "aisle": "meat"
+    "aisle": "meat",
+    "explicitMeat": true
   },
   {
     "slug": "snow_peas",
@@ -13845,7 +14039,8 @@
     "slug": "sole",
     "name": "sole",
     "synonyms": ["dover sole", "lemon sole", "sole fillets"],
-    "aisle": "seafood"
+    "aisle": "seafood",
+    "explicitMeat": true
   },
   {
     "slug": "somen",
@@ -14136,7 +14331,8 @@
     "slug": "squid",
     "name": "squid",
     "synonyms": ["calamari", "squid rings", "squid tubes", "baby squid"],
-    "aisle": "seafood"
+    "aisle": "seafood",
+    "explicitMeat": true
   },
   {
     "slug": "sriracha",
@@ -14187,7 +14383,8 @@
       "tri-tip"
     ],
     "aisle": "meat",
-    "shopUnit": "piece"
+    "shopUnit": "piece",
+    "explicitMeat": true
   },
   {
     "slug": "steak_sauce",
@@ -14221,7 +14418,8 @@
     "slug": "steelhead_trout",
     "name": "steelhead trout",
     "synonyms": ["steelhead"],
-    "aisle": "seafood"
+    "aisle": "seafood",
+    "explicitMeat": true
   },
   {
     "slug": "stevia",
@@ -14242,7 +14440,8 @@
       "beef chunks",
       "beef stew chunks"
     ],
-    "aisle": "meat"
+    "aisle": "meat",
+    "explicitMeat": true
   },
   {
     "slug": "stilton",
@@ -14268,7 +14467,8 @@
       "instant bouillon",
       "knorr stock pot"
     ],
-    "aisle": "pantry"
+    "aisle": "pantry",
+    "explicitMeat": true
   },
   {
     "slug": "stone_flower",
@@ -14315,7 +14515,8 @@
       "t-bone steak",
       "t-bone"
     ],
-    "aisle": "meat"
+    "aisle": "meat",
+    "explicitMeat": true
   },
   {
     "slug": "stuffing_mix",
@@ -14341,13 +14542,15 @@
     "slug": "sturgeon",
     "name": "sturgeon",
     "synonyms": [],
-    "aisle": "seafood"
+    "aisle": "seafood",
+    "explicitMeat": true
   },
   {
     "slug": "suet",
     "name": "suet",
     "synonyms": ["beef suet", "shredded suet", "atora"],
-    "aisle": "pantry"
+    "aisle": "pantry",
+    "explicitMeat": true
   },
   {
     "slug": "sugar",
@@ -14414,7 +14617,8 @@
     "slug": "summer_sausage",
     "name": "summer sausage",
     "synonyms": ["thuringer", "cervelat"],
-    "aisle": "meat"
+    "aisle": "meat",
+    "explicitMeat": true
   },
   {
     "slug": "sun_dried_tomatoes",
@@ -14621,7 +14825,8 @@
     "slug": "swordfish",
     "name": "swordfish",
     "synonyms": ["swordfish steaks"],
-    "aisle": "seafood"
+    "aisle": "seafood",
+    "explicitMeat": true
   },
   {
     "slug": "taco_sauce",
@@ -14688,7 +14893,8 @@
     "slug": "tamales",
     "name": "tamales",
     "synonyms": ["beef tamales"],
-    "aisle": "bakery"
+    "aisle": "bakery",
+    "explicitMeat": true
   },
   {
     "slug": "tamari",
@@ -14758,7 +14964,8 @@
     "slug": "tarako",
     "name": "tarako",
     "synonyms": ["mentaiko", "cod roe", "pollock roe"],
-    "aisle": "seafood"
+    "aisle": "seafood",
+    "explicitMeat": true
   },
   {
     "slug": "taro",
@@ -14793,7 +15000,8 @@
     "slug": "tasso",
     "name": "tasso",
     "synonyms": ["tasso ham"],
-    "aisle": "meat"
+    "aisle": "meat",
+    "explicitMeat": true
   },
   {
     "slug": "tea",
@@ -14941,7 +15149,8 @@
     "slug": "tilapia",
     "name": "tilapia",
     "synonyms": ["tilapia fillets"],
-    "aisle": "seafood"
+    "aisle": "seafood",
+    "explicitMeat": true
   },
   {
     "slug": "toasted_sesame_oil",
@@ -15149,7 +15358,8 @@
     "slug": "tripe",
     "name": "tripe",
     "synonyms": ["honeycomb tripe", "beef tripe", "menudo tripe"],
-    "aisle": "meat"
+    "aisle": "meat",
+    "explicitMeat": true
   },
   {
     "slug": "triple_sec",
@@ -15161,7 +15371,8 @@
     "slug": "trout",
     "name": "trout",
     "synonyms": ["rainbow trout", "trout fillets", "brook trout", "lake trout"],
-    "aisle": "seafood"
+    "aisle": "seafood",
+    "explicitMeat": true
   },
   {
     "slug": "truffle",
@@ -15185,7 +15396,8 @@
     "slug": "tuna",
     "name": "tuna",
     "synonyms": ["ahi tuna", "fresh tuna", "tuna loin"],
-    "aisle": "seafood"
+    "aisle": "seafood",
+    "explicitMeat": true
   },
   {
     "slug": "tuna_steak",
@@ -15199,7 +15411,8 @@
       "sashimi-grade tuna",
       "bluefin tuna"
     ],
-    "aisle": "seafood"
+    "aisle": "seafood",
+    "explicitMeat": true
   },
   {
     "slug": "turkey",
@@ -15212,13 +15425,15 @@
       "roast turkey",
       "diced turkey"
     ],
-    "aisle": "meat"
+    "aisle": "meat",
+    "explicitMeat": true
   },
   {
     "slug": "turkey_bacon",
     "name": "turkey bacon",
     "synonyms": ["turkey rashers"],
-    "aisle": "meat"
+    "aisle": "meat",
+    "explicitMeat": true
   },
   {
     "slug": "turkey_breast",
@@ -15230,31 +15445,36 @@
       "turkey breast cutlets",
       "turkey steaks"
     ],
-    "aisle": "meat"
+    "aisle": "meat",
+    "explicitMeat": true
   },
   {
     "slug": "turkey_legs",
     "name": "turkey legs",
     "synonyms": ["turkey drumsticks", "turkey wings", "turkey necks"],
-    "aisle": "meat"
+    "aisle": "meat",
+    "explicitMeat": true
   },
   {
     "slug": "turkey_sausage",
     "name": "turkey sausage",
     "synonyms": ["ground turkey sausage", "turkey kielbasa"],
-    "aisle": "meat"
+    "aisle": "meat",
+    "explicitMeat": true
   },
   {
     "slug": "turkey_stock",
     "name": "turkey stock",
     "synonyms": ["turkey broth", "turkey stock or broth"],
-    "aisle": "pantry"
+    "aisle": "pantry",
+    "explicitMeat": true
   },
   {
     "slug": "turkey_thigh",
     "name": "turkey thigh",
     "synonyms": [],
-    "aisle": "meat"
+    "aisle": "meat",
+    "explicitMeat": true
   },
   {
     "slug": "turmeric",
@@ -15432,25 +15652,29 @@
       "veal steak",
       "veal cubes"
     ],
-    "aisle": "meat"
+    "aisle": "meat",
+    "explicitMeat": true
   },
   {
     "slug": "veal_cutlet",
     "name": "veal cutlet",
     "synonyms": ["veal scallopini", "veal escalopes", "veal scallops", "veal scaloppine"],
-    "aisle": "meat"
+    "aisle": "meat",
+    "explicitMeat": true
   },
   {
     "slug": "veal_shank",
     "name": "veal shank",
     "synonyms": ["osso buco veal"],
-    "aisle": "meat"
+    "aisle": "meat",
+    "explicitMeat": true
   },
   {
     "slug": "veal_stock",
     "name": "veal stock",
     "synonyms": ["veal broth", "demi-glace", "demiglace", "veal demi-glace"],
-    "aisle": "pantry"
+    "aisle": "pantry",
+    "explicitMeat": true
   },
   {
     "slug": "vegan_butter",
@@ -15667,7 +15891,8 @@
       "elk",
       "game meat"
     ],
-    "aisle": "meat"
+    "aisle": "meat",
+    "explicitMeat": true
   },
   {
     "slug": "verjuice",
@@ -15979,7 +16204,8 @@
       "cobia",
       "halibut fillets"
     ],
-    "aisle": "seafood"
+    "aisle": "seafood",
+    "explicitMeat": true
   },
   {
     "slug": "white_grape_juice",
@@ -16097,7 +16323,8 @@
     "slug": "wild_boar",
     "name": "wild boar",
     "synonyms": ["boar"],
-    "aisle": "meat"
+    "aisle": "meat",
+    "explicitMeat": true
   },
   {
     "slug": "wild_rice",

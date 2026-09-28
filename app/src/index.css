@@ -388,14 +388,31 @@ button:disabled {
   margin: 0;
 }
 
-/* Compact row: qty (~4ch) and unit (~6ch) stay narrow, the name field takes what's left, and
-   the remove button is a fixed 44px square — nothing here can push past the screen width. */
+/* One line per ingredient, typed as you would write it ("2 cups chopped cilantro"); the text
+   field takes the width and the remove button is a fixed 44px square, so nothing here can push
+   past the screen width. What the parser understood sits under the line (S13). */
+.editor-ingredient {
+  margin-bottom: 8px;
+}
+
 .editor-ingredient-row {
   display: grid;
-  grid-template-columns: 4ch 6ch 1fr 44px;
+  grid-template-columns: 1fr 44px;
   gap: 6px;
   align-items: center;
-  margin-bottom: 6px;
+}
+
+.editor-understood {
+  margin: 2px 0 0 4px;
+  font-size: 0.85rem;
+  color: var(--color-text-muted);
+  overflow-wrap: anywhere;
+}
+
+.editor-understood--none,
+.editor-understood--partial {
+  color: var(--color-accent);
+  font-weight: 600;
 }
 
 .editor-ingredient-row input {

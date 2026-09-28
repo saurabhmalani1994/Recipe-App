@@ -6,9 +6,10 @@ import type { Taxonomy } from '../cook/taxonomy'
 import { getMyRecipe } from '../myRecipes/myRecipesRepo'
 import type { PlanEntry } from './planRepo'
 
-/** One ingredient line resolved for a plan entry, at the recipe's own (unscaled) servings. Only
- * corpus recipes carry a real canonical `slug`; fixture and My Recipes lines have none, and the
- * grocery build sends them to "Check these" (rule 11) rather than guessing. */
+/** One ingredient line resolved for a plan entry, at the recipe's own (unscaled) servings.
+ * Corpus recipes and My Recipes (parsed on the phone since S13) carry a real canonical `slug`;
+ * fixture lines have none, and the grocery build sends them to "Check these" (rule 11) rather
+ * than guessing. */
 export interface PlanLine {
   slug: string | null
   raw: string
@@ -93,20 +94,25 @@ export async function lookupPlanRecipe(
     }
   }
 
-  // 'my'
+  // 'my': the items the parser read from each typed line (S13). A line naming two ingredients
+  // ("salt and pepper") gives two; a blank line or a section header ("For the glaze:") gives
+  // none, as it does in the corpus build. A line with no recognisable ingredient keeps
+  // slug null and goes to "Check these".
   const recipe = await getMyRecipe(entry.recipeId)
   if (!recipe) return null
   return {
     servings: recipe.data.servings,
-    lines: recipe.data.ingredients.map((line) => ({
-      slug: null,
-      raw: rawFor(line.quantity, line.unit as Unit | null, line.canonicalIngredient),
-      qty: line.quantity,
-      qtyMax: null,
-      unit: null,
-      pkgQty: null,
-      pkgUnit: null,
-      unitStripped: false,
-    })),
+    lines: recipe.parsed.flatMap((line) =>
+      line.items.map((item) => ({
+        slug: item.slug,
+        raw: line.raw,
+        qty: item.qty,
+        qtyMax: item.qtyMax,
+        unit: item.unit,
+        pkgQty: item.pkgQty,
+        pkgUnit: item.pkgUnit,
+        unitStripped: false,
+      })),
+    ),
   }
 }
