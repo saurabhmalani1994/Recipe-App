@@ -367,3 +367,6 @@
 {"n": 920, "line": "14 teaspoon salt", "items": [{"slug": "salt", "qty": 0.25, "qty_max": null, "unit": "tsp", "optional": false}]}
 {"n": 968, "line": "2 each medium carrots, sweet potatoes and leeks roughly chopped", "items": [{"slug": "carrot", "qty": 2, "qty_max": null, "unit": "piece", "optional": false}, {"slug": "sweet_potato", "qty": 2, "qty_max": null, "unit": "piece", "optional": false}, {"slug": "leek", "qty": 2, "qty_max": null, "unit": "piece", "optional": false}]}
 {"n": 973, "line": "34 cup dry vermouth (dry sherry or any other dry, white wine would also work)", "items": [{"slug": "dry_vermouth", "qty": 0.75, "qty_max": null, "unit": "cup", "optional": false}]}
+{"n": 3001, "line": "crab brown and white meat", "items": [{"slug": "crab", "qty": null, "qty_max": null, "unit": null, "optional": false}]}
+{"n": 3002, "line": "1 clove 1 clove", "items": [{"slug": null, "qty": 1, "qty_max": null, "unit": "clove", "optional": false}]}
+{"n": 3003, "line": "1 roast", "items": [{"slug": "roast", "qty": 1, "qty_max": null, "unit": "piece", "optional": false}]}

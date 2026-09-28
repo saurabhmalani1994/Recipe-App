@@ -6945,3 +6945,183 @@ entries:
     quality: 1
     flavor_effect: "Beefy rather than lamby"
     cuisines: [middle_eastern]
+  # S3b fixups: generic targets found missing by ingest/tag's S5a corpus run (see
+  # orch/reports/S5a.md "Outside my package" and orch/reports/S3b.md). Each is a parent in the
+  # taxonomy, so its children pick these up too through the ancestor walk in
+  # ingest/tag/diet.best_substitution: `stock` covers unnamed broth; `chicken` covers
+  # cooked_chicken, chicken_thigh, chicken_wings, chicken_legs, ground_chicken, ...; `pork`
+  # covers bacon, ham, prosciutto, pancetta, ground_pork; `shellfish` covers shrimp and crab;
+  # `fish` covers salmon and other unnamed fish; `sausage` covers italian_sausage and salami.
+  - id: stock__vegetable_stock
+    target: stock
+    substitute:
+      - {slug: vegetable_stock, amount: 1, unit: x}
+    contexts: [any]
+    quality: 3
+    flavor_effect: "Lighter, sweeter"
+    cuisines: [global]
+  - id: stock__mushroom_stock
+    target: stock
+    substitute:
+      - {slug: mushroom_stock, amount: 1, unit: x}
+    contexts: [soup, braise, sauce]
+    quality: 2
+    flavor_effect: "Earthier"
+    cuisines: [global]
+  - id: chicken__vegetarian_meat
+    target: chicken
+    substitute:
+      - {slug: vegetarian_meat, amount: 1, unit: x}
+    note: "Plant-based chicken pieces"
+    contexts: [any]
+    quality: 3
+    flavor_effect: "Vegetarian analog, close texture"
+    cuisines: [global]
+  - id: chicken__young_jackfruit
+    target: chicken
+    substitute:
+      - {slug: young_jackfruit, amount: 1, unit: x}
+    note: "Drained and shredded"
+    contexts: [any]
+    quality: 2
+    flavor_effect: "Vegetarian, shreds like pulled chicken"
+    cuisines: [global]
+  - id: chicken__seitan
+    target: chicken
+    substitute:
+      - {slug: seitan, amount: 1, unit: x}
+    contexts: [any]
+    quality: 2
+    flavor_effect: "Vegetarian, chewy"
+    cuisines: [global]
+  - id: cream_of_chicken_soup__cream_of_mushroom_soup
+    target: cream_of_chicken_soup
+    substitute:
+      - {slug: cream_of_mushroom_soup, amount: 1, unit: x}
+    contexts: [any]
+    quality: 3
+    flavor_effect: "Vegetarian, earthier"
+    cuisines: [american]
+  - id: cream_of_chicken_soup__cream_of_celery_soup
+    target: cream_of_chicken_soup
+    substitute:
+      - {slug: cream_of_celery_soup, amount: 1, unit: x}
+    contexts: [any]
+    quality: 2
+    flavor_effect: "Vegetarian, milder and grassier"
+    cuisines: [american]
+  - id: pork__vegetarian_meat
+    target: pork
+    substitute:
+      - {slug: vegetarian_meat, amount: 1, unit: x}
+    note: "Vegan bacon or sausage, depending on the cut"
+    contexts: [any]
+    quality: 3
+    flavor_effect: "Vegetarian analog, close texture"
+    cuisines: [global]
+  - id: pork__young_jackfruit
+    target: pork
+    substitute:
+      - {slug: young_jackfruit, amount: 1, unit: x}
+    note: "Drained and shredded"
+    contexts: [any]
+    quality: 2
+    flavor_effect: "Vegetarian, shreds like pulled pork"
+    cuisines: [global]
+  - id: pork__tempeh
+    target: pork
+    substitute:
+      - {slug: tempeh, amount: 1, unit: x}
+    contexts: [stir_fry, frying, braise]
+    quality: 2
+    flavor_effect: "Nutty, firmer"
+    cuisines: [global]
+  - id: sausage__vegetarian_meat
+    target: sausage
+    substitute:
+      - {slug: vegetarian_meat, amount: 1, unit: x}
+    note: "Veggie sausage or veggie dogs"
+    contexts: [any]
+    quality: 3
+    flavor_effect: "Vegetarian analog, close texture"
+    cuisines: [global]
+  - id: sausage__soyrizo
+    target: sausage
+    substitute:
+      - {slug: soyrizo, amount: 1, unit: x}
+    contexts: [frying, braise]
+    quality: 2
+    flavor_effect: "Spicier, softer"
+    cuisines: [mexican]
+  - id: sausage__tvp
+    target: sausage
+    substitute:
+      - {slug: tvp, amount: 1, unit: x}
+    note: "Rehydrate in stock"
+    contexts: [braise, sauce]
+    quality: 2
+    flavor_effect: "Chewy, mild"
+    cuisines: [global]
+  - id: shellfish__hearts_of_palm
+    target: shellfish
+    substitute:
+      - {slug: hearts_of_palm, amount: 1, unit: x}
+    note: "Drained and shredded or flaked"
+    contexts: [any]
+    quality: 2
+    flavor_effect: "Vegetarian, flaky like crab or lobster"
+    cuisines: [global]
+  - id: shellfish__oyster_mushrooms
+    target: shellfish
+    substitute:
+      - {slug: oyster_mushrooms, amount: 1, unit: x}
+    note: "Torn into pieces, seared well"
+    contexts: [stir_fry, frying, braise]
+    quality: 2
+    flavor_effect: "Vegetarian, meaty chew with a mild brine when seared"
+    cuisines: [global]
+  - id: fish__extra_firm_tofu
+    target: fish
+    substitute:
+      - {slug: extra_firm_tofu, amount: 1, unit: x}
+    note: "Press and marinate; a strip of nori adds a sea flavor"
+    contexts: [frying, baking]
+    quality: 2
+    flavor_effect: "Milder, firmer"
+    cuisines: [global]
+  - id: fish__hearts_of_palm
+    target: fish
+    substitute:
+      - {slug: hearts_of_palm, amount: 1, unit: x}
+    note: "Drained and flaked"
+    contexts: [any]
+    quality: 2
+    flavor_effect: "Vegetarian, flaky texture"
+    cuisines: [global]
+  - id: beef__vegetarian_meat
+    target: beef
+    substitute:
+      - {slug: vegetarian_meat, amount: 1, unit: x}
+    note: "Plant-based beef strips or pieces"
+    contexts: [any]
+    quality: 3
+    flavor_effect: "Vegetarian analog, close texture"
+    cuisines: [global]
+  - id: beef__plant_based_ground
+    target: beef
+    substitute:
+      - {slug: plant_based_ground, amount: 1, unit: x}
+    note: "Best for diced or sliced cuts, not a whole roast"
+    contexts: [any]
+    quality: 2
+    flavor_effect: "Close beefy texture and browning"
+    cuisines: [global]
+  - id: beef__young_jackfruit
+    target: beef
+    substitute:
+      - {slug: young_jackfruit, amount: 1, unit: x}
+    note: "Drained and shredded"
+    contexts: [braise, sauce]
+    quality: 2
+    flavor_effect: "Vegetarian, shreds like braised beef"
+    cuisines: [global]

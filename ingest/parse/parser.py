@@ -461,13 +461,13 @@ def _post_rules(slug, key, name, amount, all_text):
     return slug
 
 
-def _make_item(amount, name, extra_notes, all_text, prep_extra=None):
+def _make_item(amount, name, extra_notes, all_text, prep_extra=None, allow_unit_word_name=True):
     name = name.strip(' ,;:-.')
     name = re.sub(r'^(?:of|the)\s+', '', name, flags=I)
     notes = list(amount['notes']) + list(extra_notes)
     unit = amount['unit']
     qty = amount['qty']
-    if not name and amount.get('unit_word') and resolve(amount['unit_word'])[0]:
+    if allow_unit_word_name and not name and amount.get('unit_word') and resolve(amount['unit_word'])[0]:
         # "3 whole cloves": the would-be unit is the ingredient
         name, unit = amount['unit_word'], None
         if amount.get('unit_implicit_one'):
@@ -555,6 +555,15 @@ def _parse_simple(text, all_text):
     segments = [seg.strip() for seg in body.split(',')]
     first = segments[0] if segments else ''
     tail = [x for x in segments[1:] if x]
+
+    # "1 clove 1 clove", "2 tbsp 2 tbsp": a scraped source lost the name and left the
+    # amount+unit duplicated. What looks like the name is really the same amount again, so
+    # resolving it (e.g. bare "clove" also names the spice "cloves") would invent an ingredient.
+    if amount['unit'] and len(segments) == 1 and not tail:
+        dup = parse_amount(first)
+        if (dup['qty'] == amount['qty'] and dup['unit'] == amount['unit']
+                and not _split_tail(dup['rest'])[0].strip()):
+            return [_make_item(amount, '', notes, all_text, allow_unit_word_name=False)]
 
     # several ingredients on one line
     multi = _try_multi(body if (amount['qty'] is None or amount['each']) else first, amount, all_text, notes)
