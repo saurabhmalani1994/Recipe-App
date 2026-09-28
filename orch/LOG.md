@@ -24,3 +24,4 @@
 - 2026-09-28: S11 and S8 merged (verified). Grade sheet artifact published (db capability; list returned empty as expected).
 - 2026-09-28: S14 merged. Found servings known for only 1.3% of corpus; S15 briefed.
 - 2026-09-28: S12 merged (verified). R12 and R13 ruled. S12b briefed.
+- 2026-09-28: S15 merged (verified). R14. BBC crawl done.
