@@ -7,6 +7,7 @@ import { cuisineLabel, equipmentLabel } from '../features/cook/labels'
 import { displayName } from '../features/cook/taxonomy'
 import { corpusStatusText, useCorpus } from '../features/cook/useCorpus'
 import { listKitchenItems } from '../features/kitchen/kitchenRepo'
+import { AddToPlanControl } from '../features/plan/AddToPlanControl'
 import { listKitchenEquipment } from '../features/settings/settingsRepo'
 import { KITCHEN_EQUIPMENT } from '../data/equipment'
 import { DIET_PRESET_LABELS, useDiet } from '../state/diet'
@@ -225,6 +226,11 @@ export function Cook() {
                     </span>
                     <span className="cook-result__missing">{summary ?? 'You have everything'}</span>
                   </Link>
+                  <AddToPlanControl
+                    recipeId={result.key}
+                    recipeSource="corpus"
+                    recipeTitle={result.title}
+                  />
                 </li>
               )
             })}

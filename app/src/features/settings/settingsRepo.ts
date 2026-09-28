@@ -6,6 +6,8 @@ export interface AppSettings {
   servingsPerPerson: number
   units: 'metric' | 'us'
   dietPreset: DietPreset
+  /** Plan: whether the week grid shows a breakfast slot (brief S7 #1, off by default). */
+  showBreakfast: boolean
 }
 
 interface SettingsRow {
@@ -14,6 +16,7 @@ interface SettingsRow {
   servings_per_person: number
   units: 'metric' | 'us'
   diet_preset: DietPreset
+  show_breakfast: number
 }
 
 function fromRow(row: SettingsRow): AppSettings {
@@ -22,6 +25,7 @@ function fromRow(row: SettingsRow): AppSettings {
     servingsPerPerson: row.servings_per_person,
     units: row.units,
     dietPreset: row.diet_preset,
+    showBreakfast: row.show_breakfast === 1,
   }
 }
 
@@ -41,9 +45,16 @@ export async function updateSettings(patch: Partial<AppSettings>): Promise<AppSe
   const db = await getUserDb()
   await db.run(
     `UPDATE settings
-       SET people_default = ?, servings_per_person = ?, units = ?, diet_preset = ?
+       SET people_default = ?, servings_per_person = ?, units = ?, diet_preset = ?,
+           show_breakfast = ?
      WHERE id = 1`,
-    [next.peopleDefault, next.servingsPerPerson, next.units, next.dietPreset],
+    [
+      next.peopleDefault,
+      next.servingsPerPerson,
+      next.units,
+      next.dietPreset,
+      next.showBreakfast ? 1 : 0,
+    ],
   )
   return next
 }

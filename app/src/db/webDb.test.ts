@@ -9,7 +9,7 @@ describe('WebDb', () => {
     await db.open()
     await runMigrations(db, USER_DB_MIGRATIONS)
 
-    expect(await db.getVersion()).toBe(2)
+    expect(await db.getVersion()).toBe(3)
     const settings = await db.query('SELECT * FROM settings')
     expect(settings.rows).toEqual([
       {
@@ -18,6 +18,7 @@ describe('WebDb', () => {
         servings_per_person: 1.5,
         units: 'metric',
         diet_preset: 'everything',
+        show_breakfast: 0,
       },
     ])
 

@@ -111,6 +111,14 @@ export function Settings() {
             <option value="us">US</option>
           </select>
         </label>
+        <label className="settings-checkbox">
+          <input
+            type="checkbox"
+            checked={settings.showBreakfast}
+            onChange={(e) => void patch({ showBreakfast: e.target.checked })}
+          />
+          Show breakfast on the weekly plan
+        </label>
       </fieldset>
 
       <fieldset className="settings-group" role="radiogroup" aria-label="Diet preset">

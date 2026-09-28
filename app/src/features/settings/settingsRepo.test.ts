@@ -22,6 +22,7 @@ describe('settings round trip', () => {
       servingsPerPerson: 1.5,
       units: 'metric',
       dietPreset: 'everything',
+      showBreakfast: false,
     })
   })
 
@@ -31,6 +32,7 @@ describe('settings round trip', () => {
       servingsPerPerson: 2,
       units: 'us',
       dietPreset: 'no_red_meat',
+      showBreakfast: true,
     })
 
     const settings = await getSettings()
@@ -39,6 +41,7 @@ describe('settings round trip', () => {
       servingsPerPerson: 2,
       units: 'us',
       dietPreset: 'no_red_meat',
+      showBreakfast: true,
     })
   })
 

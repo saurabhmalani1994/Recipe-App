@@ -103,6 +103,22 @@ export const USER_DB_MIGRATIONS: Migration[] = [
       ),
     ],
   },
+  {
+    // S7: weekly planner and grocery list (docs/PRODUCT.md #5-7).
+    // - plan_entries: which recipe (corpus/fixture/my recipe) a day+meal points at, denormalised
+    //   with its source and title so the Plan grid never needs corpus.db just to list itself.
+    // - settings.show_breakfast: the planner's "a setting turns on breakfast" (brief #1).
+    // - grocery_items.note / .manual: the raw text a line couldn't be parsed from ("Check
+    //   these", rule 11) and the flag for a manually typed extra item ("paper towels").
+    version: 3,
+    statements: [
+      `ALTER TABLE plan_entries ADD COLUMN recipe_source TEXT NOT NULL DEFAULT 'corpus'`,
+      `ALTER TABLE plan_entries ADD COLUMN recipe_title TEXT NOT NULL DEFAULT ''`,
+      `ALTER TABLE settings ADD COLUMN show_breakfast INTEGER NOT NULL DEFAULT 0`,
+      `ALTER TABLE grocery_items ADD COLUMN note TEXT`,
+      `ALTER TABLE grocery_items ADD COLUMN manual INTEGER NOT NULL DEFAULT 0`,
+    ],
+  },
 ]
 
 /** Every table `user.db` owns, in migration order. Used by backup export/import. */
