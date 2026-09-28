@@ -48,3 +48,4 @@
 - 2026-09-28: D20 and D21 recorded (owner's redesign choices). S22a briefed.
 - 2026-09-28: S21 merged (verified 230/35). Pushed to run device-smoke.
 - 2026-09-28: S22a merged (verified 288/47; screenshots reviewed). S22b briefed.
+- 2026-09-28: CI run 21 device-smoke PASSED on the API 34 emulator: 68,966 recipes ready 28 s after launch, copy 11.6 s. noCompress not needed.
