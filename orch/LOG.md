@@ -14,3 +14,4 @@
 - 2026-09-27: S5a merged (verified). R9 and R10 ruled. S3b briefed.
 - 2026-09-27: S7b merged (verified 34 unit, 22 e2e; screenshot checked).
 - 2026-09-27: S5b-2 merged (verified 267 pytest; eval 80.7%/28.3%).
+- 2026-09-28: S9a merged (verified). S8 and S6 briefed (opus).

@@ -16,11 +16,15 @@ allrecipes gives 402 even with a browser UA (bot wall), so S1 tries headless Chr
 ## Owner silence on 3 defaults (applied): metric default, no hosted PWA, start builds now.
 
 ## Running
-S3b (sonnet) and S9a (opus) run in worktrees. The app lane is free until corpus schema S9. The app lane is free (S7b READY; S6 waits on corpus schema S9). The full BBC crawl runs as a background
+S3b (sonnet), S8 curation (opus) and S6 matcher (app, opus) run in worktrees. The app lane is free until corpus schema S9. The app lane is free (S7b READY; S6 waits on corpus schema S9). The full BBC crawl runs as a background
 script (cap 20000, 6h timeout; log in /home/user/recipe-data/bbc_full_crawl.log).
 Owner questions pending: Kaggle token (default: no ratings source), and location for seasonality (default: temperate north).
 
 ## Done
+- S9a merged. Re-run: 301 pytest, app check 34/0. Schema v1 in schema/corpus.sql. Size 2,178 B/recipe, so
+  about 219 MB at 100k. Match query about 2 ms on 3.6k. Course blind 82% (<85%), so S9b. openrecipes and
+  hf_cuisine_type have NO steps, so R10 drops all of them. The pool is recipenlg + small scraped sources.
+  recipenlg URLs carry food.com ids: ratings join if the Food.com interactions data is found (Kaggle token or a mirror).
 - S5b-2 merged. Re-run: 267 pytest; eval.json held-out 80.7% acc, 28.3% unknown (bar 80/30, a NARROW pass).
   The 300 "hand-checked" set is really lexicon-labelled (not human): 80.5%/14.3%. Section 9 caveat: the key is
   the lexicon's view, not the owner's. Before the ship, have the owner grade ~50 cuisine-filtered results.
