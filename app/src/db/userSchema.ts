@@ -131,6 +131,19 @@ export const USER_DB_MIGRATIONS: Migration[] = [
       `ALTER TABLE grocery_items ADD COLUMN sources TEXT`,
     ],
   },
+  {
+    // S13: My Recipes (and forks) store what the ingredient parser understood beside the raw
+    // lines, so they scale, shop and match like corpus recipes.
+    // - my_recipes.parsed: JSON array aligned with data.ingredients, one { raw, items } per line;
+    //   items are { slug, qty, qtyMax, unit, pkgQty, pkgUnit, optional }.
+    // - my_recipes.parser_version: the parser (src/parse PARSER_VERSION) that wrote it.
+    // Rows from before v5 have neither and are parsed on read (features/myRecipes/lines.ts).
+    version: 5,
+    statements: [
+      `ALTER TABLE my_recipes ADD COLUMN parsed TEXT`,
+      `ALTER TABLE my_recipes ADD COLUMN parser_version INTEGER`,
+    ],
+  },
 ]
 
 /** Every table `user.db` owns, in migration order. Used by backup export/import. */

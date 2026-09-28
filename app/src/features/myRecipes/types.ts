@@ -1,4 +1,5 @@
 import type { Cuisine } from '../../corpus/model'
+import type { ParsedLine } from '../../parse'
 
 export interface MyRecipeIngredientLine {
   quantity: number | null
@@ -6,6 +7,9 @@ export interface MyRecipeIngredientLine {
   canonicalIngredient: string
   form: string | null
   optional: boolean
+  /** The line as typed (S13), e.g. "2 cups chopped cilantro". Absent on lines saved before
+   * S13; `lineText` in `lines.ts` composes one from the fields above. */
+  raw?: string
 }
 
 /** The JSON shape stored in `my_recipes.data`. */
@@ -26,6 +30,9 @@ export interface MyRecipe {
   updatedAt: string
   /** Set when this My Recipe is a fork ("make my version") of a corpus/fixture recipe. */
   parentRecipeId: string | null
+  /** What the parser understood from each ingredient line, aligned with `data.ingredients`
+   * (S13; `my_recipes.parsed`). Always current: re-parsed on read when the stored one is stale. */
+  parsed: ParsedLine[]
 }
 
 export function emptyMyRecipeData(): MyRecipeData {

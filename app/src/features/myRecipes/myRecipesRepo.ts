@@ -1,8 +1,10 @@
 import { getUserDb } from '../../db'
 import { FIXTURE_RECIPES } from '../../corpus/fixture'
 import type { Recipe } from '../../corpus/model'
+import { PARSER_VERSION, type ParsedLine } from '../../parse'
 import { diffRecipes, type RecipeDiff } from './diff'
 import { newId } from './id'
+import { currentParse, lineText, parseRecipeLines } from './lines'
 import type { MyRecipe, MyRecipeData } from './types'
 
 interface MyRecipeRow {
@@ -11,6 +13,9 @@ interface MyRecipeRow {
   data: string
   created_at: string
   updated_at: string
+  /** user.db v5 (S13); null on rows written before it. */
+  parsed: string | null
+  parser_version: number | null
 }
 
 interface ForkRow {
@@ -21,14 +26,23 @@ interface ForkRow {
   updated_at: string
 }
 
+/** Lines re-parsed on read because the stored parse was missing or stale (rule 11: counted,
+ * not silent). Reset by tests. */
+export const parseStats = { reparsed: 0 }
+
 function toMyRecipe(row: MyRecipeRow, fork: ForkRow | undefined): MyRecipe {
+  const data = JSON.parse(row.data) as MyRecipeData
+  const stored = row.parsed ? (JSON.parse(row.parsed) as ParsedLine[]) : null
+  const { parsed, reparsed } = currentParse(data, stored, row.parser_version ?? null)
+  if (reparsed) parseStats.reparsed += parsed.length
   return {
     id: row.id,
     title: row.title,
-    data: JSON.parse(row.data) as MyRecipeData,
+    data,
     createdAt: row.created_at,
     updatedAt: row.updated_at,
     parentRecipeId: fork?.parent_recipe_id ?? null,
+    parsed,
   }
 }
 
@@ -76,8 +90,8 @@ export async function createMyRecipe(title: string, data: MyRecipeData): Promise
   const id = newId('my')
   const now = new Date().toISOString()
   await db.run(
-    'INSERT INTO my_recipes (id, title, data, created_at, updated_at) VALUES (?, ?, ?, ?, ?)',
-    [id, title, JSON.stringify(data), now, now],
+    'INSERT INTO my_recipes (id, title, data, parsed, parser_version, created_at, updated_at) VALUES (?, ?, ?, ?, ?, ?, ?)',
+    [id, title, JSON.stringify(data), parsedJson(data), PARSER_VERSION, now, now],
   )
   return id
 }
@@ -85,12 +99,10 @@ export async function createMyRecipe(title: string, data: MyRecipeData): Promise
 export async function updateMyRecipe(id: string, title: string, data: MyRecipeData): Promise<void> {
   const db = await getUserDb()
   const now = new Date().toISOString()
-  await db.run('UPDATE my_recipes SET title = ?, data = ?, updated_at = ? WHERE id = ?', [
-    title,
-    JSON.stringify(data),
-    now,
-    id,
-  ])
+  await db.run(
+    'UPDATE my_recipes SET title = ?, data = ?, parsed = ?, parser_version = ?, updated_at = ? WHERE id = ?',
+    [title, JSON.stringify(data), parsedJson(data), PARSER_VERSION, now, id],
+  )
   const fork = await getForkRow(id)
   if (!fork) return
   const parent = findFixtureRecipe(fork.parent_recipe_id)
@@ -109,13 +121,19 @@ export async function deleteMyRecipe(id: string): Promise<void> {
   await db.run('DELETE FROM my_recipes WHERE id = ?', [id])
 }
 
+/** The parse stored beside `data` (user.db v5, S13). */
+function parsedJson(data: MyRecipeData): string {
+  return JSON.stringify(parseRecipeLines(data))
+}
+
 function toMyRecipeData(parent: Recipe): MyRecipeData {
   return {
     servings: parent.servings,
     cuisine: parent.cuisine,
     tags: [],
     notes: '',
-    ingredients: parent.ingredients.map((line) => ({ ...line })),
+    // Each copied line gets its text ("2 tbsp vegetable oil"), which is what the editor edits.
+    ingredients: parent.ingredients.map((line) => ({ ...line, raw: lineText(line) })),
     steps: [...parent.steps],
   }
 }
@@ -128,8 +146,16 @@ export async function forkRecipe(parent: Recipe): Promise<string> {
   const data = toMyRecipeData(parent)
   const diff = diffRecipes(parent, data)
   await db.run(
-    'INSERT INTO my_recipes (id, title, data, created_at, updated_at) VALUES (?, ?, ?, ?, ?)',
-    [id, `${parent.title} (my version)`, JSON.stringify(data), now, now],
+    'INSERT INTO my_recipes (id, title, data, parsed, parser_version, created_at, updated_at) VALUES (?, ?, ?, ?, ?, ?, ?)',
+    [
+      id,
+      `${parent.title} (my version)`,
+      JSON.stringify(data),
+      parsedJson(data),
+      PARSER_VERSION,
+      now,
+      now,
+    ],
   )
   await db.run(
     'INSERT INTO recipe_forks (id, parent_recipe_id, diff, created_at, updated_at) VALUES (?, ?, ?, ?, ?)',

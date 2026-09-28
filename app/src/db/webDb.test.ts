@@ -9,7 +9,7 @@ describe('WebDb', () => {
     await db.open()
     await runMigrations(db, USER_DB_MIGRATIONS)
 
-    expect(await db.getVersion()).toBe(4)
+    expect(await db.getVersion()).toBe(5)
     const settings = await db.query('SELECT * FROM settings')
     expect(settings.rows).toEqual([
       {
