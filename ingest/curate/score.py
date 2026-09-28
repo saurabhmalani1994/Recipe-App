@@ -71,6 +71,9 @@ How DOMAIN_PRIOR was set: by editorial process, not by measured outcome, in five
   0.85  brand test kitchens, edited reader recipes and published cookbooks: bettycrocker,
         pillsbury, bhg, southernliving, landolakes, mccormick, cookstr (cookbook excerpts),
         recipes-plus (a UK magazine), foodrepublic, lovefood
+        and the cuisine-specialist sites of ingest/fetch/sites.yaml (brief S10): single-author
+        recipe developers who test and photograph each recipe, several with published cookbooks
+        (Just One Cookbook, The Woks of Life, Korean Bapsang)
   0.70  curated or moderated community: themealdb, allrecipes (user uploads, moderated and
         heavily reviewed), chowhound
   0.55  rated user uploads and blog aggregators: food.com and the foodcom source (user uploads
@@ -130,6 +133,19 @@ _TIERS = {
 STYLE_SITES = {'kraftrecipes.com': 0.55, 'tasteofhome.com': 0.70, 'cookbooks.com': 0.20}
 DOMAIN_PRIOR = {d: v for v, ds in _TIERS.items() for d in ds}
 DOMAIN_PRIOR.update(STYLE_SITES)
+SITE_PRIOR = 0.85   # the cuisine sites' tier; features.domain() is the source id for them
+
+
+def _site_ids():
+    import os
+
+    import yaml
+    path = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), 'fetch', 'sites.yaml')
+    with open(path, encoding='utf-8') as fh:
+        return [s['id'] for s in (yaml.safe_load(fh) or {}).get('sites') or []]
+
+
+DOMAIN_PRIOR.update({s: SITE_PRIOR for s in _site_ids()})
 DEFAULT_PRIOR = 0.50
 
 _TAX = {}

@@ -48,6 +48,7 @@ if _ROOT not in sys.path:
 from ingest.build import curate  # noqa: E402
 from ingest.build import sample as S  # noqa: E402
 from ingest.build import servings as SERV  # noqa: E402
+from ingest.build import video as VIDEO  # noqa: E402
 from ingest.build.course import tag_course  # noqa: E402
 from ingest.cuisine import cuisines as CU  # noqa: E402
 from ingest.cuisine import season as SEASON  # noqa: E402
@@ -245,13 +246,13 @@ class Writer:
         nutrition, nut_coverage = NUT.fill_recipe(items, servings, self.ing, self.slug_nutrients)
         del nut_coverage
         cur = self.con.execute(
-            'INSERT INTO recipes (key, source, source_url, title, servings, servings_source, yield_text, total_min, '
+            'INSERT INTO recipes (key, source, source_url, video_url, title, servings, servings_source, yield_text, total_min, '
             'active_min, '
             'time_source, weeknight, cuisine, cuisine_confidence, cuisine_source, course, one_pot, one_pan, '
             'sheet_pan_meal, stove_and_oven, no_cook, image_url, rating, rating_count, quality, line_count, '
             'unresolved_count, core_slug_count, kcal, protein_g, fat_g, carbs_g, fiber_g, sugar_g, sodium_mg) '
-            'VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)',
-            (raw['id'], raw.get('source'), raw.get('source_url'), raw['title'].strip(), servings, servings_source,
+            'VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)',
+            (raw['id'], raw.get('source'), raw.get('source_url'), raw.get('video_url') or None, raw['title'].strip(), servings, servings_source,
              yield_text, tm.get('total_min'), tm.get('active_min'),
              self._enum('recipes', 'time_source', tm.get('source')), _b(tm.get('weeknight')),
              cuisine, cconf if cuisine else None, csrc if cuisine else None, course,
@@ -341,6 +342,7 @@ def build_source(con, writer, source, raw_root, quota, stop_after=None, log=prin
             raw = json.loads(line)
         except ValueError:
             raw = None
+        VIDEO.attach(raw, raw_root)   # R17: a Food Wishes record's video_url, from its cached post
         reason = curate.drop_reason(raw)
         if reason is None and lines is not None and raw['id'] != lines[n]['key']:
             reason = 'selection_mismatch'   # the raw file changed under the selection

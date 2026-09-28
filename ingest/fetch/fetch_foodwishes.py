@@ -36,6 +36,7 @@ from typing import Any
 import requests
 
 from common import RAW_DATA_ROOT, RateLimiter, SourceWriter
+from foodwishes_video import video_url
 
 SOURCE = "foodwishes"
 FEED_BASE = "https://foodwishes.blogspot.com/feeds/posts/default"
@@ -172,6 +173,10 @@ def parse_post(
         "steps": steps,
         "yield_text": yield_text,
     }
+    # R17 (brief S10): the embedded video, the method for the posts with no written steps.
+    video = video_url(content_html)
+    if video:
+        rec["video_url"] = video
     return rec, None
 
 

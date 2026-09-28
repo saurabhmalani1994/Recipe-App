@@ -10,7 +10,7 @@
 -- Booleans are 0/1 integers. A nullable tag is NULL when it could not be determined (for example
 -- one_pot when the recipe has no usable steps), never a guessed 0.
 
-PRAGMA user_version = 2;
+PRAGMA user_version = 3;
 
 -- type IngredientFlag: 'red_meat', 'poultry', 'fish', 'shellfish', 'animal_derived', 'explicit_meat', 'dairy', 'egg', 'gluten', 'nuts', 'alcohol'
 -- type SubContext: 'baking', 'sauce', 'marinade', 'dressing', 'stir_fry', 'braise', 'soup', 'frying', 'garnish', 'dessert', 'beverage', 'any'
@@ -22,7 +22,7 @@ CREATE TABLE corpus_meta (
   key TEXT PRIMARY KEY,
   value TEXT NOT NULL
 ) WITHOUT ROWID;
-INSERT INTO corpus_meta (key, value) VALUES ('schema_version', '2');
+INSERT INTO corpus_meta (key, value) VALUES ('schema_version', '3');
 
 -- One row per recipe that passed the build's drops (ingest/build/curate.py).
 CREATE TABLE recipes (
@@ -30,6 +30,7 @@ CREATE TABLE recipes (
   key TEXT NOT NULL UNIQUE, -- the raw id "<source>:<native id>", stable across builds: user.db refers to recipes by this
   source TEXT NOT NULL, -- a key of ingest/sources.md
   source_url TEXT,
+  video_url TEXT, -- the recipe's video (Food Wishes: YouTube or Vimeo, else the post that plays it); with no steps rows, the method is the video (R17)
   title TEXT NOT NULL,
   servings INTEGER, -- head count: the source's own, else estimated (servings_source; ingest/build/servings.py); NULL when nothing gave one
   servings_source TEXT CHECK (servings_source IN ('source', 'text', 'energy', 'mass')), -- enum: ServingsSource

@@ -5,9 +5,13 @@ dedupe leaders that passed the junk filters) and returns the chosen keys, in thi
 
 0. Recipes from EXCLUDED_SOURCES are never taken (R11: the foodcom source has no unit column,
    so its quantities cannot be scaled; rank counts them as curate_excluded_source).
-1. Every recipe from the small editorial sources (EDITORIAL_SOURCES).
+1. Every recipe from the small editorial sources (EDITORIAL_SOURCES) and from every cuisine
+   site of ingest/fetch/sites.yaml (brief S10: treated like BBC, everything that passed the junk
+   filters and the dedupe).
 2. Cuisine floors: every cuisine with data gets its best min(available, CUISINE_FLOOR) recipes
-   (recipes already taken in step 1 count toward the floor).
+   (recipes already taken in step 1 count toward the floor). R18: a floor never takes a recipe
+   scoring below the pool's 25th percentile (FLOOR_MIN_QUANTILE); it keeps fewer instead (S8b's
+   lowest kept were Cool Whip salads the fusion_other floor pulled in).
 3. The rest by score, best first, guarded so the mix constraints can still be met: while the
    slots left are no more than a constraint's deficit, only recipes that meet it are taken.
    MIX: main course >= 45%; vegetarian ok or adaptable >= 25%; no_red_meat ok or adaptable
@@ -26,8 +30,22 @@ not place, so the labelled share understates the lean; 12% is below the owner's 
 15% for that reason. The editorial sources and the floors count toward it but are never cut.
 """
 import math
+import os
 
-EDITORIAL_SOURCES = ('bbcgoodfood', 'themealdb', 'foodwishes')
+import yaml
+
+_SITES_YAML = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), 'fetch', 'sites.yaml')
+
+
+def site_sources(path=_SITES_YAML):
+    """The cuisine-site source ids (ingest/fetch/sites.yaml), sorted."""
+    with open(path, encoding='utf-8') as fh:
+        return tuple(sorted(s['id'] for s in (yaml.safe_load(fh) or {}).get('sites') or []))
+
+
+SITE_SOURCES = site_sources()
+EDITORIAL_SOURCES = ('bbcgoodfood', 'themealdb', 'foodwishes') + SITE_SOURCES
+FLOOR_MIN_QUANTILE = 0.25   # R18
 EXCLUDED_SOURCES = ('foodcom',)
 CUISINE_FLOOR = 1500
 CEILING_CUISINES = ('american', 'southern_us')
@@ -46,13 +64,25 @@ def _order(r):
     return (-r['score'], r['key'])
 
 
+def quantile(scores, q):
+    """The q-quantile of `scores` by the nearest-rank-below rule rank.py reports
+    (sorted descending, index int((1 - q) * (n - 1)))."""
+    xs = sorted(scores, reverse=True)
+    return xs[int((1 - q) * (len(xs) - 1))] if xs else None
+
+
 def select(pool, target=TARGET, floor=CUISINE_FLOOR, editorial=EDITORIAL_SOURCES, mix=MIX,
-           excluded=EXCLUDED_SOURCES, ceiling=CEILING, ceiling_cuisines=CEILING_CUISINES):
+           excluded=EXCLUDED_SOURCES, ceiling=CEILING, ceiling_cuisines=CEILING_CUISINES,
+           floor_min_quantile=FLOOR_MIN_QUANTILE):
     """Returns (chosen keys in pick order, {key: reason}), reason one of editorial,
-    cuisine_floor, score, score_unguarded."""
+    cuisine_floor, score, score_unguarded. select.floor_stats holds the R18 numbers of the
+    last call: the score bar and how many recipes each floor declined below it."""
     assert target <= HARD_CAP
     ranked = sorted((r for r in pool if r['source'] not in excluded), key=_order)
     chosen = {}
+    # R18: the pool's 25th percentile (a quarter of the pool scores below it)
+    bar = quantile((r['score'] for r in ranked), floor_min_quantile) if floor_min_quantile is not None else None
+    declined = {}
 
     for r in ranked:
         if r['source'] in editorial:
@@ -71,8 +101,14 @@ def select(pool, target=TARGET, floor=CUISINE_FLOOR, editorial=EDITORIAL_SOURCES
         if not c or r['key'] in chosen:
             continue
         if have.get(c, 0) < min(avail[c], floor):
+            if bar is not None and r['score'] < bar:
+                declined[c] = declined.get(c, 0) + 1   # R18: counted, and the floor stays short
+                continue
             chosen[r['key']] = 'cuisine_floor'
             have[c] = have.get(c, 0) + 1
+    select.floor_stats = {'bar': bar, 'quantile': floor_min_quantile, 'declined_below_bar': dict(sorted(declined.items())),
+                          'short': {c: min(avail[c], floor) - have.get(c, 0) for c in sorted(avail)
+                                    if have.get(c, 0) < min(avail[c], floor)}}
 
     cap = math.floor(ceiling * target) if ceiling is not None else None
     capped = set(ceiling_cuisines or ())
