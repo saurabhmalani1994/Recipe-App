@@ -194,3 +194,24 @@ def test_recipe_in_season_produce_intersects_only_given_slugs():
 
 def test_unknown_slug_is_never_in_season():
     assert S.recipe_in_season_produce(['not_a_real_slug'], 6) == []
+
+
+# ---------- cuisine sites (brief S10 #1) ----------
+
+def test_every_site_label_maps():
+    # every sites.yaml entry's cuisine_label has a site_labels entry: a new site cannot land
+    # unmapped (S17/S17b flagged palestinian and persian as unmapped)
+    assert C.unmapped_sites() == []
+    assert C.unmapped_sites(sites={'newsite': 'atlantean'}) == ['newsite']
+
+
+def test_site_labels_to_canonical():
+    assert C.to_canonical('palestineinadish', 'palestinian') == 'middle_eastern'
+    assert C.site_label('palestinian') == {'cuisine': 'middle_eastern', 'sub': 'palestinian'}
+    assert C.to_canonical('persianpot', 'persian') == 'persian'
+    assert C.to_canonical('thematbakh', 'egyptian') == 'north_african'
+    assert C.to_canonical('rotinrice', 'singaporean') == 'indonesian_malaysian'
+    assert C.to_canonical('mygreekdish', 'greek') == 'greek'
+    # a site label means nothing for a non-site source, and a site's unknown label is None
+    assert C.to_canonical('bbcgoodfood', 'palestinian') is None
+    assert C.to_canonical('persianpot', 'israeli') is None

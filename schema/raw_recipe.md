@@ -25,6 +25,7 @@ next slice's job.
 | `yield_text` | string? | no | Raw yield/servings string as given (e.g. `"Serves 4"`, `"makes 12 muffins"`). |
 | `image_url` | string? | no | Primary image URL if present. |
 | `tags` | string[] | no | Any other free-text tags/keywords the source exposes (diet, equipment, occasion, etc.), unparsed. |
+| `video_url` | string? | no | The recipe's video (Food Wishes: the post's YouTube/Vimeo embed as a watch URL, R17). |
 
 ## Conventions
 

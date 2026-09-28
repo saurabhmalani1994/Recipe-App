@@ -2,7 +2,7 @@
 // `ingest` owns the corpus schema (ruling R4); change schema/corpus.sql and regenerate.
 
 /** corpus_meta.schema_version this app was built against. */
-export const CORPUS_SCHEMA_VERSION = 2
+export const CORPUS_SCHEMA_VERSION = 3
 
 export const AISLE_VALUES = [
   'produce',
@@ -246,6 +246,8 @@ export interface RecipesRow {
   /** a key of ingest/sources.md */
   source: string
   source_url: string | null
+  /** the recipe's video (Food Wishes: YouTube or Vimeo, else the post that plays it); with no steps rows, the method is the video (R17) */
+  video_url: string | null
   title: string
   /** head count: the source's own, else estimated (servings_source; ingest/build/servings.py); NULL when nothing gave one */
   servings: number | null

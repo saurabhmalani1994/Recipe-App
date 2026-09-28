@@ -50,6 +50,18 @@ def test_names_lost_exact_openrecipes_input():
     (_raw(steps=[]), 'no_steps'),
     (_raw(steps=['  ']), 'no_steps'),
     (_raw(), None),
+    # R17: a step-less Food Wishes recipe is kept when it carries its video, never otherwise
+    (_raw(id='foodwishes:2007/02/x', source='foodwishes', steps=[], video_url='https://www.youtube.com/watch?v=abcdefghijk'),
+     None),
+    (_raw(id='foodwishes:2007/02/x', source='foodwishes', steps=[]), 'no_steps'),
+    (_raw(source='alpha', steps=[], video_url='https://www.youtube.com/watch?v=abcdefghijk'), 'no_steps'),
+    # R16: the exact fields a source uses to say a dish is Israeli (bbcgoodfood:sabich's tags)
+    (_raw(title='Israeli salad'), 'excluded_israeli'),
+    (_raw(cuisine_label='Israeli'), 'excluded_israeli'),
+    (_raw(tags=['amba sauce', 'israel', 'israeli food', 'sabich']), 'excluded_israeli'),
+    (_raw(title='Israeli-style shakshuka'), 'excluded_israeli'),
+    (_raw(title='Palestinian maqluba', tags=['Middle Eastern']), None),
+    (_raw(title='Israelite bread'), None),
 ])
 def test_drop_reason(raw, reason):
     assert C.drop_reason(raw) == reason
@@ -112,9 +124,34 @@ def _write_raw(root):
              steps=['Brown the chicken in a large pan.', 'Add the onion and curry powder, then the coconut milk; '
                     'simmer 25 minutes.'], yield_text='Serves 4', cuisine_label='Indian'),
     ]
-    for src, rows, extra in (('alpha', alpha, ['{not json']), ('openrecipes', beta, []), ('themealdb', meal, [])):
+    alpha.append(_raw(id='alpha:6', title='Israeli couscous salad'))   # excluded_israeli (R16)
+    fw = [
+        _raw(id='foodwishes:2007/02/lamb-stew', source='foodwishes', title='Lamb stew', steps=[],
+             source_url='https://foodwishes.blogspot.com/2007/02/lamb-stew.html',
+             ingredients=['1 kg lamb shoulder', '2 carrots', '1 onion', '500ml stock']),   # kept (R17)
+        _raw(id='foodwishes:2007/03/no-video', source='foodwishes', title='Pan sauce', steps=[],
+             ingredients=['1 shallot', '1 cup wine', '2 tbsp butter']),                  # no_steps: no video
+        _raw(id='foodwishes:2010/05/roast-chicken', source='foodwishes', title='Roast chicken',
+             ingredients=['1 whole chicken', '2 lemons', 'salt'],
+             steps=['Roast the chicken with the lemons at 220C for an hour.']),
+    ]
+    site = [
+        _raw(id='palestineinadish:maqluba', source='palestineinadish', title='Maqluba',
+             ingredients=['1 kg chicken thighs', '2 cups rice', '1 aubergine', '1 cauliflower'],
+             steps=['Fry the vegetables.', 'Layer with the chicken and rice in a pot and simmer 40 minutes.'],
+             cuisine_label='palestinian'),
+    ]
+    posts = root / 'foodwishes' / 'posts'
+    posts.mkdir(parents=True)
+    (posts / '2007_02_lamb-stew.json').write_text(json.dumps({'content': {
+        '$t': '<object><embed src="http://www.youtube.com/v/guwg8Hz-iH8&hl=en"></embed></object>Ingredients:'}}))
+    (posts / '2007_03_no-video.json').write_text(json.dumps({'content': {'$t': 'Ingredients: no video here'}}))
+    (posts / '2010_05_roast-chicken.json').write_text(json.dumps({'content': {
+        '$t': '<iframe src="https://player.vimeo.com/video/32096937?byline=0"></iframe>'}}))
+    for src, rows, extra in (('alpha', alpha, ['{not json']), ('openrecipes', beta, []), ('themealdb', meal, []),
+                             ('foodwishes', fw, []), ('palestineinadish', site, [])):
         d = root / src
-        d.mkdir(parents=True)
+        d.mkdir(parents=True, exist_ok=True)
         with open(d / 'recipes.jsonl', 'w', encoding='utf-8') as fh:
             for r in rows:
                 fh.write(json.dumps(r) + '\n')
@@ -143,11 +180,29 @@ def test_build_counts_every_drop(built):
     con = sqlite3.connect(out)
     drops = dict(((s, r), c) for s, r, c in con.execute('SELECT source, reason, count FROM build_drops'))
     assert drops == {('alpha', 'no_steps'): 1, ('alpha', 'duplicate_id'): 1, ('alpha', 'bad_json'): 1,
-                     ('openrecipes', 'ingredient_names_lost'): 1}
+                     ('alpha', 'excluded_israeli'): 1, ('openrecipes', 'ingredient_names_lost'): 1,
+                     ('foodwishes', 'no_steps'): 1}
     for src, sel, wr in con.execute('SELECT source, selected, written FROM build_sources'):
         dropped = sum(c for (s, _), c in drops.items() if s == src)
         assert sel == wr + dropped
-    assert con.execute('SELECT count(*) FROM recipes').fetchone()[0] == 5
+    assert con.execute('SELECT count(*) FROM recipes').fetchone()[0] == 8
+
+
+def test_build_video_method_and_site_label(built):
+    # R17: the step-less Food Wishes recipe is written with its video and no steps rows; a Food
+    # Wishes recipe with steps gets its (Vimeo) video too; other sources carry none
+    _, out = built
+    con = sqlite3.connect(out)
+    got = dict(con.execute("SELECT key, video_url FROM recipes WHERE source = 'foodwishes'"))
+    assert got == {'foodwishes:2007/02/lamb-stew': 'https://www.youtube.com/watch?v=guwg8Hz-iH8',
+                   'foodwishes:2010/05/roast-chicken': 'https://vimeo.com/32096937'}
+    rid = con.execute("SELECT id FROM recipes WHERE key = 'foodwishes:2007/02/lamb-stew'").fetchone()[0]
+    assert con.execute('SELECT count(*) FROM steps WHERE recipe_id = ?', (rid,)).fetchone()[0] == 0
+    assert con.execute("SELECT count(*) FROM recipes WHERE source != 'foodwishes' AND video_url IS NOT NULL"
+                       ).fetchone()[0] == 0
+    # brief S10 #1: a cuisine site's label is trusted over the classifier
+    assert con.execute("SELECT cuisine, cuisine_source FROM recipes WHERE key = 'palestineinadish:maqluba'"
+                       ).fetchone() == ('middle_eastern', 'source_label')
 
 
 def test_build_rows(built):
@@ -168,8 +223,8 @@ def test_build_rows(built):
     hit = con.execute("SELECT rowid FROM recipes_fts WHERE recipes_fts MATCH 'coconut'").fetchall()
     assert [h[0] for h in hit] == [r['id']]
     # per-slug recipe counts
-    assert con.execute("SELECT recipe_count FROM ingredients WHERE slug = 'onion'").fetchone()[0] == 3
-    assert con.execute("SELECT value FROM corpus_meta WHERE key = 'schema_version'").fetchone()[0] == '2'
+    assert con.execute("SELECT recipe_count FROM ingredients WHERE slug = 'onion'").fetchone()[0] == 4
+    assert con.execute("SELECT value FROM corpus_meta WHERE key = 'schema_version'").fetchone()[0] == '3'
     # servings (S15): the source's own is 'source'; every other recipe here is estimated, and
     # servings and servings_source are NULL together
     assert r['servings_source'] == 'source'
@@ -265,12 +320,14 @@ def test_generated_types_are_current():
 def test_fixture_db_matches_schema():
     path = os.path.join(_ROOT, 'app', 'src', 'corpus', 'fixture.db')
     con = sqlite3.connect(f'file:{path}?mode=ro', uri=True)
-    assert con.execute("SELECT value FROM corpus_meta WHERE key = 'schema_version'").fetchone()[0] == '2'
     n = con.execute('SELECT count(*) FROM recipes').fetchone()[0]
     assert 0 < n <= 300
     fresh = sqlite3.connect(':memory:')
     with open(B.SCHEMA_PATH, encoding='utf-8') as fh:
         fresh.executescript(fh.read())
+    v = "SELECT value FROM corpus_meta WHERE key = 'schema_version'"
+    assert con.execute(v).fetchone() == fresh.execute(v).fetchone() == ('3',)
+    assert con.execute('PRAGMA user_version').fetchone() == (3,)
     q = "SELECT name, sql FROM sqlite_master WHERE sql IS NOT NULL AND name NOT LIKE 'sqlite_stat%' ORDER BY name"
     assert con.execute(q).fetchall() == fresh.execute(q).fetchall()
 
@@ -294,3 +351,9 @@ def test_course_gold_bar():
 def test_course_head_phrase(title, want):
     raw = _raw(title=title, ingredients=['1 cup water'])
     assert tag_course(raw)['course'] == want
+
+
+def test_clean_title_drops_zero_width_characters():
+    # archanaskitchen:recipe_caramel-bread-pudding, verbatim
+    assert B.clean_title('\u200b' * 7 + 'Caramel Bread Pudding Recipe ') == 'Caramel Bread Pudding Recipe'
+    assert B.clean_title(' Pad thai\ufeff') == 'Pad thai'

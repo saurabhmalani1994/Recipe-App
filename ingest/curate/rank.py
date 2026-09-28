@@ -24,6 +24,7 @@ HERE = os.path.dirname(os.path.abspath(__file__))
 _ROOT = os.path.dirname(os.path.dirname(HERE))
 if _ROOT not in sys.path:
     sys.path.insert(0, _ROOT)
+from ingest.build import curate as CUR  # noqa: E402
 from ingest.curate import dedupe as D  # noqa: E402
 from ingest.curate import scan as SC  # noqa: E402
 from ingest.curate import score as Q  # noqa: E402
@@ -76,6 +77,20 @@ def load(scan_dir, text_dir=TP.OUT):
         log(f'  {missing:,} records had no text features')
     load.missing_text = missing
     return recs
+
+
+# Brief S10: the sources taken whole (select.EDITORIAL_SOURCES, the cuisine sites among them) have
+# no score cut to keep out a recipe the app cannot read. One whose ingredient lines mostly do not
+# resolve to a slug is dropped as curate_junk_unparsed: measured on the S10 scan, that is the
+# Hindi-language pages of archanaskitchen (393) and hebbarskitchen (22), the French-language
+# pages of myparisiankitchen (370 of 394), and pardonyourfrench pages whose ingredient list the
+# site serves as one run-together line (51). A recipe that cannot be matched cannot be offered
+# (R10's reason).
+WHOLE_MIN_RESOLVED = 0.5
+
+
+def unparsed_whole(r):
+    return r['source'] in SEL.EDITORIAL_SOURCES and (r['resolved'] or 0) < WHOLE_MIN_RESOLVED
 
 
 def hard_flag(r):
@@ -147,10 +162,18 @@ def run(scan_dir=SC.OUT, out=OUT, target=SEL.TARGET, draw_eval=False, report=REP
     for r in recs:
         for f in r['junk']:
             flag_counts[(r['source'], f)] += 1
+        # R16 on the title, for records scanned before the build's drop checked it (their labels
+        # and tags are not in the scan record; the build re-checks all three on what it reads)
+        if CUR.is_israeli(r['title']):
+            drop(r['source'], 'excluded_israeli', r['key'])
+            continue
         hf = hard_flag(r)
         cid, size, leader = cl[r['key']]
         if hf:
             drop(r['source'], f'curate_junk_{hf}', r['key'])
+            continue
+        if unparsed_whole(r):
+            drop(r['source'], 'curate_junk_unparsed', r['key'])
             continue
         if r['source'] in SEL.EXCLUDED_SOURCES:
             drop(r['source'], 'curate_excluded_source', r['key'])
@@ -233,6 +256,10 @@ def run(scan_dir=SC.OUT, out=OUT, target=SEL.TARGET, draw_eval=False, report=REP
         'by_time': dict(Counter(time_band(r['total_min']) for r in sel).most_common()),
         'mix': SEL.mix_shares(sel),
         'pool_mix': SEL.mix_shares(pool),
+        'floors_r18': getattr(SEL.select, 'floor_stats', None),
+        'size': getattr(SEL.select, 'size_stats', None),
+        'editorial_by_source': dict(sorted(Counter(r['source'] for r in sel
+                                                   if reasons[r['key']] == 'editorial').items())),
         'score_cut': min((r['score'] for r in sel if reasons[r['key']] == 'score'), default=None),
         'top10': [(r['score'], r['key'], r['title']) for r in ranked[:10]],
         'bottom_kept': [(r['score'], r['key'], r['title'])
@@ -407,6 +434,21 @@ def report_md(st):
     L.append(f"Freshness term mean (D18): selected {st['fresh_mean']['selected']}, pool {st['fresh_mean']['pool']}.\n")
     L.append('Truncated methods in the pool: ' + ', '.join(f'{k} {v:,}' for k, v in st['trunc_pool'].items()) +
              '; selected: ' + (', '.join(f'{k} {v:,}' for k, v in st['trunc_selected'].items()) or 'none') + '.\n')
+    fl = st.get('floors_r18')
+    if fl:
+        L.append(f"R18 floor bar (the pool's {fl['quantile']:.0%} quantile): {fl['bar']}. Recipes a floor "
+                 'declined below it: ' + (', '.join(f'{k} {v:,}' for k, v in fl['declined_below_bar'].items())
+                                          or 'none') +
+                 '. Floors left short: ' + (', '.join(f'{k} {v:,}' for k, v in fl['short'].items()) or 'none') +
+                 '.\n')
+    sz = st.get('size')
+    if sz:
+        L.append(f"Size cap: corpus.db at most {sz['size_cap'] / 1e6:.0f} MB, budget {sz['byte_budget'] / 1e6:.1f} MB. "
+                 f"Target {sz['target']:,}, settled at {sz['settled_target']:,}; selected {sz['selected']:,}, "
+                 f"estimated {sz['est_bytes'] / 1e6:.1f} MB (tries: " +
+                 '; '.join(f'{t:,} -> {n:,} at {b / 1e6:.1f} MB' for t, n, b in sz['tries']) + ').\n')
+    L.append('Editorial and cuisine-site recipes taken whole: ' +
+             ', '.join(f'{k} {v:,}' for k, v in st['editorial_by_source'].items()) + '.\n')
     ce = st['ceiling']
     L.append(f"Cuisine ceiling: {' + '.join(ce['cuisines'])} at most {ce['ceiling']:.0%} of the target; selected "
              f"{_pct(ce['selected'], n)} (pool {ce['pool']:,}).\n")

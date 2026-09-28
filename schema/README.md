@@ -25,7 +25,7 @@ corpus.db whose `schema_version` is not its own. `ingest/build/test_build.py` fa
 
 | Table | One row per | Notes |
 |---|---|---|
-| `recipes` | recipe | Times, weeknight, cuisine (+ confidence, source), course, one_pot / one_pan / sheet_pan_meal / stove_and_oven / no_cook, quality, counts, nutrition per serving (NULL for now). |
+| `recipes` | recipe | video_url (R17: Food Wishes' video; a recipe with no `steps` rows is cooked from it), times, weeknight, cuisine (+ confidence, source), course, one_pot / one_pan / sheet_pan_meal / stove_and_oven / no_cook, quality, counts, nutrition per serving (NULL for now). |
 | `recipe_ingredients` | parsed ingredient item | qty, qty_max, unit, slug, raw line, prep, optional, note, pkg_qty, pkg_unit. |
 | `recipe_slugs` | distinct (slug, recipe) | The posting lists for matching; `core` marks non-staple, non-optional use. |
 | `steps` | step | In order from 0. |

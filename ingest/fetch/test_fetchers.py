@@ -557,3 +557,38 @@ class _FakeBrowserFetcherCtx:
 
     def __exit__(self, *exc):
         return False
+
+
+# ---- R17: the Food Wishes video (brief S10) ----------------------------------------------------
+
+def test_foodwishes_video_url_each_embed_era(tmp_path):
+    from foodwishes_video import post_id, video_index, video_url
+    # 2007 flash <embed>, a later <iframe>, Vimeo, and none: the exact shapes in the post cache
+    assert video_url('<embed src="http://www.youtube.com/v/guwg8Hz-iH8&amp;hl=en">') == \
+        'https://www.youtube.com/watch?v=guwg8Hz-iH8'
+    assert video_url('<iframe src="https://www.youtube.com/embed/Ab_cd-EF123?rel=0">') == \
+        'https://www.youtube.com/watch?v=Ab_cd-EF123'
+    assert video_url('<embed src="http://www.vimeo.com/moogaloop.swf?clip_id=1079574&amp;server=x">') == \
+        'https://vimeo.com/1079574'
+    assert video_url('Ingredients: 2 eggs') is None
+    assert post_id('2012_03_my_odd_slug.json') == 'foodwishes:2012/03/my_odd_slug'
+    posts = tmp_path / 'posts'
+    posts.mkdir()
+    link = [{'rel': 'alternate', 'href': 'https://foodwishes.blogspot.com/2007/11/squash.html'}]
+    (posts / '2007_11_squash.json').write_text(json.dumps({'link': link, 'content': {
+        '$t': '<embed src="http://services.brightcove.com/services/viewer/federated_f8/271521142">'}}))
+    (posts / '2008_01_plain.json').write_text(json.dumps({'link': link, 'content': {'$t': 'no video'}}))
+    (posts / '2008_02_bad.json').write_text('{not json')
+    idx, bad = video_index(str(posts))
+    # a Brightcove embed gets the post that plays it; a post with no embed gets nothing
+    assert idx == {'foodwishes:2007/11/squash': 'https://foodwishes.blogspot.com/2007/11/squash.html'}
+    assert bad == 1
+
+
+def test_foodwishes_parse_post_writes_video_url():
+    from fetch_foodwishes import parse_post
+    html = ('<embed src="http://www.youtube.com/v/guwg8Hz-iH8"></embed><br>Ingredients:<br>2 eggs<br>'
+            '1 cup milk<br>')
+    rec, reason = parse_post(html, 'https://foodwishes.blogspot.com/2007/02/eggs.html', 'Eggs')
+    assert reason is None and rec['video_url'] == 'https://www.youtube.com/watch?v=guwg8Hz-iH8'
+    assert rec['steps'] == []

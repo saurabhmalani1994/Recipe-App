@@ -41,6 +41,28 @@ canonical:
 
 regional_sublabels:
   indian: [indian_north, indian_south, indian_bengali, indian_punjabi, indian_goan]
+  indonesian_malaysian: [malaysian, singaporean]
+  middle_eastern: [palestinian]
+  north_african: [egyptian]
+
+# The cuisine-specialist sites (ingest/fetch/sites.yaml, slices S17/S17b) write one
+# cuisine_label per site, the site's own regional identity. Every site's label maps here (brief
+# S10 #1; test_cuisine.py fails on a site whose label is missing). A site label is trusted over
+# the classifier: build_corpus.derive takes it as cuisine_source 'source_label'. `sub` is the
+# finer regional label kept for a later filter chip; corpus.db has no column for it yet.
+site_labels:
+  indian: {cuisine: indian}
+  chinese: {cuisine: chinese}
+  korean: {cuisine: korean}
+  japanese: {cuisine: japanese}
+  malaysian: {cuisine: indonesian_malaysian, sub: malaysian}
+  singaporean: {cuisine: indonesian_malaysian, sub: singaporean}
+  italian: {cuisine: italian}
+  french: {cuisine: french}
+  greek: {cuisine: greek}
+  egyptian: {cuisine: north_african, sub: egyptian}   # as themealdb's and bbcgoodfood's "Egyptian"
+  palestinian: {cuisine: middle_eastern, sub: palestinian}
+  persian: {cuisine: persian}
 
 # Values a source's own cuisine field is observed to take, mapped to the canonical list above.
 # A value present in the raw data but absent from this map (e.g. themealdb's bare "Asian", bbc's

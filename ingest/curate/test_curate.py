@@ -306,7 +306,7 @@ def _pool(main_every=4):
 
 
 def test_select_editorial_floors_and_mix():
-    keys, why = SEL.select(_pool(), target=60, floor=10, ceiling=None)
+    keys, why = SEL.select(_pool(), target=60, floor=10, ceiling=None, floor_min_quantile=None)
     rows = {r['key']: r for r in _pool()}
     got = [rows[k] for k in keys]
     assert len(keys) == 60 and len(set(keys)) == 60
@@ -315,7 +315,32 @@ def test_select_editorial_floors_and_mix():
     assert sum(1 for r in got if r['cuisine'] == 'british_irish') >= 1
     mix = SEL.mix_shares(got)
     assert mix['main'] >= 0.45 and mix['vegetarian'] >= 0.25 and mix['no_red_meat'] >= 0.5
-    assert SEL.select(list(reversed(_pool())), target=60, floor=10, ceiling=None)[0] == keys
+    assert SEL.select(list(reversed(_pool())), target=60, floor=10, ceiling=None, floor_min_quantile=None)[0] == keys
+
+
+def test_select_floor_never_reaches_below_the_pool_25th_percentile_r18():
+    # thai is r150-r189, scores 0.850-0.811; the pool's 25th percentile is r150's 0.850 (201
+    # recipes, index int(0.75 * 200) = 150 of the descending list), so the floor of 10 may take
+    # only r150 and keeps 1 instead of 10 (S8b's floor pulled in Cool Whip salads this way)
+    pool = _pool()
+    keys, why = SEL.select(pool, target=60, floor=10, ceiling=None)
+    rows = {r['key']: r for r in pool}
+    assert SEL.quantile([r['score'] for r in pool], 0.25) == rows['r150']['score']
+    assert [k for k in keys if why[k] == 'cuisine_floor' and rows[k]['cuisine'] == 'thai'] == ['r150']
+    fs = SEL.select.floor_stats
+    assert fs['bar'] == rows['r150']['score'] and fs['declined_below_bar']['thai'] == 39
+    assert fs['short']['thai'] == 9
+    # editorial recipes are never held to the bar: e1 scores 0.01 and is still taken
+    assert why['e1'] == 'editorial'
+
+
+def test_select_takes_every_cuisine_site_recipe():
+    site = SEL.SITE_SOURCES[0]
+    pool = _pool() + [{'key': 's1', 'source': site, 'score': 0.02, 'cuisine': 'indian', 'course': 'main',
+                       'veg': 'ok', 'nrm': 'ok'}]
+    keys, why = SEL.select(pool, target=60, floor=10)
+    assert why['s1'] == 'editorial'
+    assert len(SEL.SITE_SOURCES) >= 32 and 'palestineinadish' in SEL.SITE_SOURCES
 
 
 def test_select_fills_the_target_when_a_constraint_cannot_be_met():
@@ -519,3 +544,55 @@ def test_scan_offsets_match_line_starts(tmp_path):
         for i, off in enumerate(m['offsets']):
             fh.seek(off)
             assert fh.readline().decode() == lines[i * 4]
+
+
+def test_scan_refresh_grown_rescans_only_the_grown_source(tmp_path):
+    # brief S10: crawls append to raw files after a scan pinned them; --refresh-grown rescans
+    # exactly those sources at their new size and leaves the others' shards alone
+    raw = tmp_path / 'raw'
+    for src in ('alpha', 'beta'):
+        (raw / src).mkdir(parents=True)
+        (raw / src / 'recipes.jsonl').write_text(json.dumps(_raw(id=f'{src}:0', source=src)) + '\n')
+    scan = str(tmp_path / 'scan')
+    quiet = lambda *a, **k: None  # noqa: E731
+    assert SC.run(scan, str(raw), None, workers=1, budget=300, shard=4, log=quiet) == 0
+    beta_meta = SC.shard_paths(scan, 'beta', 0)[1]
+    before = os.path.getmtime(beta_meta)
+    with open(raw / 'alpha' / 'recipes.jsonl', 'a') as fh:
+        fh.write(json.dumps(_raw(id='alpha:1', source='alpha', title='Israeli salad')) + '\n')
+        fh.write(json.dumps(_raw(id='alpha:2', source='alpha', title='Leek soup')) + '\n')
+    assert SC.refresh(scan, str(raw), grown=True, log=quiet) == {'alpha': (1, 3)}
+    assert not os.path.exists(SC.shard_paths(scan, 'alpha', 0)[1])
+    assert SC.run(scan, str(raw), None, workers=1, budget=300, shard=4, log=quiet) == 0
+    metas = {m['source']: m for m in SC.iter_meta(scan)}
+    assert metas['alpha']['lines'] == 3 and metas['alpha']['written'] == 2
+    assert metas['alpha']['drops'] == {'excluded_israeli': [1, 'alpha:1']}     # R16 at scan time
+    assert os.path.getmtime(beta_meta) == before
+    assert SC.refresh(scan, str(raw), grown=True, log=quiet) == {}
+    assert SC.refresh(scan, str(raw), sources=['beta'], log=quiet) == {'beta': (1, 1)}
+
+
+def test_select_size_cap_cuts_the_score_tail_only():
+    # brief S10: corpus.db at most 235 MB. With a budget that fits 40 recipes of 1,000 estimated
+    # bytes, the target of 60 settles lower; editorial and floor recipes all stay
+    pool = _pool()
+    for r in pool:
+        r['step_chars'], r['n_lines'] = 1000 - SEL.EST_BASE - SEL.EST_PER_LINE * 0, 0
+    budget = SEL.STATIC_BYTES + 40 * 1000
+    keys, why = SEL.select(pool, target=60, floor=10, ceiling=None, byte_budget=budget)
+    st = SEL.select.size_stats
+    assert len(keys) <= 40 and st['within_budget'] and st['est_bytes'] <= budget
+    full, fwhy = SEL.select(pool, target=60, floor=10, ceiling=None, byte_budget=None)
+    kept = {k for k in full if fwhy[k] in ('editorial', 'cuisine_floor')}
+    assert kept <= set(keys)
+    assert SEL.select.size_stats['settled_target'] == 60
+
+
+def test_unparsed_whole_source_is_junk():
+    # brief S10: myparisiankitchen:quatre-quarts-pommes (French lines, 0 of 5 resolved) is taken
+    # whole by source, so it needs its own cut; a recipenlg recipe is left to the score
+    assert R.unparsed_whole({'source': 'myparisiankitchen', 'resolved': 0.0})
+    assert R.unparsed_whole({'source': 'archanaskitchen', 'resolved': 0.49})
+    assert not R.unparsed_whole({'source': 'archanaskitchen', 'resolved': 0.5})
+    assert not R.unparsed_whole({'source': 'recipenlg', 'resolved': 0.0})
+    assert 'curate_junk_unparsed' in BC.DROP_REASONS

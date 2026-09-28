@@ -1,7 +1,9 @@
 """Per-recipe checks and small derivations the corpus build needs before tagging.
 
 drop_reason(raw)      the reason a raw record cannot enter corpus.db, or None. Only structural
-                      drops and ruling R10 live here; dedupe and the quality cut are S8's.
+                      drops, ruling R10 (with R17's Food Wishes exception) and R16 live here;
+                      dedupe and the quality cut are S8's.
+is_israeli(...)       R16: the record presents as Israeli cuisine (label, title or tags).
 names_lost(lines)     True when an openrecipes record's ingredient names were lost in the source
                       ("2 cups 2 cups": the amount was written twice and the name dropped).
 parse_servings(text)  integer servings from a yield string, or None when it is not a head count.
@@ -18,7 +20,9 @@ DROP_REASONS = (
     'duplicate_id',         # the id was already written earlier in this source
     'no_title',             # empty or missing title
     'no_ingredients',       # no ingredient lines (schema/raw_recipe.md flags these)
-    'no_steps',             # R10: a recipe without steps cannot be cooked
+    'no_steps',             # R10: a recipe without steps cannot be cooked (R17: a Food Wishes
+                            # recipe with a video_url is kept; its method is the video)
+    'excluded_israeli',     # R16 (D19): labelled Israeli, or "Israeli" in the title or tags
     'ingredient_names_lost',  # R10: openrecipes lines like "2 cups 2 cups"
     'tag_error',            # the parser or a tagger raised; the message is logged
     'tag_timeout',          # tagging took longer than the per-recipe limit
@@ -28,6 +32,8 @@ DROP_REASONS = (
     'curate_junk_see_above',         # a component that lives in another recipe or a book page
     'curate_junk_title_is_ingredient',  # the whole title is one raw ingredient ("Chicken")
     'curate_junk_bad_title',         # over 120 characters, or under 3 letters
+    'curate_junk_unparsed',          # S10: a source taken whole, under half its lines resolved
+                                     # (Hindi and French pages, run-together ingredient lists)
     'curate_duplicate',              # a near-duplicate of a better copy (same title, slug Jaccard >= 0.8)
     'curate_below_cut',              # passed everything, ranked below the selection
     'curate_excluded_source',        # R11: a source the selection never takes (foodcom, S8b)
@@ -54,9 +60,29 @@ def _nonblank(xs):
     return [x for x in (xs or []) if isinstance(x, str) and x.strip()]
 
 
+_ISRAELI_RE = re.compile(r'\bisrael(?:i)?\b', re.I)   # the fetchers' R16 check (fetch_sites.py)
+
+# R17: the only source whose step-less recipes are kept, when they carry a video_url.
+VIDEO_METHOD_SOURCES = ('foodwishes',)
+
+
+def is_israeli(title=None, cuisine_label=None, tags=None):
+    """R16 (D19): "Israeli" (or "Israel") in the cuisine label, the title or a tag. Taken as the
+    ruling words it: an "israeli couscous" tag counts too."""
+    tags = [t for t in (tags or []) if isinstance(t, str)] if isinstance(tags, list) else []
+    hay = ' '.join(x for x in [title, cuisine_label] + tags if isinstance(x, str))
+    return bool(_ISRAELI_RE.search(hay))
+
+
+def video_method(raw):
+    """R17: a step-less recipe whose method is a video (Food Wishes, with a video_url)."""
+    return raw.get('source') in VIDEO_METHOD_SOURCES and bool(raw.get('video_url'))
+
+
 def drop_reason(raw):
     """Why `raw` cannot enter corpus.db (one of DROP_REASONS), or None. Does not check
-    duplicates or tagging, which need the build's state."""
+    duplicates or tagging, which need the build's state. A Food Wishes record gets its
+    video_url from ingest/build/video.py before this runs (R17)."""
     if not isinstance(raw, dict):
         return 'bad_json'
     if not raw.get('id'):
@@ -65,8 +91,10 @@ def drop_reason(raw):
         return 'no_title'
     if not _nonblank(raw.get('ingredients')):
         return 'no_ingredients'
-    if not _nonblank(raw.get('steps')):
+    if not _nonblank(raw.get('steps')) and not video_method(raw):
         return 'no_steps'
+    if is_israeli(raw.get('title'), raw.get('cuisine_label'), raw.get('tags')):
+        return 'excluded_israeli'
     if raw.get('source') == 'openrecipes' and names_lost(raw.get('ingredients')):
         return 'ingredient_names_lost'
     return None

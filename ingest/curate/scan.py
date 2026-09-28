@@ -15,7 +15,12 @@ Every line is accounted for: meta counts lines, recipes written, and drops by re
 the first example (rule 11); a per-recipe 5 s alarm turns a hung tagger into a counted
 `tag_timeout`, an exception into `tag_error`.
 
-Run: python3 -m ingest.curate.scan [--budget 520] [--workers 4] [--out DIR]
+Run: python3 -m ingest.curate.scan [--budget 520] [--workers 4] [--out DIR] [--refresh-grown]
+     [--refresh SOURCE[,SOURCE]]
+--refresh-grown drops the pinned count and every shard of a source whose raw file now has a
+different line count (a crawl that has since appended), so the next run rescans it at its new
+size; --refresh does the same for the named sources (a raw file rewritten at the same length, or
+a change to the drop checks that only touches those sources). Both print what they dropped.
 """
 import argparse
 import gzip
@@ -32,6 +37,7 @@ if _ROOT not in sys.path:
     sys.path.insert(0, _ROOT)
 from ingest.build import curate  # noqa: E402
 from ingest.build import sample as S  # noqa: E402
+from ingest.build import video as VIDEO  # noqa: E402
 
 OUT = '/home/user/recipe-data/derived/curate/scan'
 SHARD = 20000
@@ -64,7 +70,7 @@ def shard_paths(out, source, start):
     return base + '.jsonl.gz', base + '.meta.json'
 
 
-def scan_lines(lines, derive, model, F, ratings, drops):
+def scan_lines(lines, derive, model, F, ratings, drops, raw_root=S.RAW):
     """Yield features records for (line_no, text) pairs; count every drop into `drops`
     ({reason: [count, first example]})."""
     for n, line in lines:
@@ -72,6 +78,7 @@ def scan_lines(lines, derive, model, F, ratings, drops):
             raw = json.loads(line)
         except ValueError:
             raw = None
+        VIDEO.attach(raw, raw_root)   # R17, as the build does
         reason = curate.drop_reason(raw)
         ex = (raw or {}).get('id') if isinstance(raw, dict) else f'line {n}'
         if reason:
@@ -119,7 +126,7 @@ def run_shard(task):
 
     tmp = data + '.part'
     with gzip.open(tmp, 'wt', encoding='utf-8', compresslevel=1) as fh:
-        for rec in scan_lines(lines(), _W['derive'], _W['model'], _W['F'], _W['ratings'], drops):
+        for rec in scan_lines(lines(), _W['derive'], _W['model'], _W['F'], _W['ratings'], drops, _W['raw_root']):
             fh.write(json.dumps(rec, ensure_ascii=False, sort_keys=True, separators=(',', ':')) + '\n')
             written += 1
     os.replace(tmp, data)
@@ -162,6 +169,38 @@ def count_with_offsets(path, shard=SHARD):
     return {'lines': n, 'shard': shard, 'offsets': offsets}
 
 
+def refresh(out, raw_root, sources=None, grown=False, log=print):
+    """Forget the named sources, and with `grown` every source whose raw line count changed:
+    their manifest entries and shard files go, so run() rescans them. Returns
+    {source: (pinned lines, lines now)}."""
+    path = os.path.join(out, 'manifest.json')
+    if not os.path.exists(path):
+        return {}
+    with open(path, encoding='utf-8') as fh:
+        man = json.load(fh)
+    now = {}
+    todo = set(sources or ())
+    for src in sorted(man):
+        p = S.raw_path(src, raw_root)
+        if grown or src in todo:
+            now[src] = S.count_lines(p) if os.path.exists(p) else 0
+        if grown and now[src] != man[src]['lines']:
+            todo.add(src)
+    dropped = {}
+    for src in sorted(todo & set(man)):
+        m = man.pop(src)
+        for i in range(len(m['offsets'])):
+            for f in shard_paths(out, src, i * m['shard']):
+                if os.path.exists(f):
+                    os.remove(f)
+        dropped[src] = (m['lines'], now.get(src))
+        log(f'refresh: {src} pinned at {m["lines"]:,} lines, now {now.get(src, 0):,}; shards dropped', flush=True)
+    with open(path + '.part', 'w', encoding='utf-8') as fh:
+        json.dump(man, fh, sort_keys=True, indent=1)
+    os.replace(path + '.part', path)
+    return dropped
+
+
 def all_shards(man, out):
     """[(source, start, end, byte offset, out)] for every shard, in (source, start) order."""
     tasks = []
@@ -184,7 +223,11 @@ def main(argv=None):
     ap.add_argument('--ratings', default=None)
     ap.add_argument('--workers', type=int, default=4)
     ap.add_argument('--budget', type=float, default=520.0, help='seconds; no shard starts that would overrun it')
+    ap.add_argument('--refresh-grown', action='store_true', help='rescan every source whose line count changed')
+    ap.add_argument('--refresh', default='', help='comma-separated sources to rescan')
     args = ap.parse_args(argv)
+    if args.refresh_grown or args.refresh:
+        refresh(args.out, args.raw, [x for x in args.refresh.split(',') if x], args.refresh_grown)
     run(args.out, args.raw, args.ratings, args.workers, args.budget)
     return 0
 
