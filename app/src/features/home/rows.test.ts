@@ -239,9 +239,11 @@ describe('buildSeasonalRow (S11 #2d)', () => {
     })
     expect(row.title).toMatch(/weeknight/i)
     expect(row.cards.length).toBeGreaterThan(0)
+    // S18: the refresh added 2 recipes per cuisine site; these two now outrank the foodcom pair
+    // that led before (foodcom:000566, foodcom:000719, still further down this row's cards).
     expect(row.cards.slice(0, 2).map((c) => c.key)).toEqual([
-      'foodcom:000566',
-      'foodcom:000719',
+      'archanaskitchen:recipe_spinach-watermelon-salad-recipe-with-walnuts',
+      'singaporeanmalaysianrecipes:sambal-matah-raw-sambal-from-bali',
     ])
     for (const card of row.cards) expect(card.totalMin).toBeLessThanOrEqual(30)
   })
@@ -255,9 +257,10 @@ describe('buildSeasonalRow (S11 #2d)', () => {
       count: NO_WINDOW,
     })
     expect(row.title).toMatch(/weekend/i)
+    // S18: the refresh's added cuisine-site recipes outrank the foodcom pair here too.
     expect(row.cards.slice(0, 2).map((c) => c.key)).toEqual([
-      'foodcom:000334',
-      'foodcom:000777',
+      'indianhealthyrecipes:besan-ladoo-recipe-besan-laddu',
+      'indianhealthyrecipes:rajma-recipe-rajma-masala-recipe',
     ])
   })
 

@@ -20,6 +20,8 @@ export interface CorpusRecipe {
   key: string
   title: string
   sourceUrl: string | null
+  /** R17: the recipe's video. With no `steps` rows, the method is the video, not text. */
+  videoUrl: string | null
   servings: number | null
   /** 'source' when the recipe states it; otherwise estimated at build time (S15) */
   servingsSource: ServingsSource | null
@@ -57,6 +59,7 @@ interface RecipeRow {
   key: string
   title: string
   source_url: string | null
+  video_url: string | null
   servings: number | null
   servings_source: ServingsSource | null
   yield_text: string | null
@@ -90,8 +93,8 @@ export async function loadCorpusRecipe(
   diet: AppDiet,
 ): Promise<CorpusRecipe | null> {
   const { rows } = await db.query<RecipeRow>(
-    `SELECT id, key, title, source_url, servings, servings_source, yield_text, total_min,
-            active_min, cuisine, course, one_pot, no_cook
+    `SELECT id, key, title, source_url, video_url, servings, servings_source, yield_text,
+            total_min, active_min, cuisine, course, one_pot, no_cook
        FROM recipes WHERE key = ?`,
     [key],
   )
@@ -124,6 +127,7 @@ export async function loadCorpusRecipe(
     key: row.key,
     title: row.title,
     sourceUrl: row.source_url,
+    videoUrl: row.video_url,
     servings: row.servings,
     servingsSource: row.servings_source,
     yieldText: row.yield_text,

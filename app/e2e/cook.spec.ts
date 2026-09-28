@@ -143,3 +143,22 @@ test('S6 walk: kitchen, Cook, filter, result, detail with the fish sauce swap', 
   }))
   expect(scrollWidth).toBeLessThanOrEqual(clientWidth)
 })
+
+// R17: a Food Wishes recipe with a video and no steps rows shows "Method in the video" with a
+// link instead of an empty steps list (S18's fixture refresh added 12 of these).
+test('R17: a video-only recipe shows "Method in the video" instead of steps', async ({ page }) => {
+  await page.goto(
+    '/#/recipe/' + encodeURIComponent('foodwishes:2007/02/boneless-pork-loin-chops-with-shallots'),
+  )
+  const detail = page.getByTestId('screen-recipe-detail')
+  await expect(detail.getByRole('heading', { name: /Boneless Pork Loin Chops/i })).toBeVisible()
+  await expect(detail.getByRole('heading', { name: 'Steps' })).toBeVisible()
+  await expect(detail.locator('.recipe-detail__steps')).toHaveCount(0)
+  const video = detail.getByTestId('recipe-video')
+  await expect(video).toBeVisible()
+  await expect(video).toContainText('Method in the video')
+  await expect(video.getByRole('link', { name: 'watch' })).toHaveAttribute(
+    'href',
+    'https://www.youtube.com/watch?v=guwg8Hz-iH8',
+  )
+})

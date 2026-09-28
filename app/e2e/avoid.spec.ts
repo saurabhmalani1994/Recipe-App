@@ -56,15 +56,18 @@ test('S16 walk: avoid shrimp (hide, then lower), Cook, and the recipe detail', a
   await expect(padThai).toContainText('avoiding: shrimp')
   await expect(cook.getByTestId('cook-hidden-avoid')).toHaveCount(0)
 
-  // 6. The recipe detail: the shrimp line is marked, and shows its best swap (quality >= 2:
-  // scallops, over the quality-1 hearts of palm) even though shrimp is not "missing" — S16 #3
-  // marks an avoided line and shows a swap regardless of what's on hand.
+  // 6. The recipe detail: the shrimp line is marked, and shows its best swap even though shrimp
+  // is not "missing" — S16 #3 marks an avoided line and shows a swap regardless of what's on
+  // hand. S18: today's substitutions table adds `shellfish__hearts_of_palm` (quality 2, target
+  // the ancestor `shellfish`, fittingSwaps walks ancestors too), tied on quality with the direct
+  // `shrimp__scallops` (quality 2) and winning the id tiebreak — hearts of palm now leads,
+  // ahead of the quality-1 `shrimp__hearts_of_palm`.
   await padThai.click()
   const detail = page.getByTestId('screen-recipe-detail')
   await expect(detail.getByRole('heading', { name: 'Pad Thai' })).toBeVisible()
   const shrimpLine = detail.locator('li', { hasText: 'shrimp' }).first()
   await expect(shrimpLine.getByTestId('line-avoided')).toContainText('you avoid this')
-  await expect(shrimpLine.getByTestId('line-swap')).toContainText('swap: scallops')
+  await expect(shrimpLine.getByTestId('line-swap')).toContainText('swap: hearts of palm')
   await page.screenshot({ path: 'e2e/screens/avoid-detail-412x915.png' })
 
   // 7. Settings: remove the avoid entirely, and Pad Thai's line is no longer marked.

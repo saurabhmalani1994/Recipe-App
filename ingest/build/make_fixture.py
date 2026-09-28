@@ -220,6 +220,10 @@ def rebuild_keys(keys_from, out, keys=None, allow_missing=False):
 # ---- the S10 refresh -------------------------------------------------------------------------
 
 APP_SRC = os.path.join(_ROOT, 'app', 'src')
+# S18: a fixture recipe an e2e spec names by key (app/e2e/*.spec.ts) is as much a live reference
+# as one in app/src — plan.spec.ts pinned 3 foodcom recipes this way and the first refresh (S18)
+# dropped 2 of them as "unreferenced" because referenced_keys only scanned app/src.
+APP_E2E = os.path.join(_ROOT, 'app', 'e2e')
 # Slots the refresh fills from the curated corpus, in this order: per cuisine site (sites.yaml),
 # then Food Wishes recipes whose method is the video (no steps rows), then Food Wishes with steps,
 # then recipenlg, spread over cuisines. Whatever is left of MAX after them goes to recipenlg.
@@ -227,16 +231,17 @@ REFRESH_PLAN = (('site', 2), ('foodwishes_video', 12), ('foodwishes_steps', 6))
 DROP_UNREFERENCED = ('foodcom',)   # R11: the corpus no longer carries the source
 
 
-def referenced_keys(src=APP_SRC):
-    """Every '<source>:<id>' recipe key the app's source and tests name."""
+def referenced_keys(srcs=(APP_SRC, APP_E2E)):
+    """Every '<source>:<id>' recipe key the app's source and e2e tests name."""
     import re
     rx = re.compile(r"'([a-z_0-9]+:[^'\s]+)'")
     keys = set()
-    for dirpath, _, files in os.walk(src):
-        for f in files:
-            if f.endswith(('.ts', '.tsx')):
-                with open(os.path.join(dirpath, f), encoding='utf-8') as fh:
-                    keys.update(rx.findall(fh.read()))
+    for src in srcs:
+        for dirpath, _, files in os.walk(src):
+            for f in files:
+                if f.endswith(('.ts', '.tsx')):
+                    with open(os.path.join(dirpath, f), encoding='utf-8') as fh:
+                        keys.update(rx.findall(fh.read()))
     return keys
 
 

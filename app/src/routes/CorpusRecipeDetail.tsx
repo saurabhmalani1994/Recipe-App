@@ -232,11 +232,20 @@ export function CorpusRecipeDetail({ recipeKey }: { recipeKey: string }) {
       </ul>
 
       <h3>Steps</h3>
-      <ol className="recipe-detail__steps">
-        {recipe.steps.map((step, i) => (
-          <li key={i}>{step}</li>
-        ))}
-      </ol>
+      {recipe.steps.length > 0 ? (
+        <ol className="recipe-detail__steps">
+          {recipe.steps.map((step, i) => (
+            <li key={i}>{step}</li>
+          ))}
+        </ol>
+      ) : recipe.videoUrl ? (
+        <p className="recipe-detail__video" data-testid="recipe-video">
+          Method in the video:{' '}
+          <a href={recipe.videoUrl} target="_blank" rel="noreferrer">
+            watch
+          </a>
+        </p>
+      ) : null}
 
       {recipe.sourceUrl && (
         <p className="recipe-detail__source">
