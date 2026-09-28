@@ -7,6 +7,7 @@ from __future__ import annotations
 import csv
 import io
 import json
+import re
 from pathlib import Path
 
 FIXTURES = Path(__file__).resolve().parent.parent / "fixtures"
@@ -315,3 +316,126 @@ def test_foodwishes_word_style_block_and_wrapped_lines_stripped():
     ]
     assert rec["steps"] == ["Bake at 400 F."]
     assert "@font-face" not in " ".join(rec["ingredients"] + rec["steps"])
+
+
+# ---- fetch_sites (cuisine sites, S17) --------------------------------------------
+
+_TEST_SITE = {
+    "id": "testsite",
+    "cuisine_label": "indian",
+    "base_url": "https://example.com",
+    "sitemap_urls": ["https://example.com/sitemap.xml"],
+    "url_filter": r"^https://example\.com/[a-z0-9-]+/$",
+}
+
+
+def test_fetch_sites_wprm_graph_shape():
+    """WPRM/Yoast-style: the Recipe node is inside an @graph alongside WebPage/BreadcrumbList,
+    seen live on hebbarskitchen.com, thewoksoflife.com, indianhealthyrecipes.com."""
+    from fetch_sites import parse_recipe_page
+
+    html_text = (FIXTURES / "cuisine_wprm_sample.html").read_text(encoding="utf-8")
+    rec = parse_recipe_page(html_text, "https://example.com/paneer-butter-masala-recipe/", _TEST_SITE)
+    assert rec["id"] == "testsite:paneer-butter-masala-recipe"
+    assert rec["source"] == "testsite"
+    assert rec["title"] == "Paneer Butter Masala"
+    assert rec["ingredients"] == [
+        "2 cups paneer, cubed",
+        "1 cup tomato puree",
+        "2 tbsp butter",
+        "1/2 cup cream",
+    ]
+    assert len(rec["steps"]) == 3
+    assert rec["cuisine_label"] == "indian"  # from sites.yaml, not the page's own recipeCuisine
+    assert "Indian" in rec["tags"]  # the page's own recipeCuisine is kept as a tag
+    assert rec["category"] == "Main Course"
+    assert rec["prep_time_min"] == 15
+    assert rec["cook_time_min"] == 30
+    assert rec["total_time_min"] == 45
+    assert rec["yield_text"] == "4 servings"
+    assert rec["rating"] == 4.8
+    assert rec["rating_count"] == 120
+    assert rec["image_url"] == "https://example.com/images/paneer.jpg"
+
+
+def test_fetch_sites_flat_recipe_shape():
+    """A bare top-level Recipe object with no @graph wrapper, seen live on giallozafferano.com,
+    archanaskitchen.com, mygreekdish.com."""
+    from fetch_sites import parse_recipe_page
+
+    html_text = (FIXTURES / "cuisine_flat_sample.html").read_text(encoding="utf-8")
+    site = {**_TEST_SITE, "cuisine_label": "greek"}
+    rec = parse_recipe_page(html_text, "https://example.com/greek-pancakes/", site)
+    assert rec["title"] == "Greek-Style Pancakes with Honey and Walnuts"
+    assert len(rec["ingredients"]) == 4
+    # A string recipeInstructions (not a list) is still turned into one step.
+    assert rec["steps"] == [
+        "Whisk the batter, fry small pancakes until golden, top with honey and walnuts."
+    ]
+    assert rec["rating"] == 4.9
+    assert rec["rating_count"] == 45
+    assert rec["image_url"] == "https://example.com/images/tiganites.jpg"
+
+
+def test_fetch_sites_custom_app_shape():
+    """A non-WordPress custom recipe app with multiple ld+json blocks on one page (a plain
+    WebPage block plus the Recipe block), seen live on nyonyacooking.com."""
+    from fetch_sites import parse_recipe_page
+
+    html_text = (FIXTURES / "cuisine_custom_sample.html").read_text(encoding="utf-8")
+    site = {**_TEST_SITE, "cuisine_label": "malaysian"}
+    rec = parse_recipe_page(html_text, "https://example.com/recipes/sambal-ayam~ABC123", site)
+    assert rec["title"] == "Sambal Ayam (Authentic Malaysian Spicy Chicken)"
+    assert len(rec["ingredients"]) == 5
+    assert len(rec["steps"]) == 3
+    assert rec["rating"] == 4.6
+    assert rec["rating_count"] == 88
+
+
+def test_fetch_sites_non_string_yield_coerced():
+    """Some sites emit recipeYield as a bare integer, not a string (seen live on
+    nyonyacooking.com, which broke an earlier version of this parser with a TypeError)."""
+    from fetch_sites import parse_recipe_page
+
+    html_text = """
+    <script type="application/ld+json">
+    {"@context":"https://schema.org","@type":"Recipe","name":"Test Curry",
+     "recipeIngredient":["1 onion","2 tomatoes"],
+     "recipeInstructions":["Cook it."],
+     "recipeYield": 4}
+    </script>
+    """
+    rec = parse_recipe_page(html_text, "https://example.com/test-curry/", _TEST_SITE)
+    assert rec["yield_text"] == "4"
+
+
+def test_fetch_sites_no_recipe_ld_drops():
+    from fetch_sites import parse_recipe_page
+
+    html_text = "<html><head><title>Just a blog post</title></head><body>No recipe here.</body></html>"
+    assert parse_recipe_page(html_text, "https://example.com/blog/", _TEST_SITE) is None
+
+
+def test_fetch_sites_israeli_exclusion_r16():
+    from fetch_sites import israeli_exclusion_reason
+
+    assert israeli_exclusion_reason({"title": "Classic Israeli Shakshuka"}) is not None
+    assert israeli_exclusion_reason({"title": "Israeli Salad", "tags": []}) is not None
+    assert israeli_exclusion_reason(
+        {"title": "Fattoush Salad", "cuisine_label": "palestinian", "tags": ["levantine"]}
+    ) is None
+    # Word-boundary check: "Israeli" inside another word should not false-positive.
+    assert israeli_exclusion_reason({"title": "Misraeli Family Stew"}) is None
+
+
+def test_fetch_sites_sites_yaml_loads():
+    from fetch_sites import load_sites
+
+    sites = load_sites()
+    assert len(sites) >= 3
+    ids = [s["id"] for s in sites]
+    assert len(ids) == len(set(ids)), "duplicate site id in sites.yaml"
+    for s in sites:
+        for key in ("id", "cuisine_label", "base_url", "sitemap_urls", "url_filter"):
+            assert key in s, f"{s.get('id')} missing {key}"
+        re.compile(s["url_filter"])  # must be a valid regex
