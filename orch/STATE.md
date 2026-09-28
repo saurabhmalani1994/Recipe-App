@@ -16,11 +16,13 @@ allrecipes gives 402 even with a browser UA (bot wall), so S1 tries headless Chr
 ## Owner silence on 3 defaults (applied): metric default, no hosted PWA, start builds now.
 
 ## Running
-S8 curation (opus) and S7 planner/grocery (app, sonnet) run in worktrees. The app lane is free until corpus schema S9. The app lane is free (S7b READY; S6 waits on corpus schema S9). The full BBC crawl runs as a background
+S8 curation (opus) and S7c shoppable list (opus) run in worktrees. The app lane is free until corpus schema S9. The app lane is free (S7b READY; S6 waits on corpus schema S9). The full BBC crawl runs as a background
 script (cap 20000, 6h timeout; log in /home/user/recipe-data/bbc_full_crawl.log).
 Owner questions pending: Kaggle token (default: no ratings source), and location for seasonality (default: temperate north).
 
 ## Done
+- S7 merged (screenshot conflicts resolved by rerun). 85 unit, e2e 26. BUT the list is not shoppable:
+  unit-less "¾", "garlic 3.8 g", no-qty items dumped to "Check these". So S7c.
 - S6b merged. Re-run: 68 unit, e2e 25 passed. One run showed 13 failures because the e2e server reused
   port 4173 across worktrees (it tested another checkout's build). Fixed: PW_PORT, --strictPort,
   no reuse; 2/2 runs green. Tell parallel app builders to set PW_PORT. The ranking floor sits behind RANK_LEGACY.

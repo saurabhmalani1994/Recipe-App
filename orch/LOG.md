@@ -17,3 +17,4 @@
 - 2026-09-28: S9a merged (verified). S8 and S6 briefed (opus).
 - 2026-09-28: D16 recorded. S3b and S6 merged (verified). S6b and S7 briefed.
 - 2026-09-28: S6b merged. E2E port sharing across worktrees fixed (the cause of the flaky runs).
+- 2026-09-28: S7 merged (verified 85/26). The list screenshot shows an unshoppable list, so S7c briefed (opus).
