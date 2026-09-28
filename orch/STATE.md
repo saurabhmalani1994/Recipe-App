@@ -16,7 +16,8 @@ allrecipes gives 402 even with a browser UA (bot wall), so S1 tries headless Chr
 ## Owner silence on 3 defaults (applied): metric default, no hosted PWA, start builds now.
 
 ## Running
-S8b rescore (opus), S1b BBC fix (sonnet) and S1c Food Wishes (sonnet) run in worktrees. S12b merged after the owner said "you can resume". S17 (cuisine sites) runs too.
+S8b rescore (opus), S1c Food Wishes (sonnet) and S17 cuisine sites (sonnet) run in worktrees.
+The BBC --retry-failed runs in the background (log /home/user/recipe-data/bbc_retry.log, about 12,756 URLs, 5h cap). S12b merged after the owner said "you can resume". S17 (cuisine sites) runs too.
 GRADED (sheet 1): FAIL, top 1.05 / middle 0.80 / bottom 0.35; ordered and separated, but top too low. S8b rescoring by substance.
 Old sheet: https://claude.ai/artifact/Qzm5YLRQtMfuiiKTjT9mmC (db collection grades/gNN {n, grade}).
 When graded: write the grades into ingest/curate/eval/owner_grade.md, then run python3 -m ingest.curate.eval.draw --score ...
@@ -25,6 +26,7 @@ script (cap 20000, 6h timeout; log in /home/user/recipe-data/bbc_full_crawl.log)
 Owner questions pending: Kaggle token (default: no ratings source), and location for seasonality (default: temperate north).
 
 ## Done
+- S1b merged. 435 pytest. The BBC TypeError (int recipeYield) and double-counted drops are fixed. Capped retry: 199/200 recovered.
 - S15 merged. 432 pytest, 164 unit, e2e 31. Schema v2 (servings_source). Sample fill: servings 100%, nutrition 47.7%. Eval 61.9% (bar 70) shipped per R14.
 - S12 merged (Cook/css conflicts with S11, both kept). 163 unit, e2e 31. Found a favorite-source bug for Mine results, so S12b.
 - S14 merged (conflict with S8 in build_corpus.py; both kept). 382 pytest. USDA mapping 97.4% of occurrences;

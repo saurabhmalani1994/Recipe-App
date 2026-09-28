@@ -29,3 +29,4 @@
 - 2026-09-28: Owner D17 (not southern/midwest; no Cool Whip or sour cream style). R15. S8b amended.
 - 2026-09-28: Owner stopped the S12b merge (aborted, branch clean). D18 (fresh ingredients, more Food Wishes). S1c briefed; S8b told about the fresh-ingredient signal.
 - 2026-09-28: Owner said resume. S8b and S1b restarted (both stopped by the interrupt). S12b merged (178/33). D19 and R16 recorded; S17 briefed.
+- 2026-09-28: S1b merged (verified). Full BBC retry started in the background.
