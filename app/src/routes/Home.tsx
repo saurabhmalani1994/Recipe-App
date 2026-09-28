@@ -97,7 +97,14 @@ export function Home() {
         )}
       </div>
 
-      {notReady && <p className="screen__placeholder">{notReady}</p>}
+      {notReady && (
+        <div className="screen__placeholder" data-testid="home-corpus-status">
+          <p>{notReady}</p>
+          {(status.state === 'copying' || status.state === 'downloading') && (
+            <progress aria-label="Setting up the recipe library" />
+          )}
+        </div>
+      )}
 
       {hiddenNote && (
         <p className="home-hidden-avoid" data-testid="home-hidden-avoid">

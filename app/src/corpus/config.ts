@@ -22,6 +22,23 @@ export const CORPUS_STAMP: string =
   (typeof __CORPUS_STAMP__ === 'string' ? __CORPUS_STAMP__ : 'dev') +
   (isAbsoluteUrl(CORPUS_DB_URL) ? `-${hashString(CORPUS_DB_URL)}` : '')
 
+declare const __CORPUS_BYTES__: number
+
+/** The size of the bundled corpus.db in bytes, or 0 when unknown (tests, a downloaded corpus). */
+export const CORPUS_BYTES: number = typeof __CORPUS_BYTES__ === 'number' ? __CORPUS_BYTES__ : 0
+
+/**
+ * Roughly how many seconds the one-time native copy of `bytes` takes, rounded up to 5 s. The
+ * rate is a deliberately low guess for a mid-range phone inflating a compressed APK asset; the
+ * device smoke gate in CI logs the measured time (`[corpus] copied in <ms> ms`).
+ */
+export const COPY_BYTES_PER_SECOND = 20 * 1024 * 1024
+
+export function copyEstimateSeconds(bytes: number): number {
+  if (bytes <= 0) return 0
+  return Math.max(5, Math.ceil(bytes / COPY_BYTES_PER_SECOND / 5) * 5)
+}
+
 export function isAbsoluteUrl(url: string): boolean {
   return /^[a-z][a-z0-9+.-]*:\/\//i.test(url)
 }

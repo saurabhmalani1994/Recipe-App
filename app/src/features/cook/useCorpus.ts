@@ -10,7 +10,10 @@ export interface CorpusHandle {
   corpus: { db: Db; tax: Taxonomy; units: UnitTable } | null
 }
 
-/** Opens corpus.db (once per app) and reports "loading", "downloading", "missing" or "error". */
+/**
+ * Opens corpus.db (once per app) and reports "loading", "downloading", "copying", "missing" or
+ * "error".
+ */
 export function useCorpus(): CorpusHandle {
   const status = useSyncExternalStore(subscribeCorpusStatus, getCorpusStatus)
   const [corpus, setCorpus] = useState<CorpusHandle['corpus']>(null)
@@ -41,6 +44,10 @@ export function corpusStatusText(status: CorpusStatus): string | null {
       return 'Opening the recipe library…'
     case 'downloading':
       return 'Getting the recipe library ready. This happens once.'
+    case 'copying':
+      return status.estimateSeconds > 0
+        ? `Setting up the recipe library (one time, about ${status.estimateSeconds} seconds)…`
+        : 'Setting up the recipe library (one time)…'
     case 'missing':
       return `The recipe library is not on this device yet. ${status.message}`
     case 'error':

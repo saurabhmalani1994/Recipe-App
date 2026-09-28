@@ -1,6 +1,12 @@
 import { Capacitor } from '@capacitor/core'
 import { CapacitorSQLite } from '@capacitor-community/sqlite'
-import { CORPUS_DB_URL, CORPUS_STAMP, isAbsoluteUrl } from '../corpus/config'
+import {
+  CORPUS_BYTES,
+  CORPUS_DB_URL,
+  CORPUS_STAMP,
+  copyEstimateSeconds,
+  isAbsoluteUrl,
+} from '../corpus/config'
 import { CORPUS_SCHEMA_VERSION } from '../corpus/types'
 import { CapacitorDb } from './capacitorDb'
 import { OpfsDb, opfsHasDb, opfsImportDbFromUrl, opfsRemoveStaleDbs, opfsSupported } from './opfsDb'
@@ -17,14 +23,25 @@ import { WebDb } from './webDb'
  *   (`copyFromAssets`), or downloaded when CORPUS_DB_URL is absolute (`getFromHTTPRequest`).
  *
  * Every path checks `corpus_meta.schema_version` against the generated CORPUS_SCHEMA_VERSION and
- * refuses a mismatch (schema/README.md). While this runs, `getCorpusStatus()` says "loading" or
- * "downloading"; a file that is not there yet ends as "missing", anything else as "error".
+ * refuses a mismatch (schema/README.md). While this runs, `getCorpusStatus()` says "loading",
+ * "downloading" or (native first launch) "copying"; a file that is not there yet ends as
+ * "missing", anything else as "error".
+ *
+ * Read-only is enforced per platform (S21). Native opens the plugin connection with
+ * readonly = true, which refuses execute() and run() outright ("not allowed in read-only mode"),
+ * so nothing is executed on it. The web connections accept statements, so they get
+ * `PRAGMA query_only = ON`.
+ *
+ * The outcome is logged for the device smoke gate in CI, which reads logcat:
+ * `[corpus] ready <n> recipes`, or `[corpus] could not be opened: ...` / `[corpus] missing: ...`.
  */
 
 export type CorpusStatus =
   | { state: 'idle' }
   | { state: 'loading' }
   | { state: 'downloading' }
+  /** Native first launch: the bundled asset is being copied; `estimateSeconds` 0 means unknown. */
+  | { state: 'copying'; estimateSeconds: number }
   | { state: 'ready' }
   | { state: 'missing'; message: string }
   | { state: 'error'; message: string }
@@ -59,6 +76,11 @@ export function getCorpusDb(): Promise<Db> {
     (error: unknown) => {
       corpusPromise = null
       const message = error instanceof Error ? error.message : String(error)
+      console.error(
+        error instanceof CorpusMissingError
+          ? `[corpus] missing: ${message}`
+          : `[corpus] could not be opened: ${message}`,
+      )
       setStatus(
         error instanceof CorpusMissingError
           ? { state: 'missing', message }
@@ -91,10 +113,14 @@ export async function verifyCorpus(db: Db): Promise<void> {
 
 async function openCorpus(): Promise<Db> {
   setStatus({ state: 'loading' })
-  const db = Capacitor.isNativePlatform() ? await openNative() : await openWeb()
+  const native = Capacitor.isNativePlatform()
+  const db = native ? await openNative() : await openWeb()
   try {
-    await db.execute('PRAGMA query_only = ON')
+    // Never on native: the read-only plugin connection throws on any execute() (S21).
+    if (!native) await db.execute('PRAGMA query_only = ON')
     await verifyCorpus(db)
+    const { rows } = await db.query<{ n: number }>('SELECT count(*) AS n FROM recipes')
+    console.info(`[corpus] ready ${rows[0]?.n ?? 0} recipes`)
   } catch (error) {
     await db.close().catch(() => undefined)
     forgetCopy()
@@ -171,13 +197,16 @@ async function openNative(): Promise<Db> {
   const exists = (await CapacitorSQLite.isDatabase({ database: name })).result === true
   const stale = readyCopy() !== CORPUS_STAMP
   if (!exists || stale) {
-    setStatus({ state: 'downloading' })
+    const started = Date.now()
     try {
       if (isAbsoluteUrl(CORPUS_DB_URL)) {
+        setStatus({ state: 'downloading' })
         await CapacitorSQLite.getFromHTTPRequest({ url: CORPUS_DB_URL, overwrite: true })
       } else {
+        setStatus({ state: 'copying', estimateSeconds: copyEstimateSeconds(CORPUS_BYTES) })
         await CapacitorSQLite.copyFromAssets({ overwrite: true })
       }
+      console.info(`[corpus] copied in ${Date.now() - started} ms`)
     } catch (error) {
       const message = error instanceof Error ? error.message : String(error)
       throw exists ? error : new CorpusMissingError(`corpus.db could not be copied: ${message}`)
