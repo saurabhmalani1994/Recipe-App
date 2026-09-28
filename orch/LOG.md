@@ -27,3 +27,4 @@
 - 2026-09-28: S15 merged (verified). R14. BBC crawl done.
 - 2026-09-28: Owner graded sheet 1: FAIL (top 1.05). Substance signals track the grades (<=7 ingredients: 0.16 mean). S8b briefed.
 - 2026-09-28: Owner D17 (not southern/midwest; no Cool Whip or sour cream style). R15. S8b amended.
+- 2026-09-28: Owner stopped the S12b merge (aborted, branch clean). D18 (fresh ingredients, more Food Wishes). S1c briefed; S8b told about the fresh-ingredient signal.

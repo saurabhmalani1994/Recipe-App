@@ -28,6 +28,7 @@ Append only. The owner's words are verbatim (rule 13). Do not ask these again.
 | D15 | Vegetarian meaning | "yes, honestly anythiing that is not explicitly meat is fine for vegetarian, even stuff like oyster sauce of worsterchire sauce is fine, its mostly about the protein source" |
 | D16 | Main-protein swaps | Asked: should a recipe whose main protein is meat or fish show as "adaptable" in Vegetarian / No red meat? Owner chose "Always show them" (over a separate tier, or never) |
 | D17 | Style | "many of the apps felt very southern or mid western, using things like cool whip or sour cream for lots of the recipes, which is not my style." (said after grading sheet 1) |
+| D18 | Fresh ingredients, Food Wishes | "i like using fresh ingredients. cant you get more from Food Wishes? he makes good food" |
 
 ## Orchestrator rulings (challengeable)
 
