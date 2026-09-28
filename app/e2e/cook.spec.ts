@@ -135,9 +135,11 @@ test('S6 walk: kitchen, Cook, filter, result, detail with the fish sauce swap', 
   await expect(detail.getByRole('heading', { name: 'Steps' })).toBeVisible()
 
   // Units: 125 g rice noodles, scaled 3/5 to 75 g, reads as ounces in US units.
-  await detail.getByLabel('Units').selectOption('us')
+  // S22b: Metric/US is a segmented toggle in the sticky servings bar.
+  const units = detail.getByRole('radiogroup', { name: 'Units' })
+  await units.getByRole('radio', { name: 'US' }).click()
   await expect(detail.getByText(/2¾ oz rice noodles/)).toBeVisible()
-  await detail.getByLabel('Units').selectOption('metric')
+  await units.getByRole('radio', { name: 'Metric' }).click()
   await page.screenshot({ path: 'e2e/screens/corpus-recipe-detail-412x915.png' })
 
   // 5. A reload opens the stored copy instead of downloading again.

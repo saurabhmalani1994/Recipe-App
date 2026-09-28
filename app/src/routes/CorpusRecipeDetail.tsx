@@ -1,5 +1,12 @@
 import { useEffect, useState } from 'react'
-import { useLocation } from 'react-router-dom'
+import { useLocation, useNavigate } from 'react-router-dom'
+import {
+  RecipeDetailView,
+  StarButton,
+  type DetailIngredient,
+} from '../components/recipe/RecipeDetailView'
+import { Icon } from '../components/ui/Icon'
+import { EmptyState, Skeleton } from '../components/ui/Section'
 import { avoidListFrom, expandAvoid, type AvoidList } from '../features/cook/avoid'
 import {
   corpusScale,
@@ -13,6 +20,7 @@ import { swapLabel, type SwapOption } from '../features/cook/swaps'
 import { expandHave } from '../features/cook/taxonomy'
 import { corpusStatusText, useCorpus } from '../features/cook/useCorpus'
 import { isFavorite, setFavorite } from '../features/favorites/favoritesRepo'
+import type { ImportedRecipe } from '../features/importUrl/types'
 import { listKitchenItems } from '../features/kitchen/kitchenRepo'
 import { AddToPlanControl } from '../features/plan/AddToPlanControl'
 import {
@@ -23,19 +31,62 @@ import {
 import type { UnitSystem } from '../features/units/units'
 import { DIET_PRESET_LABELS, useDiet } from '../state/diet'
 
+/** A corpus recipe as the editor's starting point ("Make my version"): its lines as written. */
+function toImported(recipe: CorpusRecipe): ImportedRecipe {
+  const seen = new Set<number>()
+  const lines: string[] = []
+  for (const line of recipe.lines) {
+    if (seen.has(line.line)) continue
+    seen.add(line.line)
+    lines.push(line.raw)
+  }
+  return {
+    title: recipe.title,
+    sourceUrl: recipe.sourceUrl,
+    servingsText: recipe.servings !== null ? String(recipe.servings) : recipe.yieldText,
+    prepMin: null,
+    cookMin: null,
+    totalMin: recipe.totalMin,
+    ingredients: lines,
+    steps: recipe.steps,
+    image: recipe.imageUrl,
+    cuisine: recipe.cuisine ? cuisineLabel(recipe.cuisine) : null,
+    category: null,
+  }
+}
+
+/** A loading stand-in shaped like the detail: the hero, a title and a few lines. */
+export function DetailSkeleton({ status }: { status: string }) {
+  return (
+    <div className="detail detail--loading">
+      <Skeleton className="detail-hero detail-hero--skeleton" />
+      <div className="detail-head">
+        <Skeleton className="skeleton--title" />
+        <Skeleton className="skeleton--text" style={{ width: '45%' }} />
+      </div>
+      <p className="status-line" role="status">
+        {status}
+      </p>
+    </div>
+  )
+}
+
 /**
- * A corpus recipe (S6): ingredients scaled (D11) and converted (metric / US), each with its best
- * swap from the substitution table, then steps, equipment and time. `have` comes from the Cook
- * search that linked here (router state), else from the kitchen list.
+ * A corpus recipe (S6, S22b layout): ingredients scaled (D11) and converted (metric / US), each
+ * with its best swap from the substitution table, then steps (or the video), nutrition and the
+ * source. `have` comes from the Cook search that linked here (router state), else from the
+ * kitchen list.
  */
 export function CorpusRecipeDetail({ recipeKey }: { recipeKey: string }) {
   const { status, corpus } = useCorpus()
   const { preset } = useDiet()
   const location = useLocation()
+  const navigate = useNavigate()
   const fromSearch = (location.state as { have?: string[] } | null)?.have ?? null
 
   const [recipe, setRecipe] = useState<CorpusRecipe | null | undefined>(undefined)
   const [settings, setSettings] = useState<AppSettings | null>(null)
+  const [people, setPeople] = useState<number | null>(null)
   const [units, setUnits] = useState<UnitSystem>('metric')
   const [have, setHave] = useState<string[] | null>(fromSearch)
   const [swaps, setSwaps] = useState<Map<string, SwapOption>>(new Map())
@@ -95,24 +146,24 @@ export function CorpusRecipeDetail({ recipeKey }: { recipeKey: string }) {
 
   if (!corpus || recipe === undefined) {
     return (
-      <section className="screen" data-testid="screen-recipe-detail">
-        <p className="screen__placeholder">
-          {corpusStatusText(status) ?? 'Opening the recipe library…'}
-        </p>
+      <section className="screen screen--detail" data-testid="screen-recipe-detail">
+        <DetailSkeleton status={corpusStatusText(status) ?? 'Opening the recipe library…'} />
       </section>
     )
   }
   if (recipe === null) {
     return (
-      <section className="screen" data-testid="screen-recipe-detail">
-        <p className="screen__placeholder">Recipe not found.</p>
+      <section className="screen screen--detail" data-testid="screen-recipe-detail">
+        <EmptyState icon="search" title="Recipe not found.">
+          It may have left the library in an update.
+        </EmptyState>
       </section>
     )
   }
 
-  const people = settings?.peopleDefault ?? 2
   const perPerson = settings?.servingsPerPerson ?? 1.5
-  const { factor, target } = corpusScale(recipe, people, perPerson)
+  const headCount = people ?? settings?.peopleDefault ?? 2
+  const { factor, target } = corpusScale(recipe, headCount, perPerson)
   // S15: a head count the build estimated (the source gave none) is shown as an estimate, and
   // still scales (D11).
   const estimated = recipe.servings !== null && recipe.servingsSource !== 'source'
@@ -123,137 +174,137 @@ export function CorpusRecipeDetail({ recipeKey }: { recipeKey: string }) {
   )
   const expandedAvoid = avoid.size > 0 ? expandAvoid(corpus.tax, avoid) : null
 
-  return (
-    <section className="screen" data-testid="screen-recipe-detail">
-      <div className="recipe-detail__header">
-        <h2>{recipe.title}</h2>
-        <button
-          type="button"
-          aria-pressed={favorite}
-          aria-label={favorite ? 'Remove favorite' : 'Add favorite'}
-          className="recipe-detail__favorite"
-          onClick={() => void toggleFavorite()}
+  const ingredients: DetailIngredient[] = recipe.lines.map((line) => {
+    const lacking = !!(line.slug && haveSet && !haveSet.has(line.slug) && !line.optional)
+    const avoidMode = line.slug ? expandedAvoid?.get(line.slug) : undefined
+    const swap = line.slug ? swaps.get(line.slug) : undefined
+    const dietSwap = line.slug ? dietSwapFor.get(line.slug) : undefined
+    const notes = []
+    if (dietSwap) {
+      notes.push(
+        <span key="diet" className="ingredient__swap" data-testid="diet-swap">
+          <Icon name="leaf" size={16} />
+          {DIET_PRESET_LABELS[preset]}: {dietSwap.use ? `use ${dietSwap.use}` : 'leave it out'}
+        </span>,
+      )
+    }
+    if (swap) {
+      notes.push(
+        <span key="swap" className="ingredient__swap" data-testid="line-swap">
+          <Icon name="swap" size={16} />
+          <span>
+            swap: {swapLabel(swap)}
+            {swap.haveAll ? ' (you have these)' : ''}
+            {swap.note ? ` · ${swap.note}` : ''}
+          </span>
+        </span>,
+      )
+    }
+    return {
+      key: line.position,
+      text: formatLine(line, factor, units, corpus.units, corpus.tax),
+      missing: lacking,
+      avoided: avoidMode,
+      notes,
+    }
+  })
+
+  const dietText =
+    recipe.diet && preset !== 'everything'
+      ? recipe.diet.status === 'ok'
+        ? 'fits as written'
+        : recipe.diet.status === 'adaptable'
+          ? 'fits with the swaps marked below'
+          : recipe.diet.status === 'no'
+            ? 'does not fit'
+            : 'not known'
+      : null
+
+  const meta = (
+    <>
+      <span className="meta__time">
+        <Icon name="clock" size={16} />
+        {recipe.totalMin !== null ? `${recipe.totalMin} min total` : 'Time not given'}
+      </span>
+      {recipe.activeMin !== null && <span>{recipe.activeMin} min hands-on</span>}
+      {recipe.servings !== null ? (
+        estimated ? (
+          <span data-testid="servings-estimate">
+            Serves about {recipe.servings} (estimated)
+            {recipe.yieldText ? ` · makes ${recipe.yieldText}` : ''}
+          </span>
+        ) : (
+          <span>Serves {recipe.servings}</span>
+        )
+      ) : (
+        <span>Makes {recipe.yieldText ?? 'an amount not given'} (not scaled)</span>
+      )}
+      {recipe.onePot && <span>One pot</span>}
+      {dietText && (
+        <span
+          className={`diet-badge diet-badge--${recipe.diet?.status ?? 'unknown'}`}
+          data-testid="recipe-diet"
         >
-          {favorite ? '★' : '☆'}
-        </button>
-        <AddToPlanControl recipeId={recipe.key} recipeSource="corpus" recipeTitle={recipe.title} />
-      </div>
-
-      {estimated && (
-        <p className="recipe-detail__estimate" data-testid="servings-estimate">
-          Serves about {recipe.servings} (estimated)
-          {recipe.yieldText ? ` · makes ${recipe.yieldText}` : ''}
-        </p>
-      )}
-      <div className="recipe-detail__meta">
-        <span>
-          {target !== null
-            ? `Serves ${target} (for ${people} people × ${perPerson}/person, recipe makes ${estimated ? 'about ' : ''}${recipe.servings})`
-            : `Makes: ${recipe.yieldText ?? 'amount not given'} (not scaled)`}
+          <Icon name="leaf" size={14} />
+          {DIET_PRESET_LABELS[preset]}: {dietText}
         </span>
-        <label>
-          Units
-          <select value={units} onChange={(e) => setUnits(e.target.value as UnitSystem)}>
-            <option value="metric">Metric</option>
-            <option value="us">US</option>
-          </select>
-        </label>
-      </div>
-
-      <p className="recipe-detail__facts" data-testid="recipe-facts">
-        {[
-          recipe.totalMin !== null ? `${recipe.totalMin} min total` : 'Time not given',
-          recipe.activeMin !== null ? `${recipe.activeMin} min hands-on` : null,
-          recipe.cuisine ? cuisineLabel(recipe.cuisine) : null,
-          recipe.onePot ? 'One pot' : null,
-        ]
-          .filter(Boolean)
-          .join(' · ')}
-      </p>
-      {(recipe.equipment.length > 0 || recipe.noCook) && (
-        <ul className="chip-list" aria-label="Equipment">
-          {recipe.noCook && <li className="chip">No cooking</li>}
-          {recipe.equipment.map((e) => (
-            <li key={e} className="chip">
-              {equipmentLabel(e)}
-            </li>
-          ))}
-        </ul>
       )}
+    </>
+  )
 
-      {recipe.diet && preset !== 'everything' && (
-        <p className="recipe-detail__diet" data-testid="recipe-diet">
-          {DIET_PRESET_LABELS[preset]}:{' '}
-          {recipe.diet.status === 'ok'
-            ? 'fits as written'
-            : recipe.diet.status === 'adaptable'
-              ? 'fits with the swaps marked below'
-              : recipe.diet.status === 'no'
-                ? 'does not fit'
-                : 'not known'}
-        </p>
-      )}
-
-      <h3>Ingredients</h3>
-      <ul className="recipe-detail__ingredients corpus-ingredients">
-        {recipe.lines.map((line) => {
-          const lacking = !!(line.slug && haveSet && !haveSet.has(line.slug) && !line.optional)
-          const avoidMode = line.slug ? expandedAvoid?.get(line.slug) : undefined
-          const swap = line.slug ? swaps.get(line.slug) : undefined
-          const dietSwap = line.slug ? dietSwapFor.get(line.slug) : undefined
-          const classes = ['corpus-line']
-          if (lacking) classes.push('corpus-line--missing')
-          if (avoidMode) classes.push('corpus-line--avoided')
-          return (
-            <li key={line.position} className={classes.join(' ')}>
-              <span>{formatLine(line, factor, units, corpus.units, corpus.tax)}</span>
-              {lacking && <span className="corpus-line__tag">missing</span>}
-              {avoidMode && (
-                <span className="corpus-line__tag" data-testid="line-avoided">
-                  {avoidMode === 'hide' ? 'you avoid this' : 'you avoid this — ranked lower'}
-                </span>
-              )}
-              {dietSwap && (
-                <span className="corpus-line__swap" data-testid="diet-swap">
-                  {DIET_PRESET_LABELS[preset]}:{' '}
-                  {dietSwap.use ? `use ${dietSwap.use}` : 'leave it out'}
-                </span>
-              )}
-              {swap && (
-                <span className="corpus-line__swap" data-testid="line-swap">
-                  swap: {swapLabel(swap)}
-                  {swap.haveAll ? ' (you have these)' : ''}
-                  {swap.note ? ` · ${swap.note}` : ''}
-                </span>
-              )}
-            </li>
+  return (
+    <section className="screen screen--detail" data-testid="screen-recipe-detail">
+      <RecipeDetailView
+        title={recipe.title}
+        imageUrl={recipe.imageUrl}
+        cuisine={recipe.cuisine}
+        cuisineLabel={recipe.cuisineTag ? cuisineLabel(recipe.cuisineTag) : null}
+        meta={meta}
+        actions={
+          <>
+            <StarButton on={favorite} onToggle={() => void toggleFavorite()} />
+            <AddToPlanControl
+              recipeId={recipe.key}
+              recipeSource="corpus"
+              recipeTitle={recipe.title}
+              variant="pill"
+            />
+            <button
+              type="button"
+              className="button button--quiet"
+              onClick={() =>
+                navigate('/my-recipes/new', { state: { importedRecipe: toImported(recipe) } })
+              }
+            >
+              <Icon name="edit" size={18} />
+              Make my version
+            </button>
+          </>
+        }
+        servings={
+          target !== null
+            ? { people: headCount, onPeopleChange: setPeople, target }
+            : undefined
+        }
+        units={{ value: units, onChange: setUnits }}
+        intro={
+          (recipe.equipment.length > 0 || recipe.noCook) && (
+            <ul className="chip-wrap detail-equipment" aria-label="Equipment">
+              {recipe.noCook && <li className="chip">No cooking</li>}
+              {recipe.equipment.map((e) => (
+                <li key={e} className="chip">
+                  {equipmentLabel(e)}
+                </li>
+              ))}
+            </ul>
           )
-        })}
-      </ul>
-
-      <h3>Steps</h3>
-      {recipe.steps.length > 0 ? (
-        <ol className="recipe-detail__steps">
-          {recipe.steps.map((step, i) => (
-            <li key={i}>{step}</li>
-          ))}
-        </ol>
-      ) : recipe.videoUrl ? (
-        <p className="recipe-detail__video" data-testid="recipe-video">
-          Method in the video:{' '}
-          <a href={recipe.videoUrl} target="_blank" rel="noreferrer">
-            watch
-          </a>
-        </p>
-      ) : null}
-
-      {recipe.sourceUrl && (
-        <p className="recipe-detail__source">
-          <a href={recipe.sourceUrl} target="_blank" rel="noreferrer">
-            Original recipe
-          </a>
-        </p>
-      )}
+        }
+        ingredients={ingredients}
+        steps={recipe.steps}
+        videoUrl={recipe.videoUrl}
+        nutrition={recipe.nutrition}
+        sourceUrl={recipe.sourceUrl}
+      />
     </section>
   )
 }

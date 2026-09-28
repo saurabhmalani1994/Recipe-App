@@ -1,4 +1,4 @@
-import type { Cuisine } from '../../corpus/types'
+import type { Course, Cuisine } from '../../corpus/types'
 
 /** One card in a Home row (S11 #2): "image if any, title, cuisine, time, 'you have 7/9'". */
 export interface HomeCard {
@@ -6,6 +6,10 @@ export interface HomeCard {
   key: string
   title: string
   cuisine: Cuisine | null
+  /** The cuisine to label the card with (S22b: a classifier guess under 0.8 is not shown). */
+  cuisineTag: Cuisine | null
+  /** S22b: Today's pick prefers a main course. */
+  course: Course
   totalMin: number | null
   imageUrl: string | null
   /** Core slugs the kitchen has, over core slugs plus unreadable lines (same denominator as

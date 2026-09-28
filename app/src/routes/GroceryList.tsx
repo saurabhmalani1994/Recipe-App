@@ -1,45 +1,63 @@
-import { useEffect, useState } from 'react'
-import { ingredientAisle, ingredientName, ingredientPurchase } from '../corpus/slugs'
+import { useEffect, useRef, useState } from 'react'
+import { Link, useLocation } from 'react-router-dom'
+import { ingredientName } from '../corpus/slugs'
+import { Segmented } from '../components/ui/Controls'
+import { Icon } from '../components/ui/Icon'
+import { EmptyState } from '../components/ui/Section'
+import { useSnackbar } from '../components/ui/Snackbar'
+import { SwipeRow } from '../components/ui/SwipeRow'
+import { useCorpus } from '../features/cook/useCorpus'
 import {
-  aggregateGroceryLines,
-  type GroceryLineInput,
-  type SlugMeta,
-} from '../features/grocery/aggregate'
+  buildListFromPlan,
+  buildMessage,
+  type ListRange,
+} from '../features/grocery/buildFromPlan'
 import {
   addManualGroceryItem,
   addTickedToKitchen,
-  buildGroceryList,
   clearGroceryList,
+  deleteGroceryItem,
   getCurrentGroceryList,
+  restoreGroceryItem,
   setGroceryItemChecked,
   type GroceryList,
   type GroceryListItem,
 } from '../features/grocery/groceryRepo'
-import { useCorpus } from '../features/cook/useCorpus'
-import { listKitchenItems } from '../features/kitchen/kitchenRepo'
-import {
-  listPlanEntriesInRange,
-  mondayOf,
-  nextWeekStart,
-  weekDays,
-} from '../features/plan/planRepo'
-import { lookupPlanRecipe } from '../features/plan/recipeLookup'
-import { scaleFactor } from '../features/scaling/scale'
 import { getSettings, type AppSettings } from '../features/settings/settingsRepo'
 
-type Range = 'this' | 'next' | 'both'
+/** A ticked item stays in its aisle (struck through) this long before it folds into "Done". */
+const SETTLE_MS = 900
 
-/** The grocery list builder and shopping mode (brief S7 #2-3). */
+/**
+ * The grocery list builder and shopping mode (brief S7 #2-3; S22b layout). Big rows grouped by
+ * aisle under sticky aisle headers. Tap a row, or swipe it right, to tick it; swipe left to
+ * delete it (an undo snackbar puts it back). Ticked items fold into a collapsed "Done (n)"
+ * section, and "Add ticked to kitchen" is the primary action once anything is ticked.
+ */
 export function GroceryList() {
   const { corpus } = useCorpus()
+  const location = useLocation()
+  const { show } = useSnackbar()
   const [settings, setSettings] = useState<AppSettings | null>(null)
-  const [range, setRange] = useState<Range>('this')
+  const [range, setRange] = useState<ListRange>('this')
   const [building, setBuilding] = useState(false)
-  const [list, setList] = useState<GroceryList | null>(null)
+  const [list, setList] = useState<GroceryList | null | undefined>(undefined)
   const [manualText, setManualText] = useState('')
-  const [message, setMessage] = useState<string | null>(null)
-  // List lines whose source recipes are showing (tapped open).
+  // A build started from Plan hands its "left off …" line over in router state.
+  const [message, setMessage] = useState<string | null>(
+    () => (location.state as { message?: string | null } | null)?.message ?? null,
+  )
   const [openSources, setOpenSources] = useState<ReadonlySet<string>>(new Set())
+  const [settling, setSettling] = useState<ReadonlySet<string>>(new Set())
+  const [showDone, setShowDone] = useState(false)
+  const timers = useRef(new Map<string, number>())
+
+  useEffect(() => {
+    const pending = timers.current
+    return () => {
+      for (const timer of pending.values()) window.clearTimeout(timer)
+    }
+  }, [])
 
   function toggleSources(id: string) {
     setOpenSources((prev) => {
@@ -52,15 +70,11 @@ export function GroceryList() {
 
   useEffect(() => {
     void getSettings().then(setSettings)
-  }, [])
-
-  useEffect(() => {
     void refresh()
   }, [])
 
   async function refresh() {
-    const loaded = await getCurrentGroceryList(ingredientName)
-    setList(loaded)
+    setList(await getCurrentGroceryList(ingredientName))
   }
 
   async function build() {
@@ -68,82 +82,55 @@ export function GroceryList() {
     setBuilding(true)
     setMessage(null)
     try {
-      const thisWeek = mondayOf(new Date())
-      const next = nextWeekStart(thisWeek)
-      const start = range === 'next' ? next : thisWeek
-      const to = range === 'this' ? weekDays(thisWeek)[6] : weekDays(next)[6]
-      const entries = await listPlanEntriesInRange(start, to)
-
-      const kitchen = await listKitchenItems()
-      const haveSlugs = new Set(kitchen.map((k) => k.ingredientId))
-
-      const lines: GroceryLineInput[] = []
-      for (const entry of entries) {
-        const recipe = await lookupPlanRecipe(corpus, entry)
-        if (!recipe) continue
-        const factor = recipe.servings
-          ? scaleFactor(recipe.servings, entry.people, settings.servingsPerPerson)
-          : 1
-        for (const line of recipe.lines) {
-          lines.push({
-            slug: line.slug,
-            raw: line.raw,
-            qty: line.qty === null ? null : line.qty * factor,
-            qtyMax: line.qtyMax === null ? null : line.qtyMax * factor,
-            unit: line.unit,
-            pkgQty: line.pkgQty,
-            pkgUnit: line.pkgUnit,
-            recipe: entry.recipeTitle || null,
-            unitStripped: line.unitStripped,
-          })
-        }
-      }
-
-      const metaFor = (slug: string): SlugMeta => ({
-        name: ingredientName(slug),
-        aisle: ingredientAisle(slug),
-        isStaple: corpus.tax.staples.has(slug),
-        density: corpus.tax.density.get(slug) ?? null,
-        eachG: corpus.tax.eachG.get(slug) ?? null,
-        purchase: ingredientPurchase(slug),
-      })
-
-      const { items, checkThese } = aggregateGroceryLines(lines, {
-        units: corpus.units,
-        system: settings.units,
-        metaFor,
-        haveSlugs,
-      })
-
-      await buildGroceryList(null, items, checkThese)
+      const result = await buildListFromPlan(corpus, settings, range)
       await refresh()
-      // "Have" items (staples, the kitchen list) are left off the list; say which, so nothing
-      // disappears without a word (rule 11).
-      const had = items.filter((i) => i.have).map((i) => i.name)
-      setMessage(
-        entries.length === 0
-          ? 'Nothing planned for this range yet — add some recipes to Plan first.'
-          : had.length > 0
-            ? `Left off ${had.length} you already have: ${had.join(', ')}.`
-            : null,
-      )
+      setMessage(buildMessage(result))
     } finally {
       setBuilding(false)
     }
   }
 
+  function settle(id: string) {
+    setSettling((prev) => new Set(prev).add(id))
+    window.clearTimeout(timers.current.get(id))
+    timers.current.set(
+      id,
+      window.setTimeout(() => {
+        timers.current.delete(id)
+        setSettling((prev) => {
+          const next = new Set(prev)
+          next.delete(id)
+          return next
+        })
+      }, SETTLE_MS),
+    )
+  }
+
   async function toggle(item: GroceryListItem) {
     // Optimistic: a shopping checklist should tick the instant you tap it, not after a round
-    // trip to the db. Ticked items still drop to the bottom, via `groupByAisle`'s sort below.
+    // trip to the db.
+    const checked = !item.checked
+    if (checked) settle(item.id)
     setList((prev) =>
       prev
-        ? {
-            ...prev,
-            items: prev.items.map((i) => (i.id === item.id ? { ...i, checked: !i.checked } : i)),
-          }
+        ? { ...prev, items: prev.items.map((i) => (i.id === item.id ? { ...i, checked } : i)) }
         : prev,
     )
-    await setGroceryItemChecked(item.id, !item.checked)
+    await setGroceryItemChecked(item.id, checked)
+  }
+
+  async function remove(item: GroceryListItem) {
+    setList((prev) =>
+      prev ? { ...prev, items: prev.items.filter((i) => i.id !== item.id) } : prev,
+    )
+    const deleted = await deleteGroceryItem(item.id)
+    if (!deleted) return
+    show({
+      message: `Deleted ${item.name}`,
+      onAction: () => {
+        void restoreGroceryItem(deleted).then(refresh)
+      },
+    })
   }
 
   async function addManual() {
@@ -163,132 +150,182 @@ export function GroceryList() {
   async function clear() {
     if (!list) return
     await clearGroceryList(list.id)
+    setMessage(null)
     await refresh()
   }
 
-  const groups = groupByAisle(list?.items ?? [])
-  const checkThese = (list?.items ?? []).filter((i) => i.note !== null)
+  const items = list?.items ?? []
+  const buyable = items.filter((i) => i.note === null)
+  const open = buyable.filter((i) => !i.checked || settling.has(i.id))
+  const done = buyable
+    .filter((i) => i.checked && !settling.has(i.id))
+    .sort((a, b) => a.name.localeCompare(b.name))
+  const tickedCount = buyable.filter((i) => i.checked).length
+  const groups = groupByAisle(open)
+  const checkThese = items.filter((i) => i.note !== null)
+
+  const row = (item: GroceryListItem) => (
+    <ShoppingRow
+      key={item.id}
+      item={item}
+      sourcesOpen={openSources.has(item.id)}
+      onToggleSources={() => toggleSources(item.id)}
+      onToggle={() => void toggle(item)}
+      onDelete={() => void remove(item)}
+    />
+  )
 
   return (
-    <section className="screen" data-testid="screen-list">
-      <h2>List</h2>
-
+    <section className="screen screen--list" data-testid="screen-list">
       <div className="list-build" role="group" aria-label="Build grocery list">
-        <label>
-          Range
-          <select value={range} onChange={(e) => setRange(e.target.value as Range)}>
-            <option value="this">This week</option>
-            <option value="next">Next week</option>
-            <option value="both">This + next week</option>
-          </select>
-        </label>
-        <button type="button" disabled={building || !corpus} onClick={() => void build()}>
-          {building ? 'Building…' : 'Build list'}
+        <Segmented
+          label="Range"
+          value={range}
+          onChange={setRange}
+          options={[
+            { value: 'this', label: 'This week' },
+            { value: 'next', label: 'Next week' },
+            { value: 'both', label: 'Both' },
+          ]}
+        />
+        <button
+          type="button"
+          className={`button ${list ? 'button--secondary' : 'button--primary'}`}
+          disabled={building || !corpus || !settings}
+          onClick={() => void build()}
+        >
+          <Icon name="cart" size={20} />
+          {building ? 'Building…' : list ? 'Rebuild list' : 'Build list'}
         </button>
       </div>
 
       {message && (
-        <p className="screen__placeholder" data-testid="list-message">
+        <p className="status-line" data-testid="list-message" role="status">
           {message}
         </p>
       )}
 
-      {!list && !message && (
-        <p className="screen__placeholder">
-          Nothing built yet. Plan some meals, then build the list.
-        </p>
+      {list === null && !message && (
+        <EmptyState
+          icon="cart"
+          title="No list yet."
+          action={
+            <Link to="/plan" className="button button--quiet">
+              Go to Plan
+            </Link>
+          }
+        >
+          Plan some meals, then build the list from them.
+        </EmptyState>
       )}
 
       {list && (
         <>
-          <div className="list-actions">
-            <button type="button" onClick={() => void addTickedToKitchenAction()}>
-              Add ticked to kitchen
-            </button>
-            <button type="button" onClick={() => void clear()}>
-              Clear
-            </button>
-          </div>
-
-          <div className="kitchen-add">
-            <label htmlFor="list-manual">Add an item</label>
+          <form
+            className="list-add"
+            onSubmit={(event) => {
+              event.preventDefault()
+              void addManual()
+            }}
+          >
+            <label htmlFor="list-manual" className="visually-hidden">
+              Add an item
+            </label>
             <input
               id="list-manual"
               type="text"
               value={manualText}
-              placeholder="e.g. paper towels"
+              placeholder="Add an item, e.g. paper towels"
               onChange={(e) => setManualText(e.target.value)}
-              onKeyDown={(e) => {
-                if (e.key === 'Enter') void addManual()
-              }}
             />
-            <button type="button" onClick={() => void addManual()}>
-              Add
+            <button
+              type="submit"
+              className="icon-button list-add__button"
+              aria-label="Add"
+              disabled={!manualText.trim()}
+            >
+              <Icon name="plus" />
             </button>
-          </div>
+          </form>
+
+          <p className="list-summary" data-testid="list-summary">
+            {open.length === 0 && buyable.length > 0
+              ? 'All ticked. Nice shop.'
+              : `${buyable.length - tickedCount} to buy`}
+            {tickedCount > 0 && ` · ${tickedCount} ticked`}
+            <span className="list-summary__hint"> · Swipe right to tick, left to delete</span>
+          </p>
 
           {groups.map(([aisle, aisleItems]) => (
-            <div key={aisle} className="kitchen-group">
-              <h3 className="kitchen-group__title">{aisle}</h3>
+            <section key={aisle} className="aisle" aria-labelledby={`aisle-title-${aisle}`}>
+              <h3 className="aisle__title kitchen-group__title" id={`aisle-title-${aisle}`}>
+                <span>{aisle}</span>
+                <span className="aisle__count">{aisleItems.length}</span>
+              </h3>
               <ul className="shopping-list" data-testid={`aisle-${aisle}`}>
-                {aisleItems.map((item) => (
-                  <li
-                    key={item.id}
-                    className={
-                      item.checked ? 'shopping-item shopping-item--checked' : 'shopping-item'
-                    }
-                  >
-                    <div className="shopping-item__row">
-                      <label className="shopping-item__label">
-                        <input
-                          type="checkbox"
-                          checked={item.checked}
-                          onChange={() => void toggle(item)}
-                        />
-                        <span className="shopping-item__name">{item.name}</span>
-                        {item.amount && (
-                          <span className="shopping-item__amount">{item.amount}</span>
-                        )}
-                      </label>
-                      {item.sources.length > 0 && (
-                        <button
-                          type="button"
-                          className="shopping-item__sources-toggle"
-                          aria-expanded={openSources.has(item.id)}
-                          aria-controls={`sources-${item.id}`}
-                          aria-label={`Recipes for ${item.name}`}
-                          onClick={() => toggleSources(item.id)}
-                        >
-                          {item.sources.length === 1
-                            ? '1 recipe'
-                            : `${item.sources.length} recipes`}
-                        </button>
-                      )}
-                    </div>
-                    {openSources.has(item.id) && (
-                      <ul className="shopping-item__sources" id={`sources-${item.id}`}>
-                        {item.sources.map((title) => (
-                          <li key={title}>{title}</li>
-                        ))}
-                      </ul>
-                    )}
-                  </li>
-                ))}
+                {aisleItems.map(row)}
               </ul>
-            </div>
+            </section>
           ))}
 
           {checkThese.length > 0 && (
-            <div className="kitchen-group" data-testid="check-these">
-              <h3 className="kitchen-group__title">Check these</h3>
+            <section className="aisle aisle--check" data-testid="check-these">
+              <h3 className="aisle__title kitchen-group__title">
+                <span>Check these</span>
+                <span className="aisle__count">{checkThese.length}</span>
+              </h3>
+              <p className="note-line">Lines the list could not read. Check them in the recipe.</p>
               <ul className="shopping-list">
                 {checkThese.map((item) => (
-                  <li key={item.id} className="shopping-item shopping-item__label">
+                  <li key={item.id} className="shopping-item shopping-item--note">
                     <span className="shopping-item__name">{item.text}</span>
                     <span className="shopping-item__amount">{item.note}</span>
                   </li>
                 ))}
               </ul>
+            </section>
+          )}
+
+          {done.length > 0 && (
+            <section className="done-section" data-testid="list-done">
+              <button
+                type="button"
+                className="done-section__toggle"
+                aria-expanded={showDone}
+                onClick={() => setShowDone((v) => !v)}
+              >
+                <Icon name="check" size={20} />
+                <span>Done ({done.length})</span>
+                <Icon
+                  name="chevronDown"
+                  size={20}
+                  className={showDone ? 'icon--flip' : undefined}
+                />
+              </button>
+              {showDone && <ul className="shopping-list shopping-list--done">{done.map(row)}</ul>}
+            </section>
+          )}
+
+          <div className="list-footer">
+            <button type="button" className="button button--text" onClick={() => void clear()}>
+              <Icon name="trash" size={18} />
+              Clear list
+            </button>
+          </div>
+
+          {tickedCount > 0 && (
+            <div className="action-bar">
+              <button
+                type="button"
+                className="button button--primary action-bar__button"
+                onClick={() => void addTickedToKitchenAction()}
+              >
+                <Icon name="basket" size={20} />
+                Add ticked to kitchen
+                <span className="action-bar__count" aria-hidden="true">
+                  {tickedCount}
+                </span>
+              </button>
             </div>
           )}
         </>
@@ -297,18 +334,88 @@ export function GroceryList() {
   )
 }
 
-/** Groups by aisle (alphabetically), ticked items dropped to the bottom within their group. */
+function ShoppingRow({
+  item,
+  sourcesOpen,
+  onToggleSources,
+  onToggle,
+  onDelete,
+}: {
+  item: GroceryListItem
+  sourcesOpen: boolean
+  onToggleSources: () => void
+  onToggle: () => void
+  onDelete: () => void
+}) {
+  return (
+    <SwipeRow
+      className={`shopping-item${item.checked ? ' shopping-item--checked' : ''}`}
+      testId={`list-item-${item.name}`}
+      startAction={{
+        label: item.checked ? `Untick ${item.name}` : `Tick ${item.name}`,
+        icon: 'check',
+        tone: 'herb',
+        onAction: onToggle,
+        // The row itself is the checkbox: no second control for the same thing.
+        button: false,
+      }}
+      endAction={{
+        label: `Delete ${item.name}`,
+        icon: 'trash',
+        tone: 'danger',
+        dismiss: true,
+        onAction: onDelete,
+      }}
+    >
+      <div className="shop-row">
+        <label className="shop-row__main">
+          <input
+            type="checkbox"
+            className="shop-row__input"
+            checked={item.checked}
+            onChange={onToggle}
+          />
+          <span className="shop-row__box" aria-hidden="true">
+            {item.checked && <Icon name="check" size={18} />}
+          </span>
+          <span className="shop-row__text">
+            <span className="shopping-item__name">{item.name}</span>
+            {item.amount && <span className="shopping-item__amount">{item.amount}</span>}
+          </span>
+        </label>
+        {item.sources.length > 0 && (
+          <button
+            type="button"
+            className="shop-row__sources shopping-item__sources-toggle"
+            aria-expanded={sourcesOpen}
+            aria-controls={`sources-${item.id}`}
+            aria-label={`Recipes for ${item.name}`}
+            onClick={onToggleSources}
+          >
+            {item.sources.length === 1 ? '1 recipe' : `${item.sources.length} recipes`}
+          </button>
+        )}
+      </div>
+      {sourcesOpen && (
+        <ul className="shopping-item__sources" id={`sources-${item.id}`}>
+          {item.sources.map((title) => (
+            <li key={title}>{title}</li>
+          ))}
+        </ul>
+      )}
+    </SwipeRow>
+  )
+}
+
+/** Groups by aisle (alphabetically), items by name within their group. */
 function groupByAisle(items: GroceryListItem[]): [string, GroceryListItem[]][] {
-  const buyable = items.filter((i) => i.note === null)
   const groups = new Map<string, GroceryListItem[]>()
-  for (const item of buyable) {
+  for (const item of items) {
     const aisle = item.aisle ?? 'other'
     const group = groups.get(aisle)
     if (group) group.push(item)
     else groups.set(aisle, [item])
   }
-  for (const group of groups.values()) {
-    group.sort((a, b) => Number(a.checked) - Number(b.checked) || a.name.localeCompare(b.name))
-  }
+  for (const group of groups.values()) group.sort((a, b) => a.name.localeCompare(b.name))
   return [...groups.entries()].sort(([a], [b]) => a.localeCompare(b))
 }

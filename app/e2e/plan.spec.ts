@@ -27,11 +27,13 @@ async function addToPlan(
   await page.goto(`/#/recipe/${encodeURIComponent(key)}`)
   const detail = page.getByTestId('screen-recipe-detail')
   await expect(detail.getByRole('heading', { name: title })).toBeVisible()
+  // S22b: the picker opens in a bottom sheet.
   await detail.getByTestId('add-to-plan-open').click()
-  const control = detail.getByRole('group', { name: 'Add to plan' })
+  const sheet = page.getByRole('dialog', { name: 'Add to plan' })
+  const control = sheet.getByRole('group', { name: 'Add to plan' })
   await control.getByLabel('Day').selectOption({ index: dayIndex })
   await control.getByLabel('Meal').selectOption(meal)
-  await control.getByTestId('add-to-plan-confirm').click()
+  await sheet.getByTestId('add-to-plan-confirm').click()
   await expect(detail.getByTestId('add-to-plan-open')).toContainText('Added to plan')
 }
 

@@ -5,7 +5,7 @@ import '@fontsource-variable/fraunces/opsz.css'
 import '@fontsource-variable/inter/wght.css'
 import './styles/tokens.css'
 import './styles/app.css'
-import './index.css'
+import './styles/screens.css'
 import App from './App.tsx'
 
 createRoot(document.getElementById('root')!).render(

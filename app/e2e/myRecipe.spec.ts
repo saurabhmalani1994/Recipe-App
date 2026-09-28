@@ -42,9 +42,9 @@ test('S13 walk: typed My Recipe lines are understood, planned and shopped', asyn
 
   // Plan it for today's dinner and build this week's list.
   await editor.getByTestId('add-to-plan-open').click()
-  const control = editor.getByRole('group', { name: 'Add to plan' })
-  await control.getByLabel('Meal').selectOption('dinner')
-  await control.getByTestId('add-to-plan-confirm').click()
+  const sheet = page.getByRole('dialog', { name: 'Add to plan' })
+  await sheet.getByRole('group', { name: 'Add to plan' }).getByLabel('Meal').selectOption('dinner')
+  await sheet.getByTestId('add-to-plan-confirm').click()
   await expect(editor.getByTestId('add-to-plan-open')).toContainText('Added to plan')
 
   await page.goto('/#/list')

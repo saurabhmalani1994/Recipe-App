@@ -267,6 +267,7 @@ describe('compareRanked: a lower-mode band drop actually reorders two same-cover
       title: `r${id}`,
       course: 'main',
       cuisine: null,
+      cuisineTag: null,
       totalMin: null,
       quality: 0.8,
       coverage,

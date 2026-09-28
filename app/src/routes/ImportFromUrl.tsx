@@ -1,6 +1,7 @@
 import { Capacitor } from '@capacitor/core'
 import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
+import { Icon } from '../components/ui/Icon'
 import { fetchRecipePage } from '../features/importUrl/fetchRecipePage'
 import { parseImportInput } from '../features/importUrl/parseImportInput'
 import { hasContent, type ImportedRecipe } from '../features/importUrl/types'
@@ -62,64 +63,86 @@ export function ImportFromUrl() {
   }
 
   return (
-    <section className="screen" data-testid="screen-import-url">
-      <h2>Import from link</h2>
+    <section className="screen screen--import" data-testid="screen-import-url">
+      <div className="card editor-card">
+        <h3 className="card__title">From a link</h3>
+        <label className="field">
+          <span className="field__label">Recipe URL</span>
+          <input
+            className="field__control"
+            type="url"
+            inputMode="url"
+            placeholder="https://…"
+            value={url}
+            onChange={(e) => setUrl(e.target.value)}
+          />
+        </label>
+        <button
+          type="button"
+          className="button button--primary"
+          onClick={() => void fetchAndParse()}
+          disabled={fetching || !url.trim()}
+        >
+          <Icon name="download" size={20} />
+          {fetching ? 'Fetching…' : 'Fetch and parse'}
+        </button>
+        {fetchError && <p className="status-line">{fetchError}</p>}
+        <p className="note-line" data-testid="import-cors-note">
+          {native
+            ? 'Fetches the page directly on this device.'
+            : "On the web, fetching a page directly usually fails because the site blocks cross-origin requests (CORS). If it does, paste the page's HTML (view source, or save the page) or just the recipe text below instead."}
+        </p>
+      </div>
 
-      <label className="settings-field">
-        Recipe URL
-        <input
-          type="url"
-          inputMode="url"
-          placeholder="https://…"
-          value={url}
-          onChange={(e) => setUrl(e.target.value)}
-        />
-      </label>
-      <button type="button" onClick={() => void fetchAndParse()} disabled={fetching || !url.trim()}>
-        {fetching ? 'Fetching…' : 'Fetch and parse'}
-      </button>
-      {fetchError && <p className="screen__placeholder">{fetchError}</p>}
-
-      <p className="screen__placeholder" data-testid="import-cors-note">
-        {native
-          ? 'Fetches the page directly on this device.'
-          : "On the web, fetching a page directly usually fails because the site blocks cross-origin requests (CORS). If it does, paste the page's HTML (view source, or save the page) or just the recipe text below instead."}
-      </p>
-
-      <label className="settings-field">
-        Paste the page&rsquo;s HTML, or the recipe text
-        <textarea
-          rows={8}
-          value={pasted}
-          onChange={(e) => setPasted(e.target.value)}
-          placeholder="Paste here if fetching didn't work…"
-        />
-      </label>
-      <button type="button" onClick={parsePasted} disabled={!pasted.trim()}>
-        Parse pasted content
-      </button>
-
-      {parseError && <p className="screen__placeholder">{parseError}</p>}
+      <div className="card editor-card">
+        <h3 className="card__title">Or paste it</h3>
+        <label className="field">
+          <span className="field__label">Paste the page&rsquo;s HTML, or the recipe text</span>
+          <textarea
+            className="field__control"
+            rows={7}
+            value={pasted}
+            onChange={(e) => setPasted(e.target.value)}
+            placeholder="Paste here if fetching didn't work…"
+          />
+        </label>
+        <button
+          type="button"
+          className="button button--secondary"
+          onClick={parsePasted}
+          disabled={!pasted.trim()}
+        >
+          Parse pasted content
+        </button>
+        {parseError && <p className="status-line">{parseError}</p>}
+      </div>
 
       {preview && (
-        <div className="import-preview" data-testid="import-preview">
-          <h3>{preview.title || 'Untitled recipe'}</h3>
-          {preview.sourceUrl && <p className="screen__placeholder">From {preview.sourceUrl}</p>}
-          <p>
+        <div className="card import-preview" data-testid="import-preview">
+          <p className="kicker">What was understood</p>
+          <h3 className="import-preview__title">{preview.title || 'Untitled recipe'}</h3>
+          {preview.sourceUrl && <p className="note-line">From {preview.sourceUrl}</p>}
+          <p className="meta">
             {preview.ingredients.length} ingredient{preview.ingredients.length === 1 ? '' : 's'} ·{' '}
             {preview.steps.length} step{preview.steps.length === 1 ? '' : 's'}
           </p>
-          <ul className="corpus-ingredients" data-testid="import-preview-ingredients">
+          <ul className="import-preview__lines" data-testid="import-preview-ingredients">
             {preview.ingredients.map((line, i) => (
               <li key={i}>{line}</li>
             ))}
           </ul>
-          <ol>
+          <ol className="import-preview__steps">
             {preview.steps.map((step, i) => (
               <li key={i}>{step}</li>
             ))}
           </ol>
-          <button type="button" onClick={openInEditor} data-testid="import-open-editor">
+          <button
+            type="button"
+            className="button button--primary"
+            onClick={openInEditor}
+            data-testid="import-open-editor"
+          >
+            <Icon name="edit" size={20} />
             Open in editor
           </button>
         </div>

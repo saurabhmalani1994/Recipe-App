@@ -1,4 +1,4 @@
-import type { Cuisine, Course } from '../../corpus/types'
+import type { Cuisine, CuisineSource, Course } from '../../corpus/types'
 import type { Db } from '../../db/types'
 import {
   avoidHits,
@@ -11,7 +11,7 @@ import {
   type HiddenTally,
 } from '../cook/avoid'
 import { type AppDiet, matchRecipes } from '../cook/engine'
-import { cuisineLabel } from '../cook/labels'
+import { cuisineLabel, cuisineTag } from '../cook/labels'
 import { expandHave, type Taxonomy } from '../cook/taxonomy'
 import { loadCoverage, type Coverage } from './coverage'
 import { dailyWindow, seededPick } from './seed'
@@ -37,13 +37,16 @@ interface RecipeSummaryRow {
   key: string
   title: string
   cuisine: Cuisine | null
+  cuisine_source: CuisineSource | null
+  cuisine_confidence: number | null
   course: Course
   total_min: number | null
   quality: number
   image_url: string | null
 }
 
-const SUMMARY_COLUMNS = 'r.id, r.key, r.title, r.cuisine, r.course, r.total_min, r.quality, r.image_url'
+const SUMMARY_COLUMNS =
+  'r.id, r.key, r.title, r.cuisine, r.cuisine_source, r.cuisine_confidence, r.course, r.total_min, r.quality, r.image_url'
 
 function toCard(row: RecipeSummaryRow, coverage: Map<number, Coverage>, why?: string): HomeCard {
   const cov = coverage.get(row.id) ?? { covered: 0, needed: 0 }
@@ -51,6 +54,8 @@ function toCard(row: RecipeSummaryRow, coverage: Map<number, Coverage>, why?: st
     key: row.key,
     title: row.title,
     cuisine: row.cuisine,
+    cuisineTag: cuisineTag(row.cuisine, row.cuisine_source, row.cuisine_confidence),
+    course: row.course,
     totalMin: row.total_min,
     imageUrl: row.image_url,
     covered: cov.covered,
@@ -148,6 +153,8 @@ export async function buildCookRow(db: Db, params: CookRowParams): Promise<HomeR
       key: r.key,
       title: r.title,
       cuisine: r.cuisine,
+      cuisineTag: r.cuisineTag,
+      course: r.course,
       totalMin: r.totalMin,
       imageUrl: images.get(r.id) ?? null,
       covered: r.covered,

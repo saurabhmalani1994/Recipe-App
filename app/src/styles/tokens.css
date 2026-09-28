@@ -24,6 +24,12 @@
   --herb: #386133; /* "you have", swaps */
   --herb-soft: #e3eddb;
   --on-herb-soft: #274522;
+  --on-herb: #ffffff; /* S22b: the "tick" swipe action */
+  --danger: #a8231b; /* S22b: the "delete" swipe action */
+  --on-danger: #ffffff;
+  --inverse-surface: #2f2824; /* S22b: the undo snackbar */
+  --on-inverse: #f7efe6;
+  --inverse-accent: #ffb598;
   --scrim: rgba(20, 12, 6, 0.62); /* text over photos (hero) */
   --on-scrim: #ffffff;
   --backdrop: rgba(24, 16, 10, 0.44); /* behind a bottom sheet */
@@ -119,6 +125,12 @@
     --herb: #9ccb8f;
     --herb-soft: #223220;
     --on-herb-soft: #c3e3b7;
+    --on-herb: #10240d;
+    --danger: #ffb4a9;
+    --on-danger: #5c0f08;
+    --inverse-surface: #efe6dc;
+    --on-inverse: #2a221d;
+    --inverse-accent: #9c3515;
     --scrim: rgba(8, 5, 3, 0.66);
     --on-scrim: #ffffff;
     --backdrop: rgba(0, 0, 0, 0.6);

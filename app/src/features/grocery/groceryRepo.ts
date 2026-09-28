@@ -1,4 +1,4 @@
-import { getUserDb } from '../../db'
+import { getUserDb, type SqlParam } from '../../db'
 import { addKitchenItem } from '../kitchen/kitchenRepo'
 import { newId } from '../myRecipes/id'
 import type { AggregatedItem, CheckThisLine } from './aggregate'
@@ -148,6 +148,33 @@ export async function buildGroceryList(
 export async function setGroceryItemChecked(id: string, checked: boolean): Promise<void> {
   const db = await getUserDb()
   await db.run('UPDATE grocery_items SET checked = ? WHERE id = ?', [checked ? 1 : 0, id])
+}
+
+/** A deleted `grocery_items` row, every column as stored, so "Undo" can put it back exactly. */
+export type DeletedGroceryItem = Record<string, SqlParam>
+
+/** Deletes one line from the list (S22b: swipe left). Returns the row for `restoreGroceryItem`,
+ * or null when it was already gone. */
+export async function deleteGroceryItem(id: string): Promise<DeletedGroceryItem | null> {
+  const db = await getUserDb()
+  const { rows } = await db.query<DeletedGroceryItem>('SELECT * FROM grocery_items WHERE id = ?', [
+    id,
+  ])
+  const row = rows[0]
+  if (!row) return null
+  await db.run('DELETE FROM grocery_items WHERE id = ?', [id])
+  return row
+}
+
+/** "Undo" for `deleteGroceryItem`: re-inserts the row as it was (same id, list, tick). */
+export async function restoreGroceryItem(row: DeletedGroceryItem): Promise<void> {
+  const db = await getUserDb()
+  const columns = Object.keys(row)
+  await db.run(
+    `INSERT OR REPLACE INTO grocery_items (${columns.join(', ')})
+     VALUES (${columns.map(() => '?').join(', ')})`,
+    columns.map((column) => row[column]),
+  )
 }
 
 export async function addManualGroceryItem(listId: string, text: string): Promise<void> {

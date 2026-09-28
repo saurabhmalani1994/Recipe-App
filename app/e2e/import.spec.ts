@@ -73,9 +73,14 @@ test('S12 walk: import from a pasted HTML fixture, save, find it in Cook', async
   const mine = results.getByRole('link', { name: /Weeknight Chicken Stir Fry/ })
   await expect(mine).toBeVisible()
   await expect(mine).toContainText('Mine')
+  // S22b: a My Recipe opens as a recipe to cook from (its own detail view), with Edit on it.
   await mine.click()
+  const view = page.getByTestId('screen-recipe-detail')
+  await expect(view).toBeVisible()
+  await expect(view.getByRole('heading', { name: 'Weeknight Chicken Stir Fry' })).toBeVisible()
+  await view.getByRole('link', { name: 'Edit' }).click()
   await expect(editor).toBeVisible()
-  await expect(editor.getByRole('heading', { name: 'Weeknight Chicken Stir Fry' })).toBeVisible()
+  await expect(editor.getByLabel('Title')).toHaveValue('Weeknight Chicken Stir Fry')
 
   const { scrollWidth, clientWidth } = await page.evaluate(() => ({
     scrollWidth: document.documentElement.scrollWidth,

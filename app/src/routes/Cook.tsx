@@ -529,7 +529,7 @@ export function Cook() {
               const source = result.mine ? 'my' : 'corpus'
               const favorited = favoriteKeys.has(favoriteToken(result.key, source))
               const detailHref = result.mine
-                ? `/my-recipes/${encodeURIComponent(result.key)}`
+                ? `/my-recipes/${encodeURIComponent(result.key)}/view`
                 : `/recipe/${encodeURIComponent(result.key)}`
               const missingLines = [
                 ...result.substitutable.map((item) => ({
@@ -564,7 +564,7 @@ export function Cook() {
                         {result.mine && <span className="badge"> Mine</span>}
                       </span>
                       <span className="meta">
-                        {result.cuisine && <span>{cuisineLabel(result.cuisine)}</span>}
+                        {result.cuisineTag && <span>{cuisineLabel(result.cuisineTag)}</span>}
                         {result.totalMin !== null && (
                           <span className="meta__time">
                             <Icon name="clock" size={14} />
