@@ -1,0 +1,243 @@
+# Cuisine-specialist site registry (slice S17). Read by fetch_sites.py.
+#
+# Each entry:
+#   id             stable source id; raw_recipe.id is "<id>:<slug>", raw_recipe.source is <id>
+#   cuisine_label  the source's own regional identity, written straight into raw_recipe's
+#                  cuisine_label field (not yet mapped to the canonical list in
+#                  ingest/cuisine/cuisines.yaml -- that mapping is a later slice's job)
+#   base_url       site root, used for robots.txt and as a fallback crawl start
+#   sitemap_urls   sitemap(s) to read page URLs from, tried in order; a plain <urlset> or a
+#                  <sitemapindex> both work (fetch_sites.py expands an index one level)
+#   url_filter     a regex a discovered page URL must match to be crawled (keeps hub/tag/
+#                  category/search pages out of the crawl without a wasted fetch)
+#   israeli_check  true if this cuisine bucket needs the per-record R16 title/tag check
+#                  (every "mediterranean" entry does; the others are cuisine-exclusive sites
+#                  so the check is a no-op safety net there too, cheap to always run)
+#
+# See ingest/sources_cuisine.md for how each site was checked and why the others were dropped.
+
+sites:
+  # -- Indian --------------------------------------------------------------
+  - id: indianhealthyrecipes
+    cuisine_label: indian
+    base_url: https://www.indianhealthyrecipes.com
+    sitemap_urls:
+      - https://www.indianhealthyrecipes.com/sitemap.xml
+    url_filter: '^https://www\.indianhealthyrecipes\.com/[a-z0-9-]+/$'
+    israeli_check: false
+
+  - id: hebbarskitchen
+    cuisine_label: indian
+    base_url: https://hebbarskitchen.com
+    sitemap_urls:
+      - https://hebbarskitchen.com/sitemap_index.xml
+    url_filter: '^https://hebbarskitchen\.com/[a-z0-9-]+/$'
+    israeli_check: false
+
+  - id: archanaskitchen
+    cuisine_label: indian
+    base_url: https://www.archanaskitchen.com
+    sitemap_urls:
+      - https://www.archanaskitchen.com/sitemap.xml
+    url_filter: '^https://www\.archanaskitchen\.com/recipe/[a-z0-9-]+$'
+    israeli_check: false
+
+  # -- Chinese ---------------------------------------------------------------
+  - id: thewoksoflife
+    cuisine_label: chinese
+    base_url: https://thewoksoflife.com
+    sitemap_urls:
+      - https://thewoksoflife.com/sitemap.xml
+    url_filter: '^https://thewoksoflife\.com/[a-z0-9-]+/$'
+    israeli_check: false
+
+  - id: chinasichuanfood
+    cuisine_label: chinese
+    base_url: https://www.chinasichuanfood.com
+    sitemap_urls:
+      - https://www.chinasichuanfood.com/sitemap_index.xml
+    url_filter: '^https://www\.chinasichuanfood\.com/[a-z0-9-]+/$'
+    israeli_check: false
+
+  - id: omnivorescookbook
+    cuisine_label: chinese
+    base_url: https://omnivorescookbook.com
+    sitemap_urls:
+      - https://omnivorescookbook.com/sitemap_index.xml
+    url_filter: '^https://omnivorescookbook\.com/[a-z0-9-]+/$'
+    israeli_check: false
+
+  # -- Korean ------------------------------------------------------------
+  - id: koreanbapsang
+    cuisine_label: korean
+    base_url: https://www.koreanbapsang.com
+    sitemap_urls:
+      - https://www.koreanbapsang.com/sitemap.xml
+    url_filter: '^https://www\.koreanbapsang\.com/[a-z0-9-]+/$'
+    israeli_check: false
+
+  - id: beyondkimchee
+    cuisine_label: korean
+    base_url: https://www.beyondkimchee.com
+    sitemap_urls:
+      - https://www.beyondkimchee.com/sitemap_index.xml
+    url_filter: '^https://www\.beyondkimchee\.com/[a-z0-9-]+/$'
+    israeli_check: false
+
+  - id: kimchimari
+    cuisine_label: korean
+    base_url: https://kimchimari.com
+    sitemap_urls:
+      - https://kimchimari.com/sitemap_index.xml
+    url_filter: '^https://kimchimari\.com/[a-z0-9-]+/$'
+    israeli_check: false
+
+  # -- Japanese -----------------------------------------------------------
+  - id: chopstickchronicles
+    cuisine_label: japanese
+    base_url: https://www.chopstickchronicles.com
+    sitemap_urls:
+      - https://www.chopstickchronicles.com/sitemap_index.xml
+    url_filter: '^https://www\.chopstickchronicles\.com/[a-z0-9-]+/$'
+    israeli_check: false
+
+  - id: recipetinjapan
+    cuisine_label: japanese
+    base_url: https://japan.recipetineats.com
+    sitemap_urls:
+      - https://japan.recipetineats.com/sitemap.xml
+    url_filter: '^https://japan\.recipetineats\.com/[a-z0-9-]+/$'
+    israeli_check: false
+
+  - id: pickledplum
+    cuisine_label: japanese
+    base_url: https://pickledplum.com
+    sitemap_urls:
+      - https://pickledplum.com/sitemap_index.xml
+    url_filter: '^https://pickledplum\.com/[a-z0-9-]+/$'
+    israeli_check: false
+
+  # -- Malaysian ----------------------------------------------------------
+  - id: malaysianchinesekitchen
+    cuisine_label: malaysian
+    base_url: https://www.malaysianchinesekitchen.com
+    sitemap_urls:
+      - https://www.malaysianchinesekitchen.com/sitemap_index.xml
+    url_filter: '^https://www\.malaysianchinesekitchen\.com/[a-z0-9-]+/$'
+    israeli_check: false
+
+  - id: nyonyacooking
+    cuisine_label: malaysian
+    base_url: https://www.nyonyacooking.com
+    sitemap_urls:
+      - https://www.nyonyacooking.com/sitemap.xml
+    url_filter: '^https://www\.nyonyacooking\.com/recipes/[a-z0-9-]+~[A-Za-z0-9_-]+$'
+    israeli_check: false
+
+  - id: cookwithipohbunny
+    cuisine_label: malaysian
+    base_url: https://www.cookwithipohbunny.com
+    sitemap_urls:
+      - https://www.cookwithipohbunny.com/sitemap_index.xml
+    url_filter: '^https://www\.cookwithipohbunny\.com/[a-z0-9-]+/$'
+    israeli_check: false
+
+  # -- Singaporean --------------------------------------------------------
+  - id: rotinrice
+    cuisine_label: singaporean
+    base_url: https://www.rotinrice.com
+    sitemap_urls:
+      - https://www.rotinrice.com/sitemap_index.xml
+    url_filter: '^https://www\.rotinrice\.com/[a-z0-9-]+/$'
+    israeli_check: false
+
+  - id: singaporeanmalaysianrecipes
+    cuisine_label: singaporean
+    base_url: https://www.singaporeanmalaysianrecipes.com
+    sitemap_urls:
+      - https://www.singaporeanmalaysianrecipes.com/sitemap.xml
+    url_filter: '^https://www\.singaporeanmalaysianrecipes\.com/[a-z0-9-]+/$'
+    israeli_check: false
+
+  # -- Italian --------------------------------------------------------------
+  - id: recipesfromitaly
+    cuisine_label: italian
+    base_url: https://www.recipesfromitaly.com
+    sitemap_urls:
+      - https://www.recipesfromitaly.com/sitemap_index.xml
+    url_filter: '^https://www\.recipesfromitaly\.com/[a-z0-9-]+/$'
+    israeli_check: false
+
+  - id: giallozafferano
+    cuisine_label: italian
+    base_url: https://www.giallozafferano.com
+    sitemap_urls:
+      - https://www.giallozafferano.com/sitemap/recipes.xml
+    url_filter: '^https://www\.giallozafferano\.com/recipes/[a-z0-9-]+\.html$'
+    israeli_check: false
+
+  - id: anitalianinmykitchen
+    cuisine_label: italian
+    base_url: https://anitalianinmykitchen.com
+    sitemap_urls:
+      - https://anitalianinmykitchen.com/sitemap.xml
+    url_filter: '^https://anitalianinmykitchen\.com/[a-z0-9-]+/$'
+    israeli_check: false
+
+  - id: pinabresciani
+    cuisine_label: italian
+    base_url: https://pinabresciani.com
+    sitemap_urls:
+      - https://pinabresciani.com/sitemap_index.xml
+    url_filter: '^https://pinabresciani\.com/[a-z0-9-]+/$'
+    israeli_check: false
+
+  # -- French -----------------------------------------------------------
+  - id: pardonyourfrench
+    cuisine_label: french
+    base_url: https://www.pardonyourfrench.com
+    sitemap_urls:
+      - https://www.pardonyourfrench.com/sitemap_index.xml
+    url_filter: '^https://www\.pardonyourfrench\.com/[a-z0-9-]+/$'
+    israeli_check: false
+
+  - id: myparisiankitchen
+    cuisine_label: french
+    base_url: https://www.myparisiankitchen.com
+    sitemap_urls:
+      - https://www.myparisiankitchen.com/sitemaps.xml
+    url_filter: '^https://www\.myparisiankitchen\.com/[a-z0-9-]+/$'
+    israeli_check: false
+
+  # -- Mediterranean (Palestinian/Greek/Egyptian/Persian; R16: no Israeli) --
+  - id: mygreekdish
+    cuisine_label: greek
+    base_url: https://www.mygreekdish.com
+    sitemap_urls:
+      - https://www.mygreekdish.com/sitemap_index.xml
+    url_filter: '^https://www\.mygreekdish\.com/recipe/[a-z0-9-]+/$'
+    israeli_check: true
+
+  - id: dimitrasdishes
+    cuisine_label: greek
+    base_url: https://www.dimitrasdishes.com
+    sitemap_urls:
+      - https://www.dimitrasdishes.com/sitemap.xml
+    url_filter: '^https://www\.dimitrasdishes\.com/[a-z0-9-]+/$'
+    israeli_check: true
+
+  - id: thematbakh
+    cuisine_label: egyptian
+    base_url: https://thematbakh.com
+    sitemap_urls:
+      - https://thematbakh.com/sitemap.xml
+    url_filter: '^https://thematbakh\.com/[a-z0-9-]+/$'
+    israeli_check: true
+
+  - id: palestineinadish
+    cuisine_label: palestinian
+    base_url: https://palestineinadish.com
+    sitemap_urls:
+      - https://palestineinadish.com/sitemap_index.xml
+    url_filter: '^https://palestineinadish\.com/recipes/[a-z0-9-/]+/$'
+    israeli_check: true
