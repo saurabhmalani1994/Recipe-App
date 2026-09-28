@@ -20,6 +20,10 @@ export interface MyRecipeData {
   notes: string
   ingredients: MyRecipeIngredientLine[]
   steps: string[]
+  /** The page this recipe was imported from (S12, "Import from link"), kept for reference and
+   * shown in the editor. `undefined`/absent on a recipe saved before S12 or created from
+   * scratch; always read as `?? null`. */
+  sourceUrl?: string | null
 }
 
 export interface MyRecipe {
@@ -43,5 +47,6 @@ export function emptyMyRecipeData(): MyRecipeData {
     notes: '',
     ingredients: [],
     steps: [],
+    sourceUrl: null,
   }
 }

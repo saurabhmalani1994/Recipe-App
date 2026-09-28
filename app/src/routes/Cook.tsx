@@ -3,9 +3,12 @@ import { Link } from 'react-router-dom'
 import { searchIngredientSlugs } from '../corpus/slugs'
 import { CUISINE_VALUES, type Cuisine, type Equipment } from '../corpus/types'
 import {
+  compareResults,
+  DEFAULT_MATCH_LIMIT,
   matchRecipes,
   missingSummary,
   type MatchOutput,
+  type MatchQuery,
   type MatchResult,
 } from '../features/cook/engine'
 import { cuisineLabel, equipmentLabel } from '../features/cook/labels'
@@ -13,6 +16,9 @@ import { displayName } from '../features/cook/taxonomy'
 import { corpusStatusText, useCorpus } from '../features/cook/useCorpus'
 import { listFavoriteIds, setFavorite } from '../features/favorites/favoritesRepo'
 import { listKitchenItems } from '../features/kitchen/kitchenRepo'
+import { listMyRecipes } from '../features/myRecipes/myRecipesRepo'
+import { matchMyRecipes } from '../features/myRecipes/myRecipeMatch'
+import type { MyRecipe } from '../features/myRecipes/types'
 import { AddToPlanControl } from '../features/plan/AddToPlanControl'
 import { listKitchenEquipment } from '../features/settings/settingsRepo'
 import { KITCHEN_EQUIPMENT } from '../data/equipment'
@@ -65,12 +71,18 @@ export function Cook() {
     await setFavorite(key, next, 'corpus')
   }
 
+  // S12: My Recipes joined into results below, marked "Mine" (features/myRecipes/myRecipeMatch.ts).
+  const [myRecipes, setMyRecipes] = useState<MyRecipe[]>([])
+
   useEffect(() => {
     let mounted = true
     void Promise.all([listKitchenItems(), listKitchenEquipment()]).then(([items, owned]) => {
       if (!mounted) return
       setHave(items.map((item) => item.ingredientId))
       setKitchen([...owned] as Equipment[])
+    })
+    void listMyRecipes().then((recipes) => {
+      if (mounted) setMyRecipes(recipes)
     })
     return () => {
       mounted = false
@@ -80,7 +92,7 @@ export function Cook() {
   useEffect(() => {
     if (!corpus || have === null) return
     let current = true
-    void matchRecipes(corpus.db, {
+    const query: MatchQuery = {
       have,
       cuisine: cuisine || null,
       diet: preset,
@@ -88,13 +100,22 @@ export function Cook() {
       useOnly,
       onePot,
       maxMinutes: quick ? QUICK_MINUTES : null,
-    }).then((next) => {
-      if (current) setOutput(next)
+    }
+    void Promise.all([
+      matchRecipes(corpus.db, query),
+      matchMyRecipes(corpus.db, corpus.tax, myRecipes, query),
+    ]).then(([sql, mine]) => {
+      if (!current) return
+      const results = [...sql.results, ...mine].sort(compareResults).slice(0, DEFAULT_MATCH_LIMIT)
+      setOutput({
+        results,
+        stats: { candidates: sql.stats.candidates + mine.length, scored: sql.stats.scored },
+      })
     })
     return () => {
       current = false
     }
-  }, [corpus, have, cuisine, preset, kitchen, useOnly, onePot, quick])
+  }, [corpus, have, cuisine, preset, kitchen, useOnly, onePot, quick, myRecipes])
 
   const suggestions = useMemo(
     () => searchIngredientSlugs(query, 8).filter((s) => !have?.includes(s.slug)),
@@ -282,10 +303,20 @@ export function Cook() {
             {output.results.map((result) => {
               const summary = missingSummary(result)
               const swapLine = dietSwapLine(result)
+              const detailHref = result.mine
+                ? `/my-recipes/${encodeURIComponent(result.key)}`
+                : `/recipe/${encodeURIComponent(result.key)}`
               return (
-                <li key={result.key} className="cook-result">
-                  <Link to={`/recipe/${encodeURIComponent(result.key)}`} state={{ have }}>
-                    <span className="cook-result__title">{result.title}</span>
+                <li
+                  key={`${result.mine ? 'my' : 'corpus'}-${result.key}`}
+                  className="cook-result"
+                  data-mine={result.mine ? 'true' : undefined}
+                >
+                  <Link to={detailHref} state={{ have }}>
+                    <span className="cook-result__title">
+                      {result.title}
+                      {result.mine && <span className="cook-result__mine"> · Mine</span>}
+                    </span>
                     <span className="cook-result__meta">
                       {result.covered}/{result.needed} ingredients
                       {result.cuisine ? ` · ${cuisineLabel(result.cuisine)}` : ''}
@@ -314,7 +345,7 @@ export function Cook() {
                   </button>
                   <AddToPlanControl
                     recipeId={result.key}
-                    recipeSource="corpus"
+                    recipeSource={result.mine ? 'my' : 'corpus'}
                     recipeTitle={result.title}
                   />
                 </li>

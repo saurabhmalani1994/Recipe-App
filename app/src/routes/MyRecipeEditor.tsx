@@ -1,6 +1,8 @@
 import { useEffect, useMemo, useState } from 'react'
-import { useNavigate, useParams } from 'react-router-dom'
+import { useLocation, useNavigate, useParams } from 'react-router-dom'
 import type { Cuisine } from '../corpus/model'
+import { importedToMyRecipeData } from '../features/importUrl/toMyRecipeData'
+import type { ImportedRecipe } from '../features/importUrl/types'
 import type { RecipeDiff } from '../features/myRecipes/diff'
 import { lineFromText, lineText, parseRecipeLines } from '../features/myRecipes/lines'
 import {
@@ -33,9 +35,14 @@ export function MyRecipeEditor() {
   const { id } = useParams<{ id: string }>()
   const isNew = !id || id === 'new'
   const navigate = useNavigate()
+  const location = useLocation()
+  // "Import from link" (S12): the import screen hands its parsed preview here as router state,
+  // pre-filling a new recipe instead of starting blank. Only meaningful for a new recipe.
+  const imported = (location.state as { importedRecipe?: ImportedRecipe } | null)?.importedRecipe
+  const initial = isNew && imported ? importedToMyRecipeData(imported) : null
 
-  const [title, setTitle] = useState('')
-  const [data, setData] = useState<MyRecipeData>(emptyMyRecipeData())
+  const [title, setTitle] = useState(initial?.title ?? '')
+  const [data, setData] = useState<MyRecipeData>(initial?.data ?? emptyMyRecipeData())
   const [parentRecipeId, setParentRecipeId] = useState<string | null>(null)
   const [diff, setDiff] = useState<RecipeDiff | null>(null)
   const [loaded, setLoaded] = useState(isNew)
@@ -122,6 +129,14 @@ export function MyRecipeEditor() {
       <h2>{isNew ? 'New recipe' : title || 'Untitled recipe'}</h2>
 
       {parent && <p className="screen__placeholder">Forked from {parent.title}.</p>}
+      {data.sourceUrl && (
+        <p className="screen__placeholder" data-testid="my-recipe-source-url">
+          Imported from{' '}
+          <a href={data.sourceUrl} target="_blank" rel="noreferrer">
+            {data.sourceUrl}
+          </a>
+        </p>
+      )}
 
       {diff && (
         <div className="fork-diff" data-testid="fork-diff">

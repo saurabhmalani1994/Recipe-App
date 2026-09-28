@@ -6,6 +6,7 @@ import { Cook } from './routes/Cook'
 import { Favorites } from './routes/Favorites'
 import { GroceryList } from './routes/GroceryList'
 import { Home } from './routes/Home'
+import { ImportFromUrl } from './routes/ImportFromUrl'
 import { Kitchen } from './routes/Kitchen'
 import { MyRecipeEditor } from './routes/MyRecipeEditor'
 import { MyRecipes } from './routes/MyRecipes'
@@ -26,6 +27,7 @@ export function App() {
               <Route path="/plan" element={<Plan />} />
               <Route path="/list" element={<GroceryList />} />
               <Route path="/my-recipes" element={<MyRecipes />} />
+              <Route path="/my-recipes/import" element={<ImportFromUrl />} />
               <Route path="/my-recipes/:id" element={<MyRecipeEditor />} />
               <Route path="/recipe/:id" element={<RecipeDetail />} />
               <Route path="/favorites" element={<Favorites />} />

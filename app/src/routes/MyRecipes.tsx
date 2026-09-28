@@ -13,9 +13,14 @@ export function MyRecipes() {
   return (
     <section className="screen" data-testid="screen-my-recipes">
       <h2>My Recipes</h2>
-      <Link to="/my-recipes/new" className="my-recipes__new">
-        + New recipe
-      </Link>
+      <div className="my-recipes__actions">
+        <Link to="/my-recipes/new" className="my-recipes__new">
+          + New recipe
+        </Link>
+        <Link to="/my-recipes/import" className="my-recipes__new">
+          Import from link
+        </Link>
+      </div>
       {recipes.length === 0 && (
         <p className="screen__placeholder">
           No recipes yet. Create one, or open a recipe and tap "Make my version" to fork it.
