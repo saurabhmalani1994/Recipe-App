@@ -205,8 +205,14 @@ def test_match_query_filters(built):
     everything = titles({})
     assert 'Tomato soup' in everything and 'Chicken curry' in everything and 'Beef stew' in everything
     veg = titles({'diet': 'vegetarian'})
-    assert 'Tomato soup' in veg and 'Chicken curry' not in veg and 'Beef stew' not in veg
-    assert 'Beef stew' not in titles({'diet': 'no_red_meat'})
+    # D16: a main-protein swap still counts as adaptable, so the diet filter keeps it
+    assert 'Tomato soup' in veg and 'Chicken curry' in veg
+    status = dict(con.execute("SELECT r.title, d.status FROM recipe_diet d JOIN recipes r ON r.id = d.recipe_id "
+                              "WHERE d.preset = 'vegetarian'").fetchall())
+    assert status['Tomato soup'] == 'ok' and status['Chicken curry'] == 'adaptable'
+    nrm = dict(con.execute("SELECT r.title, d.status FROM recipe_diet d JOIN recipes r ON r.id = d.recipe_id "
+                           "WHERE d.preset = 'no_red_meat'").fetchall())
+    assert nrm['Beef stew'] != 'ok' and ('Beef stew' in titles({'diet': 'no_red_meat'})) == (nrm['Beef stew'] == 'adaptable')
     assert titles({'cuisine': 'indian'}) == ['Chicken curry']
     # a kitchen with no stovetop rules out the stovetop recipes
     assert 'Tomato soup' not in titles({'kitchen': json.dumps(['oven'])})
