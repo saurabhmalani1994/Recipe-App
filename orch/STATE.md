@@ -16,7 +16,7 @@ allrecipes gives 402 even with a browser UA (bot wall), so S1 tries headless Chr
 ## Owner silence on 3 defaults (applied): metric default, no hosted PWA, start builds now.
 
 ## Running
-S17b browser sites (sonnet) runs in a worktree. Cuisine-site crawls run in the background (/home/user/recipe-data/crawl_sites.sh,
+No builder runs in flight. Cuisine-site crawls run in the background (/home/user/recipe-data/crawl_sites.sh,
 logs in /home/user/recipe-data/logs/). GRADED sheet 2: PASS (top 1.80, middle 1.47, bottom 0.33). Sheet 2 (45 recipes) at https://claude.ai/artifact/LJkXz5PwzATbZmeKfwkzj9 (db grades/gNN). Score with draw --score on owner_grade_2.md.
 The BBC --retry-failed runs in the background (log /home/user/recipe-data/bbc_retry.log, about 12,756 URLs, 5h cap). S12b merged after the owner said "you can resume". S17 (cuisine sites) runs too.
 GRADED (sheet 1): FAIL, top 1.05 / middle 0.80 / bottom 0.35; ordered and separated, but top too low. S8b rescoring by substance.
@@ -27,6 +27,8 @@ script (cap 20000, 6h timeout; log in /home/user/recipe-data/bbc_full_crawl.log)
 Owner questions pending: Kaggle token (default: no ratings source), and location for seasonality (default: temperate north).
 
 ## Done
+- S17b merged. 472 pytest. New sites: justonecookbook (browser), persianpot, thespicespoon, cookingwithsamira, greedygirlgourmet.
+  9 big sites are bot-challenged even in a browser, so they are dropped. French stays at 2.
 - S17 merged (test conflict with S1c resolved). 469 pytest. 27 sites kept (list in ingest/fetch/sites.yaml); the smoke test wrote 770.
 - S8b merged. 462 pytest. Tuning set rho 0.325 -> 0.491. The new 80k: american+southern 8.8%, style markers 5,911 -> 191,
   median lines 12. Sheet 2 is at ingest/curate/eval/owner_grade_2.md. R18 floor cap goes into S10.

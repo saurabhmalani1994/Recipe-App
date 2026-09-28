@@ -34,3 +34,4 @@
 - 2026-09-28: S8b merged (verified 462). R18. Sheet 2 published.
 - 2026-09-28: S17 merged (verified). Full site crawls started. S17b briefed.
 - 2026-09-28: Owner graded sheet 2: PASS, top 1.80 / middle 1.47 / bottom 0.33 (sheet 1 was 1.05/0.80/0.35).
+- 2026-09-28: S17b merged (verified 472). Crawl of the 5 new sites started.

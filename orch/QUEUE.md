@@ -21,7 +21,7 @@ S9b course tagger modifier rules; blind set must be >= 85% (it was 82%) | ingest
 S9c parser: 'cans tuna packed in water' resolves to water | ingest | fold into next parser slice | sonnet | - | v0.1
 S6b Cook fixes: flaky diet persistence, equipment list drift, readability, ranking floor | app | DONE merged | sonnet | orch/briefs/S6b-cook-fixes.md | v0.1
 S7c shoppable grocery list (buy_as, shop units, no-qty items stay on list) | ingest taxonomy + app | DONE merged | opus | orch/briefs/S7c-shoppable-list.md | v0.2
-S10 full rebuild: map cuisine_label palestinian (and other S17 labels) in cuisines.yaml, R18 (floor cap), R17 (Food Wishes video-method exception, extract the YouTube URL), R16 (no Israeli), S17 sites, R11 (no foodcom), S3b subs, S14 nutrition, S15 servings, bbc new lines, owner-grade outcome; regenerate fixture.db | ingest | after S15 + owner grade | sonnet | - | v0.2
+S10 full rebuild: map cuisine_labels palestinian + persian (S17/S17b) in cuisines.yaml, R18 (floor cap), R17 (Food Wishes video-method exception, extract the YouTube URL), R16 (no Israeli), S17 sites, R11 (no foodcom), S3b subs, S14 nutrition, S15 servings, bbc new lines, owner-grade outcome; regenerate fixture.db | ingest | after S15 + owner grade | sonnet | - | v0.2
 S13 TS ingredient parser port + My Recipes parsed items | app | DONE merged | opus | orch/briefs/S13-ts-parser.md | v0.2
 S11 home page 4 rows + corpus favorites | app | DONE merged | sonnet | orch/briefs/S11-home.md | v0.2
 S14 nutrition (USDA FDC) | ingest | DONE merged | sonnet | orch/briefs/S14-nutrition.md | v0.2
@@ -34,4 +34,4 @@ S16 app: 'ingredients I avoid' setting (R15), with down-ranking or hiding in Coo
 S1c Food Wishes full crawl via Blogger feed | ingest | DONE merged: 1,084 recipes (587 posts are Allrecipes-only) | sonnet | orch/briefs/S1c-foodwishes-full.md | v0.2
 S12b merge | app | DONE merged after the owner said resume |
 S17 cuisine sites survey + fetcher | ingest | DONE merged; 27 sites, full crawls running in the background | sonnet | orch/briefs/S17-cuisine-sites.md | v0.2
-S17b headless-browser mode for blocked cuisine sites + Persian | ingest | RUNNING | sonnet | orch/briefs/S17b-browser-sites.md | v0.2
+S17b browser mode + Persian/Singaporean sites | ingest | DONE merged; 5 new sites | sonnet | orch/briefs/S17b-browser-sites.md | v0.2
