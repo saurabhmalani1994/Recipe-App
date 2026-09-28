@@ -50,8 +50,7 @@ test('S12 walk: import from a pasted HTML fixture, save, find it in Cook', async
 
   // Find it in Cook, marked "Mine". Stocking the kitchen with all four of its ingredients puts
   // it at 100% coverage — otherwise it is one covered-ingredient recipe among hundreds sharing
-  // "chicken breast" with the corpus, tied on quality (a My Recipe has none) and squeezed out
-  // of the top `DEFAULT_MATCH_LIMIT` results.
+  // "chicken breast" with the corpus and squeezed out of the top `DEFAULT_MATCH_LIMIT` results.
   await page.goto('/#/kitchen')
   const kitchen = page.getByTestId('screen-kitchen')
   await expect(kitchen).toBeVisible()

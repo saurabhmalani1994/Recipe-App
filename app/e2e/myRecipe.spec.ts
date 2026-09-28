@@ -66,3 +66,41 @@ test('S13 walk: typed My Recipe lines are understood, planned and shopped', asyn
   }))
   expect(scrollWidth).toBeLessThanOrEqual(clientWidth)
 })
+
+// S12b #3 (R13): optional total minutes / one-pot / equipment fields, plus the steps-derived
+// suggestions for them (a small port of ingest/tag/equipment.py and timing.py).
+test('S12b walk: total minutes and equipment are suggested from the steps, accepted, and persist', async ({
+  page,
+}) => {
+  await page.goto('/#/my-recipes/new')
+  const editor = page.getByTestId('screen-my-recipe-editor')
+  await expect(editor).toBeVisible()
+  await editor.getByLabel('Title').fill('Sheet pan chicken')
+
+  await editor.getByRole('button', { name: '+ Step' }).click()
+  await editor
+    .getByLabel('Step 1', { exact: true })
+    .fill('Roast in the oven for 45 minutes, turning once.')
+
+  const suggestedMinutes = editor.getByTestId('suggested-total-min')
+  await expect(suggestedMinutes).toContainText('Steps suggest 45 min total.')
+  const suggestedEquipment = editor.getByTestId('suggested-equipment')
+  await expect(suggestedEquipment).toContainText('Steps suggest Oven.')
+
+  await suggestedMinutes.getByRole('button', { name: 'Use 45 min' }).click()
+  await suggestedEquipment.getByRole('button', { name: 'Use these' }).click()
+  await expect(editor.getByTestId('suggested-total-min')).toHaveCount(0)
+  await expect(editor.getByTestId('suggested-equipment')).toHaveCount(0)
+  await expect(editor.getByLabel('Total minutes')).toHaveValue('45')
+  await expect(editor.getByRole('checkbox', { name: 'Oven', exact: true })).toBeChecked()
+
+  await editor.getByRole('radio', { name: 'Yes' }).check()
+
+  await editor.getByRole('button', { name: 'Save' }).click()
+  await expect(page).toHaveURL(/#\/my-recipes\/my-/)
+
+  await page.reload()
+  await expect(editor.getByLabel('Total minutes')).toHaveValue('45')
+  await expect(editor.getByRole('checkbox', { name: 'Oven', exact: true })).toBeChecked()
+  await expect(editor.getByRole('radio', { name: 'Yes' })).toBeChecked()
+})

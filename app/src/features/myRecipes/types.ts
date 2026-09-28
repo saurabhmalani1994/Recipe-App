@@ -1,4 +1,5 @@
 import type { Cuisine } from '../../corpus/model'
+import type { Equipment } from '../../corpus/types'
 import type { ParsedLine } from '../../parse'
 
 export interface MyRecipeIngredientLine {
@@ -24,6 +25,13 @@ export interface MyRecipeData {
    * shown in the editor. `undefined`/absent on a recipe saved before S12 or created from
    * scratch; always read as `?? null`. */
   sourceUrl?: string | null
+  /** S12b #3 (R13): optional filter fields, typed by the owner or accepted from a suggestion
+   * inferred from the steps (`inferFromSteps.ts`). `null`/absent = not set, and Cook's "one
+   * pot", "use only equipment" and "under N minutes" filters then exclude this recipe rather
+   * than pass it through unfiltered (rule 11) — see `myRecipeMatch.ts`. */
+  totalMin?: number | null
+  onePot?: boolean | null
+  equipment?: Equipment[] | null
 }
 
 export interface MyRecipe {
@@ -48,5 +56,8 @@ export function emptyMyRecipeData(): MyRecipeData {
     ingredients: [],
     steps: [],
     sourceUrl: null,
+    totalMin: null,
+    onePot: null,
+    equipment: null,
   }
 }
