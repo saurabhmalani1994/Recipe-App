@@ -1,4 +1,12 @@
-import { expect, test } from '@playwright/test'
+import { expect, test, type Page } from '@playwright/test'
+
+/** S22a: Cuisine and Time are filter chips that open a sheet of choices. */
+async function pickFromSheet(page: Page, chip: string, sheetName: string, label: string) {
+  await page.getByTestId(chip).click()
+  const sheet = page.getByRole('dialog', { name: sheetName })
+  await sheet.getByRole('radio', { name: label, exact: true }).click()
+  await expect(sheet).toBeHidden()
+}
 
 // S12b #1: a "Mine" result's star used to call toggleFavorite(result.key) with source 'corpus'
 // (an S11+S12 merge bug) — it favorited under the wrong source, so the recipe silently
@@ -101,14 +109,15 @@ test('S6 walk: kitchen, Cook, filter, result, detail with the fish sauce swap', 
   await expect(cook.getByTestId('cook-count')).toContainText('recipes')
 
   // 3. Filters: Thai, and under 30 minutes (Pad Thai takes 21).
-  await cook.getByLabel('Cuisine').selectOption('thai')
-  const quick = cook.getByRole('button', { name: 'Under 30 min' })
-  await quick.click()
-  await expect(quick).toHaveAttribute('aria-pressed', 'true')
+  await pickFromSheet(page, 'cuisine-chip', 'Cuisine', 'Thai')
+  await pickFromSheet(page, 'time-chip', 'Time', 'Under 30 min')
+  await expect(cook.getByTestId('time-chip')).toHaveAttribute('data-active', 'true')
+  await expect(cook.getByTestId('time-chip')).toHaveText(/Under 30 min/)
   const results = cook.getByTestId('cook-results')
   await expect(results.getByRole('link')).toHaveCount(1)
   const padThai = results.getByRole('link', { name: /Pad Thai/ })
-  await expect(padThai).toContainText('fish sauce, swap: soy sauce + nori')
+  // S22a: "Missing: fish sauce → soy sauce + nori", the swap styled apart from the name.
+  await expect(padThai.getByTestId('cook-result-missing')).toContainText('fish sauce → soy sauce + nori')
   await page.screenshot({ path: 'e2e/screens/cook-412x915.png' })
 
   // 4. The result's detail: the fish sauce line carries the swap, marked as on hand.

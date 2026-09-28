@@ -1,4 +1,12 @@
-import { expect, test } from '@playwright/test'
+import { expect, test, type Page } from '@playwright/test'
+
+/** S22a: Cuisine is a filter chip that opens a sheet of choices. */
+async function pickCuisine(page: Page, label: string) {
+  await page.getByTestId('cuisine-chip').click()
+  const sheet = page.getByRole('dialog', { name: 'Cuisine' })
+  await sheet.getByRole('radio', { name: label, exact: true }).click()
+  await expect(sheet).toBeHidden()
+}
 
 // S16 "ingredients I avoid" (R15, owner D17: "many of the apps felt very southern or mid western,
 // using things like cool whip or sour cream for lots of the recipes, which is not my style").
@@ -36,7 +44,7 @@ test('S16 walk: avoid shrimp (hide, then lower), Cook, and the recipe detail', a
   await page.getByRole('navigation', { name: 'Main' }).getByText('Cook').click()
   const cook = page.getByTestId('screen-cook')
   await expect(cook).toBeVisible()
-  await cook.getByLabel('Cuisine').selectOption('thai')
+  await pickCuisine(page, 'Thai')
   await expect(cook.getByTestId('cook-count')).toBeVisible()
   await expect(cook.getByTestId('cook-results').getByRole('link', { name: /Pad Thai/ })).toHaveCount(0)
   await expect(cook.getByTestId('cook-hidden-avoid')).toContainText(/hidden: shrimp/)
@@ -50,7 +58,7 @@ test('S16 walk: avoid shrimp (hide, then lower), Cook, and the recipe detail', a
   // 5. Cook again: Pad Thai is back, marked as avoiding shrimp.
   await page.goto('/#/cook')
   await expect(cook).toBeVisible()
-  await cook.getByLabel('Cuisine').selectOption('thai')
+  await pickCuisine(page, 'Thai')
   const padThai = cook.getByTestId('cook-results').getByRole('link', { name: /Pad Thai/ })
   await expect(padThai).toBeVisible()
   await expect(padThai).toContainText('avoiding: shrimp')

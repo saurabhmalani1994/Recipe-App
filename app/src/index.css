@@ -1,228 +1,40 @@
+/*
+ * Legacy screen styles (Plan, List, My Recipes, the recipe views, Kitchen, Settings, Favorites),
+ * kept until S22b redesigns those screens. S22a moved the base, the shell, Home and Cook to
+ * styles/app.css and every colour to styles/tokens.css; the old names below are aliases for
+ * the new tokens so these screens follow the new palette (light and dark) in the meantime.
+ */
 :root {
-  --color-bg: #faf9f7;
-  --color-surface: #ffffff;
-  --color-text: #1c1b1a;
-  --color-text-muted: #6b6560;
-  --color-border: #e4e0da;
-  --color-accent: #b5502f;
-  --color-accent-contrast: #ffffff;
-  --color-active-bg: #f2e4dc;
-  --safe-top: env(safe-area-inset-top, 0px);
-  --safe-bottom: env(safe-area-inset-bottom, 0px);
-  color-scheme: light;
+  --color-bg: var(--bg);
+  --color-surface: var(--surface);
+  --color-text: var(--text);
+  --color-text-muted: var(--text-2);
+  --color-border: var(--border);
+  --color-accent: var(--accent);
+  --color-accent-contrast: var(--on-accent);
+  --color-active-bg: var(--accent-soft);
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --color-bg: #16140f;
-    --color-surface: #211e18;
-    --color-text: #f2ede6;
-    --color-text-muted: #a89f93;
-    --color-border: #37322a;
-    --color-accent: #e08a5f;
-    --color-accent-contrast: #16140f;
-    --color-active-bg: #3a2a20;
-    color-scheme: dark;
-  }
-}
-
-* {
-  box-sizing: border-box;
-}
-
-html,
-body {
-  margin: 0;
-  padding: 0;
-  /* Belt-and-suspenders against a stray wide child: nothing should scroll sideways. */
-  max-width: 100%;
-  overflow-x: hidden;
-}
-
-body {
-  background: var(--color-bg);
-  color: var(--color-text);
-  font-family:
-    system-ui,
-    -apple-system,
-    'Segoe UI',
-    Roboto,
-    sans-serif;
-  -webkit-tap-highlight-color: transparent;
-}
-
+/* The plain, unstyled `<button>` of the legacy screens (Save, +Ingredient, Add to plan, …): a
+   48px quiet pill. Buttons with their own class override it. */
 button {
-  font: inherit;
-  color: inherit;
-  cursor: pointer;
-}
-
-/* Every interactive element gets a visible focus state; :focus-visible skips it for a mouse
-   click so it only shows for keyboard/assistive-tech navigation. */
-a:focus-visible,
-button:focus-visible,
-input:focus-visible,
-select:focus-visible,
-textarea:focus-visible,
-[role='radio']:focus-visible {
-  outline: 2px solid var(--color-accent);
-  outline-offset: 2px;
-}
-
-/* A plain, unstyled `<button>` (Save, +Ingredient, +Step, Make my version, …). Buttons with
-   their own look (nav items, diet switch, icon buttons, …) override this with a more specific
-   class, so this only sets the shared baseline: a real 44px tap target. */
-button {
-  min-height: 44px;
-  padding: 8px 16px;
-  border: 1px solid var(--color-border);
-  border-radius: 8px;
-  background: var(--color-surface);
-}
-
-button:disabled {
-  opacity: 0.6;
-  cursor: not-allowed;
-}
-
-/* A small square button for a single icon/glyph (remove ×, favorite star, settings gear) that
-   still meets the 44px tap target without looking like a full-width button. */
-.icon-button {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  min-width: 44px;
-  min-height: 44px;
-  padding: 0;
-  border: none;
-  background: none;
-  font-size: 1.2rem;
-  color: var(--color-text-muted);
-  flex-shrink: 0;
-}
-
-#root {
-  min-height: 100vh;
-}
-
-.app-shell {
-  display: flex;
-  flex-direction: column;
-  min-height: 100vh;
-  max-width: 480px;
-  margin: 0 auto;
-  background: var(--color-bg);
-}
-
-.app-header {
-  padding: calc(var(--safe-top) + 12px) 16px 12px;
-  border-bottom: 1px solid var(--color-border);
-  background: var(--color-surface);
-  position: sticky;
-  top: 0;
-  z-index: 10;
-}
-
-.app-header__title {
-  margin: 0 0 10px;
-  font-size: 1.1rem;
-  font-weight: 700;
-}
-
-.diet-switch {
-  display: flex;
-  gap: 6px;
-}
-
-.diet-switch__option {
-  flex: 1;
-  min-height: 44px;
-  padding: 8px 6px;
-  font-size: 0.75rem;
-  line-height: 1.1;
-  border: 1px solid var(--color-border);
-  border-radius: 999px;
-  background: var(--color-surface);
-  color: var(--color-text-muted);
-  cursor: pointer;
-}
-
-.diet-switch__option--active {
-  background: var(--color-accent);
-  border-color: var(--color-accent);
-  color: var(--color-accent-contrast);
+  min-height: var(--tap);
+  padding: 0 var(--space-4);
+  border: 1px solid var(--border-strong);
+  border-radius: var(--radius-pill);
+  background: var(--surface);
+  color: var(--text);
   font-weight: 600;
-}
-
-.app-main {
-  flex: 1;
-  padding: 16px;
-  padding-bottom: calc(72px + var(--safe-bottom));
+  font-size: var(--text-sm);
 }
 
 .screen h2 {
   margin-top: 0;
 }
 
+
 .screen__placeholder {
   color: var(--color-text-muted);
-}
-
-.bottom-nav {
-  position: fixed;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  max-width: 480px;
-  margin: 0 auto;
-  display: flex;
-  background: var(--color-surface);
-  border-top: 1px solid var(--color-border);
-  padding-bottom: var(--safe-bottom);
-}
-
-.bottom-nav__item {
-  flex: 1;
-  min-width: 0;
-  min-height: 44px;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  gap: 2px;
-  padding: 8px 2px 6px;
-  text-decoration: none;
-  color: var(--color-text-muted);
-  font-size: 0.7rem;
-}
-
-.bottom-nav__icon {
-  font-size: 1.2rem;
-}
-
-.bottom-nav__item--active {
-  color: var(--color-accent);
-  background: var(--color-active-bg);
-}
-
-.app-header__row {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 8px;
-}
-
-.app-header__settings {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  min-width: 44px;
-  min-height: 44px;
-  text-decoration: none;
-  color: var(--color-text-muted);
-  font-size: 1.3rem;
-  line-height: 1;
-  flex-shrink: 0;
 }
 
 .settings-group {
@@ -257,6 +69,17 @@ button:disabled {
   color: var(--color-text);
 }
 
+.recipe-detail__facts {
+  font-size: 0.85rem;
+  color: var(--color-text-muted);
+}
+
+.settings-hint {
+  margin: 0 0 4px;
+  font-size: var(--text-sm);
+  color: var(--text-2);
+}
+
 .settings-radio,
 .settings-checkbox {
   display: flex;
@@ -265,91 +88,6 @@ button:disabled {
   min-height: 44px;
   padding: 4px 0;
   font-size: 0.85rem;
-}
-
-.home-shortcuts {
-  display: flex;
-  gap: 12px;
-  margin: 8px 0 16px;
-}
-
-/* S11: Home's four rows. Each row scrolls sideways *inside itself* — the page never does
- * (html/body keep overflow-x: hidden above), which is what the 412px Playwright check asserts. */
-.home-surprise {
-  margin: 0 0 16px;
-}
-
-.home-surprise button {
-  min-height: 44px;
-  padding: 8px 16px;
-  border: 1px solid var(--color-border);
-  border-radius: 8px;
-  background: var(--color-surface);
-}
-
-.home-surprise__card {
-  margin-top: 10px;
-  max-width: 220px;
-}
-
-.home-row {
-  margin: 0 0 20px;
-  min-width: 0;
-}
-
-.home-row__title {
-  margin: 0 0 8px;
-  font-size: 1rem;
-}
-
-.home-row__scroll {
-  list-style: none;
-  display: flex;
-  gap: 12px;
-  padding: 0 0 4px;
-  margin: 0;
-  overflow-x: auto;
-  -webkit-overflow-scrolling: touch;
-  scroll-snap-type: x proximity;
-}
-
-.home-card {
-  flex: 0 0 auto;
-  width: 168px;
-  scroll-snap-align: start;
-}
-
-.home-card__link {
-  display: flex;
-  flex-direction: column;
-  gap: 4px;
-  min-height: 44px;
-  height: 100%;
-  padding: 8px;
-  border: 1px solid var(--color-border);
-  border-radius: 10px;
-  background: var(--color-surface);
-  color: var(--color-text);
-  text-decoration: none;
-  overflow-wrap: anywhere;
-}
-
-.home-card__image {
-  width: 100%;
-  height: 96px;
-  object-fit: cover;
-  border-radius: 6px;
-}
-
-.home-card__title {
-  font-weight: 600;
-  font-size: 0.9rem;
-}
-
-.home-card__meta,
-.home-card__why {
-  font-size: 0.78rem;
-  color: var(--color-text-muted);
 }
 
 .recipe-list {
@@ -551,13 +289,6 @@ button:disabled {
   font-weight: 600;
 }
 
-/* S6: Cook screen ("What can I cook?") and the corpus recipe view. */
-.cook-label {
-  margin: 0 0 6px;
-  font-size: 0.85rem;
-  color: var(--color-text-muted);
-}
-
 .chip-list {
   list-style: none;
   display: flex;
@@ -565,110 +296,6 @@ button:disabled {
   gap: 8px;
   padding: 0;
   margin: 0 0 12px;
-}
-
-.chip {
-  display: inline-flex;
-  align-items: center;
-  max-width: 100%;
-  min-height: 36px;
-  padding: 4px 12px;
-  border: 1px solid var(--color-border);
-  border-radius: 18px;
-  background: var(--color-surface);
-  font-size: 0.9rem;
-  overflow-wrap: anywhere;
-}
-
-button.chip {
-  min-height: 44px;
-}
-
-button.chip[aria-pressed='true'] {
-  background: var(--color-active-bg);
-  border-color: var(--color-accent);
-  color: var(--color-text);
-}
-
-.chip--removable {
-  padding-right: 0;
-}
-
-.chip__remove {
-  min-width: 40px;
-  min-height: 36px;
-  padding: 0;
-  border: none;
-  background: none;
-  color: var(--color-text-muted);
-  font-size: 1.1rem;
-}
-
-.cook-filters .settings-field {
-  margin-bottom: 12px;
-}
-
-.cook-count {
-  font-size: 0.85rem;
-  color: var(--color-text-muted);
-  margin: 4px 0 8px;
-}
-
-.cook-results {
-  list-style: none;
-  padding: 0;
-  margin: 0;
-}
-
-.cook-result a {
-  display: flex;
-  flex-direction: column;
-  gap: 2px;
-  min-height: 44px;
-  padding: 10px 0;
-  border-bottom: 1px solid var(--color-border);
-  color: var(--color-text);
-  text-decoration: none;
-  overflow-wrap: anywhere;
-}
-
-.cook-result__title {
-  font-weight: 600;
-}
-
-.cook-result__favorite {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  min-width: 44px;
-  min-height: 44px;
-  padding: 0;
-  background: none;
-  border: none;
-  font-size: 1.3rem;
-  color: var(--color-accent);
-}
-
-.cook-result__mine {
-  font-weight: 400;
-  color: var(--color-accent);
-}
-
-.cook-result__meta,
-.recipe-detail__facts {
-  font-size: 0.85rem;
-  color: var(--color-text-muted);
-}
-
-.cook-result__missing {
-  font-size: 0.9rem;
-  color: var(--color-accent);
-}
-
-.cook-result__diet-swap {
-  display: block;
-  font-size: 0.8rem;
-  color: var(--color-text-muted);
 }
 
 .corpus-ingredients {
@@ -695,18 +322,6 @@ button.chip[aria-pressed='true'] {
 .corpus-line--avoided {
   text-decoration: line-through;
   text-decoration-color: var(--color-text-muted);
-}
-
-.cook-hidden-avoid,
-.home-hidden-avoid {
-  font-size: 0.85rem;
-  color: var(--color-text-muted);
-}
-
-.cook-result__avoided {
-  display: block;
-  font-size: 0.8rem;
-  color: var(--color-text-muted);
 }
 
 .avoid-list {

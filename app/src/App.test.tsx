@@ -17,35 +17,55 @@ afterEach(() => {
 })
 
 describe('App shell', () => {
-  it('renders all five bottom nav tabs and the diet switch', () => {
+  beforeEach(() => {
+    window.location.hash = '#/'
+  })
+
+  it('renders all five bottom nav tabs, and no global diet bar (S22a)', () => {
     render(<App />)
     const nav = screen.getByRole('navigation', { name: 'Main' })
     for (const label of ['Home', 'Cook', 'Plan', 'List', 'My Recipes']) {
       expect(within(nav).getByText(label)).toBeInTheDocument()
     }
-    expect(screen.getByRole('radiogroup', { name: 'Diet quick switch' })).toBeInTheDocument()
+    expect(screen.queryByRole('radiogroup', { name: 'Diet quick switch' })).not.toBeInTheDocument()
+    expect(screen.getByRole('link', { name: 'Settings' })).toBeInTheDocument()
   })
 
-  it('defaults the diet preset to Everything', () => {
+  it('defaults the Diet chip on Home to Everything', () => {
     render(<App />)
-    expect(screen.getByRole('radio', { name: 'Everything' })).toHaveAttribute(
-      'aria-checked',
-      'true',
-    )
+    const chip = screen.getByTestId('diet-chip')
+    expect(chip).toHaveAccessibleName('Diet: Everything')
+    expect(chip).not.toHaveAttribute('data-active')
   })
 
-  it('persists the diet preset choice to settings in user.db', async () => {
+  it('the Diet chip opens a sheet, and a pick applies for the session without changing the default', async () => {
     const user = userEvent.setup()
     render(<App />)
 
-    await user.click(screen.getByRole('radio', { name: 'No red meat' }))
+    await user.click(screen.getByTestId('diet-chip'))
+    const sheet = screen.getByRole('dialog', { name: 'Diet' })
+    await user.click(within(sheet).getByRole('radio', { name: /No red meat/ }))
 
-    expect(screen.getByRole('radio', { name: 'No red meat' })).toHaveAttribute(
-      'aria-checked',
-      'true',
-    )
+    const chip = screen.getByTestId('diet-chip')
+    expect(chip).toHaveAccessibleName('Diet: No red meat')
+    expect(chip).toHaveAttribute('data-active', 'true')
+    expect(chip).toHaveTextContent('No red meat')
+    // The default lives in Settings; the chip does not write it.
+    expect((await getSettings()).dietPreset).toBe('everything')
+  })
+
+  it('persists the default diet chosen in Settings to user.db, and applies it', async () => {
+    const user = userEvent.setup()
+    window.location.hash = '#/settings'
+    render(<App />)
+
+    const group = await screen.findByRole('radiogroup', { name: 'Diet preset' })
+    await user.click(within(group).getByRole('radio', { name: 'No red meat' }))
     await waitFor(async () => {
       expect((await getSettings()).dietPreset).toBe('no_red_meat')
     })
+
+    await user.click(within(screen.getByRole('navigation', { name: 'Main' })).getByText('Home'))
+    expect(await screen.findByTestId('diet-chip')).toHaveAccessibleName('Diet: No red meat')
   })
 })

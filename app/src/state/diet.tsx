@@ -32,6 +32,7 @@ const DEFAULT_PRESET: DietPreset = 'everything'
  * fast path in front of it, not a replacement.
  */
 const CACHE_KEY = 'recipe-app.diet-preset-cache'
+// S22a: this caches the *default* (Settings). The Diet chip's session choice is never cached.
 
 function readCache(): DietPreset | null {
   try {
@@ -57,29 +58,43 @@ function writeCache(preset: DietPreset): void {
 // tapped on this device. No restore UI exists yet, so nothing calls it today.
 
 interface DietContextValue {
+  /** The diet Home, Cook and the recipe views filter by right now. */
   preset: DietPreset
+  /** S22a: the "Diet" filter chip on Home and Cook. For this session only: the next launch
+   * starts from the default again (owner, D21: a "Filter chip in Cook & Home", with the default
+   * in Settings). */
   setPreset: (preset: DietPreset) => void
+  /** The default from Settings (`settings.diet_preset`), which every launch starts from. */
+  defaultPreset: DietPreset
+  /** Settings: persists the default and applies it now. */
+  setDefaultPreset: (preset: DietPreset) => void
 }
 
 const DietContext = createContext<DietContextValue | null>(null)
 
 /**
- * Persists the diet preset through `settings.diet_preset` in `user.db` (S7a: moved off
+ * The default persists through `settings.diet_preset` in `user.db` (S7a: moved off
  * `localStorage`, closing open item 1 in orch/reports/S2.md), fronted by the synchronous cache
  * above (S6b #1). The cached value (if any), else the default, renders immediately; once
  * `getUserDb()` resolves, the real stored value takes over only when there was no cache to trust.
+ * S22a: the active filter starts as that default and the Diet chip changes it for the session
+ * without touching the stored default.
  */
 export function DietProvider({ children }: { children: ReactNode }) {
-  const [preset, setPresetState] = useState<DietPreset>(() => readCache() ?? DEFAULT_PRESET)
+  const [defaultPreset, setDefaultState] = useState<DietPreset>(() => readCache() ?? DEFAULT_PRESET)
+  const [preset, setPresetState] = useState<DietPreset>(defaultPreset)
   // Guards against the initial async load resolving *after* the user has already changed the
-  // preset (e.g. clicking the switch before getUserDb() settles) and stomping their choice.
-  const userChanged = useRef(readCache() !== null)
+  // preset (e.g. tapping the chip before getUserDb() settles) and stomping their choice.
+  const defaultChanged = useRef(readCache() !== null)
+  const activeChanged = useRef(false)
 
   useEffect(() => {
     let mounted = true
     getSettings()
       .then((settings) => {
-        if (mounted && !userChanged.current) setPresetState(settings.dietPreset)
+        if (!mounted || defaultChanged.current) return
+        setDefaultState(settings.dietPreset)
+        if (!activeChanged.current) setPresetState(settings.dietPreset)
       })
       .catch(() => {
         // Db unavailable (e.g. still initialising): keep the default.
@@ -90,13 +105,22 @@ export function DietProvider({ children }: { children: ReactNode }) {
   }, [])
 
   const setPreset = useCallback((next: DietPreset) => {
-    userChanged.current = true
+    activeChanged.current = true
+    setPresetState(next)
+  }, [])
+
+  const setDefaultPreset = useCallback((next: DietPreset) => {
+    defaultChanged.current = true
     writeCache(next)
+    setDefaultState(next)
     setPresetState(next)
     void updateSettings({ dietPreset: next })
   }, [])
 
-  const value = useMemo(() => ({ preset, setPreset }), [preset, setPreset])
+  const value = useMemo(
+    () => ({ preset, setPreset, defaultPreset, setDefaultPreset }),
+    [preset, setPreset, defaultPreset, setDefaultPreset],
+  )
 
   return <DietContext.Provider value={value}>{children}</DietContext.Provider>
 }

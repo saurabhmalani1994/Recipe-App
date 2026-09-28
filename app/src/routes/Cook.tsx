@@ -1,5 +1,11 @@
 import { useEffect, useMemo, useState } from 'react'
 import { Link } from 'react-router-dom'
+import { DietFilterChip } from '../components/DietFilterChip'
+import { BottomSheet, OptionList } from '../components/ui/BottomSheet'
+import { Chip, ChipRow, FilterChip } from '../components/ui/Chip'
+import { Icon } from '../components/ui/Icon'
+import { CoverageMeter, RecipeImage } from '../components/ui/RecipeCard'
+import { EmptyState, SectionHeader, Skeleton } from '../components/ui/Section'
 import { searchIngredientSlugs } from '../corpus/slugs'
 import { CUISINE_VALUES, type Cuisine, type Equipment } from '../corpus/types'
 import { avoidListFrom, hiddenNote, mergeHiddenTally, newHiddenTally } from '../features/cook/avoid'
@@ -7,11 +13,11 @@ import {
   compareResults,
   DEFAULT_MATCH_LIMIT,
   matchRecipes,
-  missingSummary,
   type MatchOutput,
   type MatchQuery,
   type MatchResult,
 } from '../features/cook/engine'
+import { imagesForKeys } from '../features/cook/images'
 import { cuisineLabel, equipmentLabel } from '../features/cook/labels'
 import { displayName } from '../features/cook/taxonomy'
 import { corpusStatusText, useCorpus } from '../features/cook/useCorpus'
@@ -26,8 +32,25 @@ import { KITCHEN_EQUIPMENT } from '../data/equipment'
 import { PANTRY_DEFAULT_SLUGS } from '../db'
 import { DIET_PRESET_LABELS, useDiet } from '../state/diet'
 
-/** "Under 30 min" (the weeknight line in docs/PRODUCT.md). */
-const QUICK_MINUTES = 30
+/** The Time sheet's choices. "Under 30 min" is the weeknight line in docs/PRODUCT.md. */
+const TIME_CHOICES = [20, 30, 45, 60] as const
+const TIME_OPTIONS = [
+  { value: 'any', label: 'Any time' },
+  ...TIME_CHOICES.map((min) => ({ value: String(min), label: `Under ${min} min` })),
+] as const
+
+/** Cuisines A-Z by their label, for the Cuisine sheet. */
+const CUISINE_OPTIONS = [
+  { value: '', label: 'Any cuisine' },
+  ...[...CUISINE_VALUES]
+    .map((c) => ({ value: c as string, label: cuisineLabel(c) }))
+    .sort((a, b) => a.label.localeCompare(b.label)),
+]
+
+/** How many missing lines a result card spells out before "+N more". */
+const MISSING_SHOWN = 3
+
+type Sheet = 'cuisine' | 'time' | 'equipment' | null
 
 /** A short label for the diet the "veg: swap chicken → tofu" line names (S6b #3, D16). */
 const DIET_SWAP_LABEL: Partial<Record<string, string>> = {
@@ -58,8 +81,8 @@ export function Cook() {
   const [query, setQuery] = useState('')
   const [cuisine, setCuisine] = useState<Cuisine | ''>('')
   const [onePot, setOnePot] = useState(false)
-  const [quick, setQuick] = useState(false)
-  const [showEquipment, setShowEquipment] = useState(false)
+  const [maxMinutes, setMaxMinutes] = useState<number | null>(null)
+  const [sheet, setSheet] = useState<Sheet>(null)
   const [useOnly, setUseOnly] = useState<Equipment[]>([])
   const [output, setOutput] = useState<MatchOutput | null>(null)
   // S12b #3 (R13): My Recipes an active filter excludes for having no value set (not for
@@ -79,14 +102,16 @@ export function Cook() {
   }
 
   useEffect(() => {
-    void Promise.all([listFavoriteIds('corpus'), listFavoriteIds('my')]).then(([corpusIds, myIds]) => {
-      setFavoriteKeys(
-        new Set([
-          ...corpusIds.map((id) => favoriteToken(id, 'corpus')),
-          ...myIds.map((id) => favoriteToken(id, 'my')),
-        ]),
-      )
-    })
+    void Promise.all([listFavoriteIds('corpus'), listFavoriteIds('my')]).then(
+      ([corpusIds, myIds]) => {
+        setFavoriteKeys(
+          new Set([
+            ...corpusIds.map((id) => favoriteToken(id, 'corpus')),
+            ...myIds.map((id) => favoriteToken(id, 'my')),
+          ]),
+        )
+      },
+    )
   }, [])
 
   async function toggleFavorite(key: string, source: 'corpus' | 'my') {
@@ -134,7 +159,7 @@ export function Cook() {
       kitchen,
       useOnly,
       onePot,
-      maxMinutes: quick ? QUICK_MINUTES : null,
+      maxMinutes,
       avoid,
     }
     void Promise.all([
@@ -150,14 +175,32 @@ export function Cook() {
       mergeHiddenTally(hidden, mine.avoidHidden)
       setOutput({
         results,
-        stats: { candidates: sql.stats.candidates + mine.results.length, scored: sql.stats.scored, hidden },
+        stats: {
+          candidates: sql.stats.candidates + mine.results.length,
+          scored: sql.stats.scored,
+          hidden,
+        },
       })
       setHiddenMine(mine.hidden)
     })
     return () => {
       current = false
     }
-  }, [corpus, have, cuisine, preset, kitchen, useOnly, onePot, quick, myRecipes, avoid])
+  }, [corpus, have, cuisine, preset, kitchen, useOnly, onePot, maxMinutes, myRecipes, avoid])
+
+  // S22a: photos for the result cards (corpus recipes only; My Recipes have none).
+  const [images, setImages] = useState<Map<string, string>>(new Map())
+  useEffect(() => {
+    if (!corpus || !output) return
+    let current = true
+    const keys = output.results.filter((r) => !r.mine).map((r) => r.key)
+    void imagesForKeys(corpus.db, keys).then((map) => {
+      if (current) setImages(map)
+    })
+    return () => {
+      current = false
+    }
+  }, [corpus, output])
 
   const suggestions = useMemo(
     () => searchIngredientSlugs(query, 8).filter((s) => !have?.includes(s.slug)),
@@ -203,60 +246,80 @@ export function Cook() {
     return `${label}: ${action}`
   }
 
-  function chip(slug: string) {
-    return (
-      <li key={slug}>
-        <span className="chip chip--removable">
-          {nameOf(slug)}
-          <button
-            type="button"
-            className="chip__remove"
-            aria-label={`Remove ${nameOf(slug)}`}
-            onClick={() => removeHave(slug)}
-          >
-            ×
-          </button>
-        </span>
-      </li>
-    )
+  const chip = (slug: string) => (
+    <li key={slug}>
+      <Chip onRemove={() => removeHave(slug)} removeLabel={`Remove ${nameOf(slug)}`}>
+        {nameOf(slug)}
+      </Chip>
+    </li>
+  )
+
+  const filtersActive =
+    preset !== 'everything' || cuisine !== '' || maxMinutes !== null || onePot || useOnly.length > 0
+
+  // The Diet chip is shared with Home and defaults from Settings, so "Clear filters" leaves it.
+  const searchFiltersActive = cuisine !== '' || maxMinutes !== null || onePot || useOnly.length > 0
+
+  function clearFilters() {
+    setCuisine('')
+    setMaxMinutes(null)
+    setOnePot(false)
+    setUseOnly([])
   }
 
   return (
-    <section className="screen" data-testid="screen-cook">
-      <h2>What can I cook?</h2>
+    <section className="screen screen--cook" data-testid="screen-cook">
+      <header className="masthead masthead--compact">
+        <h2 className="display">What can I cook?</h2>
+        <p className="masthead__lede">
+          Start from what’s in your kitchen. Changes here are for this search only.
+        </p>
+      </header>
 
       <div className="cook-have" role="group" aria-label="What you have">
-        <p className="cook-label">What you have (for this search)</p>
-        <ul className="chip-list">
+        <p className="field-label">What you have</p>
+        <ul className="chip-wrap">
           {nonStaples.map(chip)}
           {staples.length > 0 && (
             <li>
               <button
                 type="button"
-                className="chip"
+                className="chip chip--button"
                 aria-expanded={showStaples}
                 onClick={() => setShowStaples((v) => !v)}
               >
-                {showStaples ? 'Pantry basics ▾' : `+ pantry basics (${staples.length})`}
+                <span className="chip__label">
+                  {showStaples ? 'Pantry basics' : `+ pantry basics (${staples.length})`}
+                </span>
+                <Icon
+                  name="chevronDown"
+                  size={16}
+                  className={showStaples ? 'icon--flip' : undefined}
+                />
               </button>
             </li>
           )}
           {showStaples && staples.map(chip)}
         </ul>
-        <div className="kitchen-add">
-          <label htmlFor="cook-add">Add an ingredient</label>
+        <div className="search-field">
+          <label htmlFor="cook-add" className="visually-hidden">
+            Add an ingredient
+          </label>
+          <Icon name="search" size={20} className="search-field__icon" />
           <input
             id="cook-add"
             type="text"
             value={query}
-            placeholder="e.g. chickpeas, paneer…"
+            autoComplete="off"
+            placeholder="Add an ingredient: chickpeas, paneer…"
             onChange={(e) => setQuery(e.target.value)}
           />
           {suggestions.length > 0 && (
-            <ul className="kitchen-suggestions">
+            <ul className="suggestions">
               {suggestions.map((s) => (
                 <li key={s.slug}>
                   <button type="button" onClick={() => addHave(s.slug)}>
+                    <Icon name="plus" size={18} />
                     {s.name}
                   </button>
                 </li>
@@ -266,146 +329,306 @@ export function Cook() {
         </div>
       </div>
 
-      <div className="cook-filters">
-        <label className="settings-field">
-          Cuisine
-          <select value={cuisine} onChange={(e) => setCuisine(e.target.value as Cuisine | '')}>
-            <option value="">Any cuisine</option>
-            {CUISINE_VALUES.map((c) => (
-              <option key={c} value={c}>
-                {cuisineLabel(c)}
-              </option>
-            ))}
-          </select>
-        </label>
-        <div className="chip-list" role="group" aria-label="Filters">
-          <button
-            type="button"
-            className="chip"
-            aria-pressed={onePot}
-            onClick={() => setOnePot((v) => !v)}
-          >
-            One pot
-          </button>
-          <button
-            type="button"
-            className="chip"
-            aria-pressed={quick}
-            onClick={() => setQuick((v) => !v)}
-          >
-            Under {QUICK_MINUTES} min
-          </button>
-          <button
-            type="button"
-            className="chip"
-            aria-pressed={useOnly.length > 0}
-            aria-expanded={showEquipment}
-            onClick={() => setShowEquipment((v) => !v)}
-          >
-            {useOnly.length > 0 ? `Use only: ${useOnly.length}` : 'Equipment'}
-          </button>
-        </div>
-        {showEquipment && (
-          <div className="cook-equipment">
-            <p className="cook-label">
-              Use only…
-              {kitchen.length === 0 && ' (set "My kitchen has" in Settings to shorten this list)'}
-            </p>
-            <div className="chip-list" role="group" aria-label="Use only">
-              {equipmentChoices.map((equipment) => (
-                <button
-                  key={equipment}
-                  type="button"
-                  className="chip"
-                  aria-pressed={useOnly.includes(equipment)}
-                  onClick={() => toggleUseOnly(equipment)}
-                >
-                  {equipmentLabel(equipment)}
-                </button>
-              ))}
-            </div>
-          </div>
-        )}
-      </div>
+      <ChipRow label="Filters">
+        <DietFilterChip />
+        <FilterChip
+          label={cuisine ? cuisineLabel(cuisine) : 'Cuisine'}
+          ariaLabel={`Cuisine: ${cuisine ? cuisineLabel(cuisine) : 'any'}`}
+          icon="globe"
+          active={cuisine !== ''}
+          opensSheet
+          testId="cuisine-chip"
+          onClick={() => setSheet('cuisine')}
+        />
+        <FilterChip
+          label={maxMinutes ? `Under ${maxMinutes} min` : 'Time'}
+          ariaLabel={`Time: ${maxMinutes ? `under ${maxMinutes} min` : 'any'}`}
+          icon="clock"
+          active={maxMinutes !== null}
+          opensSheet
+          testId="time-chip"
+          onClick={() => setSheet('time')}
+        />
+        <FilterChip
+          label="One pot"
+          icon="pot"
+          toggle
+          active={onePot}
+          onClick={() => setOnePot((v) => !v)}
+        />
+        <FilterChip
+          label={useOnly.length > 0 ? `Use only: ${useOnly.length}` : 'Equipment'}
+          ariaLabel={
+            useOnly.length > 0 ? `Equipment: use only ${useOnly.length}` : 'Equipment: any'
+          }
+          icon="whisk"
+          active={useOnly.length > 0}
+          opensSheet
+          testId="equipment-chip"
+          onClick={() => setSheet('equipment')}
+        />
+      </ChipRow>
 
-      {notReady && <p className="screen__placeholder">{notReady}</p>}
+      <BottomSheet
+        open={sheet === 'cuisine'}
+        onClose={() => setSheet(null)}
+        title="Cuisine"
+        testId="cuisine-sheet"
+      >
+        <OptionList
+          label="Cuisine"
+          options={CUISINE_OPTIONS}
+          value={cuisine}
+          onChange={(value) => {
+            setCuisine(value as Cuisine | '')
+            setSheet(null)
+          }}
+        />
+      </BottomSheet>
+
+      <BottomSheet
+        open={sheet === 'time'}
+        onClose={() => setSheet(null)}
+        title="Time"
+        testId="time-sheet"
+      >
+        <OptionList
+          label="Time"
+          options={TIME_OPTIONS}
+          value={maxMinutes === null ? 'any' : String(maxMinutes)}
+          onChange={(value) => {
+            setMaxMinutes(value === 'any' ? null : Number(value))
+            setSheet(null)
+          }}
+        />
+      </BottomSheet>
+
+      <BottomSheet
+        open={sheet === 'equipment'}
+        onClose={() => setSheet(null)}
+        title="Use only…"
+        testId="equipment-sheet"
+        footer={
+          <>
+            <button
+              type="button"
+              className="button button--quiet"
+              disabled={useOnly.length === 0}
+              onClick={() => setUseOnly([])}
+            >
+              Clear
+            </button>
+            <button type="button" className="button button--primary" onClick={() => setSheet(null)}>
+              Done
+            </button>
+          </>
+        }
+      >
+        <p className="sheet__lede">
+          Only recipes you can make with the equipment you pick.
+          {kitchen.length === 0 && ' Set “My kitchen has” in Settings to shorten this list.'}
+        </p>
+        <div className="option-list" role="group" aria-label="Use only">
+          {equipmentChoices.map((equipment) => {
+            const on = useOnly.includes(equipment)
+            return (
+              <button
+                key={equipment}
+                type="button"
+                className={`option${on ? ' option--checked' : ''}`}
+                aria-pressed={on}
+                onClick={() => toggleUseOnly(equipment)}
+              >
+                <span className="option__text">
+                  <span className="option__label">{equipmentLabel(equipment)}</span>
+                </span>
+                <span className="option__box" aria-hidden="true">
+                  {on && <Icon name="check" size={18} />}
+                </span>
+              </button>
+            )
+          })}
+        </div>
+      </BottomSheet>
+
+      {notReady && (
+        <p className="status-line" role="status">
+          {notReady}
+        </p>
+      )}
+
+      {!output && (
+        <ul className="result-list" aria-hidden="true">
+          {[0, 1, 2].map((i) => (
+            <li key={i} className="result-card result-card--skeleton">
+              <span className="result-card__link">
+                <Skeleton className="result-card__image" />
+                <span className="result-card__body">
+                  <Skeleton className="skeleton--text" style={{ width: '80%' }} />
+                  <Skeleton className="skeleton--text" style={{ width: '50%' }} />
+                  <Skeleton className="skeleton--text" style={{ width: '65%' }} />
+                </span>
+              </span>
+            </li>
+          ))}
+        </ul>
+      )}
 
       {corpus && output && (
         <>
-          <p className="cook-count" data-testid="cook-count">
-            {output.stats.candidates === 0
-              ? 'No recipes match yet. Add what you have, or loosen a filter.'
-              : `${output.stats.candidates} ${output.stats.candidates === 1 ? 'recipe' : 'recipes'}` +
-                (output.results.length < output.stats.candidates
-                  ? `, best ${output.results.length} shown`
-                  : '') +
-                (preset !== 'everything' ? ` · ${DIET_PRESET_LABELS[preset]}` : '')}
-          </p>
+          <SectionHeader
+            title={output.stats.candidates === 0 ? 'No matches yet' : 'Best matches'}
+            action={
+              searchFiltersActive ? (
+                <button type="button" className="button button--text" onClick={clearFilters}>
+                  Clear filters
+                </button>
+              ) : undefined
+            }
+            subtitle={
+              <span data-testid="cook-count">
+                {output.stats.candidates === 0
+                  ? 'No recipes match yet. Add what you have, or loosen a filter.'
+                  : `${output.stats.candidates} ${output.stats.candidates === 1 ? 'recipe' : 'recipes'}` +
+                    (output.results.length < output.stats.candidates
+                      ? `, best ${output.results.length} shown`
+                      : '') +
+                    (preset !== 'everything' ? ` · ${DIET_PRESET_LABELS[preset]}` : '')}
+              </span>
+            }
+          />
           {hiddenMine.length > 0 && (
-            <p className="cook-hidden-mine" data-testid="cook-hidden-mine">
+            <p className="note-line" data-testid="cook-hidden-mine">
               {hiddenMine.length} of your {hiddenMine.length === 1 ? 'recipe' : 'recipes'} hidden:{' '}
               {hiddenMineReasons(hiddenMine)}
             </p>
           )}
           {hiddenNote(output.stats.hidden) && (
-            <p className="cook-hidden-avoid" data-testid="cook-hidden-avoid">
+            <p className="note-line" data-testid="cook-hidden-avoid">
               {hiddenNote(output.stats.hidden)}
             </p>
           )}
-          <ul className="cook-results" data-testid="cook-results">
+          {output.results.length === 0 && (
+            <EmptyState
+              icon="basket"
+              title="Nothing to cook with these yet"
+              action={
+                searchFiltersActive ? (
+                  <button type="button" className="button button--secondary" onClick={clearFilters}>
+                    Clear filters
+                  </button>
+                ) : undefined
+              }
+            >
+              Add a few more ingredients above{filtersActive ? ', or loosen a filter' : ''}.
+            </EmptyState>
+          )}
+          <ul className="result-list" data-testid="cook-results">
             {output.results.map((result) => {
-              const summary = missingSummary(result)
               const swapLine = dietSwapLine(result)
+              const source = result.mine ? 'my' : 'corpus'
+              const favorited = favoriteKeys.has(favoriteToken(result.key, source))
               const detailHref = result.mine
                 ? `/my-recipes/${encodeURIComponent(result.key)}`
                 : `/recipe/${encodeURIComponent(result.key)}`
+              const missingLines = [
+                ...result.substitutable.map((item) => ({
+                  key: `s-${item.slug}`,
+                  name: item.name,
+                  swap: item.swap.components.map((c) => c.name).join(' + '),
+                })),
+                ...result.missing.map((item, i) => ({
+                  key: `m-${item.slug ?? ''}-${i}`,
+                  name: item.name,
+                  swap: null,
+                })),
+              ]
+              const shown = missingLines.slice(0, MISSING_SHOWN)
+              const more = missingLines.length - shown.length
               return (
                 <li
-                  key={`${result.mine ? 'my' : 'corpus'}-${result.key}`}
-                  className="cook-result"
+                  key={`${source}-${result.key}`}
+                  className="result-card"
                   data-mine={result.mine ? 'true' : undefined}
                 >
-                  <Link to={detailHref} state={{ have }}>
-                    <span className="cook-result__title">
-                      {result.title}
-                      {result.mine && <span className="cook-result__mine"> · Mine</span>}
-                    </span>
-                    <span className="cook-result__meta">
-                      {result.covered}/{result.needed} ingredients
-                      {result.cuisine ? ` · ${cuisineLabel(result.cuisine)}` : ''}
-                      {result.totalMin !== null ? ` · ${result.totalMin} min` : ''}
-                      {result.diet?.status === 'adaptable' ? ' · adaptable' : ''}
-                    </span>
-                    <span className="cook-result__missing">{summary ?? 'You have everything'}</span>
-                    {result.avoided.length > 0 && (
-                      <span className="cook-result__avoided" data-testid="cook-result-avoided">
-                        avoiding: {result.avoided.map((a) => a.name).join(', ')}
+                  <Link to={detailHref} state={{ have }} className="result-card__link">
+                    <RecipeImage
+                      src={result.mine ? null : images.get(result.key)}
+                      title={result.title}
+                      cuisine={result.cuisine}
+                      className="result-card__image"
+                    />
+                    <span className="result-card__body">
+                      <span className="result-card__title">
+                        {result.title}
+                        {result.mine && <span className="badge"> Mine</span>}
                       </span>
-                    )}
-                    {swapLine && (
-                      <span className="cook-result__diet-swap" data-testid="cook-result-diet-swap">
-                        {swapLine}
+                      <span className="meta">
+                        {result.cuisine && <span>{cuisineLabel(result.cuisine)}</span>}
+                        {result.totalMin !== null && (
+                          <span className="meta__time">
+                            <Icon name="clock" size={14} />
+                            {result.totalMin} min
+                          </span>
+                        )}
+                        {result.diet?.status === 'adaptable' && <span>adaptable</span>}
                       </span>
-                    )}
+                      <CoverageMeter covered={result.covered} needed={result.needed} />
+                      {missingLines.length === 0 ? (
+                        <span className="missing missing--none">
+                          <Icon name="check" size={16} />
+                          You have everything
+                        </span>
+                      ) : (
+                        <span className="missing" data-testid="cook-result-missing">
+                          <span className="missing__label">Missing</span>
+                          <span className="missing__items">
+                            {shown.map((line) => (
+                              <span key={line.key} className="missing__item">
+                                <span className="missing__name">{line.name}</span>
+                                {line.swap && <span className="missing__swap"> → {line.swap}</span>}
+                              </span>
+                            ))}
+                            {more > 0 && <span className="missing__more">+{more} more</span>}
+                          </span>
+                        </span>
+                      )}
+                      {result.avoided.length > 0 && (
+                        <span className="result-card__note" data-testid="cook-result-avoided">
+                          avoiding: {result.avoided.map((a) => a.name).join(', ')}
+                        </span>
+                      )}
+                      {swapLine && (
+                        <span
+                          className="result-card__note result-card__note--herb"
+                          data-testid="cook-result-diet-swap"
+                        >
+                          <Icon name="leaf" size={14} />
+                          {swapLine}
+                        </span>
+                      )}
+                    </span>
                   </Link>
-                  <button
-                    type="button"
-                    aria-pressed={favoriteKeys.has(favoriteToken(result.key, result.mine ? 'my' : 'corpus'))}
-                    aria-label={
-                      favoriteKeys.has(favoriteToken(result.key, result.mine ? 'my' : 'corpus'))
-                        ? `Remove favorite: ${result.title}`
-                        : `Add favorite: ${result.title}`
-                    }
-                    className="cook-result__favorite"
-                    onClick={() => void toggleFavorite(result.key, result.mine ? 'my' : 'corpus')}
-                  >
-                    {favoriteKeys.has(favoriteToken(result.key, result.mine ? 'my' : 'corpus')) ? '★' : '☆'}
-                  </button>
-                  <AddToPlanControl
-                    recipeId={result.key}
-                    recipeSource={result.mine ? 'my' : 'corpus'}
-                    recipeTitle={result.title}
-                  />
+                  <div className="result-card__actions">
+                    <button
+                      type="button"
+                      aria-pressed={favorited}
+                      aria-label={
+                        favorited
+                          ? `Remove favorite: ${result.title}`
+                          : `Add favorite: ${result.title}`
+                      }
+                      className={`icon-button favorite-button${favorited ? ' favorite-button--on' : ''}`}
+                      onClick={() => void toggleFavorite(result.key, source)}
+                    >
+                      <Icon name="star" filled={favorited} />
+                    </button>
+                    <AddToPlanControl
+                      recipeId={result.key}
+                      recipeSource={source}
+                      recipeTitle={result.title}
+                    />
+                  </div>
                 </li>
               )
             })}
