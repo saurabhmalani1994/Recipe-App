@@ -66,6 +66,10 @@ Owner questions pending: Kaggle token (default: no ratings source), and location
 /home/user/recipe-data dies when the container is reclaimed. corpus.db needs durable storage
 (a Release asset has no upload tool here, so decide at S1's end).
 
+## Demo
+Demo 1 is a private artifact at https://claude.ai/artifact/FH5WscMtqy8de1y7ogSfxR. Rebuild with VITE_CORPUS_DB_URL=assets/databases/corpus-db.bin.wasm
+--base=./ and inline the CSS (the host does not serve .db files).
+
 ## Mapping (§4)
 strong=opus, mid=sonnet, cheap=haiku, top=fable. The orchestrator runs on strong.
 
