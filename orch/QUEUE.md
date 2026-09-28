@@ -30,3 +30,4 @@ S15 servings estimator | ingest + small app | DONE merged, bar missed (61.9%), s
 S12b Mine: favorite-source bug, R12 ranking, R13 filters | app | RUNNING | sonnet | orch/briefs/S12b-mine-fixes.md | v0.2
 S1b fix BBC parser TypeError (11,834 pages lost) + --retry-failed | ingest | RUNNING | sonnet | orch/briefs/S1b-bbc-parser.md | v0.2
 S8b rescore by substance (owner grade FAIL: top 1.05) + fresh 45-recipe sheet | ingest | RUNNING | opus | orch/briefs/S8b-rescore.md | v0.2
+S16 app: 'ingredients I avoid' setting (R15), with down-ranking or hiding in Cook, Home and Surprise | app | READY after S12b | sonnet | - | v0.2
