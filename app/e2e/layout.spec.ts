@@ -3,7 +3,7 @@ import { expect, test } from '@playwright/test'
 // Every route the app has, by its `HashRouter` path, and a name for its screenshot.
 // `/recipe/r07` stands in for the dynamic recipe detail route, and `/my-recipes/new` for the
 // dynamic editor route.
-const ROUTES: { path: string; name: string }[] = [
+const ROUTES: { path: string; name: string; waitFor?: string }[] = [
   { path: '/', name: 'home' },
   { path: '/cook', name: 'cook' },
   { path: '/plan', name: 'plan' },
@@ -14,6 +14,8 @@ const ROUTES: { path: string; name: string }[] = [
   { path: '/kitchen', name: 'kitchen' },
   { path: '/settings', name: 'settings' },
   { path: '/recipe/r07', name: 'recipe-detail' },
+  // A corpus recipe (S6), by its stable key, from the bundled fixture.db.
+  { path: '/recipe/themealdb%3A53191', name: 'corpus-recipe-detail', waitFor: 'Ingredients' },
 ]
 
 const WIDTHS = [360, 412]
@@ -29,6 +31,9 @@ for (const width of WIDTHS) {
         const loading = page.getByText('Loading…')
         if (await loading.isVisible().catch(() => false)) {
           await expect(loading).toBeHidden()
+        }
+        if (route.waitFor) {
+          await expect(page.getByRole('heading', { name: route.waitFor })).toBeVisible()
         }
 
         const { scrollWidth, clientWidth } = await page.evaluate(() => ({

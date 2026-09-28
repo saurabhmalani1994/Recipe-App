@@ -13,14 +13,38 @@ import type { Db, QueryResult, SqlParam, VersionedDb } from './types'
 export class WebDb implements VersionedDb {
   readonly name: string
   private db: Database | null = null
+  private readonly image: Uint8Array | null
 
-  constructor(name: string) {
+  /**
+   * `image`, when given, is a whole sqlite file (e.g. `corpus.db` fetched as bytes): `open()`
+   * deserializes it into the in-memory connection read-only instead of starting empty.
+   */
+  constructor(name: string, image: Uint8Array | null = null) {
     this.name = name
+    this.image = image
   }
 
   async open(): Promise<void> {
     const sqlite3 = await sqlite3InitModule()
-    this.db = new sqlite3.oo1.DB(':memory:', 'ct')
+    // 't' traces every statement to the console; a read-only corpus image is opened without it.
+    const db = new sqlite3.oo1.DB(':memory:', this.image ? 'c' : 'ct')
+    if (this.image) {
+      const { capi, wasm } = sqlite3
+      const pointer = wasm.allocFromTypedArray(this.image)
+      const rc = capi.sqlite3_deserialize(
+        db.pointer!,
+        'main',
+        pointer,
+        this.image.byteLength,
+        this.image.byteLength,
+        capi.SQLITE_DESERIALIZE_FREEONCLOSE | capi.SQLITE_DESERIALIZE_READONLY,
+      )
+      if (rc !== 0) {
+        db.close()
+        throw new Error(`${this.name}: sqlite3_deserialize failed (rc ${rc})`)
+      }
+    }
+    this.db = db
   }
 
   async close(): Promise<void> {

@@ -448,3 +448,129 @@ button:disabled {
   text-decoration: none;
   font-weight: 600;
 }
+
+/* S6: Cook screen ("What can I cook?") and the corpus recipe view. */
+.cook-label {
+  margin: 0 0 6px;
+  font-size: 0.85rem;
+  color: var(--color-text-muted);
+}
+
+.chip-list {
+  list-style: none;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  padding: 0;
+  margin: 0 0 12px;
+}
+
+.chip {
+  display: inline-flex;
+  align-items: center;
+  max-width: 100%;
+  min-height: 36px;
+  padding: 4px 12px;
+  border: 1px solid var(--color-border);
+  border-radius: 18px;
+  background: var(--color-surface);
+  font-size: 0.9rem;
+  overflow-wrap: anywhere;
+}
+
+button.chip {
+  min-height: 44px;
+}
+
+button.chip[aria-pressed='true'] {
+  background: var(--color-active-bg);
+  border-color: var(--color-accent);
+  color: var(--color-text);
+}
+
+.chip--removable {
+  padding-right: 0;
+}
+
+.chip__remove {
+  min-width: 40px;
+  min-height: 36px;
+  padding: 0;
+  border: none;
+  background: none;
+  color: var(--color-text-muted);
+  font-size: 1.1rem;
+}
+
+.cook-filters .settings-field {
+  margin-bottom: 12px;
+}
+
+.cook-count {
+  font-size: 0.85rem;
+  color: var(--color-text-muted);
+  margin: 4px 0 8px;
+}
+
+.cook-results {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.cook-result a {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-height: 44px;
+  padding: 10px 0;
+  border-bottom: 1px solid var(--color-border);
+  color: var(--color-text);
+  text-decoration: none;
+  overflow-wrap: anywhere;
+}
+
+.cook-result__title {
+  font-weight: 600;
+}
+
+.cook-result__meta,
+.recipe-detail__facts {
+  font-size: 0.85rem;
+  color: var(--color-text-muted);
+}
+
+.cook-result__missing {
+  font-size: 0.9rem;
+  color: var(--color-accent);
+}
+
+.corpus-ingredients {
+  padding-left: 20px;
+}
+
+.corpus-line {
+  margin-bottom: 6px;
+  overflow-wrap: anywhere;
+}
+
+.corpus-line__tag {
+  margin-left: 6px;
+  font-size: 0.75rem;
+  color: var(--color-accent);
+}
+
+.corpus-line__swap {
+  display: block;
+  font-size: 0.85rem;
+  color: var(--color-text-muted);
+}
+
+.recipe-detail__diet {
+  font-size: 0.9rem;
+}
+
+.recipe-detail__steps li,
+.recipe-detail__source {
+  overflow-wrap: anywhere;
+}
