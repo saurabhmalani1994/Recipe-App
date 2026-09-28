@@ -32,3 +32,4 @@
 - 2026-09-28: S1b merged (verified). Full BBC retry started in the background.
 - 2026-09-28: S1c merged (verified).
 - 2026-09-28: S8b merged (verified 462). R18. Sheet 2 published.
+- 2026-09-28: S17 merged (verified). Full site crawls started. S17b briefed.
