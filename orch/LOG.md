@@ -45,3 +45,4 @@
 - 2026-09-28: S19 merged (verified). Pushing the LFS corpus.
 - 2026-09-28: CI run 20 green with the real corpus in the APK (92.6 MB artifact). STATE.md compacted.
 - 2026-09-28: Owner's first device run: corpus open fails ('not allowed in read-only mode'); UI judged unpolished. S21 briefed.
+- 2026-09-28: D20 and D21 recorded (owner's redesign choices). S22a briefed.

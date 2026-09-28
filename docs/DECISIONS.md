@@ -30,6 +30,8 @@ Append only. The owner's words are verbatim (rule 13). Do not ask these again.
 | D17 | Style | "many of the apps felt very southern or mid western, using things like cool whip or sour cream for lots of the recipes, which is not my style." (said after grading sheet 1) |
 | D18 | Fresh ingredients, Food Wishes | "i like using fresh ingredients. cant you get more from Food Wishes? he makes good food" |
 | D19 | Cuisine sources | "also find sites that do good indian cooking, chinese cooking, korean cooking, japanese cooking, malaysian cooking, singaporean cooking, italian cooking, french cooking, mediterranean cooking - no israeli food only palestinian/greek/egyptian/persian" |
+| D20 | First device run | "Can't open recipes and the UI looks very unpolished, the vegetarian no red meat extra tab takes too much space and does not need to be on every screen or always there. No swipe gestures work. This is a very unfinished and clunky looking app." |
+| D21 | Redesign choices | Diet switch: "Filter chip in Cook & Home" (default in Settings). Gestures: "Swipe list items", "Swipe between tabs". Look: "Photo-led food magazine". Theme: "Follow phone setting" |
 
 ## Orchestrator rulings (challengeable)
 
