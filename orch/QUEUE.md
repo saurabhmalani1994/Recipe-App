@@ -20,4 +20,5 @@ S9a corpus.db schema + builder on sample + course tagger + app types/fixture | i
 S9b course tagger modifier rules; blind set must be >= 85% (it was 82%) | ingest | READY after S8 | sonnet | - | v0.1
 S9c parser: 'cans tuna packed in water' resolves to water | ingest | fold into next parser slice | sonnet | - | v0.1
 S6b Cook fixes: flaky diet persistence, equipment list drift, readability, ranking floor | app | DONE merged | sonnet | orch/briefs/S6b-cook-fixes.md | v0.1
-S7c shoppable grocery list (buy_as, shop units, no-qty items stay on list) | ingest taxonomy + app | RUNNING | opus | orch/briefs/S7c-shoppable-list.md | v0.2
+S7c shoppable grocery list (buy_as, shop units, no-qty items stay on list) | ingest taxonomy + app | DONE merged | opus | orch/briefs/S7c-shoppable-list.md | v0.2
+S10 rebuild after S8: apply R11 (no foodcom), S3b subs, regenerate fixture.db, rerun app tests | ingest | after S8 | sonnet | - | v0.2

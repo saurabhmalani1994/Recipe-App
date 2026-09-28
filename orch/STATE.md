@@ -16,11 +16,13 @@ allrecipes gives 402 even with a browser UA (bot wall), so S1 tries headless Chr
 ## Owner silence on 3 defaults (applied): metric default, no hosted PWA, start builds now.
 
 ## Running
-S8 curation (opus) and S7c shoppable list (opus) run in worktrees. The app lane is free until corpus schema S9. The app lane is free (S7b READY; S6 waits on corpus schema S9). The full BBC crawl runs as a background
+S8 curation (opus) runs in a worktree. The app lane is free. The app lane is free until corpus schema S9. The app lane is free (S7b READY; S6 waits on corpus schema S9). The full BBC crawl runs as a background
 script (cap 20000, 6h timeout; log in /home/user/recipe-data/bbc_full_crawl.log).
 Owner questions pending: Kaggle token (default: no ratings source), and location for seasonality (default: temperate north).
 
 ## Done
+- S7c merged. Re-run: 322 pytest, 112 unit, e2e 26. The list is now in shop units. The "¾" came from the foodcom HF mirror
+  having no unit column, so R11 drops foodcom; S10 rebuilds after S8.
 - S7 merged (screenshot conflicts resolved by rerun). 85 unit, e2e 26. BUT the list is not shoppable:
   unit-less "¾", "garlic 3.8 g", no-qty items dumped to "Check these". So S7c.
 - S6b merged. Re-run: 68 unit, e2e 25 passed. One run showed 13 failures because the e2e server reused
