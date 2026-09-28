@@ -213,6 +213,8 @@ export function SwipeRow({
         onPointerMove={onPointerMove}
         onPointerUp={onPointerEnd}
         onPointerCancel={onPointerEnd}
+        // A link or image in the row must not start a native drag (it would cancel the swipe).
+        onDragStart={(event) => event.preventDefault()}
         onTransitionEnd={() => setAnimating(false)}
       >
         {children}

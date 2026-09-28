@@ -147,6 +147,7 @@ export function RecipeDetailView({
           {meta}
         </div>
         <div className="detail-head__actions">{actions}</div>
+        {intro}
       </header>
 
       {(servings || units) && (
@@ -182,8 +183,6 @@ export function RecipeDetailView({
           )}
         </div>
       )}
-
-      {intro}
 
       <section className="detail-section" aria-labelledby="ingredients-title">
         <div className="detail-section__head">

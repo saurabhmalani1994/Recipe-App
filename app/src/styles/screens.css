@@ -7,12 +7,14 @@
 
 /* ---------------------------------------------------------------- shell additions */
 .app-shell {
-  /* Where a sticky header sits: under the top bar, or at the top once the bar tucks away. */
-  --chrome-top: calc(var(--safe-top) + var(--topbar-h));
+  /* Where a sticky header sits. A screen's scroll box is already padded clear of the top bar,
+     and sticky offsets count from inside that padding: 0 sits right under the bar, and minus
+     the bar's height sits at the very top once the bar tucks away. */
+  --sticky-top: 0px;
 }
 
 .app-shell--bar-hidden {
-  --chrome-top: var(--safe-top);
+  --sticky-top: calc(var(--topbar-h) * -1);
 }
 
 .button--danger {
@@ -639,7 +641,7 @@ textarea.field__control {
 
 .aisle__title {
   position: sticky;
-  top: var(--chrome-top);
+  top: var(--sticky-top);
   z-index: 3;
   display: flex;
   align-items: baseline;
@@ -810,13 +812,15 @@ textarea.field__control {
   color: var(--text-2);
 }
 
+/* A small pill painted inside a 48dp tap target (the transparent border is part of the button). */
 .shop-row__sources {
   flex: 0 0 auto;
   min-height: var(--tap);
   padding: 0 var(--space-3);
-  border: none;
+  border: 9px solid transparent;
   border-radius: var(--radius-pill);
-  background: var(--surface-2);
+  background-clip: padding-box;
+  background-color: var(--surface-2);
   color: var(--text-2);
   font-size: var(--text-xs);
   font-weight: 600;
@@ -824,7 +828,7 @@ textarea.field__control {
 }
 
 .shop-row__sources[aria-expanded='true'] {
-  background: var(--accent-soft);
+  background-color: var(--accent-soft);
   color: var(--on-accent-soft);
 }
 
@@ -1074,7 +1078,7 @@ a.option {
 
 .detail-controls {
   position: sticky;
-  top: var(--chrome-top);
+  top: var(--sticky-top);
   z-index: 4;
   display: flex;
   flex-wrap: wrap;
@@ -1531,9 +1535,14 @@ a.option {
 .plan-meal__body {
   flex: 1;
   min-width: 0;
+  min-height: var(--tap);
   display: flex;
   flex-direction: column;
+  justify-content: center;
   gap: 1px;
+  color: var(--text);
+  text-decoration: none;
+  -webkit-user-drag: none;
 }
 
 .plan-meal__meal {

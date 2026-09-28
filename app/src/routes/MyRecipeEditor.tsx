@@ -179,7 +179,7 @@ export function MyRecipeEditor() {
   return (
     <section className="screen screen--editor" data-testid="screen-my-recipe-editor">
       <header className="editor-head">
-        <p className="kicker">{isNew ? 'New recipe' : parent ? 'My version' : 'My recipe'}</p>
+        {!isNew && <p className="kicker">{parent ? 'My version' : 'Editing'}</p>}
         <h2 className="display editor-head__title">
           {isNew ? title || 'New recipe' : title || 'Untitled recipe'}
         </h2>
@@ -290,86 +290,6 @@ export function MyRecipeEditor() {
         </label>
       </div>
 
-      {/* S12b #3 (R13): optional filter fields — "under N minutes", "one pot" and "use only
-          equipment" in Cook now apply to a My Recipe too, and exclude it (rather than pass it
-          through) while any of these three is unset. */}
-      <div className="card editor-card">
-        <h3 className="card__title">For Cook’s filters</h3>
-        <p className="card__lede">Leave these unset and Cook’s time, one-pot and equipment filters skip this recipe.</p>
-        <label className="field">
-          <span className="field__label">Total minutes</span>
-          <input
-            className="field__control field__control--short"
-            type="number"
-            inputMode="numeric"
-            min={0}
-            value={data.totalMin ?? ''}
-            onChange={(e) =>
-              setData((prev) => ({
-                ...prev,
-                totalMin: e.target.value === '' ? null : Number(e.target.value) || 0,
-              }))
-            }
-          />
-        </label>
-        {suggestedMinutes != null && (
-          <p className="suggestion" data-testid="suggested-total-min">
-            <Icon name="clock" size={18} />
-            <span>Steps suggest {suggestedMinutes} min total. </span>
-            <button type="button" className="button button--text" onClick={acceptSuggestedMinutes}>
-              Use {suggestedMinutes} min
-            </button>
-          </p>
-        )}
-
-        <div className="field">
-          <span className="field__label" id="one-pot-label">
-            One pot
-          </span>
-          <Segmented<OnePotChoice>
-            label="One pot"
-            value={onePot}
-            onChange={(choice) =>
-              setData((prev) => ({
-                ...prev,
-                onePot: choice === 'yes' ? true : choice === 'no' ? false : null,
-              }))
-            }
-            options={[
-              { value: 'yes', label: 'Yes' },
-              { value: 'no', label: 'No' },
-              { value: 'unset', label: 'Not set' },
-            ]}
-          />
-        </div>
-
-        <div className="field">
-          <span className="field__label">Equipment</span>
-          <div className="check-chips" role="group" aria-label="Equipment">
-            {KITCHEN_EQUIPMENT.map((item) => (
-              <CheckChip
-                key={item}
-                label={KITCHEN_EQUIPMENT_LABELS[item]}
-                checked={(data.equipment ?? []).includes(item)}
-                onChange={() => toggleEquipment(item)}
-              />
-            ))}
-          </div>
-        </div>
-        {suggestedEquipment.length > 0 && (
-          <p className="suggestion" data-testid="suggested-equipment">
-            <Icon name="pot" size={18} />
-            <span>
-              Steps suggest{' '}
-              {suggestedEquipment.map((item) => KITCHEN_EQUIPMENT_LABELS[item]).join(', ')}.{' '}
-            </span>
-            <button type="button" className="button button--text" onClick={acceptSuggestedEquipment}>
-              Use these
-            </button>
-          </p>
-        )}
-      </div>
-
       <div className="card editor-card">
         <h3 className="card__title">Ingredients</h3>
         <p className="card__lede">One per line, as you would write it. What was understood shows underneath.</p>
@@ -450,6 +370,86 @@ export function MyRecipeEditor() {
         <button type="button" className="button button--quiet editor-add" onClick={addStep}>
           + Step
         </button>
+      </div>
+
+      {/* S12b #3 (R13): optional filter fields — "under N minutes", "one pot" and "use only
+          equipment" in Cook now apply to a My Recipe too, and exclude it (rather than pass it
+          through) while any of these three is unset. */}
+      <div className="card editor-card">
+        <h3 className="card__title">For Cook’s filters</h3>
+        <p className="card__lede">Leave these unset and Cook’s time, one-pot and equipment filters skip this recipe.</p>
+        <label className="field">
+          <span className="field__label">Total minutes</span>
+          <input
+            className="field__control field__control--short"
+            type="number"
+            inputMode="numeric"
+            min={0}
+            value={data.totalMin ?? ''}
+            onChange={(e) =>
+              setData((prev) => ({
+                ...prev,
+                totalMin: e.target.value === '' ? null : Number(e.target.value) || 0,
+              }))
+            }
+          />
+        </label>
+        {suggestedMinutes != null && (
+          <p className="suggestion" data-testid="suggested-total-min">
+            <Icon name="clock" size={18} />
+            <span>Steps suggest {suggestedMinutes} min total. </span>
+            <button type="button" className="button button--text" onClick={acceptSuggestedMinutes}>
+              Use {suggestedMinutes} min
+            </button>
+          </p>
+        )}
+
+        <div className="field">
+          <span className="field__label" id="one-pot-label">
+            One pot
+          </span>
+          <Segmented<OnePotChoice>
+            label="One pot"
+            value={onePot}
+            onChange={(choice) =>
+              setData((prev) => ({
+                ...prev,
+                onePot: choice === 'yes' ? true : choice === 'no' ? false : null,
+              }))
+            }
+            options={[
+              { value: 'yes', label: 'Yes' },
+              { value: 'no', label: 'No' },
+              { value: 'unset', label: 'Not set' },
+            ]}
+          />
+        </div>
+
+        <div className="field">
+          <span className="field__label">Equipment</span>
+          <div className="check-chips" role="group" aria-label="Equipment">
+            {KITCHEN_EQUIPMENT.map((item) => (
+              <CheckChip
+                key={item}
+                label={KITCHEN_EQUIPMENT_LABELS[item]}
+                checked={(data.equipment ?? []).includes(item)}
+                onChange={() => toggleEquipment(item)}
+              />
+            ))}
+          </div>
+        </div>
+        {suggestedEquipment.length > 0 && (
+          <p className="suggestion" data-testid="suggested-equipment">
+            <Icon name="pot" size={18} />
+            <span>
+              Steps suggest{' '}
+              {suggestedEquipment.map((item) => KITCHEN_EQUIPMENT_LABELS[item]).join(', ')}.{' '}
+            </span>
+            <button type="button" className="button button--text" onClick={acceptSuggestedEquipment}>
+              Use these
+            </button>
+          </p>
+        )}
       </div>
 
       <div className="card editor-card">

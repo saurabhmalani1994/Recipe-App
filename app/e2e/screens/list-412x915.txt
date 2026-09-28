@@ -1,89 +1,119 @@
-List
-Range
 This week
 Next week
-This + next week
-Build list
+Both
+Rebuild list
 
 Left off 4 you already have: butter, salt, sugar, water.
 
-Add ticked to kitchen
-Clear
 Add an item
-Add
-Dairy
+
+22 to buy · Swipe right to tick, left to delete
+
+DAIRY
+1
 cheddar
 amount: see recipe
 1 recipe
-Meat
+Delete cheddar
+MEAT
+2
 bacon
 amount: see recipe
 1 recipe
+Delete bacon
 chicken
 amount: see recipe
 1 recipe
-Pantry
+Delete chicken
+PANTRY
+5
 kecap manis
 amount: see recipe
 1 recipe
+Delete kecap manis
 mayonnaise
 check you have some
 1 recipe
+Delete mayonnaise
 rice
 check you have some
 1 recipe
+Delete rice
 sambal oelek
 amount: see recipe
 1 recipe
+Delete sambal oelek
 soy sauce
 check you have some
 1 recipe
-Produce
+Delete soy sauce
+PRODUCE
+12
 bean sprouts
 amount: see recipe
 1 recipe
+Delete bean sprouts
 cabbage
 amount: see recipe
 1 recipe
+Delete cabbage
 carrot
 1 (46 g + more, see recipe)
 3 recipes
+Delete carrot
 cauliflower
 amount: see recipe
 1 recipe
+Delete cauliflower
 celery
 amount: see recipe
 1 recipe
+Delete celery
 cilantro
 amount: see recipe
 1 recipe
+Delete cilantro
 garlic
 1 head (need 1 clove + more, see recipe)
 2 recipes
+Delete garlic
 ginger
 amount: see recipe
 1 recipe
+Delete ginger
 leek
 amount: see recipe
 1 recipe
+Delete leek
 lemon
 amount: see recipe
 1 recipe
+Delete lemon
 mango
 1 (150 g)
 1 recipe
+Delete mango
 onion
 amount: see recipe
 2 recipes
-Spices
+Delete onion
+SPICES
+2
 cumin
 check you have some
 1 recipe
+Delete cumin
 curry powder
 check you have some
 1 recipe
-Check These
+Delete curry powder
+CHECK THESE
+2
+
+Lines the list could not read. Check them in the recipe.
+
 trassi oedang
 no canonical ingredient matched
 curcumae
 no canonical ingredient matched
+Clear list

@@ -1,5 +1,6 @@
 import { createContext, useCallback, useContext, useEffect, useMemo, useRef, useState } from 'react'
 import type { ReactNode } from 'react'
+import { useLocation } from 'react-router-dom'
 
 /** How long a snackbar stays up before it goes on its own (ms). */
 const SNACKBAR_MS = 6000
@@ -49,6 +50,15 @@ export function SnackbarProvider({ children }: { children: ReactNode }) {
   }, [])
 
   useEffect(() => () => window.clearTimeout(timer.current), [])
+
+  // A snackbar belongs to the screen it came from: moving to another screen dismisses it.
+  const { pathname } = useLocation()
+  const shownOn = useRef(pathname)
+  useEffect(() => {
+    if (shownOn.current === pathname) return
+    shownOn.current = pathname
+    dismiss()
+  }, [pathname, dismiss])
 
   const value = useMemo(() => ({ show, dismiss }), [show, dismiss])
 

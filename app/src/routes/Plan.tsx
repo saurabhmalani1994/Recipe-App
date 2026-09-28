@@ -258,11 +258,9 @@ export function Plan() {
                           cuisine={null}
                           className="plan-meal__image"
                         />
-                        <div className="plan-meal__body">
+                        <Link to={recipeHref(entry)} className="plan-meal__body" draggable={false}>
                           <span className="plan-meal__meal">{MEAL_LABEL[meal]}</span>
-                          <Link to={recipeHref(entry)} className="plan-meal__title">
-                            {entry.recipeTitle}
-                          </Link>
+                          <span className="plan-meal__title">{entry.recipeTitle}</span>
                           <span className="plan-meal__meta">
                             <Icon name="people" size={14} />
                             {entry.people} {entry.people === 1 ? 'person' : 'people'}
@@ -273,7 +271,7 @@ export function Plan() {
                               Shares {hint.join(', ')} with another day
                             </span>
                           )}
-                        </div>
+                        </Link>
                         <button
                           type="button"
                           className="icon-button plan-meal__more"
