@@ -40,6 +40,6 @@ S10b title-marker lookup + course fixes | ingest | DONE merged (blind2 93.3%) | 
 S18 fixture refresh + re-pin tests + video method UI | app | DONE merged | sonnet | orch/briefs/S18-fixture-refresh.md | v0.2
 S19 final rebuild + LFS layout + CI APK with the real corpus | ingest+CI | DONE merged: 68,966 recipes, 227.9 MB | opus | orch/briefs/S19-final-rebuild.md | - | - | v0.2
 S20 swap ordering + R19 veg ok-first | app | DONE merged | sonnet | orch/briefs/S20-swap-order.md | v0.2
-S21 native corpus open fix + back gesture + emulator smoke gate in CI | app+CI | RUNNING | opus | orch/briefs/S21-native-fix.md | v0.3
+S21 native corpus open fix + back gesture + emulator smoke gate in CI | app+CI | DONE merged; device-smoke first run pending | opus | orch/briefs/S21-native-fix.md | v0.3
 S22a redesign: design system, shell (no diet bar, swipe tabs, SVG icons), Home + Cook | app | RUNNING | opus | orch/briefs/S22a-redesign-shell.md | v0.3
 S22b redesign: recipe detail, Plan, List (swipe to tick), Kitchen (swipe to remove), My Recipes, Settings | app | after S22a | opus | - | v0.3

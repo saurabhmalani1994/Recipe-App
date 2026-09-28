@@ -6,7 +6,7 @@ Branch: `claude/funny-thompson-jcmpox` (the only branch). Commit identity: saura
 ## Phase
 v0.2 feature-complete candidate. corpus/corpus.db (LFS, oid 891349ec..., 68,966 recipes, schema 4) ships in the APK.
 CI run 20 (d06aed5) is GREEN, including "Check the APK assets hold the real corpus". APK artifact 92.6 MB zipped.
-No builder runs in flight. No crawls are running.
+S22a redesign (opus, 4331) is running. S21 is merged; waiting on its first device-smoke CI run.
 
 ## Waiting on owner
 - Install the APK and try it on the phone. This is the FIRST device run: the native corpus copy (228 MB copyFromAssets) is unverified.
@@ -24,6 +24,7 @@ Rebuild with VITE_CORPUS_DB_URL=assets/databases/corpus-db.bin.wasm --base=./ an
 strong=opus, mid=sonnet, cheap=haiku, top=fable. The orchestrator runs on strong.
 
 ## Done
+- S21 merged. 230 unit, e2e 35. The native readonly fix is proven with the exact error. The device-smoke CI job has NOT run yet (first on this push).
 - S19 merged. 501 pytest, 220 unit, e2e 35. 68,966 recipes, schema 4. CI builds the APK with the real corpus from LFS.
 - S20 merged. 218 unit, e2e 35.
 - S10b merged. 495 pytest; course blind2 93.3%. title_cuisine exists but is NOT wired into the build (S19, R20).
