@@ -169,7 +169,15 @@ def test_build_rows(built):
     assert [h[0] for h in hit] == [r['id']]
     # per-slug recipe counts
     assert con.execute("SELECT recipe_count FROM ingredients WHERE slug = 'onion'").fetchone()[0] == 3
-    assert con.execute("SELECT value FROM corpus_meta WHERE key = 'schema_version'").fetchone()[0] == '1'
+    assert con.execute("SELECT value FROM corpus_meta WHERE key = 'schema_version'").fetchone()[0] == '2'
+    # servings (S15): the source's own is 'source'; every other recipe here is estimated, and
+    # servings and servings_source are NULL together
+    assert r['servings_source'] == 'source'
+    assert cookies['servings'] is not None and cookies['servings_source'] in ('text', 'energy', 'mass')
+    assert con.execute('SELECT count(*) FROM recipes WHERE (servings IS NULL) != (servings_source IS NULL)'
+                       ).fetchone()[0] == 0
+    counted = sum(int(v) for (v,) in con.execute("SELECT value FROM corpus_meta WHERE key LIKE 'servings.%'"))
+    assert counted == con.execute('SELECT count(*) FROM recipes').fetchone()[0]
 
 
 def test_build_is_deterministic(built, tmp_path):
@@ -257,7 +265,7 @@ def test_generated_types_are_current():
 def test_fixture_db_matches_schema():
     path = os.path.join(_ROOT, 'app', 'src', 'corpus', 'fixture.db')
     con = sqlite3.connect(f'file:{path}?mode=ro', uri=True)
-    assert con.execute("SELECT value FROM corpus_meta WHERE key = 'schema_version'").fetchone()[0] == '1'
+    assert con.execute("SELECT value FROM corpus_meta WHERE key = 'schema_version'").fetchone()[0] == '2'
     n = con.execute('SELECT count(*) FROM recipes').fetchone()[0]
     assert 0 < n <= 300
     fresh = sqlite3.connect(':memory:')

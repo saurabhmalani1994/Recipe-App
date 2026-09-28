@@ -102,6 +102,9 @@ export function CorpusRecipeDetail({ recipeKey }: { recipeKey: string }) {
   const people = settings?.peopleDefault ?? 2
   const perPerson = settings?.servingsPerPerson ?? 1.5
   const { factor, target } = corpusScale(recipe, people, perPerson)
+  // S15: a head count the build estimated (the source gave none) is shown as an estimate, and
+  // still scales (D11).
+  const estimated = recipe.servings !== null && recipe.servingsSource !== 'source'
   const dietSwapFor = new Map(
     (recipe.diet?.status === 'adaptable' ? recipe.diet.swaps : [])
       .filter((s) => s.slug)
@@ -124,10 +127,16 @@ export function CorpusRecipeDetail({ recipeKey }: { recipeKey: string }) {
         <AddToPlanControl recipeId={recipe.key} recipeSource="corpus" recipeTitle={recipe.title} />
       </div>
 
+      {estimated && (
+        <p className="recipe-detail__estimate" data-testid="servings-estimate">
+          Serves about {recipe.servings} (estimated)
+          {recipe.yieldText ? ` · makes ${recipe.yieldText}` : ''}
+        </p>
+      )}
       <div className="recipe-detail__meta">
         <span>
           {target !== null
-            ? `Serves ${target} (for ${people} people × ${perPerson}/person, recipe makes ${recipe.servings})`
+            ? `Serves ${target} (for ${people} people × ${perPerson}/person, recipe makes ${estimated ? 'about ' : ''}${recipe.servings})`
             : `Makes: ${recipe.yieldText ?? 'amount not given'} (not scaled)`}
         </span>
         <label>

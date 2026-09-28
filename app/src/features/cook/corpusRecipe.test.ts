@@ -42,9 +42,25 @@ describe('corpus recipe detail', () => {
     expect(us[4]).toBe('3 tbsp olive oil')
   })
 
-  it('does not scale a yield that is not a head count, and shows the package size', async () => {
+  it('scales an estimated head count too (S15), and never one that is missing', async () => {
+    // themealdb gives no yield at all; the build estimated the head count
     const recipe = (await loadCorpusRecipe(db, tax, 'themealdb:53191', 'everything'))!
-    expect(corpusScale(recipe, 2, 1.5)).toEqual({ factor: 1, target: null })
+    expect(recipe.servingsSource).not.toBe('source')
+    expect(recipe.servingsSource).not.toBeNull()
+    expect(recipe.servings).toBeGreaterThan(0)
+    expect(corpusScale(recipe, 2, 1.5)).toEqual({ factor: 3 / recipe.servings!, target: 3 })
+    const stated = (await loadCorpusRecipe(
+      db,
+      tax,
+      'bbcgoodfood:gnocchi-with-peas-pancetta',
+      'everything',
+    ))!
+    expect(stated.servingsSource).toBe('source')
+    const none = { ...recipe, servings: null, servingsSource: null }
+    expect(corpusScale(none, 2, 1.5)).toEqual({ factor: 1, target: null })
+  })
+
+  it('shows the package size', async () => {
     const { rows } = await db.query<{ key: string }>('SELECT key FROM recipes WHERE id = 40')
     const tins = (await loadCorpusRecipe(db, tax, rows[0].key, 'everything'))!
     const line = tins.lines.find((l) => l.slug === 'canned_tomatoes')!

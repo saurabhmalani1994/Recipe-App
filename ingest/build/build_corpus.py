@@ -47,6 +47,7 @@ if _ROOT not in sys.path:
     sys.path.insert(0, _ROOT)
 from ingest.build import curate  # noqa: E402
 from ingest.build import sample as S  # noqa: E402
+from ingest.build import servings as SERV  # noqa: E402
 from ingest.build.course import tag_course  # noqa: E402
 from ingest.cuisine import cuisines as CU  # noqa: E402
 from ingest.cuisine import season as SEASON  # noqa: E402
@@ -177,6 +178,7 @@ class Writer:
         self.overrides = {}   # key -> selection row (quality, rating, rating_count), from --select
         self.nutrition_filled = 0
         self.nutrition_total = 0
+        self.servings_counts = {}   # 'servings.<servings_source or null>' -> recipes, for corpus_meta
 
     def _enum(self, table, col, v):
         if v is None:
@@ -214,11 +216,18 @@ class Writer:
                 is_core = not it.get('optional') and not self.ing[s].get('is_staple')
                 core[s] = core.get(s, False) or is_core
         tm = tags['time']
-        servings = curate.parse_servings(raw.get('yield_text'))
+        stated = curate.parse_servings(raw.get('yield_text'))   # the source's own head count
+        # Servings (S15): the source's, else estimated from the text, energy or mass
+        # (ingest/build/servings.py); scaling (D11) and the nutrition fill both use it.
+        est = SERV.estimate(raw, items, course, self.ing, self.slug_nutrients)
+        servings = est['servings']
+        servings_source = self._enum('recipes', 'servings_source', est['servings_source'])
+        yield_text = raw['yield_text'] if isinstance(raw.get('yield_text'), str) and raw['yield_text'].strip() \
+            else est['yield_count']
         eq = tags['equipment']
         cuisine = self._enum('recipes', 'cuisine', cuisine)
         quality = curate.quality_score(share, raw.get('image_url'), tm.get('total_min') is not None,
-                                       servings is not None, raw.get('rating'), raw.get('rating_count'))
+                                       stated is not None, raw.get('rating'), raw.get('rating_count'))
         rating = raw.get('rating') if isinstance(raw.get('rating'), (int, float)) else None
         rating_count = raw.get('rating_count') if isinstance(raw.get('rating_count'), int) else None
         ov = self.overrides.get(raw['id'])
@@ -235,16 +244,15 @@ class Writer:
         # reports the corpus-wide, occurrence-weighted version instead).
         nutrition, nut_coverage = NUT.fill_recipe(items, servings, self.ing, self.slug_nutrients)
         del nut_coverage
-        self.nutrition_filled = self.nutrition_filled + (1 if nutrition['kcal'] is not None else 0)
-        self.nutrition_total += 1
         cur = self.con.execute(
-            'INSERT INTO recipes (key, source, source_url, title, servings, yield_text, total_min, active_min, '
+            'INSERT INTO recipes (key, source, source_url, title, servings, servings_source, yield_text, total_min, '
+            'active_min, '
             'time_source, weeknight, cuisine, cuisine_confidence, cuisine_source, course, one_pot, one_pan, '
             'sheet_pan_meal, stove_and_oven, no_cook, image_url, rating, rating_count, quality, line_count, '
             'unresolved_count, core_slug_count, kcal, protein_g, fat_g, carbs_g, fiber_g, sugar_g, sodium_mg) '
-            'VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)',
-            (raw['id'], raw.get('source'), raw.get('source_url'), raw['title'].strip(), servings,
-             raw.get('yield_text'), tm.get('total_min'), tm.get('active_min'),
+            'VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)',
+            (raw['id'], raw.get('source'), raw.get('source_url'), raw['title'].strip(), servings, servings_source,
+             yield_text, tm.get('total_min'), tm.get('active_min'),
              self._enum('recipes', 'time_source', tm.get('source')), _b(tm.get('weeknight')),
              cuisine, cconf if cuisine else None, csrc if cuisine else None, course,
              _b(tags['one_pot']), _b(tags['one_pan']), _b(tags['sheet_pan_meal']),
@@ -253,6 +261,11 @@ class Writer:
              nutrition['kcal'], nutrition['protein_g'], nutrition['fat_g'], nutrition['carbs_g'],
              nutrition['fiber_g'], nutrition['sugar_g'], nutrition['sodium_mg']))
         rid = cur.lastrowid
+        # counted only once the recipe row is in (a duplicate key raises above and is not counted)
+        self.nutrition_filled += 1 if nutrition['kcal'] is not None else 0
+        self.nutrition_total += 1
+        k = f"servings.{servings_source or 'null'}"
+        self.servings_counts[k] = self.servings_counts.get(k, 0) + 1
         ing_rows = []
         for pos, it in enumerate(items):
             pkg = it.get('pkg') or {}
@@ -377,12 +390,15 @@ def _checkpoint(con, writer, source, next_line, selected, written, done):
         con.execute("INSERT INTO corpus_meta (key, value) VALUES (?, ?) ON CONFLICT (key) DO UPDATE SET "
                     "value = CAST(CAST(value AS INTEGER) + ? AS TEXT)", (k, str(v), v))
     writer.coerced = {}
-    for k, v in (('nutrition.filled', writer.nutrition_filled), ('nutrition.total', writer.nutrition_total)):
+    counts = [('nutrition.filled', writer.nutrition_filled), ('nutrition.total', writer.nutrition_total)]
+    counts += sorted(writer.servings_counts.items())
+    for k, v in counts:
         if v:
             con.execute("INSERT INTO corpus_meta (key, value) VALUES (?, ?) ON CONFLICT (key) DO UPDATE SET "
                         "value = CAST(CAST(value AS INTEGER) + ? AS TEXT)", (k, str(v), v))
     writer.nutrition_filled = 0
     writer.nutrition_total = 0
+    writer.servings_counts = {}
     con.commit()
 
 
@@ -480,7 +496,7 @@ def report(path, target=100_000):
     L.append('\nFields coerced to NULL (outside the schema lists): ' +
              (', '.join(f'{k[8:]} {v}' for k, v in coerced) if coerced else 'none') + '.\n')
     L.append('## Tags\n')
-    for col in ('course', 'cuisine_source', 'time_source'):
+    for col in ('course', 'cuisine_source', 'time_source', 'servings_source'):
         rows = q(f"SELECT coalesce({col}, '(null)'), count(*) FROM recipes GROUP BY 1 ORDER BY 2 DESC")
         L.append(f'{col}: ' + ', '.join(f'{k} {v} ({v / n:.1%})' for k, v in rows) + '\n')
     for col in ('one_pot', 'weeknight', 'no_cook'):
@@ -491,6 +507,8 @@ def report(path, target=100_000):
     L.append('diet: ' + ', '.join(f'{p}.{s} {c}' for p, s, c in rows) + '\n')
     nn = q('SELECT count(*) FROM recipes WHERE kcal IS NOT NULL')[0][0]
     L.append(f'nutrition (S14): {nn:,}/{n:,} recipes filled ({nn / n:.1%})\n' if n else 'nutrition (S14): 0 recipes\n')
+    ns = q('SELECT count(*) FROM recipes WHERE servings IS NOT NULL')[0][0]
+    L.append(f'servings (S15): {ns:,}/{n:,} recipes have servings ({ns / n:.1%})\n' if n else 'servings (S15): 0 recipes\n')
     L.append('## Size\n')
     try:
         rows = q('SELECT name, sum(pgsize) FROM dbstat GROUP BY name ORDER BY 2 DESC')
