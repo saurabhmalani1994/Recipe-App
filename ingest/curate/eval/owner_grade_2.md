@@ -15,7 +15,7 @@ Ingredients: 2 Eggs; 2 Tablespoons Butter; 1/4 cups Burrito Meat Or Hamburger (i
 
 Method: (1) Scramble the eggs in butter. Put the eggs in a medium hot (preferably cast iron) pan, add the meat, and then sprinkle the cheese on (put some hot sauce on if you want). Put a lid on it till the cheese is melted. Add onions, salt, and taco seasoning. Wait till the egg is cooked through in at least one place, fold it in half, then let it cook for another half minute. Then eat!
 
-grade: _
+grade: 0
 
 ## 2. Steak And Rice
 
@@ -23,7 +23,7 @@ Ingredients: 1 round steak; 1 c. cooked rice; 1 pkg. dry onion soup mix; 6 Tbsp.
 
 Method: (1) Place round steak in large, flat pan. (2) Sprinkle onion soup mix over steak. (3) Add rice, which has been cooked nearly done. (4) Spoon milk over rice. (5) Cover and bake at 325° for 1 hour.
 
-grade: _
+grade: 0
 
 ## 3. Eggplant Caviar
 
@@ -31,7 +31,7 @@ Ingredients: 2 purple globe eggplants (1 1/2 pounds each); 1/4 cup minced onion 
 
 Method: (1) Roast the eggplants; peel away the blackened skin. (2) Place the eggplants in a food processor; pulse until pureed. (3) Transfer to a large bowl; stir in the remaining ingredients. (4) Serve warm or at room temperature with pita or rye bread.
 
-grade: _
+grade: 2
 
 ## 4. Broiled Dove
 
@@ -39,7 +39,7 @@ Ingredients: 10 to 12 doves; 1 stick butter; 2 to 4 c. water; Worcestershire sau
 
 Method: (1) Clean and wash dove breasts. (2) Put in a pot with water, butter and Worcestershire sauce. (3) Bring to a boil. (4) Cook 5 to 6 minutes. Salt and pepper to taste. (5) Drain doves. (6) Serve on a platter with saltines.
 
-grade: _
+grade: 0
 
 ## 5. Perfect Potato Salad
 
@@ -47,7 +47,7 @@ Ingredients: 500 g potatoes, pre cooked; 1/3 cup spring onion, thinly sliced; 1 
 
 Method: (1) Cube potato and boil until cooked but not falling to pieces. leave to cool. (2) Slice up the Spring onions thinly add to the potatoes along with seasoning. (3) Mash the egg with a fork and add to the potatoes mix carefully then add the mayonnaise or salad cream to mix. (4) Place in a dish and sprinkle with some paprika. (5) Serve and enjoy. (6) I double this recipe when we hae visitors.
 
-grade: _
+grade: 0
 
 ## 6. Snickerdoodles
 
@@ -55,7 +55,7 @@ Ingredients: 1 1/2 c. flour; 1 tsp. cinnamon; 1/2 tsp. soda; 1/2 c. melted short
 
 Method: (1) In bowl, stir together flour, cinnamon and soda; set aside. (2) In another bowl, stir shortening and sugars until combined. (3) Stir in egg and vanilla; mix well. (4) Stir in spiced flour mixture; mix. Shape dough into 1-inch balls. (5) Roll each ball in a mixture of sugar and cinnamon. (6) Place on lightly greased cookie sheet 2-inches apart. (7) Flatten each ball by crisscrossing with a fork. (8) Bake in 375° oven 6 to 8 minutes until edges are brown. (9) Remove and cool on rack. (10) Makes 36 cookies. (11) Serve with Coffee Floats.
 
-grade: _
+grade: 2
 
 ## 7. Hot Feta Artichoke Dip
 
@@ -63,7 +63,7 @@ Ingredients: 1 (14 ounce) can artichoke hearts, drained, chopped; 8 ounces feta 
 
 Method: (1) Preheat oven to 350°. (2) Mix all ingredients together. (3) Place mixture in a pie pan. (4) Bake 20- 25 minutes or until slightly browned. (5) If you like top with tomatoes and green onions. (6) Serve with pita bread, bagel toast, crackers or even tortilla chips.
 
-grade: _
+grade: 2
 
 ## 8. A Coconut Milk Custard Ice Cream Recipe
 
@@ -71,7 +71,7 @@ Ingredients: 2 c. coconut lowfat milk (or possibly coconut cream as a richer alt
 
 Method: (1) Stir fry the coconut till golden brown (optionally use a few pcs of fresh corn...Thais often flavor ice cream with things considered unusual to western tastes). (2) Heat the coconut lowfat milk and water over medium heat, stirring continuously for a couple of min. (3) Don't allow to boil. (4) In a bowl beat two Large eggs, plus two yolks, then add in the other ingredients, and whisk gently. (5) Transfer the mix to a double boiler over gently boiling water, and slowly blend in the warm coconut lowfat milk, stirring till the mix thickens to create a continuous slightly sticky coat on the back of a spoon lifted from the mix. (6) Remove from the heat and allow to cold, then transfer to a [...]
 
-grade: _
+grade: 0
 
 ## 9. Medenjaci (Spiced Honey Chocolate Nut Cookies)
 
@@ -79,7 +79,7 @@ Ingredients: For the dough:; 1 cup (150 g) toasted walnuts, almonds, or whatever
 
 Method: (1) Preheat the oven to 350° F (175° C) and spread the nuts of your choice on a tray. Bake them for 8 to 10 minutes until they are fragrant (and you are probably drooling). Let them cool down a bit, then coarsely chop. Lower the temperature to 300° F (150° C). (2) Heat the honey, sugar, and oil in a small pan over medium heat until the sugar melts. Put aside to cool slightly. (3) Mix the rest of the ingredients in a large bowl, then add the honey mixture. Use a wooden spoon to bring everything together and knead the dough a bit with your hands, just to make sure that everything is incorporated and evenly distributed. (4) Line a baking tray with parchment paper and form small, walnut-sized [...]
 
-grade: _
+grade: 1
 
 ## 10. Coconut Cake Squares
 
@@ -87,7 +87,7 @@ Ingredients: 1 pkg. yellow cake mix
 
 Method: (1) Mix and bake according to directions in 9 x 13 pan.
 
-grade: _
+grade: 0
 
 ## 11. Deeeelicious Apples
 
@@ -95,7 +95,7 @@ Ingredients: 8 oz. Velveeta cheese, grated; 1 stick margarine, softened; 2 cans 
 
 Method: (1) Mix cheese, margarine, sugar and flour until well blended. Spread over drained apples in a 9 x 13-inch pan and bake 30 minutes at 350°. (2) Wonderful with beef, pork or poultry.
 
-grade: _
+grade: 0
 
 ## 12. Quick And Easy Dessert
 
@@ -103,7 +103,7 @@ Ingredients: 1 Angel Food cake mix or store bought; 1 large cool whip; 1 small c
 
 Method: (1) Bake angel food cake as directed. (2) When cool, break cake in pieces and place in baking dish. (3) Cream sugar, cream cheese, and condensed milk together. (4) Fold in cool whip with electric mixer. Pour this mixture over cake pieces then add pie filling.
 
-grade: _
+grade: 0
 
 ## 13. Gyro With Tzatziki Sauce
 
@@ -111,7 +111,7 @@ Ingredients: 1 lb ground lamb; 1 medium yellow onion; 1 T marjoram; 1 T rosemary
 
 Method: (1) Preheat oven to 325F (2) process onion in a food processor and drain off liquid. Add lamb, marjoram, rosemary kosher salt, garlic and pepper and grind till a paste about 1 minute. Place in loaf pan, making sure to press against the sides. place loaf pan in a water bath and cook 60-75 minutes until internal temp is 160-170F. Remove from oven, drain off fat and then place brick on top until temp reaches 175F (3) SAUCE: (4) Strain yogurt with a coffee filter for about an hour. Peel, seed and chop the cucumber. Use about 1/2 in sauce reserving remainder for use in the pitas. Add kosher salt, 4 minced garlic cloves, olive oil, red wine vinegar and dill. Stir together and refrigerate for at [...]
 
-grade: _
+grade: 2
 
 ## 14. Caramelized Onion–And–Blue Cheese Mini Burgers
 
@@ -119,7 +119,7 @@ Ingredients: 1 medium onion, thinly sliced; Cooking spray; 1/2 teaspoon salt; 1/
 
 Method: (1) Heat a medium nonstick skillet over medium-high heat. Add onion to pan; coat onion with cooking spray. Cook 15 minutes, stirring frequently, until tender and browned. Remove pan from heat. Finely chop 1/4 cup onion, and place in a medium bowl, reserving remaining onion in pan. (2) Add salt, pepper, and beef to caramelized onion in bowl; mix well. Divide beef mixture into 8 equal portions, shaping each into a 1/4-inch thick patty. (3) Heat a grill pan over medium-high heat. Place patties on grill pan. Grill 3 minutes on each side, until a thermometer registers 160° or until desired degree of doneness. (4) Place mayonnaise and blue cheese in a food processor; process until smooth. Spread [...]
 
-grade: _
+grade: 2
 
 ## 15. Coconut Chai
 
@@ -127,7 +127,7 @@ Ingredients: 14 ounces, fluid Canned Light Coconut Milk; 1/2 cups Filtered Water
 
 Method: (1) In a small saucepan, combine all ingredients except the tea leaves over medium heat. Whisk vigorously to dissolve all spices. The honey might not dissolve until the coconut milk is sufficiently warm. (2) Once simmering, add the tea leaves, cover and remove from the heat. Let stand for 10 minutes. (3) Strain the mixture, then divide between mugs and serve.
 
-grade: _
+grade: 2
 
 ## 16. Pot Roast For Two
 
@@ -135,7 +135,7 @@ Ingredients: 2 beef eye of round steaks; 2 small carrots, cut into 3/4-inch chun
 
 Method: (1) Place steaks in an ungreased 2-1/2-qt. baking dish. Top with carrots, potatoes, celery and onion. Combine the tomatoes, broth, garlic, soup mix and seasonings; pour over vegetables. Cover and bake at 350° for 1-1/2 to 1-3/4 hours or until meat and vegetables are tender.
 
-grade: _
+grade: 2
 
 ## 17. Herb Crusted Snapper with Fresh Ratatouille
 
@@ -143,7 +143,7 @@ Ingredients: 2 tablespoons vegetable oil; 2 cups chopped onions; 1 cup chopped g
 
 Method: (1) In a large, heavy-bottomed saucepan, heat the oil over medium heat. (2) Add the onions, bell peppers and celery. (3) Season with salt and cayenne and black pepper. (4) Cook, stirring constantly, for about 3 minutes, or until the vegetables are slightly wilted. (5) Add the eggplant. (6) Season with salt and cayenne. (7) Cook for 4 to 5 minutes, or until slightly tender. (8) Add the zucchini, yellow squash, tomatoes, garlic, basil and thyme. (9) Season with salt and cayenne. (10) Reduce heat to medium and cook, stirring occasionally, for 8 to 10 minutes, or until the mixture is a little soupy. (11) The vegetables should have a little crunch to them. (12) Remove from the heat. (13) Season [...]
 
-grade: _
+grade: 2
 
 ## 18. Strawberry Meringue Pie
 
@@ -151,7 +151,7 @@ Ingredients: 12 (2-inch) sq. saltine crackers with unsalted tops, crushed; 3 egg
 
 Method: (1) Sprinkle 2 tablespoons cracker crumbs on bottom of well-greased 9-inch pie plate (reserve rest). (2) Beat egg whites until foamy; add tartar and salt. (3) Beat until stiff peaks form. Gradually beat in granulated sugar, 1 tablespoon at a time, beating until very stiff. (4) Beat in vanilla until blended. (5) Fold in pecans and cracker crumbs. (6) Spread over bottom and sides of pie plate.
 
-grade: _
+grade: 2
 
 ## 19. Mark'S Minestrone
 
@@ -159,7 +159,7 @@ Ingredients: 1 can chickpeas; 1 can kidney beans; 2 c. cooked pasta shells; 2 c.
 
 Method: (1) Saute garlic and onion in olive oil until translucent. (2) Add salt, pepper, basil, oregano, tarragon, rosemary, carrots and wine. (3) Cover and cook 5 to 10 minutes, stirring occasionally. (4) Add green pepper, stock, puree and beans. (5) Cover and simmer 30 minutes. (6) Add chopped tomatoes, cooked pasta and zucchini and simmer for another 15 minutes. (7) Makes 6 quarts.
 
-grade: _
+grade: 2
 
 ## 20. Honey Yogurt Cheesecake
 
@@ -167,7 +167,7 @@ Ingredients: 100g Digestive Biscuits; 85g Almonds; 85g Butter; 250ml Greek Yogur
 
 Method: (1) Heat oven to 160C/140C fan/gas 3. Crush the biscuits and most of the almonds inside a plastic food bag using a rolling pin. Mix with the butter, then press into the bottom of a deep, oval, 23cm dish (or something similar in size – a roasting tin, baking dish or cake tin will work). Bake for 10 mins until crisp. (2) Stir or mash together the yogurt and mascarpone, then whisk in the eggs, one at a time. Stir in the lemon and orange zests, then stir in most of the honey, reserving about 3 tbsp. Spread over the biscuit base, cover loosely with foil and cook for 1 hr. Remove the foil and cook for 15 mins more until lightly golden and the top is firm with just the slightest wobble in the [...]
 
-grade: _
+grade: 1
 
 ## 21. Brownie Dessert
 
@@ -175,7 +175,7 @@ Ingredients: 1 brownie mix; 1 box instant mousse (chocolate); 1 container Cool W
 
 Method: (1) Prepare brownie mix and mousse according to package directions. (2) Layer in clear bowl a layer of brownies (optional: pour Kahlua over brownies), a layer of mousse and a layer of Cool Whip; sprinkle with crushed Heath bars. (3) Repeat until you reach the top of bowl.
 
-grade: _
+grade: 0
 
 ## 22. Lemon & Herb Tilapia
 
@@ -183,7 +183,7 @@ Ingredients: Two 4-ounce tilapia fillets; Kosher or sea salt, to taste; Fresh cr
 
 Method: (1) Rinse and pat dry the tilapia fillets. (2) Season with salt and pepper. (3) Heat a large skillet over medium-high heat. (4) Melt 1 tablespoon of olive oil and then add the tilapia fillets. (5) Cook 1-2 minutes on each side or until golden and cooked through. (6) Remove the fillets from the pan and set aside. (7) In the same pan over medium heat, add the remaining tablespoon of olive oil and then stir in the garlic. (8) Cook for 1 minute or until soft. (9) Pour in the wine, lemon zest, lemon juice, salt, thyme, and parsley. (10) Increase heat to high cook for 2-3 minutes or until the wine reduces in half. (11) Taste for seasoning and add more salt or lemon if desired. (12) Plate the [...]
 
-grade: _
+grade: 2
 
 ## 23. Cajun Ponchartrain Sauce
 
@@ -191,7 +191,7 @@ Ingredients: 1/4 cup butter; 8 fresh mushrooms, sliced; 8 medium shrimp - peeled
 
 Method: (1) In a medium saucepan, saute mushrooms in 1 teaspoon butter until tender. Stir in shrimp, and cook until pink. Transfer to a bowl. (2) In the same saucepan, melt the remaining 2 teaspoons butter. Slowly mix in cream. Stir in the shrimp and mushroom mixture, and season to taste with garlic powder and black pepper. Simmer over very low heat until thick. Just before serving, stir in wine.
 
-grade: _
+grade: 2
 
 ## 24. Three-Cheese Baked Penne
 
@@ -199,7 +199,7 @@ Ingredients: 2 1/2 cups uncooked whole wheat penne (about 8 ounces tube-shaped p
 
 Method: (1) Preheat oven to 350°. (2) Cook pasta according to package directions, omitting salt and fat. Drain and keep warm. (3) Heat a large nonstick skillet over medium-high heat. Coat pan with cooking spray. Remove casings from sausage. Add sausage to pan; cook 2 minutes, stirring to crumble. Add bell pepper and next 6 ingredients (through salt) to pan; saute 6 minutes or until bell pepper is tender. Stir in tomato sauce. Reduce heat, and simmer 5 minutes. Add pasta to pan, tossing gently to coat. Spoon pasta mixture into an 8-inch square baking dish coated with cooking spray. Stir in mozzarella and goat cheese; sprinkle with Parmesan. Bake at 350° for 7 minutes or until bubbly and top is [...]
 
-grade: _
+grade: 2
 
 ## 25. Noodles With Chilled Tomato Broth
 
@@ -207,7 +207,7 @@ Ingredients: 1 1/2 lb. very ripe red tomatoes, chopped; 1 small garlic clove, sm
 
 Method: (1) Blend tomatoes, garlic, vinegar, sugar, 1 Tbsp. salt, and 2 cups water in a blender on low speed until tomato pieces are no larger than 1/4" (it's important to blend on low; otherwise, the tomato broth will foam up). Strain through a fine-mesh sieve into a large measuring cup, pressing on solids with a spoon to extract as much liquid as possible (you should have about 4 cups broth). Chill until ready to use. (2) Meanwhile, cook noodles in a large pot of boiling salted water according to package directions. Drain and rinse under cold water. Cover with damp paper towels; set aside. (3) Season beaten eggs with remaining 1/4 tsp. salt. Melt butter in a large nonstick skillet over medium [...]
 
-grade: _
+grade: 2
 
 ## 26. Easy Casserole
 
@@ -215,7 +215,7 @@ Ingredients: milk; frozen meatballs (as much as desired); 1 can cream of mushroo
 
 Method: (1) Combine ingredients and milk to your desired consistency. Heat through until done. (2) If meatballs are thawed, one-half hour is enough. (3) If meatballs are frozen, one hour. (4) Serve over cooked noodles.
 
-grade: _
+grade: 0
 
 ## 27. Chicken Strawberry Pecan Salad Greens With Feta
 
@@ -223,7 +223,7 @@ Ingredients: 2 cups mixed greens; 2 chopped celery ribs; 3 stalks chopped green 
 
 Method: (1) Assemble salad in order by ingredient. (2) Enjoy!
 
-grade: _
+grade: 1
 
 ## 28. Chicken Mozzarella
 
@@ -231,7 +231,7 @@ Ingredients: 4 tsp. oil; 2 c. mushrooms; 2 cloves garlic, minced; 1/2 tsp. rosem
 
 Method: (1) Season chicken with salt and pepper. (2) Brown chicken in oil (3 minutes each side). (3) Add mushrooms, garlic, rosemary, tomatoes and wine. (4) Cook until most of the liquid is gone (about 15 minutes). Cover and cook on low heat for 5 minutes. (5) Top with cheese and melt.
 
-grade: _
+grade: 1
 
 ## 29. Canned Deer Meat
 
@@ -239,7 +239,7 @@ Ingredients: 1/2 c. canning salt; 1 pkg. dry onion soup mix; 1 pkg. brown gravy 
 
 Method: (1) Mix the first 3 ingredients. (2) Put 1 teaspoon of mix in each pint jar. (3) Pack the jars tightly with meat. (4) Do not add water to the jars. (5) Pressure cook pints for 75 minutes on 11 pounds. (6) Cook quarts 90 minutes on 11 pounds.
 
-grade: _
+grade: 0
 
 ## 30. Thai Salad Dressing
 
@@ -247,7 +247,7 @@ Ingredients: 3/4 c. fresh lime juice; 1/4 c. honey; 3 tbsp. soy sauce; 1 1/2 tsp
 
 Method: (1) In medium bowl, whisk lime juice, honey, soy sauce, anchovy paste, and cayenne. (2) Stir in cilantro.Serving size = 2 tablespoons
 
-grade: _
+grade: 2
 
 ## 31. Salmon In A Sea Of Coconut From 'Marcus Off Duty'
 
@@ -255,7 +255,7 @@ Ingredients: 3 tablespoons olive oil; 3 ounces shiitake mushrooms, stemmed and s
 
 Method: (1) Heat 2 tablespoons of the olive oil in a large pot over medium heat. When the oil shimmers, add the mushrooms, shallots, and ginger and cook until the mushrooms are just tender and starting to brown, about 6 minutes. Add the fish stock, coconut milk, white wine, and miso and bring to a boil. Stir in the noodles, reduce the heat to low, and cook until just tender, 4 to 5 minutes. (2) Stir in the lime juice, scallions, water chestnuts, hearts of palm, and avocado. Season with salt (start with 1/2 teaspoon salt and add more carefully to keep from overpowering the delicate flavors). Turn off the heat, cover the pot, and keep warm. (3) Sprinkle the skinned side of the salmon with the wasabi [...]
 
-grade: _
+grade: 2
 
 ## 32. Peanut Butter Icing For Banana Cake
 
@@ -263,7 +263,7 @@ Ingredients: 1 (8 oz.) pkg. cream cheese, softened; 1/2 c. light corn syrup; 1/2
 
 Method: (1) In a small bowl beat softened cream cheese and corn syrup until smooth. (2) Add peanut butter and beat until well blended. Spread on cooled cake. (3) Garnish with chopped peanuts.
 
-grade: _
+grade: 0
 
 ## 33. Safire Moon
 
@@ -271,7 +271,7 @@ Ingredients: 2 shots blue curacao; 1 shot vanilla vodka; 1 part lime juice; 1 sp
 
 Method: (1) Sugar the rim of a tall glass and fill with ice. (2) Combine blue curacao, vodka, lime juice, lychee syrup. (3) Stir and garnish with lychee.
 
-grade: _
+grade: 2
 
 ## 34. Grilled Tuna with Warm White Bean Salad
 
@@ -279,7 +279,7 @@ Ingredients: 1/2 pound dried Great Northern beans (1 1/4 cups); 4 cups salted wa
 
 Method: (1) In a large saucepan simmer beans in salted water with crushed garlic until tender, about 1 hour, and drain, reserving 1/4 cup cooking liquid. (2) In a small bowl mash 1/2 cup beans with a fork and return mashed and whole beans to pan with reserved liquid. (3) Chop 1 cup arugula and stir into beans (off heat) with garlic paste, onion, parsley, 2 tablespoons lemon juice, and salt and pepper to taste. (4) Keep bean salad warm, covered, over very low heat while cooking arugula. (5) Prepare grill while beans are cooking. (6) Rinse and pat dry tuna. (7) On a plate combine tuna steaks with remaining tablespoon lemon juice, turning to coat, and sprinkle both sides with fennel seeds, pepper, and [...]
 
-grade: _
+grade: 2
 
 ## 35. Sea Breeze Salad
 
@@ -287,7 +287,7 @@ Ingredients: 2 pkg. lemon or lime Jell-O or 1 of each; 1 can fruit cocktail (und
 
 Method: (1) Dissolve Jell-O in 1 cup boiling water; add 2 cups cold water and let stand until Jell-O thickens. Stir in instant pudding mix and whip with mixer. Save 1 cup mixture. Add fruit cocktail to rest. Put in 9 x 13 pan and let get firm. Whip Dream Whip and fold in saved cup mixture. Spread over first layer.
 
-grade: _
+grade: 0
 
 ## 36. Peach Pie (One Crust) Recipe
 
@@ -295,7 +295,7 @@ Ingredients: 1 c. flour; 1/2 c. butter; 5 tbsp. powdered sugar
 
 Method: (1) Cut together and press into pie plate. (2) Bake 375 degrees 10-15 min till lightly browned.
 
-grade: _
+grade: 0
 
 ## 37. Stir-Fried Tilapia, Dill, And Scallion Lettuce Wraps
 
@@ -303,7 +303,7 @@ Ingredients: 3 tablespoons fresh lime juice; 1 tablespoon water; 2 1/2 teaspoons
 
 Method: (1) Combine first 6 ingredients in a small bowl. Cover and chill 20 minutes. (2) Combine cornstarch, turmeric, ginger, and tilapia in a large bowl; toss to coat. Let stand 10 minutes. (3) Heat a large cast-iron skillet or wok over high heat. Add 1 tablespoon oil; heat until just smoking. Add tilapia. Cook, without stirring, 2 minutes. Gently turn fish pieces; cook 1 minute or until done. Place on a plate, and keep warm. (4) Add remaining 1 teaspoon oil to pan; swirl to coat. Add green onions; stir-fry 2 minutes or until tops are bright green and bottoms are tender. Add dill; cook 30 seconds. Place about 1/3 cup onion mixture on each of 4 plates; top each with 3/4 cup fish and 1 tablespoon [...]
 
-grade: _
+grade: 2
 
 ## 38. Stuffed Rack Of Lamb With Baby Tomato Salsa
 
@@ -311,7 +311,7 @@ Ingredients: 6 oz marinated feta cheese, drained; 2 tbsp sun-dried tomatoes, fin
 
 Method: (1) Preheat oven to 400°F. Line a small roasting pan with parchment paper. (2) In a small bowl, combine feta and sun-dried tomatoes. Cut a 1 inch deep pocket along top of lamb rack. Stuff with feta mixture. Truss with butcher's twine then arrange upright in roasting pan. Brush with oil and sprinkle with rosemary. Season. Roast for 25-30 mins for medium, or until cooked to your liking. Let rest for 10 mins. (3) Meanwhile, to make the salsa, heat oil in a large frying pan over medium heat. Saute shallot and garlic for 1-2 mins, until tender. Add tomatoes and olives. Cook for 1 min. (4) Carve lamb and discard butcher's twine. Sprinkle with basil and drizzle with balsamic vinegar. Serve with [...]
 
-grade: _
+grade: 2
 
 ## 39. Sausage And Fish Quick Pot
 
@@ -319,7 +319,7 @@ Ingredients: 1T Extra virgin olive oil; 1/2 lb bulk hot Italian sausage; 2 large
 
 Method: (1) Heat tablespoon of olive oil over medium high heat.Use a skillet with tight fitting lid. Add the sausage and crumble while browning about 3 or 4 minutes. While the sausage browns crush the garlic. Peel the potatoes and onion and thinly slice. Add the garlic, onions and potatoes to the pan with the sausage and season with salt and pepper to taste. Douse the pan with half of the wine cover the pan with the lid and cook 10 to 12 minutes. Remove lid , add the tomatoes and gently stir into the mixture. Set fish on top of mixture and douse with the remaining wine. Season the fish with salt and pepper to taste. Set lid on pot and cook until the fish is opaque - about 6 to 8 minutes. (2) Top [...]
 
-grade: _
+grade: 2
 
 ## 40. Polish Bow Ties
 
@@ -327,7 +327,7 @@ Ingredients: 1/2 pt. sour cream; 6 egg yolks; 1/2 tsp. powdered sugar; 1 oz. rum
 
 Method: (1) Mix all ingredients together. (2) Add flour, enough to form a ball. (3) Roll out ball. (4) Cut into 3-inch strips. (5) Cut strips into 3-inch diamonds. (6) Cut slit into each diamond. (7) Curve dough into slit of diamond. (8) Fry in Crisco oil. (9) Powder with 4x sugar when cold.
 
-grade: _
+grade: 1
 
 ## 41. Easy Red Velvet Cake And Frosting
 
@@ -335,7 +335,7 @@ Ingredients: Cake; 1 (18 ounce) box German chocolate cake mix; 1 cup sour cream;
 
 Method: (1) MIx ingredients for cake with an electric mixer as directed on the box. Pour into a 13x9 baking pan or 2 - 9 inch layer pans greased and floured. Bake at 350* for 25-35 minutes or until done when checked with a toothpick. Cool cakes completely before frosting. (2) To prepare frosting combine the flour and milk, whisking till smooth. Cook over medium heat in a saucepan to form a smooth paste. Cover with plastic wrap and set aside until cold. In a mixer bowl cream the butter and sugar until light and fluffy. Add the cooled paste in small amounts and whip until incorporated and the frosting is no longer 'grainy' from the sugar. Add vanilla and frost the cake.
 
-grade: _
+grade: 1
 
 ## 42. Triple Berry Crumbles
 
@@ -343,7 +343,7 @@ Ingredients: Fruit; 3 cups fresh raspberries; 3 cups fresh blueberries; 3 cups f
 
 Method: (1) Preheat oven to 350 degrees. (2) Place all the berries in a large bowl. Add the sugar, lemon zest and lemon juice. Gently stir to mix. (3) Spoon into 6 ramekins. (4) For the crumble topping, use a mixer fitted with a paddle attachment and combine the butter, rolled oats, flour, white and brown sugar, cinnamon, cardamom and salt. Mix on low speed until the pieces of butter are the size of small peas. (5) Use your hands to divide the crumble topping into 6 portions, then pile on top of each berry-filled ramekin. (6) Place the ramekins on a parchment paper or foil-lined sided sheet pan. (7) Bake for 40 minutes, or until crumbles have browned and berry juices are bubbling. (8) Serve warm [...]
 
-grade: _
+grade: 1
 
 ## 43. Black Bean and Corn Salsa
 
@@ -351,7 +351,7 @@ Ingredients: 2 (15 ounce) cans black beans, drained; 1 (15 ounce) cangolden kern
 
 Method: (1) Mix all the ingredients in a bowl and refrigerate it for an hour before serving.
 
-grade: _
+grade: 2
 
 ## 44. Plum Good Duck Recipe
 
@@ -359,7 +359,7 @@ Ingredients: 1 onion; 2 tbsp. butter; 1 (17 ounce.) can purple plums, purred; 1 
 
 Method: (1) Saute/fry onion in butter in saucepan till tender. (2) Add in next 4 ingredients and seasonings. (3) Simmer for 15 min, stirring frequently. (4) Wash ducks; pat dry inside and out. (5) Place on rack in baking pan; cover with orange slices. (6) Bake, covered at 350 degrees for 1 1/2 hrs. (7) Spoon half of sauce over ducks. (8) Bake for 1 1/2 hrs longer or possibly till tender. (9) Serve with remaining sauce.
 
-grade: _
+grade: 1
 
 ## 45. Chili-Lime-Brandy Grilled Shrimp Recipe
 
@@ -367,4 +367,4 @@ Ingredients: 2 pounds jumbo shrimp or large prawns, peeled and deveined; 3 table
 
 Method: (1) Put shrimp, 1 tablespoon fish sauce, brandy, and oil in a medium mixing bowl; toss to coat; set aside. (2) To make the sauce, put sugar, chilies, garlic, and the remaining fish sauce in a small saucepan set it over low heat, and bring the mixture to boil, whisking constantly. Once sugar has melted and mixture becomes syrupy, remove saucepan from heat. Whisk in lime juice and 2/3 of the lime zest; set aside. (3) When all the charcoal is lit and covered with gray ash, pour out and spread the coals evenly over entire surface of coal grate. Set cooking grate in place, cover grill and allow to preheat for 5 minutes. (4) and (5) the grilling grate. (6) Thread marinated shrimp lengthwise onto [...]
 
-grade: _
+grade: 2

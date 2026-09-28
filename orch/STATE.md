@@ -17,7 +17,7 @@ allrecipes gives 402 even with a browser UA (bot wall), so S1 tries headless Chr
 
 ## Running
 S17b browser sites (sonnet) runs in a worktree. Cuisine-site crawls run in the background (/home/user/recipe-data/crawl_sites.sh,
-logs in /home/user/recipe-data/logs/). WAITING ON OWNER: grading sheet 2 (45 recipes) at https://claude.ai/artifact/LJkXz5PwzATbZmeKfwkzj9 (db grades/gNN). Score with draw --score on owner_grade_2.md.
+logs in /home/user/recipe-data/logs/). GRADED sheet 2: PASS (top 1.80, middle 1.47, bottom 0.33). Sheet 2 (45 recipes) at https://claude.ai/artifact/LJkXz5PwzATbZmeKfwkzj9 (db grades/gNN). Score with draw --score on owner_grade_2.md.
 The BBC --retry-failed runs in the background (log /home/user/recipe-data/bbc_retry.log, about 12,756 URLs, 5h cap). S12b merged after the owner said "you can resume". S17 (cuisine sites) runs too.
 GRADED (sheet 1): FAIL, top 1.05 / middle 0.80 / bottom 0.35; ordered and separated, but top too low. S8b rescoring by substance.
 Old sheet: https://claude.ai/artifact/Qzm5YLRQtMfuiiKTjT9mmC (db collection grades/gNN {n, grade}).
