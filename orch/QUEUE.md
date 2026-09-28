@@ -35,4 +35,7 @@ S1c Food Wishes full crawl via Blogger feed | ingest | DONE merged: 1,084 recipe
 S12b merge | app | DONE merged after the owner said resume |
 S17 cuisine sites survey + fetcher | ingest | DONE merged; 27 sites, full crawls running in the background | sonnet | orch/briefs/S17-cuisine-sites.md | v0.2
 S17b browser mode + Persian/Singaporean sites | ingest | DONE merged; 5 new sites | sonnet | orch/briefs/S17b-browser-sites.md | v0.2
-S10 full rebuild (prep + first build) | ingest | RUNNING | opus | orch/briefs/S10-rebuild.md | v0.2
+S10 full rebuild (prep + first build) | ingest | DONE merged: 64,225 recipes, 227.8 MB (size cap bound) | opus | orch/briefs/S10-rebuild.md | v0.2
+S10b title-marker cuisine override + course fixes (includes S9b) | ingest | RUNNING | sonnet | orch/briefs/S10b-labels-course.md | v0.2
+S18 fixture refresh + re-pin tests + video method UI | app | RUNNING | sonnet | orch/briefs/S18-fixture-refresh.md | v0.2
+S19 final rebuild after crawls (scan --refresh-grown), then LFS + CI APK with corpus + demo 2 | orch | after BBC retry, S10b and S18 | - | - | v0.2
