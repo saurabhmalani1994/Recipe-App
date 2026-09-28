@@ -5,7 +5,9 @@ drop_reason(raw)      the reason a raw record cannot enter corpus.db, or None. O
 names_lost(lines)     True when an openrecipes record's ingredient names were lost in the source
                       ("2 cups 2 cups": the amount was written twice and the name dropped).
 parse_servings(text)  integer servings from a yield string, or None when it is not a head count.
-quality_score(...)    a 0..1 score from completeness and rating, stored on every recipe.
+quality_score(...)    a 0..1 score from completeness and rating, stored on every recipe of a
+                      build without a selection (the 5k sample). A build from a curation
+                      selection (build_corpus --select) stores ingest/curate/score.py's score.
 """
 import re
 
@@ -20,6 +22,14 @@ DROP_REASONS = (
     'ingredient_names_lost',  # R10: openrecipes lines like "2 cups 2 cups"
     'tag_error',            # the parser or a tagger raised; the message is logged
     'tag_timeout',          # tagging took longer than the per-recipe limit
+    'selection_mismatch',   # a selected line no longer holds the selected id (the raw file changed)
+    # Curation (brief S8, ingest/curate/rank.py), counted when the build reads a selection:
+    'curate_junk_ad_or_link',        # a link, "click here", "read more at", an ad
+    'curate_junk_see_above',         # a component that lives in another recipe or a book page
+    'curate_junk_title_is_ingredient',  # the whole title is one raw ingredient ("Chicken")
+    'curate_junk_bad_title',         # over 120 characters, or under 3 letters
+    'curate_duplicate',              # a near-duplicate of a better copy (same title, slug Jaccard >= 0.8)
+    'curate_below_cut',              # passed everything, ranked below the selection
 )
 
 _DOUBLED_RE = re.compile(r'^\s*(.+?)\s+\1\s*$')
