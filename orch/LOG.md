@@ -42,3 +42,4 @@
 - 2026-09-28: S10b merged (verified). R20.
 - 2026-09-28: All crawls done. S19 final rebuild briefed.
 - 2026-09-28: S20 merged (verified).
+- 2026-09-28: S19 merged (verified). Pushing the LFS corpus.

@@ -16,7 +16,7 @@ allrecipes gives 402 even with a browser UA (bot wall), so S1 tries headless Chr
 ## Owner silence on 3 defaults (applied): metric default, no hosted PWA, start builds now.
 
 ## Running
- All crawls are done (BBC 17,404). S19 final rebuild (opus) is running. The crawls of the 5 new sites run in the background. Cuisine-site crawls run in the background (/home/user/recipe-data/crawl_sites.sh,
+ All crawls are done. S19 is merged. corpus/corpus.db is in LFS (oid 891349ec...). The crawls of the 5 new sites run in the background. Cuisine-site crawls run in the background (/home/user/recipe-data/crawl_sites.sh,
 logs in /home/user/recipe-data/logs/). GRADED sheet 2: PASS (top 1.80, middle 1.47, bottom 0.33). Sheet 2 (45 recipes) at https://claude.ai/artifact/LJkXz5PwzATbZmeKfwkzj9 (db grades/gNN). Score with draw --score on owner_grade_2.md.
 The BBC --retry-failed runs in the background (log /home/user/recipe-data/bbc_retry.log, about 12,756 URLs, 5h cap). S12b merged after the owner said "you can resume". S17 (cuisine sites) runs too.
 GRADED (sheet 1): FAIL, top 1.05 / middle 0.80 / bottom 0.35; ordered and separated, but top too low. S8b rescoring by substance.
@@ -27,6 +27,7 @@ script (cap 20000, 6h timeout; log in /home/user/recipe-data/bbc_full_crawl.log)
 Owner questions pending: Kaggle token (default: no ratings source), and location for seasonality (default: temperate north).
 
 ## Done
+- S19 merged. 501 pytest, 220 unit, e2e 35. 68,966 recipes, schema 4. CI builds the APK with the real corpus from LFS.
 - S20 merged. 218 unit, e2e 35.
 - S10b merged. 495 pytest; course blind2 93.3%. title_cuisine exists but is NOT wired into the build (S19, R20).
 - S18 merged. Fixture refreshed (Food Wishes video + site rows). 212 unit, e2e 35. Video method UI in.
