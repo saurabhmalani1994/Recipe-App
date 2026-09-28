@@ -46,12 +46,25 @@ export class CapacitorDb implements VersionedDb {
     return this.db
   }
 
+  /**
+   * The plugin refuses execute(), executeSet() and run() on a read-only connection ("not allowed
+   * in read-only mode"), and its transactions only look for the read/write one (S21). Refuse them
+   * here, by name, so the caller sees which call was wrong. A read-only connection is read-only
+   * already: it needs no `PRAGMA query_only`.
+   */
+  private writable(operation: string): SQLiteDBConnection {
+    if (this.readonly) {
+      throw new Error(`${this.name} is open read-only: ${operation} is not allowed in read-only mode`)
+    }
+    return this.conn()
+  }
+
   async execute(sql: string): Promise<void> {
-    await this.conn().execute(sql, false)
+    await this.writable('execute()').execute(sql, false)
   }
 
   async run(sql: string, params: SqlParam[] = []): Promise<void> {
-    await this.conn().run(sql, params, false)
+    await this.writable('run()').run(sql, params, false)
   }
 
   async query<Row = Record<string, unknown>>(
@@ -63,7 +76,7 @@ export class CapacitorDb implements VersionedDb {
   }
 
   async transaction<T>(fn: () => Promise<T>): Promise<T> {
-    const conn = this.conn()
+    const conn = this.writable('transaction()')
     await conn.beginTransaction()
     try {
       const result = await fn()

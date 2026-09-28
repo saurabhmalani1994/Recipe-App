@@ -28,7 +28,13 @@ function bundleCorpus(): Plugin {
       const bytes = read()
       // A content stamp, so a device holding an older copy knows to replace it.
       const stamp = bytes ? createHash('sha256').update(bytes).digest('hex').slice(0, 12) : 'none'
-      return { define: { __CORPUS_STAMP__: JSON.stringify(stamp) } }
+      // Its size, so the first-launch copy can say roughly how long it takes (S21).
+      return {
+        define: {
+          __CORPUS_STAMP__: JSON.stringify(stamp),
+          __CORPUS_BYTES__: JSON.stringify(bytes ? bytes.length : 0),
+        },
+      }
     },
     configureServer(server) {
       server.middlewares.use(`/${CORPUS_ASSET}`, (_req, res) => {

@@ -1,4 +1,5 @@
 import { HashRouter, Route, Routes } from 'react-router-dom'
+import { AndroidBackButton } from './components/AndroidBackButton'
 import { BottomNav } from './components/BottomNav'
 import { Header } from './components/Header'
 import { DietProvider } from './state/diet'
@@ -18,6 +19,7 @@ export function App() {
   return (
     <DietProvider>
       <HashRouter>
+        <AndroidBackButton />
         <div className="app-shell">
           <Header />
           <main className="app-main">
