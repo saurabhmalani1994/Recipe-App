@@ -320,12 +320,14 @@ def test_generated_types_are_current():
 def test_fixture_db_matches_schema():
     path = os.path.join(_ROOT, 'app', 'src', 'corpus', 'fixture.db')
     con = sqlite3.connect(f'file:{path}?mode=ro', uri=True)
-    assert con.execute("SELECT value FROM corpus_meta WHERE key = 'schema_version'").fetchone()[0] == '2'
     n = con.execute('SELECT count(*) FROM recipes').fetchone()[0]
     assert 0 < n <= 300
     fresh = sqlite3.connect(':memory:')
     with open(B.SCHEMA_PATH, encoding='utf-8') as fh:
         fresh.executescript(fh.read())
+    v = "SELECT value FROM corpus_meta WHERE key = 'schema_version'"
+    assert con.execute(v).fetchone() == fresh.execute(v).fetchone() == ('3',)
+    assert con.execute('PRAGMA user_version').fetchone() == (3,)
     q = "SELECT name, sql FROM sqlite_master WHERE sql IS NOT NULL AND name NOT LIKE 'sqlite_stat%' ORDER BY name"
     assert con.execute(q).fetchall() == fresh.execute(q).fetchall()
 
@@ -349,3 +351,9 @@ def test_course_gold_bar():
 def test_course_head_phrase(title, want):
     raw = _raw(title=title, ingredients=['1 cup water'])
     assert tag_course(raw)['course'] == want
+
+
+def test_clean_title_drops_zero_width_characters():
+    # archanaskitchen:recipe_caramel-bread-pudding, verbatim
+    assert B.clean_title('\u200b' * 7 + 'Caramel Bread Pudding Recipe ') == 'Caramel Bread Pudding Recipe'
+    assert B.clean_title(' Pad thai\ufeff') == 'Pad thai'

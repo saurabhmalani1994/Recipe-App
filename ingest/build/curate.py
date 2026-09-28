@@ -32,6 +32,8 @@ DROP_REASONS = (
     'curate_junk_see_above',         # a component that lives in another recipe or a book page
     'curate_junk_title_is_ingredient',  # the whole title is one raw ingredient ("Chicken")
     'curate_junk_bad_title',         # over 120 characters, or under 3 letters
+    'curate_junk_unparsed',          # S10: a source taken whole, under half its lines resolved
+                                     # (Hindi and French pages, run-together ingredient lists)
     'curate_duplicate',              # a near-duplicate of a better copy (same title, slug Jaccard >= 0.8)
     'curate_below_cut',              # passed everything, ranked below the selection
     'curate_excluded_source',        # R11: a source the selection never takes (foodcom, S8b)

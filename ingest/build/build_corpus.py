@@ -79,6 +79,15 @@ def _json(v):
     return json.dumps(v, ensure_ascii=False, sort_keys=True, separators=(',', ':'))
 
 
+_INVISIBLE = dict.fromkeys(map(ord, '\u200b\u200c\u200d\u2060\ufeff'))
+
+
+def clean_title(title):
+    """The title without zero-width characters (archanaskitchen titles lead with runs of U+200B)
+    and outer whitespace."""
+    return title.translate(_INVISIBLE).strip()
+
+
 def _b(v):
     return None if v is None else int(bool(v))
 
@@ -252,7 +261,8 @@ class Writer:
             'sheet_pan_meal, stove_and_oven, no_cook, image_url, rating, rating_count, quality, line_count, '
             'unresolved_count, core_slug_count, kcal, protein_g, fat_g, carbs_g, fiber_g, sugar_g, sodium_mg) '
             'VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)',
-            (raw['id'], raw.get('source'), raw.get('source_url'), raw.get('video_url') or None, raw['title'].strip(), servings, servings_source,
+            (raw['id'], raw.get('source'), raw.get('source_url'), raw.get('video_url') or None, clean_title(raw['title']),
+             servings, servings_source,
              yield_text, tm.get('total_min'), tm.get('active_min'),
              self._enum('recipes', 'time_source', tm.get('source')), _b(tm.get('weeknight')),
              cuisine, cconf if cuisine else None, csrc if cuisine else None, course,
@@ -298,7 +308,7 @@ class Writer:
                              [(rid, p, tags['diet'][p]['status'], _json(tags['diet'][p]['swaps']))
                               for p in PRESETS])
         self.con.execute('INSERT INTO recipes_fts (rowid, title, ingredients, cuisine) VALUES (?,?,?,?)',
-                         (rid, raw['title'].strip(), '\n'.join(ln for ln in lines if isinstance(ln, str)),
+                         (rid, clean_title(raw['title']), '\n'.join(ln for ln in lines if isinstance(ln, str)),
                           (cuisine or '').replace('_', ' ')))
         return rid
 
@@ -478,6 +488,69 @@ def build(out, raw_root=S.RAW, quotas=None, only=None, fresh=False, stop_after=N
 
 # ---- report ----------------------------------------------------------------------------------
 
+def _site(key, source, url):
+    """The recipe's site: recipenlg's source_url host, else the source."""
+    if source != 'recipenlg':
+        return source
+    from urllib.parse import urlparse
+    host = urlparse(url or '').netloc.lower().split(':')[0]
+    for p in ('www.', 'm.', 'www2.'):
+        if host.startswith(p):
+            host = host[len(p):]
+    return f'recipenlg:{host or "unknown"}'
+
+
+def _dist(rows, n, top=None):
+    rows = list(rows)
+    shown = rows if top is None else rows[:top]
+    out = ', '.join(f'{k} {v:,} ({v / n:.1%})' for k, v in shown)
+    if top is not None and len(rows) > top:
+        rest = sum(v for _, v in rows[top:])
+        out += f', {len(rows) - top} more {rest:,} ({rest / n:.1%})'
+    return out
+
+
+def distributions(con, n):
+    """S10: the corpus by source, site, cuisine, course and diet, with the fill rates."""
+    q = lambda sql, *a: con.execute(sql, a).fetchall()  # noqa: E731
+    L = ['## Distributions (brief S10)\n']
+    L.append('By source: ' + _dist(q('SELECT source, count(*) FROM recipes GROUP BY 1 ORDER BY 2 DESC, 1'), n) + '\n')
+    sites = {}
+    for key, src, url in q('SELECT key, source, source_url FROM recipes'):
+        s = _site(key, src, url)
+        sites[s] = sites.get(s, 0) + 1
+    L.append('By site (recipenlg split by host): ' +
+             _dist(sorted(sites.items(), key=lambda kv: (-kv[1], kv[0])), n, top=40) + '\n')
+    L.append('By cuisine: ' + _dist(q("SELECT coalesce(cuisine, '(none)'), count(*) FROM recipes GROUP BY 1 "
+                                      'ORDER BY 2 DESC, 1'), n) + '\n')
+    L.append('By cuisine source: ' + _dist(q("SELECT coalesce(cuisine_source, '(none)'), count(*) FROM recipes "
+                                             'GROUP BY 1 ORDER BY 2 DESC'), n) + '\n')
+    L.append('By course: ' + _dist(q('SELECT course, count(*) FROM recipes GROUP BY 1 ORDER BY 2 DESC, 1'), n) + '\n')
+    for preset in ('vegetarian', 'no_red_meat', 'vegetarian_strict'):
+        L.append(f'Diet {preset}: ' + _dist(q('SELECT status, count(*) FROM recipe_diet WHERE preset = ? GROUP BY 1 '
+                                              'ORDER BY 2 DESC', preset), n) + '\n')
+    for label, sql in (
+            ('servings (any)', 'servings IS NOT NULL'),
+            ('servings from the source', "servings_source = 'source'"),
+            ('servings estimated', "servings_source IN ('text', 'energy', 'mass')"),
+            ('nutrition (kcal)', 'kcal IS NOT NULL'),
+            ('total time', 'total_min IS NOT NULL'),
+            ('image', 'image_url IS NOT NULL'),
+            ('video_url (R17)', 'video_url IS NOT NULL'),
+            ('no steps rows (video method, R17)', 'NOT EXISTS (SELECT 1 FROM steps WHERE recipe_id = recipes.id)')):
+        c = q(f'SELECT count(*) FROM recipes WHERE {sql}')[0][0]
+        L.append(f'Fill, {label}: {c:,} ({c / n:.1%})\n')
+    L.append('Servings source: ' + _dist(q("SELECT coalesce(servings_source, '(null)'), count(*) FROM recipes "
+                                           'GROUP BY 1 ORDER BY 2 DESC'), n) + '\n')
+    L.append('Nutrition fill by source: ' + ', '.join(
+        f'{s} {f:,}/{t:,} ({f / t:.0%})' for s, f, t in
+        q('SELECT source, sum(kcal IS NOT NULL), count(*) FROM recipes GROUP BY 1 ORDER BY 3 DESC')) + '\n')
+    L.append('Servings fill by source: ' + ', '.join(
+        f'{s} {f:,}/{t:,} ({f / t:.0%})' for s, f, t in
+        q('SELECT source, sum(servings IS NOT NULL), count(*) FROM recipes GROUP BY 1 ORDER BY 3 DESC')) + '\n')
+    return L
+
+
 def report(path, target=100_000):
     con = sqlite3.connect(path)
     size = os.path.getsize(path)
@@ -511,6 +584,7 @@ def report(path, target=100_000):
     L.append(f'nutrition (S14): {nn:,}/{n:,} recipes filled ({nn / n:.1%})\n' if n else 'nutrition (S14): 0 recipes\n')
     ns = q('SELECT count(*) FROM recipes WHERE servings IS NOT NULL')[0][0]
     L.append(f'servings (S15): {ns:,}/{n:,} recipes have servings ({ns / n:.1%})\n' if n else 'servings (S15): 0 recipes\n')
+    L.extend(distributions(con, n) if n else [])
     L.append('## Size\n')
     try:
         rows = q('SELECT name, sum(pgsize) FROM dbstat GROUP BY name ORDER BY 2 DESC')

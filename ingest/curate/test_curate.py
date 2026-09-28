@@ -570,3 +570,29 @@ def test_scan_refresh_grown_rescans_only_the_grown_source(tmp_path):
     assert os.path.getmtime(beta_meta) == before
     assert SC.refresh(scan, str(raw), grown=True, log=quiet) == {}
     assert SC.refresh(scan, str(raw), sources=['beta'], log=quiet) == {'beta': (1, 1)}
+
+
+def test_select_size_cap_cuts_the_score_tail_only():
+    # brief S10: corpus.db at most 235 MB. With a budget that fits 40 recipes of 1,000 estimated
+    # bytes, the target of 60 settles lower; editorial and floor recipes all stay
+    pool = _pool()
+    for r in pool:
+        r['step_chars'], r['n_lines'] = 1000 - SEL.EST_BASE - SEL.EST_PER_LINE * 0, 0
+    budget = SEL.STATIC_BYTES + 40 * 1000
+    keys, why = SEL.select(pool, target=60, floor=10, ceiling=None, byte_budget=budget)
+    st = SEL.select.size_stats
+    assert len(keys) <= 40 and st['within_budget'] and st['est_bytes'] <= budget
+    full, fwhy = SEL.select(pool, target=60, floor=10, ceiling=None, byte_budget=None)
+    kept = {k for k in full if fwhy[k] in ('editorial', 'cuisine_floor')}
+    assert kept <= set(keys)
+    assert SEL.select.size_stats['settled_target'] == 60
+
+
+def test_unparsed_whole_source_is_junk():
+    # brief S10: myparisiankitchen:quatre-quarts-pommes (French lines, 0 of 5 resolved) is taken
+    # whole by source, so it needs its own cut; a recipenlg recipe is left to the score
+    assert R.unparsed_whole({'source': 'myparisiankitchen', 'resolved': 0.0})
+    assert R.unparsed_whole({'source': 'archanaskitchen', 'resolved': 0.49})
+    assert not R.unparsed_whole({'source': 'archanaskitchen', 'resolved': 0.5})
+    assert not R.unparsed_whole({'source': 'recipenlg', 'resolved': 0.0})
+    assert 'curate_junk_unparsed' in BC.DROP_REASONS

@@ -79,6 +79,20 @@ def load(scan_dir, text_dir=TP.OUT):
     return recs
 
 
+# Brief S10: the sources taken whole (select.EDITORIAL_SOURCES, the cuisine sites among them) have
+# no score cut to keep out a recipe the app cannot read. One whose ingredient lines mostly do not
+# resolve to a slug is dropped as curate_junk_unparsed: measured on the S10 scan, that is the
+# Hindi-language pages of archanaskitchen (393) and hebbarskitchen (22), the French-language
+# pages of myparisiankitchen (370 of 394), and pardonyourfrench pages whose ingredient list the
+# site serves as one run-together line (51). A recipe that cannot be matched cannot be offered
+# (R10's reason).
+WHOLE_MIN_RESOLVED = 0.5
+
+
+def unparsed_whole(r):
+    return r['source'] in SEL.EDITORIAL_SOURCES and (r['resolved'] or 0) < WHOLE_MIN_RESOLVED
+
+
 def hard_flag(r):
     for f in HARD_JUNK:
         if f in r['junk']:
@@ -157,6 +171,9 @@ def run(scan_dir=SC.OUT, out=OUT, target=SEL.TARGET, draw_eval=False, report=REP
         cid, size, leader = cl[r['key']]
         if hf:
             drop(r['source'], f'curate_junk_{hf}', r['key'])
+            continue
+        if unparsed_whole(r):
+            drop(r['source'], 'curate_junk_unparsed', r['key'])
             continue
         if r['source'] in SEL.EXCLUDED_SOURCES:
             drop(r['source'], 'curate_excluded_source', r['key'])
@@ -240,6 +257,7 @@ def run(scan_dir=SC.OUT, out=OUT, target=SEL.TARGET, draw_eval=False, report=REP
         'mix': SEL.mix_shares(sel),
         'pool_mix': SEL.mix_shares(pool),
         'floors_r18': getattr(SEL.select, 'floor_stats', None),
+        'size': getattr(SEL.select, 'size_stats', None),
         'editorial_by_source': dict(sorted(Counter(r['source'] for r in sel
                                                    if reasons[r['key']] == 'editorial').items())),
         'score_cut': min((r['score'] for r in sel if reasons[r['key']] == 'score'), default=None),
@@ -423,6 +441,12 @@ def report_md(st):
                                           or 'none') +
                  '. Floors left short: ' + (', '.join(f'{k} {v:,}' for k, v in fl['short'].items()) or 'none') +
                  '.\n')
+    sz = st.get('size')
+    if sz:
+        L.append(f"Size cap: corpus.db at most {sz['size_cap'] / 1e6:.0f} MB, budget {sz['byte_budget'] / 1e6:.1f} MB. "
+                 f"Target {sz['target']:,}, settled at {sz['settled_target']:,}; selected {sz['selected']:,}, "
+                 f"estimated {sz['est_bytes'] / 1e6:.1f} MB (tries: " +
+                 '; '.join(f'{t:,} -> {n:,} at {b / 1e6:.1f} MB' for t, n, b in sz['tries']) + ').\n')
     L.append('Editorial and cuisine-site recipes taken whole: ' +
              ', '.join(f'{k} {v:,}' for k, v in st['editorial_by_source'].items()) + '.\n')
     ce = st['ceiling']

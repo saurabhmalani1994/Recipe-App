@@ -23,6 +23,12 @@ dedupe leaders that passed the junk filters) and returns the chosen keys, in thi
    (possible only in a pool that is mostly the capped cuisines, never in the real one).
 Ties on score break on the key, so the selection is deterministic.
 
+5. The size cap (brief S10: corpus.db at most 235 MB). Every chosen recipe carries an estimate of
+   the bytes it adds to corpus.db (est_bytes); when the chosen set would pass BYTE_BUDGET, the
+   target is lowered and the selection redone, so the cut falls on the lowest-scored recipes
+   picked by score while editorial, cuisine-site and floor recipes stay. select.size_stats holds
+   the numbers.
+
 The ceiling (S8b proposal): american and southern_us together at most 12% of the target
 (9,600 of 80,000). The S8 selection held 16.7% (american 9,240, southern_us 4,154), and a
 third of it had no cuisine label at all, much of it American home cooking the classifier did
@@ -52,6 +58,16 @@ CEILING_CUISINES = ('american', 'southern_us')
 CEILING = 0.12
 TARGET = 80_000
 HARD_CAP = 100_000
+# The size cap (brief S10). est_bytes was fitted on the first S10 build (79,998 recipes, 287.5 MB,
+# before the cap): each recipe's bytes across steps, recipe_ingredients (twice: the FTS indexes the
+# lines), recipe_diet, recipe_slugs and its recipes row, scaled to the file, regressed on the
+# scan's features. R^2 0.80; mean 3,579 bytes (recipenlg 3,798, bbcgoodfood 2,921, foodwishes
+# 2,487). STATIC_BYTES is that build's taxonomy/substitution/season/unit tables. The budget keeps a
+# 3% margin under the cap for the estimate's error and for the crawls still appending.
+SIZE_CAP_BYTES = 235_000_000
+BYTE_BUDGET = int(SIZE_CAP_BYTES * 0.97)
+STATIC_BYTES = 823_296
+EST_BASE, EST_PER_STEP_CHAR, EST_PER_LINE = 529.0, 0.997, 162.4
 OK = ('ok', 'adaptable')
 MIX = {
     'main': (0.45, lambda r: r['course'] == 'main'),
@@ -71,13 +87,42 @@ def quantile(scores, q):
     return xs[int((1 - q) * (len(xs) - 1))] if xs else None
 
 
-def select(pool, target=TARGET, floor=CUISINE_FLOOR, editorial=EDITORIAL_SOURCES, mix=MIX,
-           excluded=EXCLUDED_SOURCES, ceiling=CEILING, ceiling_cuisines=CEILING_CUISINES,
-           floor_min_quantile=FLOOR_MIN_QUANTILE):
+def est_bytes(r):
+    """What one recipe adds to corpus.db, estimated from its scan features (see BYTE_BUDGET)."""
+    return EST_BASE + EST_PER_STEP_CHAR * (r.get('step_chars') or 0) + EST_PER_LINE * (r.get('n_lines') or 0)
+
+
+def select(pool, target=TARGET, byte_budget=BYTE_BUDGET, **kw):
     """Returns (chosen keys in pick order, {key: reason}), reason one of editorial,
     cuisine_floor, score, score_unguarded. select.floor_stats holds the R18 numbers of the
-    last call: the score bar and how many recipes each floor declined below it."""
+    last call (the score bar and how many recipes each floor declined below it), and
+    select.size_stats the size cap's: the estimate, the budget and the target it settled on.
+    Keywords are _select's."""
     assert target <= HARD_CAP
+    by_key = {r['key']: r for r in pool}
+    budget = None if byte_budget is None else byte_budget - STATIC_BYTES
+    tried = []
+    t = target
+    for _ in range(12):
+        keys, why = _select(pool, target=t, **kw)
+        est = sum(est_bytes(by_key[k]) for k in keys)
+        tried.append((t, len(keys), round(est)))
+        if budget is None or est <= budget:
+            break
+        scored = [est_bytes(by_key[k]) for k in keys if why[k] in ('score', 'score_unguarded')]
+        if not scored:
+            break   # nothing left to cut: editorial and floors alone pass the budget (reported)
+        t = max(len(keys) - len(scored), t - math.ceil((est - budget) / (sum(scored) / len(scored))) - 1)
+    select.size_stats = {'target': target, 'settled_target': t, 'selected': len(keys),
+                         'est_bytes': round(est + STATIC_BYTES), 'byte_budget': byte_budget,
+                         'size_cap': SIZE_CAP_BYTES, 'within_budget': budget is None or est <= budget,
+                         'tries': tried}
+    return keys, why
+
+
+def _select(pool, target=TARGET, floor=CUISINE_FLOOR, editorial=EDITORIAL_SOURCES, mix=MIX,
+            excluded=EXCLUDED_SOURCES, ceiling=CEILING, ceiling_cuisines=CEILING_CUISINES,
+            floor_min_quantile=FLOOR_MIN_QUANTILE):
     ranked = sorted((r for r in pool if r['source'] not in excluded), key=_order)
     chosen = {}
     # R18: the pool's 25th percentile (a quarter of the pool scores below it)
