@@ -1,4 +1,4 @@
-Builder ingest/fetch, slice S1b. Hash <FILL-AFTER-COMMIT> on worktree-agent-aff4b3e04158f231e, nothing pushed.
+Builder ingest/fetch, slice S1b. Hash 8ec2de3 on worktree-agent-aff4b3e04158f231e, nothing pushed.
 
 - Changed:
   - `ingest/fetch/fetch_bbcgoodfood.py`: root cause was `recipeYield` (and `image`,
