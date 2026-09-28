@@ -123,18 +123,67 @@ def test_bbcgoodfood_no_ld_json_returns_none():
 
 # ---- foodwishes ---------------------------------------------------------------
 
-def test_foodwishes_parse_recipe_page():
-    from fetch_foodwishes import parse_recipe_page
+def _foodwishes_entries():
+    data = json.loads((FIXTURES / "foodwishes_feed_sample.json").read_text(encoding="utf-8"))
+    return data["feed"]["entry"]
 
-    html_text = (FIXTURES / "foodwishes_sample.html").read_text(encoding="utf-8")
-    rec = parse_recipe_page(
-        html_text,
-        "https://foodwishes.blogspot.com/2015/04/whole-grain-blueberry-scones-because.html",
-    )
+
+def _foodwishes_entry_by_year(entries, year):
+    for e in entries:
+        if e["published"]["$t"].startswith(year):
+            return e
+    raise AssertionError(f"no fixture entry for {year}")
+
+
+def test_foodwishes_parse_post_2010s_yield_header():
+    from fetch_foodwishes import _entry_link, parse_post
+
+    entries = _foodwishes_entries()
+    e = _foodwishes_entry_by_year(entries, "2015")
+    rec, reason = parse_post(e["content"]["$t"], _entry_link(e), e["title"]["$t"])
+    assert reason is None
     assert rec is not None
     assert rec["source"] == "foodwishes"
+    assert rec["id"] == "foodwishes:2015/04/whole-grain-blueberry-scones-because"
     assert "spelt flour" in " ".join(rec["ingredients"]).lower()
     assert rec["yield_text"].startswith("8 Whole-Grain")
+    # the trailing "- 425F.for about 20-25 minutes..." line is the one written step
+    assert any("425" in s for s in rec["steps"])
+
+
+def test_foodwishes_parse_post_2007_bare_ingredients_header():
+    from fetch_foodwishes import _entry_link, parse_post
+
+    entries = _foodwishes_entries()
+    e = _foodwishes_entry_by_year(entries, "2007-03")
+    rec, reason = parse_post(e["content"]["$t"], _entry_link(e), e["title"]["$t"])
+    assert reason is None
+    assert rec is not None
+    # bare "Ingredients:" header (pre-2010 era) carries no yield text
+    assert rec["yield_text"] == ""
+    assert any("ground chuck" in i.lower() for i in rec["ingredients"])
+    # no written steps in this era (video-only) -- that is correct, not a mis-split
+    assert rec["steps"] == []
+
+
+def test_foodwishes_parse_post_allrecipes_only_counted_separately():
+    from fetch_foodwishes import _entry_link, parse_post
+
+    entries = _foodwishes_entries()
+    e = _foodwishes_entry_by_year(entries, "2020")
+    rec, reason = parse_post(e["content"]["$t"], _entry_link(e), e["title"]["$t"])
+    assert rec is None
+    assert reason == "recipe text only on allrecipes"
+
+
+def test_foodwishes_parse_post_announcement_no_recipe():
+    from fetch_foodwishes import _entry_link, parse_post
+
+    entries = _foodwishes_entries()
+    e = _foodwishes_entry_by_year(entries, "2007-02")
+    rec, reason = parse_post(e["content"]["$t"], _entry_link(e), e["title"]["$t"])
+    assert rec is None
+    assert reason == "no recipe content (announcement/video only)"
 
 
 # ---- themealdb ----------------------------------------------------------------
@@ -178,10 +227,35 @@ def test_openrecipes_parse_line_no_name_drops():
 
 
 def test_foodwishes_no_ingredients_marker_drops():
-    from fetch_foodwishes import parse_recipe_page
+    from fetch_foodwishes import parse_post
 
-    html_text = (
-        "<div class='post-body entry-content'>Just a story, no recipe here.</div>"
-        "<div class='post-footer'>x</div>"
+    content_html = "Just a story, no recipe here.<div class='blogger-post-footer'>x</div>"
+    rec, reason = parse_post(content_html, "https://foodwishes.blogspot.com/x.html", "A Story")
+    assert rec is None
+    assert reason == "no recipe content (announcement/video only)"
+
+
+def test_foodwishes_word_style_block_and_wrapped_lines_stripped():
+    from fetch_foodwishes import parse_post
+
+    # A leftover Word/Office <style> block (seen on ~127 real posts) sits ahead of the
+    # ingredients, and one ingredient line is soft-wrapped with a literal newline mid-line
+    # (also common in Word-pasted posts) -- neither should leak into the parsed lines.
+    content_html = (
+        "<style><!--\n@font-face {font-family:\"Foo\";}\n--></style>"
+        "<span>Ingredients for 2:<br />"
+        "1 cup flour, sifted twice for a lighter\ntexture<br />"
+        "2 eggs<br />"
+        "- Bake at 400 F.<br />"
+        "--&gt;</span>"
+        "<div class='blogger-post-footer'>x</div>"
     )
-    assert parse_recipe_page(html_text, "https://foodwishes.blogspot.com/x.html") is None
+    rec, reason = parse_post(content_html, "https://foodwishes.blogspot.com/y.html", "Y")
+    assert reason is None
+    assert rec is not None
+    assert rec["ingredients"] == [
+        "1 cup flour, sifted twice for a lighter texture",
+        "2 eggs",
+    ]
+    assert rec["steps"] == ["Bake at 400 F."]
+    assert "@font-face" not in " ".join(rec["ingredients"] + rec["steps"])
