@@ -32,4 +32,5 @@ S1b fix BBC parser TypeError (11,834 pages lost) + --retry-failed | ingest | RUN
 S8b rescore by substance (owner grade FAIL: top 1.05) + fresh 45-recipe sheet | ingest | RUNNING | opus | orch/briefs/S8b-rescore.md | v0.2
 S16 app: 'ingredients I avoid' setting (R15), with down-ranking or hiding in Cook, Home and Surprise | app | READY after S12b | sonnet | - | v0.2
 S1c Food Wishes full crawl via Blogger feed (3,020 posts; have 300) | ingest | RUNNING | sonnet | orch/briefs/S1c-foodwishes-full.md | v0.2
-S12b merge | app | PARKED: the owner stopped the merge; branch worktree-agent-a1be6ae1171f3086d at 66795d0 is kept, awaiting the owner | - | - | v0.2
+S12b merge | app | DONE merged after the owner said resume |
+S17 cuisine-specialist sites: survey + generic fetcher (D19, R16) | ingest | RUNNING | sonnet | orch/briefs/S17-cuisine-sites.md | v0.2

@@ -29,6 +29,7 @@ Append only. The owner's words are verbatim (rule 13). Do not ask these again.
 | D16 | Main-protein swaps | Asked: should a recipe whose main protein is meat or fish show as "adaptable" in Vegetarian / No red meat? Owner chose "Always show them" (over a separate tier, or never) |
 | D17 | Style | "many of the apps felt very southern or mid western, using things like cool whip or sour cream for lots of the recipes, which is not my style." (said after grading sheet 1) |
 | D18 | Fresh ingredients, Food Wishes | "i like using fresh ingredients. cant you get more from Food Wishes? he makes good food" |
+| D19 | Cuisine sources | "also find sites that do good indian cooking, chinese cooking, korean cooking, japanese cooking, malaysian cooking, singaporean cooking, italian cooking, french cooking, mediterranean cooking - no israeli food only palestinian/greek/egyptian/persian" |
 
 ## Orchestrator rulings (challengeable)
 
@@ -49,3 +50,4 @@ Append only. The owner's words are verbatim (rule 13). Do not ask these again.
 | R13 | A My Recipe with no value for an active filter (time, one-pot, equipment) is excluded and counted, never passed through | Rule 11 |
 | R14 | Ship the S15 servings estimator even though it missed its bar (61.9% vs 70%). The key was the source's stated servings, and the owner's complaint (D11: "2 servings are always too small for 2 people") is that stated servings run small, so matching them is the wrong target. The page labels it "Serves about N (estimated)". Re-judge later on owner feedback | Section 9: check the key against the complaint |
 | R15 | D17 overrides the orchestrator's sheet-1 stat that convenience products had "no effect" (that regex missed sour cream, and a grade mixes quality with taste). Curation adds a style signal that down-weights heartland/convenience cooking, and the app gets a per-user "ingredients I avoid" setting | D17 |
+| R16 | Per D19, recipes identified as Israeli (by cuisine label, or "Israeli" in the title or tags) and sites that present themselves as Israeli cuisine sites are excluded from ingest. Mediterranean sourcing targets Palestinian, Greek, Egyptian and Persian cooking | D19 |

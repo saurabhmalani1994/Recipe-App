@@ -16,8 +16,7 @@ allrecipes gives 402 even with a browser UA (bot wall), so S1 tries headless Chr
 ## Owner silence on 3 defaults (applied): metric default, no hosted PWA, start builds now.
 
 ## Running
-S8b rescore (opus), S1b BBC fix (sonnet) and S1c Food Wishes (sonnet) run in worktrees. S12b is DONE but the merge is PARKED:
-the owner rejected the merge tool call; merge --abort restored the branch. Ask before merging it.
+S8b rescore (opus), S1b BBC fix (sonnet) and S1c Food Wishes (sonnet) run in worktrees. S12b merged after the owner said "you can resume". S17 (cuisine sites) runs too.
 GRADED (sheet 1): FAIL, top 1.05 / middle 0.80 / bottom 0.35; ordered and separated, but top too low. S8b rescoring by substance.
 Old sheet: https://claude.ai/artifact/Qzm5YLRQtMfuiiKTjT9mmC (db collection grades/gNN {n, grade}).
 When graded: write the grades into ingest/curate/eval/owner_grade.md, then run python3 -m ingest.curate.eval.draw --score ...
