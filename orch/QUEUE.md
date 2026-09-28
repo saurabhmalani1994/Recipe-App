@@ -19,4 +19,4 @@ S3b taxonomy/subs/parser fixups from S5a | ingest | DONE merged | sonnet | orch/
 S9a corpus.db schema + builder on sample + course tagger + app types/fixture | ingest+app types | DONE merged | opus | orch/briefs/S9a-corpus-schema.md | v0.1
 S9b course tagger modifier rules; blind set must be >= 85% (it was 82%) | ingest | READY after S8 | sonnet | - | v0.1
 S9c parser: 'cans tuna packed in water' resolves to water | ingest | fold into next parser slice | sonnet | - | v0.1
-S6b Cook fixes: flaky diet persistence, equipment list drift, readability, ranking floor | app | RUNNING | sonnet | orch/briefs/S6b-cook-fixes.md | v0.1
+S6b Cook fixes: flaky diet persistence, equipment list drift, readability, ranking floor | app | DONE merged | sonnet | orch/briefs/S6b-cook-fixes.md | v0.1

@@ -16,3 +16,4 @@
 - 2026-09-27: S5b-2 merged (verified 267 pytest; eval 80.7%/28.3%).
 - 2026-09-28: S9a merged (verified). S8 and S6 briefed (opus).
 - 2026-09-28: D16 recorded. S3b and S6 merged (verified). S6b and S7 briefed.
+- 2026-09-28: S6b merged. E2E port sharing across worktrees fixed (the cause of the flaky runs).
