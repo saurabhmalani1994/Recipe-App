@@ -2,7 +2,7 @@
 // `ingest` owns the corpus schema (ruling R4); change schema/corpus.sql and regenerate.
 
 /** corpus_meta.schema_version this app was built against. */
-export const CORPUS_SCHEMA_VERSION = 1
+export const CORPUS_SCHEMA_VERSION = 2
 
 export const AISLE_VALUES = [
   'produce',
@@ -158,6 +158,9 @@ export const INGREDIENT_FLAG_VALUES = [
 ] as const
 export type IngredientFlag = (typeof INGREDIENT_FLAG_VALUES)[number]
 
+export const SERVINGS_SOURCE_VALUES = ['source', 'text', 'energy', 'mass'] as const
+export type ServingsSource = (typeof SERVINGS_SOURCE_VALUES)[number]
+
 export const SUB_CONTEXT_VALUES = [
   'baking',
   'sauce',
@@ -244,9 +247,10 @@ export interface RecipesRow {
   source: string
   source_url: string | null
   title: string
-  /** head count parsed from yield_text; NULL when the yield is not a head count */
+  /** head count: the source's own, else estimated (servings_source; ingest/build/servings.py); NULL when nothing gave one */
   servings: number | null
-  /** the source's own yield string, as given */
+  servings_source: ServingsSource | null
+  /** the source's own yield string, as given; when the source gave none, the counted yield the estimator read from the recipe ("24 cookies") */
   yield_text: string | null
   /** total minutes; NULL when unknown */
   total_min: number | null

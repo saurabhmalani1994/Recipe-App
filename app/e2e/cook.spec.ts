@@ -55,12 +55,14 @@ test('S6 walk: kitchen, Cook, filter, result, detail with the fish sauce swap', 
     'swap: soy sauce + nori (you have these)',
   )
   await expect(detail.getByTestId('recipe-facts')).toContainText('21 min total')
+  // themealdb gives no yield: the build's estimate is shown as one, and scales (S15, D11)
+  await expect(detail.getByTestId('servings-estimate')).toHaveText('Serves about 5 (estimated)')
   await expect(detail.getByRole('list', { name: 'Equipment' })).toContainText('Stovetop')
   await expect(detail.getByRole('heading', { name: 'Steps' })).toBeVisible()
 
-  // Units: 125 g rice noodles reads as ounces in US units.
+  // Units: 125 g rice noodles, scaled 3/5 to 75 g, reads as ounces in US units.
   await detail.getByLabel('Units').selectOption('us')
-  await expect(detail.getByText(/4½ oz rice noodles/)).toBeVisible()
+  await expect(detail.getByText(/2¾ oz rice noodles/)).toBeVisible()
   await detail.getByLabel('Units').selectOption('metric')
   await page.screenshot({ path: 'e2e/screens/corpus-recipe-detail-412x915.png' })
 

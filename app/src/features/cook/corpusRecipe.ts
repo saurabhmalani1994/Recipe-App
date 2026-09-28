@@ -1,6 +1,13 @@
 import type { Db } from '../../db/types'
 import type { DietSwap } from '../../corpus/model'
-import type { Course, Cuisine, DietStatus, Equipment, Unit } from '../../corpus/types'
+import type {
+  Course,
+  Cuisine,
+  DietStatus,
+  Equipment,
+  ServingsSource,
+  Unit,
+} from '../../corpus/types'
 import { targetServings } from '../scaling/scale'
 import { convertAmount, formatAmount, type UnitSystem, type UnitTable } from '../units/units'
 import type { AppDiet } from './engine'
@@ -14,6 +21,8 @@ export interface CorpusRecipe {
   title: string
   sourceUrl: string | null
   servings: number | null
+  /** 'source' when the recipe states it; otherwise estimated at build time (S15) */
+  servingsSource: ServingsSource | null
   yieldText: string | null
   totalMin: number | null
   activeMin: number | null
@@ -49,6 +58,7 @@ interface RecipeRow {
   title: string
   source_url: string | null
   servings: number | null
+  servings_source: ServingsSource | null
   yield_text: string | null
   total_min: number | null
   active_min: number | null
@@ -80,8 +90,8 @@ export async function loadCorpusRecipe(
   diet: AppDiet,
 ): Promise<CorpusRecipe | null> {
   const { rows } = await db.query<RecipeRow>(
-    `SELECT id, key, title, source_url, servings, yield_text, total_min, active_min, cuisine,
-            course, one_pot, no_cook
+    `SELECT id, key, title, source_url, servings, servings_source, yield_text, total_min,
+            active_min, cuisine, course, one_pot, no_cook
        FROM recipes WHERE key = ?`,
     [key],
   )
@@ -115,6 +125,7 @@ export async function loadCorpusRecipe(
     title: row.title,
     sourceUrl: row.source_url,
     servings: row.servings,
+    servingsSource: row.servings_source,
     yieldText: row.yield_text,
     totalMin: row.total_min,
     activeMin: row.active_min,
@@ -146,8 +157,9 @@ export async function loadCorpusRecipe(
 }
 
 /**
- * How much to multiply the corpus quantities by (D11: 1.5 servings per person, rounded up). A
- * recipe whose yield is not a head count ("Makes 16 frozen treats") is not scaled.
+ * How much to multiply the corpus quantities by (D11: 1.5 servings per person, rounded up). An
+ * estimated head count (servingsSource not 'source', S15) scales like a stated one; a recipe with
+ * no head count at all is not scaled.
  */
 export function corpusScale(
   recipe: CorpusRecipe,

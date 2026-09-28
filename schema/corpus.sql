@@ -10,7 +10,7 @@
 -- Booleans are 0/1 integers. A nullable tag is NULL when it could not be determined (for example
 -- one_pot when the recipe has no usable steps), never a guessed 0.
 
-PRAGMA user_version = 1;
+PRAGMA user_version = 2;
 
 -- type IngredientFlag: 'red_meat', 'poultry', 'fish', 'shellfish', 'animal_derived', 'explicit_meat', 'dairy', 'egg', 'gluten', 'nuts', 'alcohol'
 -- type SubContext: 'baking', 'sauce', 'marinade', 'dressing', 'stir_fry', 'braise', 'soup', 'frying', 'garnish', 'dessert', 'beverage', 'any'
@@ -22,7 +22,7 @@ CREATE TABLE corpus_meta (
   key TEXT PRIMARY KEY,
   value TEXT NOT NULL
 ) WITHOUT ROWID;
-INSERT INTO corpus_meta (key, value) VALUES ('schema_version', '1');
+INSERT INTO corpus_meta (key, value) VALUES ('schema_version', '2');
 
 -- One row per recipe that passed the build's drops (ingest/build/curate.py).
 CREATE TABLE recipes (
@@ -31,8 +31,9 @@ CREATE TABLE recipes (
   source TEXT NOT NULL, -- a key of ingest/sources.md
   source_url TEXT,
   title TEXT NOT NULL,
-  servings INTEGER, -- head count parsed from yield_text; NULL when the yield is not a head count
-  yield_text TEXT, -- the source's own yield string, as given
+  servings INTEGER, -- head count: the source's own, else estimated (servings_source; ingest/build/servings.py); NULL when nothing gave one
+  servings_source TEXT CHECK (servings_source IN ('source', 'text', 'energy', 'mass')), -- enum: ServingsSource
+  yield_text TEXT, -- the source's own yield string, as given; when the source gave none, the counted yield the estimator read from the recipe ("24 cookies")
   total_min INTEGER, -- total minutes; NULL when unknown
   active_min INTEGER, -- hands-on minutes; NULL when unknown
   time_source TEXT CHECK (time_source IN ('source', 'source_partial', 'estimated')), -- enum: TimeSource
