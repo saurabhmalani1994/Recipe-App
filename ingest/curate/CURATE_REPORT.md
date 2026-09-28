@@ -116,5 +116,5 @@ Bottom 5 selected:
 - 0.302 `foodwishes:new-years-beans-and-belly-good-luck` New Year’s “Beans and Belly” – Good Luck with This!
 - 0.31 `foodwishes:mini-buffalo-chicken-egg-rolls-no-wings` Mini Buffalo Chicken Egg Rolls – No Wings Were Harmed in the Making of This Snack
 
-Pool score quantiles (max, 99%, 95%, 75%, 50%, 25%, 5%, 1%, min): 0.125, 0.33, 0.54, 0.658, 0.692, 0.74, 0.8, 0.823, 0.97
+Pool score quantiles (max, 99%, 95%, 75%, 50%, 25%, 5%, 1%, min): 0.97, 0.823, 0.8, 0.74, 0.692, 0.658, 0.54, 0.33, 0.125
 

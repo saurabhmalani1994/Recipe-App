@@ -15,9 +15,7 @@ Run: python3 -m ingest.curate.rank [--target 80000] [--out DIR] [--draw-eval]
 import argparse
 import gzip
 import json
-import math
 import os
-import random
 import sys
 import time
 from collections import Counter, defaultdict
@@ -30,7 +28,7 @@ from ingest.curate import dedupe as D  # noqa: E402
 from ingest.curate import scan as SC  # noqa: E402
 from ingest.curate import score as Q  # noqa: E402
 from ingest.curate import select as SEL  # noqa: E402
-from ingest.curate.features import HARD_JUNK, JUNK_FLAGS  # noqa: E402
+from ingest.curate.features import HARD_JUNK  # noqa: E402
 
 OUT = '/home/user/recipe-data/derived/curate'
 REPORT = os.path.join(HERE, 'CURATE_REPORT.md')
@@ -210,7 +208,8 @@ def run(scan_dir=SC.OUT, out=OUT, target=SEL.TARGET, draw_eval=False, report=REP
         'bottom_kept': [(r['score'], r['key'], r['title'])
                         for r in sorted(sel, key=lambda r: (r['score'], r['key']))[:5]],
         'drops': {s: dict(sorted(v.items())) for s, v in sorted(drops.items())},
-        'score_quantiles_pool': [ranked[int(q * (len(ranked) - 1))]['score'] for q in (0, .01, .05, .25, .5, .75, .95, .99, 1)][::-1] if ranked else [],
+        'score_quantiles_pool': [ranked[int(q * (len(ranked) - 1))]['score']
+                                 for q in (0, .01, .05, .25, .5, .75, .95, .99, 1)] if ranked else [],
     }
     with open(os.path.join(out, 'stats.json'), 'w', encoding='utf-8') as fh:
         json.dump(stats, fh, indent=1, sort_keys=True, default=str)

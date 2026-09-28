@@ -10,6 +10,8 @@ dedupe leaders that passed the junk filters) and returns the chosen keys, in thi
    slots left are no more than a constraint's deficit, only recipes that meet it are taken.
    MIX: main course >= 45%; vegetarian ok or adaptable >= 25%; no_red_meat ok or adaptable
    >= 50%.
+4. If a constraint cannot be met from the pool, the slots it held back are filled by score
+   (reason score_unguarded), so the target is always reached when the pool allows.
 Ties on score break on the key, so the selection is deterministic.
 """
 import math
@@ -72,6 +74,12 @@ def select(pool, target=TARGET, floor=CUISINE_FLOOR, editorial=EDITORIAL_SOURCES
         chosen[r['key']] = 'score'
         for k in mix:
             count[k] += meets[k]
+    # A constraint the pool cannot meet must not leave slots empty: fill them by score.
+    for r in ranked:
+        if len(chosen) >= target:
+            break
+        if r['key'] not in chosen:
+            chosen[r['key']] = 'score_unguarded'
     return list(chosen), chosen
 
 
