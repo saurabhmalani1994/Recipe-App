@@ -1,6 +1,6 @@
 # Report: S1c Food Wishes full crawl
 
-Builder ingest, slice S1c. Hash TBD on worktree-agent-aa8a6e552683a8114, nothing pushed.
+Builder ingest, slice S1c. Hash fe81716 on worktree-agent-aa8a6e552683a8114, nothing pushed.
 
 - Changed: `ingest/fetch/fetch_foodwishes.py` (rewritten — feed-based fetcher, replacing S1's
   300-post sitemap crawl); `ingest/fetch/test_fetchers.py` (foodwishes tests replaced/expanded,
