@@ -16,11 +16,15 @@ allrecipes gives 402 even with a browser UA (bot wall), so S1 tries headless Chr
 ## Owner silence on 3 defaults (applied): metric default, no hosted PWA, start builds now.
 
 ## Running
-S3b (sonnet), S8 curation (opus) and S6 matcher (app, opus) run in worktrees. The app lane is free until corpus schema S9. The app lane is free (S7b READY; S6 waits on corpus schema S9). The full BBC crawl runs as a background
+S8 curation (opus), S6b (app, sonnet) and S7 planner/grocery (app, sonnet) run in worktrees. The app lane is free until corpus schema S9. The app lane is free (S7b READY; S6 waits on corpus schema S9). The full BBC crawl runs as a background
 script (cap 20000, 6h timeout; log in /home/user/recipe-data/bbc_full_crawl.log).
 Owner questions pending: Kaggle token (default: no ratings source), and location for seasonality (default: temperate north).
 
 ## Done
+- S3b merged, then match test updated to D16 (owner: protein swaps count as adaptable). 302 pytest.
+  The holdout diet score drifted to 91.7% due to stale labels, left as-is. S8 was cut before S3b, so rebuild the corpus after the S8 merge.
+- S6 merged. Re-run: 68 unit, e2e 25 passed. Cook screenshot checked. p50 29 ms on 3.6k. The native corpus path is unrun.
+  Ranking puts tiny recipes high, so the owner grades a planted top 10 later (S6b adds a floor behind a constant).
 - S9a merged. Re-run: 301 pytest, app check 34/0. Schema v1 in schema/corpus.sql. Size 2,178 B/recipe, so
   about 219 MB at 100k. Match query about 2 ms on 3.6k. Course blind 82% (<85%), so S9b. openrecipes and
   hf_cuisine_type have NO steps, so R10 drops all of them. The pool is recipenlg + small scraped sources.
