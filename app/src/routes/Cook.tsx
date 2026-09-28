@@ -2,17 +2,29 @@ import { useEffect, useMemo, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { searchIngredientSlugs } from '../corpus/slugs'
 import { CUISINE_VALUES, type Cuisine, type Equipment } from '../corpus/types'
-import { matchRecipes, missingSummary, type MatchOutput } from '../features/cook/engine'
+import {
+  matchRecipes,
+  missingSummary,
+  type MatchOutput,
+  type MatchResult,
+} from '../features/cook/engine'
 import { cuisineLabel, equipmentLabel } from '../features/cook/labels'
 import { displayName } from '../features/cook/taxonomy'
 import { corpusStatusText, useCorpus } from '../features/cook/useCorpus'
 import { listKitchenItems } from '../features/kitchen/kitchenRepo'
 import { listKitchenEquipment } from '../features/settings/settingsRepo'
 import { KITCHEN_EQUIPMENT } from '../data/equipment'
+import { PANTRY_DEFAULT_SLUGS } from '../db'
 import { DIET_PRESET_LABELS, useDiet } from '../state/diet'
 
 /** "Under 30 min" (the weeknight line in docs/PRODUCT.md). */
 const QUICK_MINUTES = 30
+
+/** A short label for the diet the "veg: swap chicken → tofu" line names (S6b #3, D16). */
+const DIET_SWAP_LABEL: Partial<Record<string, string>> = {
+  vegetarian: 'veg',
+  no_red_meat: 'no red meat',
+}
 
 /**
  * "What can I cook?" (S6). The chips start as the kitchen list and can be edited for this search
@@ -31,6 +43,8 @@ export function Cook() {
   const [showEquipment, setShowEquipment] = useState(false)
   const [useOnly, setUseOnly] = useState<Equipment[]>([])
   const [output, setOutput] = useState<MatchOutput | null>(null)
+  // S6b #3: staples collapse into one "+ pantry basics (N)" chip, expanded on request.
+  const [showStaples, setShowStaples] = useState(false)
 
   useEffect(() => {
     let mounted = true
@@ -89,6 +103,42 @@ export function Cook() {
     corpus ? displayName(corpus.tax, slug) : slug.replace(/_/g, ' ')
   const notReady = corpus ? null : (corpusStatusText(status) ?? 'Opening the recipe library…')
 
+  // S6b #3: staples (is_staple, plus the pantry defaults every kitchen starts with) collapse
+  // into one "+ pantry basics (N)" chip instead of crowding the "what you have" row.
+  const isStaple = (slug: string) =>
+    corpus?.tax.staples.has(slug) || (PANTRY_DEFAULT_SLUGS as readonly string[]).includes(slug)
+  const staples = (have ?? []).filter(isStaple)
+  const nonStaples = (have ?? []).filter((slug) => !isStaple(slug))
+
+  // S6b #3, D16: a recipe the diet made "adaptable" (its main protein swaps out) gets a small
+  // line naming the swap, e.g. "veg: swap chicken → tofu" — only when a diet filter is active,
+  // since the engine only returns `diet` for the currently selected preset.
+  function dietSwapLine(result: MatchResult): string | null {
+    if (result.diet?.status !== 'adaptable' || result.diet.swaps.length === 0) return null
+    const label = DIET_SWAP_LABEL[preset] ?? DIET_PRESET_LABELS[preset]
+    const swap = result.diet.swaps[0]
+    const action = swap.use ? `swap ${swap.item} → ${swap.use}` : `leave out ${swap.item}`
+    return `${label}: ${action}`
+  }
+
+  function chip(slug: string) {
+    return (
+      <li key={slug}>
+        <span className="chip chip--removable">
+          {nameOf(slug)}
+          <button
+            type="button"
+            className="chip__remove"
+            aria-label={`Remove ${nameOf(slug)}`}
+            onClick={() => removeHave(slug)}
+          >
+            ×
+          </button>
+        </span>
+      </li>
+    )
+  }
+
   return (
     <section className="screen" data-testid="screen-cook">
       <h2>What can I cook?</h2>
@@ -96,21 +146,20 @@ export function Cook() {
       <div className="cook-have" role="group" aria-label="What you have">
         <p className="cook-label">What you have (for this search)</p>
         <ul className="chip-list">
-          {(have ?? []).map((slug) => (
-            <li key={slug}>
-              <span className="chip chip--removable">
-                {nameOf(slug)}
-                <button
-                  type="button"
-                  className="chip__remove"
-                  aria-label={`Remove ${nameOf(slug)}`}
-                  onClick={() => removeHave(slug)}
-                >
-                  ×
-                </button>
-              </span>
+          {nonStaples.map(chip)}
+          {staples.length > 0 && (
+            <li>
+              <button
+                type="button"
+                className="chip"
+                aria-expanded={showStaples}
+                onClick={() => setShowStaples((v) => !v)}
+              >
+                {showStaples ? 'Pantry basics ▾' : `+ pantry basics (${staples.length})`}
+              </button>
             </li>
-          ))}
+          )}
+          {showStaples && staples.map(chip)}
         </ul>
         <div className="kitchen-add">
           <label htmlFor="cook-add">Add an ingredient</label>
@@ -213,6 +262,7 @@ export function Cook() {
           <ul className="cook-results" data-testid="cook-results">
             {output.results.map((result) => {
               const summary = missingSummary(result)
+              const swapLine = dietSwapLine(result)
               return (
                 <li key={result.key} className="cook-result">
                   <Link to={`/recipe/${encodeURIComponent(result.key)}`} state={{ have }}>
@@ -224,6 +274,11 @@ export function Cook() {
                       {result.diet?.status === 'adaptable' ? ' · adaptable' : ''}
                     </span>
                     <span className="cook-result__missing">{summary ?? 'You have everything'}</span>
+                    {swapLine && (
+                      <span className="cook-result__diet-swap" data-testid="cook-result-diet-swap">
+                        {swapLine}
+                      </span>
+                    )}
                   </Link>
                 </li>
               )

@@ -74,12 +74,19 @@ describe('planted kitchen K1: Pad Thai without fish sauce', () => {
       ['fish_sauce', 'fish_sauce__soy_sauce-nori'],
     ])
     expect(missingSummary(top)).toBe('missing 1: fish sauce, swap: soy sauce + nori')
-    // The next four by coverage, from the oracle.
-    expect(results.slice(1, 5).map((r) => r.key)).toEqual([
-      'foodwishes:the-perfect-margarita-according-to-me',
+    // Re-ranked by S6b's floor and coverage band (#4). Before: the margarita (2/4, 50%) ranked
+    // second, ahead of every recipe below it here, on raw coverage alone (orch/reports/S6.md,
+    // "Open"). After: the floor (covered < 3 may not outrank a bigger covered count) drops it
+    // behind everything down to `themealdb:53368` (5 covered), and coverage is banded to 10
+    // points so `themealdb:52953`/`recipenlg:1470870`/`foodcom:000534`/the salsa (all 29-37%)
+    // rank by covered count (5, 4, 3, 3) rather than by their raw percentages.
+    expect(results.slice(1, 7).map((r) => r.key)).toEqual([
+      'themealdb:52953',
+      'recipenlg:1470870',
       'foodcom:000534',
       'foodwishes:nectarine-salsa-stone-cold-delicious',
-      'foodcom:000334',
+      'themealdb:53368',
+      'foodwishes:the-perfect-margarita-according-to-me',
     ])
   })
 
@@ -95,7 +102,8 @@ describe('planted kitchen K1: Pad Thai without fish sauce', () => {
     const { results, stats } = await matchRecipes(db, { ...BASE, have: K1, diet: 'vegetarian' })
     expect(stats.candidates).toBe(58)
     expect(results.map((r) => r.key)).not.toContain('themealdb:53191')
-    expect(results[0].key).toBe('foodwishes:the-perfect-margarita-according-to-me')
+    // S6b #4: covers 4 non-staple ingredients (the margarita covers only 2), so it now leads.
+    expect(results[0].key).toBe('recipenlg:1470870')
     for (const r of results) expect(['ok', 'adaptable']).toContain(r.diet?.status)
   })
 
@@ -122,10 +130,12 @@ describe('planted kitchen K1: Pad Thai without fish sauce', () => {
     expect(stove.stats.candidates).toBe(50)
   })
 
-  it('"use only" the oven gives 6, led by Barbecued Pork Tenderloin', async () => {
+  it('"use only" the oven gives 6, led by the corn & sausage muffins', async () => {
     const { results, stats } = await matchRecipes(db, { ...BASE, have: K1, useOnly: ['oven'] })
     expect(stats.candidates).toBe(6)
-    expect(results[0].key).toBe('recipenlg:636138')
+    // S6b #4: both are in the same coverage band (13-14%); 2 covered beats 1.
+    expect(results[0].key).toBe('foodwishes:fresh-corn-sausage-muffins-twelve')
+    expect(results[1].key).toBe('recipenlg:636138')
   })
 
   it('an empty "my kitchen has" means not set, so it filters nothing', async () => {
@@ -140,10 +150,12 @@ describe('planted kitchen K2: exactly Kidney Bean Curry', () => {
     expect(have).toHaveLength(10)
     const indian = await matchRecipes(db, { ...BASE, have, cuisine: 'indian' })
     expect(indian.stats.candidates).toBe(8)
+    // S6b #4: themealdb:52805, 52807 and recipenlg:1564326 all land in the 20-29% band;
+    // covered count (4, then 3, then 2) now breaks the tie instead of quality.
     expect(indian.results.slice(0, 3).map((r) => r.key)).toEqual([
       K2_RECIPE,
       'themealdb:53400',
-      'themealdb:52807',
+      'themealdb:52805',
     ])
     expect(indian.results[0].coverage).toBe(1)
     expect(indian.results[0].missing).toEqual([])
@@ -152,11 +164,20 @@ describe('planted kitchen K2: exactly Kidney Bean Curry', () => {
     expect(onePot.results.map((r) => r.key)).toEqual([K2_RECIPE, 'themealdb:53400'])
   })
 
-  it('breaks the tie at full coverage on quality (any cuisine: 135 candidates)', async () => {
+  it('the floor keeps a 1-ingredient 100% match from outranking the curry (135 candidates)', async () => {
     const have = await coreOf(278)
-    const { results, stats } = await matchRecipes(db, { ...BASE, have })
+    const { results, stats } = await matchRecipes(db, { ...BASE, have, limit: 200 })
     expect(stats.candidates).toBe(135)
-    expect(results.slice(0, 2).map((r) => r.key)).toEqual([K2_RECIPE, 'recipenlg:1271214'])
+    // recipenlg:1271214 is a 1/1 match (100% coverage, same band as the curry's 10/10) — the
+    // pre-S6b ranking only kept it second on a quality tiebreak that happened to go the right
+    // way (orch/reports/S6.md, "Open"). S6b #4's floor now keeps it behind anything covering
+    // more, on principle rather than by accident: it falls to position 66 (of 135), behind
+    // every candidate with 2+ covered ingredients, rather than riding a lucky tiebreak at #2.
+    expect(results[0].key).toBe(K2_RECIPE)
+    expect(results.slice(1, 3).map((r) => r.key)).toEqual(['themealdb:53158', 'themealdb:52956'])
+    const casserole = results.find((r) => r.key === 'recipenlg:1271214')!
+    expect(casserole.covered).toBe(1)
+    expect(results.indexOf(casserole)).toBe(65)
   })
 })
 

@@ -166,6 +166,53 @@ function nonEmpty<T>(list: T[] | null): T[] | null {
   return list && list.length > 0 ? list : null
 }
 
+/**
+ * S6b #4: the ranking floor. `orch/reports/S6.md`'s "Open" flagged coverage-first ranking
+ * putting tiny recipes at the top of a planted kitchen: on K1, a 2/4 margarita ranked ahead of
+ * 3/8 salads (fewer covered, but a higher percentage); on K2, a 1/1 casserole tied the 10/10
+ * curry at 100% and only won on a quality tiebreak that happened to go the right way. The floor
+ * below stops a recipe covering under 3 non-staple ingredients from ever outranking one that
+ * covers more of what the cook has, and — instead of raw coverage — bands coverage into 10
+ * percentage-point steps and breaks ties inside a band by covered count, then quality, so a
+ * near-tie in percentage no longer swamps "how many things can I actually use".
+ *
+ * `RANK_LEGACY` keeps the pre-floor ordering reachable (flip it to `true`) so the owner-graded
+ * top-10 comparison this brief calls for later can compare both orderings on the same output.
+ */
+export const RANK_LEGACY = false
+
+/** Below this many covered ingredients, a recipe must not outrank one that covers more. */
+const RANK_FLOOR_COVERED = 3
+
+/** 10 percentage points per band (coverage is a 0..1 fraction). */
+const RANK_BAND_WIDTH = 0.1
+
+function compareLegacy(a: MatchResult, b: MatchResult): number {
+  return (
+    b.coverage - a.coverage ||
+    a.missing.length - b.missing.length ||
+    b.quality - a.quality ||
+    a.id - b.id
+  )
+}
+
+function compareRanked(a: MatchResult, b: MatchResult): number {
+  // The floor: neither side's covered count may be beaten by a tinier recipe's percentage.
+  if (a.covered < RANK_FLOOR_COVERED && b.covered > a.covered) return 1
+  if (b.covered < RANK_FLOOR_COVERED && a.covered > b.covered) return -1
+
+  const bandA = Math.floor(a.coverage / RANK_BAND_WIDTH)
+  const bandB = Math.floor(b.coverage / RANK_BAND_WIDTH)
+  if (bandA !== bandB) return bandB - bandA
+
+  return (
+    b.covered - a.covered ||
+    b.quality - a.quality ||
+    a.missing.length - b.missing.length ||
+    a.id - b.id
+  )
+}
+
 export async function matchRecipes(db: Db, query: MatchQuery): Promise<MatchOutput> {
   const tax = await loadTaxonomy(db)
   const have = expandHave(tax, query.have)
@@ -270,20 +317,21 @@ export async function matchRecipes(db: Db, query: MatchQuery): Promise<MatchOutp
     })
   }
 
-  results.sort(
-    (a, b) =>
-      b.coverage - a.coverage ||
-      a.missing.length - b.missing.length ||
-      b.quality - a.quality ||
-      a.id - b.id,
-  )
+  results.sort(RANK_LEGACY ? compareLegacy : compareRanked)
   return {
     results: results.slice(0, limit),
     stats: { candidates: total, scored: candidates.length },
   }
 }
 
-/** "missing 1: fish sauce, swap: soy sauce + nori" (null when nothing is missing). */
+/** Cook screen readability (S6b #3): the missing list shows at most this many names. */
+const MISSING_SUMMARY_SHOWN = 3
+
+/**
+ * "missing 1: fish sauce, swap: soy sauce + nori" (null when nothing is missing). At most
+ * `MISSING_SUMMARY_SHOWN` names are spelled out; past that it ends in "+N more" instead of
+ * running the whole ingredient list into one unreadable line.
+ */
 export function missingSummary(result: MatchResult): string | null {
   const parts = [
     ...result.substitutable.map(
@@ -292,5 +340,8 @@ export function missingSummary(result: MatchResult): string | null {
     ...result.missing.map((item) => item.name),
   ]
   if (parts.length === 0) return null
-  return `missing ${parts.length}: ${parts.join('; ')}`
+  const shown = parts.slice(0, MISSING_SUMMARY_SHOWN)
+  const rest = parts.length - shown.length
+  const list = rest > 0 ? `${shown.join('; ')}; +${rest} more` : shown.join('; ')
+  return `missing ${parts.length}: ${list}`
 }

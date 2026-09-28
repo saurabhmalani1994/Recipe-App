@@ -545,6 +545,12 @@ button.chip[aria-pressed='true'] {
   color: var(--color-accent);
 }
 
+.cook-result__diet-swap {
+  display: block;
+  font-size: 0.8rem;
+  color: var(--color-text-muted);
+}
+
 .corpus-ingredients {
   padding-left: 20px;
 }

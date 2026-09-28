@@ -18,6 +18,44 @@ export const DIET_PRESET_LABELS: Record<DietPreset, string> = {
 
 const DEFAULT_PRESET: DietPreset = 'everything'
 
+/**
+ * S6b #1: `settings.diet_preset` is written through a Worker (the OPFS-backed `user.db`,
+ * `db/opfsDb.ts`), so the write is a `postMessage` round trip, not something that finishes in the
+ * same tick as the click. The switch used to fire it and forget (`void updateSettings(...)`),
+ * so a reload (or the app being closed) right after tapping could land before the round trip
+ * completed — the smoke test "keeps the diet switch persisted across a reload" failed about 1
+ * run in 3 on exactly this race. `localStorage.setItem` is synchronous and cheap, so `setPreset`
+ * writes this cache *before* returning, and startup prefers it over whatever `user.db` reports
+ * (which is either the same value once its write lands, or, on the very first read after a crash
+ * mid-write, stale) — the last thing the user tapped always wins. `user.db` remains the durable,
+ * queryable store (used by backup/export, native, the engine); this is a same-tab durability
+ * fast path in front of it, not a replacement.
+ */
+const CACHE_KEY = 'recipe-app.diet-preset-cache'
+
+function readCache(): DietPreset | null {
+  try {
+    const raw = window.localStorage.getItem(CACHE_KEY)
+    return raw && (DIET_PRESETS as readonly string[]).includes(raw) ? (raw as DietPreset) : null
+  } catch {
+    return null
+  }
+}
+
+function writeCache(preset: DietPreset): void {
+  try {
+    window.localStorage.setItem(CACHE_KEY, preset)
+  } catch {
+    // Best-effort: a full/blocked store just loses the fast path, not the db write below.
+  }
+}
+
+// Note for whoever builds backup restore: `importUserDb` (`db/backup.ts`) writes `user.db`
+// directly, without going through `setPreset`, so a restore should also
+// `window.localStorage.removeItem('recipe-app.diet-preset-cache')` before the next reload —
+// otherwise this cache keeps overriding the restored `diet_preset` with whatever was last
+// tapped on this device. No restore UI exists yet, so nothing calls it today.
+
 interface DietContextValue {
   preset: DietPreset
   setPreset: (preset: DietPreset) => void
@@ -27,14 +65,15 @@ const DietContext = createContext<DietContextValue | null>(null)
 
 /**
  * Persists the diet preset through `settings.diet_preset` in `user.db` (S7a: moved off
- * `localStorage`, closing open item 1 in orch/reports/S2.md). The default renders immediately;
- * once `getUserDb()` resolves, the real stored value (if different) takes over.
+ * `localStorage`, closing open item 1 in orch/reports/S2.md), fronted by the synchronous cache
+ * above (S6b #1). The cached value (if any), else the default, renders immediately; once
+ * `getUserDb()` resolves, the real stored value takes over only when there was no cache to trust.
  */
 export function DietProvider({ children }: { children: ReactNode }) {
-  const [preset, setPresetState] = useState<DietPreset>(DEFAULT_PRESET)
+  const [preset, setPresetState] = useState<DietPreset>(() => readCache() ?? DEFAULT_PRESET)
   // Guards against the initial async load resolving *after* the user has already changed the
   // preset (e.g. clicking the switch before getUserDb() settles) and stomping their choice.
-  const userChanged = useRef(false)
+  const userChanged = useRef(readCache() !== null)
 
   useEffect(() => {
     let mounted = true
@@ -52,6 +91,7 @@ export function DietProvider({ children }: { children: ReactNode }) {
 
   const setPreset = useCallback((next: DietPreset) => {
     userChanged.current = true
+    writeCache(next)
     setPresetState(next)
     void updateSettings({ dietPreset: next })
   }, [])
