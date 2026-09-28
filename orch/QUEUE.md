@@ -42,4 +42,5 @@ S19 final rebuild + LFS layout + CI APK with the real corpus | ingest+CI | DONE 
 S20 swap ordering + R19 veg ok-first | app | DONE merged | sonnet | orch/briefs/S20-swap-order.md | v0.2
 S21 native corpus open fix + back gesture + emulator smoke gate in CI | app+CI | DONE merged; device-smoke first run pending | opus | orch/briefs/S21-native-fix.md | v0.3
 S22a redesign: design system, shell, Home + Cook | app | DONE merged | opus | orch/briefs/S22a-redesign-shell.md | v0.3
-S22b redesign: remaining screens + swipe rows + review fixes | app | RUNNING | opus | orch/briefs/S22b-redesign-screens.md | v0.3
+S22b redesign: remaining screens + swipe rows + review fixes | app | DONE merged | opus | orch/briefs/S22b-redesign-screens.md | v0.3
+S23 native haptics plugin (@capacitor/haptics + cap sync); check the 'Pistachio Pesto Pasta' Indonesian/Malaysian label source | app+ingest | READY | sonnet | - | v0.3

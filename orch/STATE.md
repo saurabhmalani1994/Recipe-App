@@ -6,7 +6,7 @@ Branch: `claude/funny-thompson-jcmpox` (the only branch). Commit identity: saura
 ## Phase
 v0.2 feature-complete candidate. corpus/corpus.db (LFS, oid 891349ec..., 68,966 recipes, schema 4) ships in the APK.
 CI run 20 (d06aed5) is GREEN, including "Check the APK assets hold the real corpus". APK artifact 92.6 MB zipped.
-S22b redesign (opus, 4332) is running. S21 device-smoke PASSED on run 21 (cb29c93): '[corpus] ready 68966 recipes' 28 s after launch; copy 11,563 ms, so noCompress is not needed.
+S22b is merged; waiting on CI plus device-smoke for the redesign build. S21 device-smoke PASSED on run 21 (cb29c93): '[corpus] ready 68966 recipes' 28 s after launch; copy 11,563 ms, so noCompress is not needed.
 
 ## Waiting on owner
 - Install the APK and try it on the phone. This is the FIRST device run: the native corpus copy (228 MB copyFromAssets) is unverified.
@@ -24,6 +24,7 @@ Rebuild with VITE_CORPUS_DB_URL=assets/databases/corpus-db.bin.wasm --base=./ an
 strong=opus, mid=sonnet, cheap=haiku, top=fable. The orchestrator runs on strong.
 
 ## Done
+- S22b merged. 306 unit, e2e 59. Screenshots reviewed (detail, list, plan): polished.
 - S22a merged (conflicts with S21 resolved by hand). 288 unit, e2e 47. Screenshots reviewed: good. Review notes went to S22b.
 - S21 merged. 230 unit, e2e 35. The native readonly fix is proven with the exact error. The device-smoke CI job has NOT run yet (first on this push).
 - S19 merged. 501 pytest, 220 unit, e2e 35. 68,966 recipes, schema 4. CI builds the APK with the real corpus from LFS.
