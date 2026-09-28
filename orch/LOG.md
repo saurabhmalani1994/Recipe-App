@@ -39,3 +39,4 @@
 - 2026-09-28: S10 merged (verified). S10b and S18 briefed.
 - 2026-09-28: Crawl of the 5 new sites finished.
 - 2026-09-28: S18 merged (verified). R19. S20 briefed.
+- 2026-09-28: S10b merged (verified). R20.
