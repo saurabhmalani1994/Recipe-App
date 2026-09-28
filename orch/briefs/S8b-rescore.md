@@ -41,3 +41,13 @@ lots of the recipes, which is not my style."
 - Rebalance so the 80k leans global. The per-cuisine floors stay, but american and southern_us
   get a CEILING (propose one, e.g. at most 15% combined, and report the before and after).
 - Draw the fresh 45-recipe sheet AFTER these changes, so the owner grades the new mix.
+
+## Amendment 2 (owner, verbatim, D18)
+"i like using fresh ingredients. cant you get more from Food Wishes? he makes good food"
+- Add a freshness signal: the share of non-staple ingredient lines that are fresh produce, herbs,
+  fresh meat or fish (taxonomy category and aisle; the produce aisle counts as fresh). Down-weight
+  canned and boxed shortcuts. Report its weight and its effect on the tuning-set band means.
+- S1c is fetching all ~3,000 Food Wishes posts, and select already keeps every editorial recipe, so
+  nothing else is needed for Food Wishes here.
+Note: a previous run of this brief was stopped part-way. If its worktree branch exists
+(worktree-agent-a44a7a8c14f860d07), you may reuse its commits, but check them first.
