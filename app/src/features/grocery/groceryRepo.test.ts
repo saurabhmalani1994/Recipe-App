@@ -6,7 +6,9 @@ import {
   addTickedToKitchen,
   buildGroceryList,
   clearGroceryList,
+  deleteGroceryItem,
   getCurrentGroceryList,
+  restoreGroceryItem,
   setGroceryItemChecked,
 } from './groceryRepo'
 
@@ -113,5 +115,35 @@ describe('grocery list persistence (S7 #3)', () => {
 
     await clearGroceryList(listId)
     expect(await getCurrentGroceryList(nameOf)).toBeNull()
+  })
+
+  it('deletes one line (S22b swipe) and Undo puts it back exactly, tick and sources included', async () => {
+    await buildGroceryList(
+      null,
+      [
+        {
+          slug: 'mango',
+          name: 'mango',
+          aisle: 'produce',
+          amount: '1 (150 g)',
+          have: false,
+          sources: ['Green Mango Salad'],
+        },
+        { slug: 'onion', name: 'onion', aisle: 'produce', amount: '1', have: false, sources: [] },
+      ],
+      [],
+    )
+    const before = await getCurrentGroceryList(nameOf)
+    const mango = before!.items.find((i) => i.text === 'mango')!
+    await setGroceryItemChecked(mango.id, true)
+
+    const deleted = await deleteGroceryItem(mango.id)
+    expect(deleted).not.toBeNull()
+    expect((await getCurrentGroceryList(nameOf))!.items.map((i) => i.text)).toEqual(['onion'])
+    expect(await deleteGroceryItem(mango.id)).toBeNull()
+
+    await restoreGroceryItem(deleted!)
+    const after = await getCurrentGroceryList(nameOf)
+    expect(after!.items.find((i) => i.id === mango.id)).toEqual({ ...mango, checked: true })
   })
 })

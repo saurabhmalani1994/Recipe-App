@@ -529,7 +529,7 @@ export function Cook() {
               const source = result.mine ? 'my' : 'corpus'
               const favorited = favoriteKeys.has(favoriteToken(result.key, source))
               const detailHref = result.mine
-                ? `/my-recipes/${encodeURIComponent(result.key)}`
+                ? `/my-recipes/${encodeURIComponent(result.key)}/view`
                 : `/recipe/${encodeURIComponent(result.key)}`
               const missingLines = [
                 ...result.substitutable.map((item) => ({
