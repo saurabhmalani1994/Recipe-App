@@ -121,6 +121,62 @@ def test_bbcgoodfood_no_ld_json_returns_none():
     assert parse_recipe_page("<html><body>no recipe here</body></html>", "https://x/y") is None
 
 
+def test_bbcgoodfood_int_yield():
+    """Regression: recipeYield is often a bare int on live pages, not "Serves N".
+
+    This is the shape behind the TypeError that dropped 72% of a full crawl
+    ('int' object is not subscriptable at `yield_text[0]`).
+    """
+    from fetch_bbcgoodfood import parse_recipe_page
+
+    html_text = (FIXTURES / "bbcgoodfood_int_yield.html").read_text(encoding="utf-8")
+    rec = parse_recipe_page(html_text, "https://www.bbcgoodfood.com/recipes/lemon-pea-risotto")
+    assert rec is not None
+    assert rec["title"] == "Lemon & pea risotto"
+    assert rec["yield_text"] == "2"
+    assert rec["category"] == "Dinner, Lunch, Side dish, Supper"
+    assert rec["image_url"].startswith("https://images.immediate.co.uk/")
+
+
+def test_bbcgoodfood_string_image_and_list_type():
+    """image as a bare string (not list/object), @type as a list, and
+    recipeInstructions as a single dict (not a list)."""
+    from fetch_bbcgoodfood import parse_recipe_page
+
+    html_text = (FIXTURES / "bbcgoodfood_string_image.html").read_text(encoding="utf-8")
+    rec = parse_recipe_page(
+        html_text, "https://www.bbcgoodfood.com/recipes/test-string-image"
+    )
+    assert rec is not None
+    assert rec["title"] == "Test String Image Recipe"
+    assert rec["yield_text"] == "6"
+    assert rec["image_url"] == "https://images.immediate.co.uk/production/volatile/sites/30/test.jpg"
+    assert rec["category"] == "Dinner"
+    assert rec["cuisine_label"] == "British"
+    assert rec["steps"] == ["Mix everything together and bake."]
+
+
+def test_bbcgoodfood_howto_sections_and_graph():
+    """@graph document shape, recipeYield as "Serves N" string, recipeCategory as a
+    dict, and recipeInstructions as HowToSections mixing dict and bare-string
+    itemListElement entries."""
+    from fetch_bbcgoodfood import parse_recipe_page
+
+    html_text = (FIXTURES / "bbcgoodfood_howto_sections.html").read_text(encoding="utf-8")
+    rec = parse_recipe_page(html_text, "https://www.bbcgoodfood.com/recipes/test-sections")
+    assert rec is not None
+    assert rec["title"] == "Test HowToSection Recipe"
+    assert rec["yield_text"] == "Serves 4"
+    assert rec["category"] == "Dessert"
+    assert rec["cuisine_label"] == "French"
+    assert rec["steps"] == [
+        "Melt the butter.",
+        "Mix in the crumbs.",
+        "Whisk the eggs and sugar.",
+        "Fold in the cream.",
+    ]
+
+
 # ---- foodwishes ---------------------------------------------------------------
 
 def test_foodwishes_parse_recipe_page():
