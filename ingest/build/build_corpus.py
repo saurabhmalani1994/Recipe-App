@@ -51,6 +51,7 @@ from ingest.build.course import tag_course  # noqa: E402
 from ingest.cuisine import cuisines as CU  # noqa: E402
 from ingest.cuisine import season as SEASON  # noqa: E402
 from ingest.cuisine.classifier import classify, load_model  # noqa: E402
+from ingest.nutrition import estimate as NUT  # noqa: E402
 from ingest.parse import units as U  # noqa: E402
 from ingest.subs import validate as SUBS  # noqa: E402
 from ingest.tag.tagger import parse_items, tag_recipe  # noqa: E402
@@ -171,8 +172,11 @@ class Writer:
         self.enums = schema_enums(con)
         self.ing = T.load()
         self.model = load_model()
+        self.slug_nutrients = NUT.load_slug_nutrients()  # USDA per-100g, ingest/nutrition/build_mapping.py
         self.coerced = {}
         self.overrides = {}   # key -> selection row (quality, rating, rating_count), from --select
+        self.nutrition_filled = 0
+        self.nutrition_total = 0
 
     def _enum(self, table, col, v):
         if v is None:
@@ -222,18 +226,32 @@ class Writer:
             quality = ov['quality']
             if rating is None and ov.get('rating') is not None:
                 rating, rating_count = ov['rating'], ov.get('rating_count')
+        # Nutrition fill (S14): per-serving kcal/protein/fat/carbs/fiber/sugar/sodium from USDA
+        # FoodData Central, or all NULL when servings is unknown or too little of the recipe's
+        # core grams could be priced (ingest/nutrition/estimate.py).
+        # nut_coverage (the share of core lines priced) is schema/README's "record the coverage
+        # per recipe": schema/corpus.sql has no column for it, so it's exposed by
+        # ingest.nutrition.estimate.fill_recipe() for a caller that wants it (coverage.py
+        # reports the corpus-wide, occurrence-weighted version instead).
+        nutrition, nut_coverage = NUT.fill_recipe(items, servings, self.ing, self.slug_nutrients)
+        del nut_coverage
+        self.nutrition_filled = self.nutrition_filled + (1 if nutrition['kcal'] is not None else 0)
+        self.nutrition_total += 1
         cur = self.con.execute(
             'INSERT INTO recipes (key, source, source_url, title, servings, yield_text, total_min, active_min, '
             'time_source, weeknight, cuisine, cuisine_confidence, cuisine_source, course, one_pot, one_pan, '
             'sheet_pan_meal, stove_and_oven, no_cook, image_url, rating, rating_count, quality, line_count, '
-            'unresolved_count, core_slug_count) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)',
+            'unresolved_count, core_slug_count, kcal, protein_g, fat_g, carbs_g, fiber_g, sugar_g, sodium_mg) '
+            'VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)',
             (raw['id'], raw.get('source'), raw.get('source_url'), raw['title'].strip(), servings,
              raw.get('yield_text'), tm.get('total_min'), tm.get('active_min'),
              self._enum('recipes', 'time_source', tm.get('source')), _b(tm.get('weeknight')),
              cuisine, cconf if cuisine else None, csrc if cuisine else None, course,
              _b(tags['one_pot']), _b(tags['one_pan']), _b(tags['sheet_pan_meal']),
              _b(tags['stove_and_oven']), int('no_cook' in eq), raw.get('image_url'), rating,
-             rating_count, quality, len(lines), unresolved, sum(1 for v in core.values() if v)))
+             rating_count, quality, len(lines), unresolved, sum(1 for v in core.values() if v),
+             nutrition['kcal'], nutrition['protein_g'], nutrition['fat_g'], nutrition['carbs_g'],
+             nutrition['fiber_g'], nutrition['sugar_g'], nutrition['sodium_mg']))
         rid = cur.lastrowid
         ing_rows = []
         for pos, it in enumerate(items):
@@ -359,6 +377,12 @@ def _checkpoint(con, writer, source, next_line, selected, written, done):
         con.execute("INSERT INTO corpus_meta (key, value) VALUES (?, ?) ON CONFLICT (key) DO UPDATE SET "
                     "value = CAST(CAST(value AS INTEGER) + ? AS TEXT)", (k, str(v), v))
     writer.coerced = {}
+    for k, v in (('nutrition.filled', writer.nutrition_filled), ('nutrition.total', writer.nutrition_total)):
+        if v:
+            con.execute("INSERT INTO corpus_meta (key, value) VALUES (?, ?) ON CONFLICT (key) DO UPDATE SET "
+                        "value = CAST(CAST(value AS INTEGER) + ? AS TEXT)", (k, str(v), v))
+    writer.nutrition_filled = 0
+    writer.nutrition_total = 0
     con.commit()
 
 
@@ -465,6 +489,8 @@ def report(path, target=100_000):
     rows = q("SELECT preset, status, count(*) FROM recipe_diet WHERE preset != 'vegetarian_strict' GROUP BY 1, 2 "
              'ORDER BY 1, 3 DESC')
     L.append('diet: ' + ', '.join(f'{p}.{s} {c}' for p, s, c in rows) + '\n')
+    nn = q('SELECT count(*) FROM recipes WHERE kcal IS NOT NULL')[0][0]
+    L.append(f'nutrition (S14): {nn:,}/{n:,} recipes filled ({nn / n:.1%})\n' if n else 'nutrition (S14): 0 recipes\n')
     L.append('## Size\n')
     try:
         rows = q('SELECT name, sum(pgsize) FROM dbstat GROUP BY name ORDER BY 2 DESC')
