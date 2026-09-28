@@ -16,7 +16,7 @@ allrecipes gives 402 even with a browser UA (bot wall), so S1 tries headless Chr
 ## Owner silence on 3 defaults (applied): metric default, no hosted PWA, start builds now.
 
 ## Running
-S8b rescore (opus) and S17 cuisine sites (sonnet) run in worktrees.
+S17 cuisine sites (sonnet) runs in a worktree. WAITING ON OWNER: grading sheet 2 (45 recipes) at https://claude.ai/artifact/LJkXz5PwzATbZmeKfwkzj9 (db grades/gNN). Score with draw --score on owner_grade_2.md.
 The BBC --retry-failed runs in the background (log /home/user/recipe-data/bbc_retry.log, about 12,756 URLs, 5h cap). S12b merged after the owner said "you can resume". S17 (cuisine sites) runs too.
 GRADED (sheet 1): FAIL, top 1.05 / middle 0.80 / bottom 0.35; ordered and separated, but top too low. S8b rescoring by substance.
 Old sheet: https://claude.ai/artifact/Qzm5YLRQtMfuiiKTjT9mmC (db collection grades/gNN {n, grade}).
@@ -26,6 +26,8 @@ script (cap 20000, 6h timeout; log in /home/user/recipe-data/bbc_full_crawl.log)
 Owner questions pending: Kaggle token (default: no ratings source), and location for seasonality (default: temperate north).
 
 ## Done
+- S8b merged. 462 pytest. Tuning set rho 0.325 -> 0.491. The new 80k: american+southern 8.8%, style markers 5,911 -> 191,
+  median lines 12. Sheet 2 is at ingest/curate/eval/owner_grade_2.md. R18 floor cap goes into S10.
 - S1c merged. Food Wishes has 1,084 recipes (was 300). 1,349 posts have no recipe; 587 are Allrecipes-only (blocked). Gold 29/30.
 - S1b merged. 435 pytest. The BBC TypeError (int recipeYield) and double-counted drops are fixed. Capped retry: 199/200 recovered.
 - S15 merged. 432 pytest, 164 unit, e2e 31. Schema v2 (servings_source). Sample fill: servings 100%, nutrition 47.7%. Eval 61.9% (bar 70) shipped per R14.

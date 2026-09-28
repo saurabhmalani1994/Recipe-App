@@ -21,7 +21,7 @@ S9b course tagger modifier rules; blind set must be >= 85% (it was 82%) | ingest
 S9c parser: 'cans tuna packed in water' resolves to water | ingest | fold into next parser slice | sonnet | - | v0.1
 S6b Cook fixes: flaky diet persistence, equipment list drift, readability, ranking floor | app | DONE merged | sonnet | orch/briefs/S6b-cook-fixes.md | v0.1
 S7c shoppable grocery list (buy_as, shop units, no-qty items stay on list) | ingest taxonomy + app | DONE merged | opus | orch/briefs/S7c-shoppable-list.md | v0.2
-S10 full rebuild: R17 (Food Wishes video-method exception, extract the YouTube URL), R16 (no Israeli), S17 sites, R11 (no foodcom), S3b subs, S14 nutrition, S15 servings, bbc new lines, owner-grade outcome; regenerate fixture.db | ingest | after S15 + owner grade | sonnet | - | v0.2
+S10 full rebuild: R18 (floor cap), R17 (Food Wishes video-method exception, extract the YouTube URL), R16 (no Israeli), S17 sites, R11 (no foodcom), S3b subs, S14 nutrition, S15 servings, bbc new lines, owner-grade outcome; regenerate fixture.db | ingest | after S15 + owner grade | sonnet | - | v0.2
 S13 TS ingredient parser port + My Recipes parsed items | app | DONE merged | opus | orch/briefs/S13-ts-parser.md | v0.2
 S11 home page 4 rows + corpus favorites | app | DONE merged | sonnet | orch/briefs/S11-home.md | v0.2
 S14 nutrition (USDA FDC) | ingest | DONE merged | sonnet | orch/briefs/S14-nutrition.md | v0.2
@@ -29,7 +29,7 @@ S12 import from URL + My Recipes in Cook | app | DONE merged | sonnet | orch/bri
 S15 servings estimator | ingest + small app | DONE merged, bar missed (61.9%), shipped per R14 | opus | orch/briefs/S15-servings.md | v0.2
 S12b Mine: favorite-source bug, R12 ranking, R13 filters | app | RUNNING | sonnet | orch/briefs/S12b-mine-fixes.md | v0.2
 S1b fix BBC parser TypeError + --retry-failed | ingest | DONE merged; full retry running as background script | sonnet | orch/briefs/S1b-bbc-parser.md | v0.2
-S8b rescore by substance (owner grade FAIL: top 1.05) + fresh 45-recipe sheet | ingest | RUNNING | opus | orch/briefs/S8b-rescore.md | v0.2
+S8b rescore by substance/style/fresh + sheet 2 | ingest | DONE merged; sheet 2 with owner | opus | orch/briefs/S8b-rescore.md | v0.2
 S16 app: 'ingredients I avoid' setting (R15), with down-ranking or hiding in Cook, Home and Surprise | app | READY after S12b | sonnet | - | v0.2
 S1c Food Wishes full crawl via Blogger feed | ingest | DONE merged: 1,084 recipes (587 posts are Allrecipes-only) | sonnet | orch/briefs/S1c-foodwishes-full.md | v0.2
 S12b merge | app | DONE merged after the owner said resume |

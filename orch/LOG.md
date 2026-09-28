@@ -31,3 +31,4 @@
 - 2026-09-28: Owner said resume. S8b and S1b restarted (both stopped by the interrupt). S12b merged (178/33). D19 and R16 recorded; S17 briefed.
 - 2026-09-28: S1b merged (verified). Full BBC retry started in the background.
 - 2026-09-28: S1c merged (verified).
+- 2026-09-28: S8b merged (verified 462). R18. Sheet 2 published.
