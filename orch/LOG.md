@@ -25,3 +25,4 @@
 - 2026-09-28: S14 merged. Found servings known for only 1.3% of corpus; S15 briefed.
 - 2026-09-28: S12 merged (verified). R12 and R13 ruled. S12b briefed.
 - 2026-09-28: S15 merged (verified). R14. BBC crawl done.
+- 2026-09-28: Owner graded sheet 1: FAIL (top 1.05). Substance signals track the grades (<=7 ingredients: 0.16 mean). S8b briefed.

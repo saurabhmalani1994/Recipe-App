@@ -29,3 +29,4 @@ S12 import from URL + My Recipes in Cook | app | DONE merged | sonnet | orch/bri
 S15 servings estimator | ingest + small app | DONE merged, bar missed (61.9%), shipped per R14 | opus | orch/briefs/S15-servings.md | v0.2
 S12b Mine: favorite-source bug, R12 ranking, R13 filters | app | RUNNING | sonnet | orch/briefs/S12b-mine-fixes.md | v0.2
 S1b fix BBC parser TypeError (11,834 pages lost) + --retry-failed | ingest | RUNNING | sonnet | orch/briefs/S1b-bbc-parser.md | v0.2
+S8b rescore by substance (owner grade FAIL: top 1.05) + fresh 45-recipe sheet | ingest | RUNNING | opus | orch/briefs/S8b-rescore.md | v0.2
