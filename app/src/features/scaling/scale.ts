@@ -1,4 +1,4 @@
-import type { DraftIngredientLine } from '../../corpus/draft'
+import type { IngredientLine } from '../../corpus/model'
 
 /**
  * Scaling (brief S7a #5, docs/PRODUCT.md "Servings rule", D11 (owner): "1.5 servings worth per
@@ -25,12 +25,12 @@ export function scaleFactor(
   return targetServings(people, servingsPerPerson) / recipeServings
 }
 
-export interface ScaledIngredientLine extends DraftIngredientLine {
+export interface ScaledIngredientLine extends IngredientLine {
   scaledQuantity: number | null
 }
 
 export function scaleIngredients(
-  ingredients: DraftIngredientLine[],
+  ingredients: IngredientLine[],
   factor: number,
 ): ScaledIngredientLine[] {
   return ingredients.map((line) => ({
