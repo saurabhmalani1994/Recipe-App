@@ -43,3 +43,4 @@
 - 2026-09-28: All crawls done. S19 final rebuild briefed.
 - 2026-09-28: S20 merged (verified).
 - 2026-09-28: S19 merged (verified). Pushing the LFS corpus.
+- 2026-09-28: CI run 20 green with the real corpus in the APK (92.6 MB artifact). STATE.md compacted.

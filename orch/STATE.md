@@ -1,30 +1,27 @@
 # State (what is true now)
 
-Updated: 2026-09-27
-Branch: `claude/funny-thompson-jcmpox` (the only branch; the repo started empty)
-Commit identity: saurabhmalani1994 <saurabhmalani1994@users.noreply.github.com> (D10)
+Updated: 2026-09-28
+Branch: `claude/funny-thompson-jcmpox` (the only branch). Commit identity: saurabhmalani1994 noreply (D10).
 
 ## Phase
-Scoping is done. `docs/PRODUCT.md` v1 is DRAFT and waiting on the owner's approval, plus an
-optional Codex review (`reviews/01-product-codex-brief.md`). No product code yet.
+v0.2 feature-complete candidate. corpus/corpus.db (LFS, oid 891349ec..., 68,966 recipes, schema 4) ships in the APK.
+CI run 20 (d06aed5) is GREEN, including "Check the APK assets hold the real corpus". APK artifact 92.6 MB zipped.
+No builder runs in flight. No crawls are running.
 
-## Network (re-probed 2026-09-27 after the owner set it to full)
-bbcgoodfood 200, foodwishes 200, huggingface 200, kaggle 200, fdc.nal.usda.gov 200.
-`git clone` and raw.githubusercontent work, but github.com HTML, the API and codeload give 403.
-allrecipes gives 402 even with a browser UA (bot wall), so S1 tries headless Chromium.
+## Waiting on owner
+- Install the APK and try it on the phone. This is the FIRST device run: the native corpus copy (228 MB copyFromAssets) is unverified.
+- Size choice: 69k at 228 MB is the default; raising the cap is the alternative.
 
-## Owner silence on 3 defaults (applied): metric default, no hosted PWA, start builds now.
+## Known open items (not queued)
+- Dish-marker cuisine mislabels (chutney, FuFu, Tacos Arabes). Nutrition fill 36%; giallozafferano 0%.
+- The browser demo (https://claude.ai/artifact/FH5WscMtqy8de1y7ogSfxR) still runs the fixture at the old build.
+- The Kaggle token and the seasonality location were never answered; defaults are applied.
 
-## Running
- All crawls are done. S19 is merged. corpus/corpus.db is in LFS (oid 891349ec...). The crawls of the 5 new sites run in the background. Cuisine-site crawls run in the background (/home/user/recipe-data/crawl_sites.sh,
-logs in /home/user/recipe-data/logs/). GRADED sheet 2: PASS (top 1.80, middle 1.47, bottom 0.33). Sheet 2 (45 recipes) at https://claude.ai/artifact/LJkXz5PwzATbZmeKfwkzj9 (db grades/gNN). Score with draw --score on owner_grade_2.md.
-The BBC --retry-failed runs in the background (log /home/user/recipe-data/bbc_retry.log, about 12,756 URLs, 5h cap). S12b merged after the owner said "you can resume". S17 (cuisine sites) runs too.
-GRADED (sheet 1): FAIL, top 1.05 / middle 0.80 / bottom 0.35; ordered and separated, but top too low. S8b rescoring by substance.
-Old sheet: https://claude.ai/artifact/Qzm5YLRQtMfuiiKTjT9mmC (db collection grades/gNN {n, grade}).
-When graded: write the grades into ingest/curate/eval/owner_grade.md, then run python3 -m ingest.curate.eval.draw --score ...
-Also: corpus.db storage (188 MB) needs an owner answer; the default is Git LFS in this repo. The app lane is free until corpus schema S9. The app lane is free (S7b READY; S6 waits on corpus schema S9). The full BBC crawl runs as a background
-script (cap 20000, 6h timeout; log in /home/user/recipe-data/bbc_full_crawl.log).
-Owner questions pending: Kaggle token (default: no ratings source), and location for seasonality (default: temperate north).
+## Demo
+Rebuild with VITE_CORPUS_DB_URL=assets/databases/corpus-db.bin.wasm --base=./ and inline the CSS (the host does not serve .db).
+
+## Mapping (§4)
+strong=opus, mid=sonnet, cheap=haiku, top=fable. The orchestrator runs on strong.
 
 ## Done
 - S19 merged. 501 pytest, 220 unit, e2e 35. 68,966 recipes, schema 4. CI builds the APK with the real corpus from LFS.
