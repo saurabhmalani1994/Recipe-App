@@ -144,6 +144,17 @@ export const USER_DB_MIGRATIONS: Migration[] = [
       `ALTER TABLE my_recipes ADD COLUMN parser_version INTEGER`,
     ],
   },
+  {
+    // S11: favorites for corpus recipes (keyed by `recipes.key`, same as plan_entries), mixed
+    // into the same list as fixture and My Recipes favorites. Rows written before this migration
+    // are all fixture favorites — the only kind that existed then — so the default backfills them
+    // correctly instead of leaving them ambiguous.
+    version: 6,
+    statements: [
+      `ALTER TABLE favorites ADD COLUMN recipe_source TEXT NOT NULL DEFAULT 'fixture'
+        CHECK (recipe_source IN ('corpus', 'fixture', 'my'))`,
+    ],
+  },
 ]
 
 /** Every table `user.db` owns, in migration order. Used by backup export/import. */

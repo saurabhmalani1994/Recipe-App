@@ -58,10 +58,12 @@ test('S7a walk: diet, kitchen item, favorite, fork with edit and diff, reload pe
   await expect(page.getByText('cilantro')).toBeVisible()
   await page.screenshot({ path: 'e2e/screens/kitchen-412x915.png' })
 
-  // 3. Favorite a recipe from its detail view.
-  await page.getByRole('navigation', { name: 'Main' }).getByText('Home').click()
-  await page.getByRole('link', { name: 'Weeknight Chana Masala' }).click()
+  // 3. Favorite a recipe from its detail view. Home no longer lists every fixture recipe (S11:
+  // it shows the 4 recommendation rows instead), so this goes straight to the fixture recipe by
+  // its id (r01, "Weeknight Chana Masala" — `corpus/fixture.ts`).
+  await page.goto('/#/recipe/r01')
   await expect(page.getByTestId('screen-recipe-detail')).toBeVisible()
+  await expect(page.getByRole('heading', { name: 'Weeknight Chana Masala' })).toBeVisible()
   await page.getByRole('button', { name: 'Add favorite' }).click()
   await expect(page.getByRole('button', { name: 'Remove favorite' })).toBeVisible()
   await page.screenshot({ path: 'e2e/screens/recipe-detail-412x915.png' })
@@ -89,8 +91,7 @@ test('S7a walk: diet, kitchen item, favorite, fork with edit and diff, reload pe
   await page.getByRole('link', { name: '🧺 What I have' }).click()
   await expect(page.getByText('cilantro')).toBeVisible()
 
-  await page.getByRole('navigation', { name: 'Main' }).getByText('Home').click()
-  await page.getByRole('link', { name: 'Weeknight Chana Masala' }).click()
+  await page.goto('/#/recipe/r01')
   await expect(page.getByRole('button', { name: 'Remove favorite' })).toBeVisible()
 
   await expect(page.getByRole('radio', { name: 'No red meat' })).toHaveAttribute(
