@@ -1,5 +1,70 @@
 import { expect, test } from '@playwright/test'
 
+// S12b #1: a "Mine" result's star used to call toggleFavorite(result.key) with source 'corpus'
+// (an S11+S12 merge bug) — it favorited under the wrong source, so the recipe silently
+// disappeared from Favorites (resolveFavorite's 'corpus' branch looks it up in corpus.db by
+// key and finds nothing for a My Recipe id). Starring a Mine result must store (and show) it
+// as a My Recipe favorite.
+test('S12b: starring a "Mine" Cook result favorites it as a My Recipe, not a corpus recipe', async ({
+  page,
+}) => {
+  await page.goto('/#/my-recipes/new')
+  const editor = page.getByTestId('screen-my-recipe-editor')
+  await expect(editor).toBeVisible()
+  await editor.getByLabel('Title').fill('Solo pasta')
+  // Three core ingredients, all stocked below: `compareRanked`'s floor (RANK_FLOOR_COVERED = 3)
+  // keeps a recipe with fewer covered ingredients off the top of a crowded field regardless of
+  // its coverage percentage or quality, so one ingredient (100% covered, but covered = 1) would
+  // still lose to hundreds of corpus recipes here.
+  for (const [i, line] of ['1 lb chicken breast', '1 onion', '2 cloves garlic'].entries()) {
+    await editor.getByRole('button', { name: '+ Ingredient' }).click()
+    await editor.getByLabel(`Ingredient ${i + 1}`, { exact: true }).fill(line)
+  }
+  await editor.getByRole('button', { name: 'Save' }).click()
+  await expect(page).toHaveURL(/#\/my-recipes\/my-/)
+
+  await page.goto('/#/kitchen')
+  const kitchen = page.getByTestId('screen-kitchen')
+  await expect(kitchen).toBeVisible()
+  for (const name of ['chicken breast', 'onion', 'garlic']) {
+    await kitchen.getByLabel('Add an ingredient').fill(name)
+    await kitchen.getByRole('button', { name, exact: true }).click()
+    await expect(kitchen.getByRole('button', { name: `Remove ${name}` })).toBeVisible()
+  }
+
+  await page.goto('/#/cook')
+  const cook = page.getByTestId('screen-cook')
+  await expect(cook).toBeVisible()
+  const results = cook.getByTestId('cook-results')
+  const mine = results.getByRole('link', { name: /Solo pasta/ })
+  await expect(mine).toBeVisible()
+  await expect(mine).toContainText('Mine')
+
+  const mineRow = results.locator('li', { hasText: 'Solo pasta' })
+  const star = mineRow.getByRole('button', { name: 'Add favorite: Solo pasta' })
+  await star.click()
+  await expect(mineRow.getByRole('button', { name: 'Remove favorite: Solo pasta' })).toHaveAttribute(
+    'aria-pressed',
+    'true',
+  )
+
+  // Reload: the star still reads as pressed, read back from the 'my' favorites, not 'corpus'.
+  await page.reload()
+  await expect(cook).toBeVisible();
+  await expect(
+    cook.getByTestId('cook-results').locator('li', { hasText: 'Solo pasta' })
+      .getByRole('button', { name: 'Remove favorite: Solo pasta' }),
+  ).toHaveAttribute('aria-pressed', 'true')
+
+  // Favorites: resolved as a My Recipe (the bug made it vanish here, mis-stored under 'corpus').
+  await page.goto('/#/favorites')
+  const favorites = page.getByTestId('screen-favorites')
+  await expect(favorites).toBeVisible()
+  const favoriteLink = favorites.getByRole('link', { name: /Solo pasta/ })
+  await expect(favoriteLink).toBeVisible()
+  await expect(favoriteLink).toHaveAttribute('href', /#\/my-recipes\/my-/)
+})
+
 // S6 walk at 412x915 (the project viewport): kitchen, then Cook, then a filter, then a result,
 // then its detail with the swap shown. corpus.db here is the bundled fixture.db (300 recipes).
 test('S6 walk: kitchen, Cook, filter, result, detail with the fish sauce swap', async ({

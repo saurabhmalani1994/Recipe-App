@@ -1,9 +1,12 @@
 import { useEffect, useMemo, useState } from 'react'
 import { useLocation, useNavigate, useParams } from 'react-router-dom'
 import type { Cuisine } from '../corpus/model'
+import type { Equipment } from '../corpus/types'
+import { KITCHEN_EQUIPMENT, KITCHEN_EQUIPMENT_LABELS } from '../data/equipment'
 import { importedToMyRecipeData } from '../features/importUrl/toMyRecipeData'
 import type { ImportedRecipe } from '../features/importUrl/types'
 import type { RecipeDiff } from '../features/myRecipes/diff'
+import { inferEquipment, inferTotalMinutes } from '../features/myRecipes/inferFromSteps'
 import { lineFromText, lineText, parseRecipeLines } from '../features/myRecipes/lines'
 import {
   findFixtureRecipe,
@@ -114,6 +117,36 @@ export function MyRecipeEditor() {
   // deterministic, so it follows every keystroke.
   const parsed = useMemo(() => parseRecipeLines(data), [data])
 
+  // S12b #3 (R13): suggestions for the fields the owner left empty, inferred from the steps
+  // (`inferFromSteps.ts`, a small port of ingest/tag/equipment.py and timing.py). Offered, never
+  // written on their own — a "no time set" recipe stays that way until the owner accepts one.
+  const suggestedMinutes = useMemo(
+    () => (data.totalMin == null ? inferTotalMinutes(data.steps) : null),
+    [data.totalMin, data.steps],
+  )
+  const suggestedEquipment = useMemo(
+    () => (data.equipment == null ? inferEquipment(data.steps) : []),
+    [data.equipment, data.steps],
+  )
+
+  function toggleEquipment(item: Equipment) {
+    setData((prev) => {
+      const current = prev.equipment ?? []
+      const next = current.includes(item)
+        ? current.filter((e) => e !== item)
+        : [...current, item]
+      return { ...prev, equipment: next }
+    })
+  }
+
+  function acceptSuggestedMinutes() {
+    if (suggestedMinutes != null) setData((prev) => ({ ...prev, totalMin: suggestedMinutes }))
+  }
+
+  function acceptSuggestedEquipment() {
+    setData((prev) => ({ ...prev, equipment: [...(prev.equipment ?? []), ...suggestedEquipment] }))
+  }
+
   if (!loaded) {
     return (
       <section className="screen" data-testid="screen-my-recipe-editor">
@@ -219,6 +252,86 @@ export function MyRecipeEditor() {
           }
         />
       </label>
+
+      {/* S12b #3 (R13): optional filter fields — "under N minutes", "one pot" and "use only
+          equipment" in Cook now apply to a My Recipe too, and exclude it (rather than pass it
+          through) while any of these three is unset. */}
+      <label className="settings-field">
+        Total minutes
+        <input
+          type="number"
+          min={0}
+          value={data.totalMin ?? ''}
+          onChange={(e) =>
+            setData((prev) => ({
+              ...prev,
+              totalMin: e.target.value === '' ? null : Number(e.target.value) || 0,
+            }))
+          }
+        />
+      </label>
+      {suggestedMinutes != null && (
+        <p className="screen__placeholder" data-testid="suggested-total-min">
+          Steps suggest {suggestedMinutes} min total.{' '}
+          <button type="button" onClick={acceptSuggestedMinutes}>
+            Use {suggestedMinutes} min
+          </button>
+        </p>
+      )}
+
+      <fieldset className="settings-group">
+        <legend>One pot</legend>
+        <label className="settings-checkbox">
+          <input
+            type="radio"
+            name="one-pot"
+            checked={data.onePot === true}
+            onChange={() => setData((prev) => ({ ...prev, onePot: true }))}
+          />
+          Yes
+        </label>
+        <label className="settings-checkbox">
+          <input
+            type="radio"
+            name="one-pot"
+            checked={data.onePot === false}
+            onChange={() => setData((prev) => ({ ...prev, onePot: false }))}
+          />
+          No
+        </label>
+        <label className="settings-checkbox">
+          <input
+            type="radio"
+            name="one-pot"
+            checked={data.onePot == null}
+            onChange={() => setData((prev) => ({ ...prev, onePot: null }))}
+          />
+          Not set
+        </label>
+      </fieldset>
+
+      <fieldset className="settings-group">
+        <legend>Equipment</legend>
+        {KITCHEN_EQUIPMENT.map((item) => (
+          <label key={item} className="settings-checkbox">
+            <input
+              type="checkbox"
+              checked={(data.equipment ?? []).includes(item)}
+              onChange={() => toggleEquipment(item)}
+            />
+            {KITCHEN_EQUIPMENT_LABELS[item]}
+          </label>
+        ))}
+      </fieldset>
+      {suggestedEquipment.length > 0 && (
+        <p className="screen__placeholder" data-testid="suggested-equipment">
+          Steps suggest{' '}
+          {suggestedEquipment.map((item) => KITCHEN_EQUIPMENT_LABELS[item]).join(', ')}.{' '}
+          <button type="button" onClick={acceptSuggestedEquipment}>
+            Use these
+          </button>
+        </p>
+      )}
 
       <h3>Ingredients</h3>
       <ul className="editor-ingredients">

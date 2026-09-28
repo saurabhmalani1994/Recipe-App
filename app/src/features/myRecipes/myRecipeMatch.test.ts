@@ -67,11 +67,12 @@ describe('My Recipes in Cook results (S12)', () => {
     const tax = await loadTaxonomy(corpusDb)
     const recipes = await listMyRecipes()
 
-    const results = await matchMyRecipes(corpusDb, tax, recipes, {
+    const { results, hidden } = await matchMyRecipes(corpusDb, tax, recipes, {
       ...BASE,
       have: ['chicken_breast', 'onion'],
     })
 
+    expect(hidden).toEqual([])
     expect(results).toHaveLength(1)
     expect(results[0]).toMatchObject({
       mine: true,
@@ -81,6 +82,8 @@ describe('My Recipes in Cook results (S12)', () => {
       covered: 2,
       needed: 2,
       coverage: 1,
+      // R12: a My Recipe ranks as top quality within its coverage band.
+      quality: 1,
     })
   })
 
@@ -92,7 +95,7 @@ describe('My Recipes in Cook results (S12)', () => {
     const tax = await loadTaxonomy(corpusDb)
     const recipes = await listMyRecipes()
 
-    const results = await matchMyRecipes(corpusDb, tax, recipes, { ...BASE, have: ['garlic'] })
+    const { results } = await matchMyRecipes(corpusDb, tax, recipes, { ...BASE, have: ['garlic'] })
     expect(results).toEqual([])
   })
 
@@ -106,15 +109,15 @@ describe('My Recipes in Cook results (S12)', () => {
     const have = ['beef', 'onion']
 
     const everything = await matchMyRecipes(corpusDb, tax, recipes, { ...BASE, have })
-    expect(everything.map((r) => r.title)).toContain('Beef stew')
-    expect(everything[0].diet).toBeNull()
+    expect(everything.results.map((r) => r.title)).toContain('Beef stew')
+    expect(everything.results[0].diet).toBeNull()
 
     const noRedMeat = await matchMyRecipes(corpusDb, tax, recipes, {
       ...BASE,
       have,
       diet: 'no_red_meat',
     })
-    expect(noRedMeat.map((r) => r.title)).not.toContain('Beef stew')
+    expect(noRedMeat.results.map((r) => r.title)).not.toContain('Beef stew')
   })
 
   it('is "adaptable" when a diet-safe substitute exists (reuses the engine\'s swap logic)', async () => {
@@ -125,7 +128,7 @@ describe('My Recipes in Cook results (S12)', () => {
     const tax = await loadTaxonomy(corpusDb)
     const recipes = await listMyRecipes()
 
-    const results = await matchMyRecipes(corpusDb, tax, recipes, {
+    const { results } = await matchMyRecipes(corpusDb, tax, recipes, {
       ...BASE,
       have: ['chicken_breast', 'onion'],
       diet: 'vegetarian',
@@ -134,5 +137,138 @@ describe('My Recipes in Cook results (S12)', () => {
     expect(results).toHaveLength(1)
     expect(results[0].diet?.status).toBe('adaptable')
     expect(results[0].diet?.swaps[0]).toMatchObject({ item: 'chicken breast', via: 'substitution' })
+  })
+
+  describe('S12b #3 (R13): one-pot, use-only-equipment and under-N-minutes filters', () => {
+    it('excludes a My Recipe with no totalMin when "under N minutes" is active, and reports it hidden', async () => {
+      await createMyRecipe('Weeknight chicken', {
+        ...emptyMyRecipeData(),
+        ingredients: typed('1 lb chicken breast', '1 onion'),
+      })
+      const tax = await loadTaxonomy(corpusDb)
+      const recipes = await listMyRecipes()
+
+      const { results, hidden } = await matchMyRecipes(corpusDb, tax, recipes, {
+        ...BASE,
+        have: ['chicken_breast', 'onion'],
+        maxMinutes: 30,
+      })
+
+      expect(results).toEqual([])
+      expect(hidden).toEqual([{ title: 'Weeknight chicken', reasons: ['no time set'] }])
+    })
+
+    it('applies "under N minutes" once totalMin is set', async () => {
+      await createMyRecipe('Weeknight chicken', {
+        ...emptyMyRecipeData(),
+        ingredients: typed('1 lb chicken breast', '1 onion'),
+        totalMin: 45,
+      })
+      const tax = await loadTaxonomy(corpusDb)
+      const recipes = await listMyRecipes()
+
+      const under30 = await matchMyRecipes(corpusDb, tax, recipes, {
+        ...BASE,
+        have: ['chicken_breast', 'onion'],
+        maxMinutes: 30,
+      })
+      expect(under30.results).toEqual([])
+      expect(under30.hidden).toEqual([])
+
+      const under60 = await matchMyRecipes(corpusDb, tax, recipes, {
+        ...BASE,
+        have: ['chicken_breast', 'onion'],
+        maxMinutes: 60,
+      })
+      expect(under60.results).toHaveLength(1)
+      expect(under60.results[0].totalMin).toBe(45)
+    })
+
+    it('excludes a My Recipe with no onePot value when "one pot" is active, and reports it hidden', async () => {
+      await createMyRecipe('Weeknight chicken', {
+        ...emptyMyRecipeData(),
+        ingredients: typed('1 lb chicken breast', '1 onion'),
+      })
+      const tax = await loadTaxonomy(corpusDb)
+      const recipes = await listMyRecipes()
+
+      const { results, hidden } = await matchMyRecipes(corpusDb, tax, recipes, {
+        ...BASE,
+        have: ['chicken_breast', 'onion'],
+        onePot: true,
+      })
+
+      expect(results).toEqual([])
+      expect(hidden).toEqual([{ title: 'Weeknight chicken', reasons: ['one-pot not set'] }])
+    })
+
+    it('excludes a My Recipe explicitly not one-pot without reporting it hidden', async () => {
+      await createMyRecipe('Weeknight chicken', {
+        ...emptyMyRecipeData(),
+        ingredients: typed('1 lb chicken breast', '1 onion'),
+        onePot: false,
+      })
+      const tax = await loadTaxonomy(corpusDb)
+      const recipes = await listMyRecipes()
+
+      const { results, hidden } = await matchMyRecipes(corpusDb, tax, recipes, {
+        ...BASE,
+        have: ['chicken_breast', 'onion'],
+        onePot: true,
+      })
+
+      expect(results).toEqual([])
+      expect(hidden).toEqual([])
+    })
+
+    it('excludes a My Recipe with no equipment set when "use only" is active, and reports it hidden', async () => {
+      await createMyRecipe('Weeknight chicken', {
+        ...emptyMyRecipeData(),
+        ingredients: typed('1 lb chicken breast', '1 onion'),
+      })
+      const tax = await loadTaxonomy(corpusDb)
+      const recipes = await listMyRecipes()
+
+      const { results, hidden } = await matchMyRecipes(corpusDb, tax, recipes, {
+        ...BASE,
+        have: ['chicken_breast', 'onion'],
+        useOnly: ['stovetop'],
+      })
+
+      expect(results).toEqual([])
+      expect(hidden).toEqual([{ title: 'Weeknight chicken', reasons: ['no equipment set'] }])
+    })
+
+    it('applies "use only" and "my kitchen has" once equipment is set', async () => {
+      await createMyRecipe('Weeknight chicken', {
+        ...emptyMyRecipeData(),
+        ingredients: typed('1 lb chicken breast', '1 onion'),
+        equipment: ['stovetop'],
+      })
+      const tax = await loadTaxonomy(corpusDb)
+      const recipes = await listMyRecipes()
+
+      const matches = await matchMyRecipes(corpusDb, tax, recipes, {
+        ...BASE,
+        have: ['chicken_breast', 'onion'],
+        useOnly: ['stovetop'],
+      })
+      expect(matches.results).toHaveLength(1)
+
+      const noOven = await matchMyRecipes(corpusDb, tax, recipes, {
+        ...BASE,
+        have: ['chicken_breast', 'onion'],
+        useOnly: ['oven'],
+      })
+      expect(noOven.results).toEqual([])
+      expect(noOven.hidden).toEqual([])
+
+      const kitchenWithoutStovetop = await matchMyRecipes(corpusDb, tax, recipes, {
+        ...BASE,
+        have: ['chicken_breast', 'onion'],
+        kitchen: ['oven'],
+      })
+      expect(kitchenWithoutStovetop.results).toEqual([])
+    })
   })
 })

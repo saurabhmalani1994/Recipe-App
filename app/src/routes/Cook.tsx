@@ -17,7 +17,7 @@ import { corpusStatusText, useCorpus } from '../features/cook/useCorpus'
 import { listFavoriteIds, setFavorite } from '../features/favorites/favoritesRepo'
 import { listKitchenItems } from '../features/kitchen/kitchenRepo'
 import { listMyRecipes } from '../features/myRecipes/myRecipesRepo'
-import { matchMyRecipes } from '../features/myRecipes/myRecipeMatch'
+import { matchMyRecipes, type HiddenMyRecipe } from '../features/myRecipes/myRecipeMatch'
 import type { MyRecipe } from '../features/myRecipes/types'
 import { AddToPlanControl } from '../features/plan/AddToPlanControl'
 import { listKitchenEquipment } from '../features/settings/settingsRepo'
@@ -32,6 +32,16 @@ const QUICK_MINUTES = 30
 const DIET_SWAP_LABEL: Partial<Record<string, string>> = {
   vegetarian: 'veg',
   no_red_meat: 'no red meat',
+}
+
+/** "3 of your recipes hidden: no time set, no equipment set" — every distinct reason across
+ * `hidden`, in the order first seen. */
+function hiddenMineReasons(hidden: HiddenMyRecipe[]): string {
+  const seen: string[] = []
+  for (const entry of hidden) {
+    for (const reason of entry.reasons) if (!seen.includes(reason)) seen.push(reason)
+  }
+  return seen.join(', ')
 }
 
 /**
@@ -51,24 +61,43 @@ export function Cook() {
   const [showEquipment, setShowEquipment] = useState(false)
   const [useOnly, setUseOnly] = useState<Equipment[]>([])
   const [output, setOutput] = useState<MatchOutput | null>(null)
+  // S12b #3 (R13): My Recipes an active filter excludes for having no value set (not for
+  // genuinely failing it), so the owner knows why the count dropped instead of guessing.
+  const [hiddenMine, setHiddenMine] = useState<HiddenMyRecipe[]>([])
   // S6b #3: staples collapse into one "+ pantry basics (N)" chip, expanded on request.
   const [showStaples, setShowStaples] = useState(false)
-  // S11 #1: a star on each result, keyed by recipes.key (corpus favorites).
+  // S11 #1: a star on each result, keyed by recipes.key (corpus favorites) or a My Recipe id.
+  // S12b #1: a corpus key and a My Recipe id can collide, so the set holds "<source>:<key>",
+  // never a bare key, and both favorite sources are loaded (was corpus-only, so a Mine
+  // result's star always read as unfavorited and starring one favorited the corpus recipe
+  // of the same key instead).
   const [favoriteKeys, setFavoriteKeys] = useState<Set<string>>(new Set())
 
+  function favoriteToken(key: string, source: 'corpus' | 'my') {
+    return `${source}:${key}`
+  }
+
   useEffect(() => {
-    void listFavoriteIds('corpus').then((ids) => setFavoriteKeys(new Set(ids)))
+    void Promise.all([listFavoriteIds('corpus'), listFavoriteIds('my')]).then(([corpusIds, myIds]) => {
+      setFavoriteKeys(
+        new Set([
+          ...corpusIds.map((id) => favoriteToken(id, 'corpus')),
+          ...myIds.map((id) => favoriteToken(id, 'my')),
+        ]),
+      )
+    })
   }, [])
 
-  async function toggleFavorite(key: string) {
-    const next = !favoriteKeys.has(key)
+  async function toggleFavorite(key: string, source: 'corpus' | 'my') {
+    const token = favoriteToken(key, source)
+    const next = !favoriteKeys.has(token)
     setFavoriteKeys((current) => {
       const updated = new Set(current)
-      if (next) updated.add(key)
-      else updated.delete(key)
+      if (next) updated.add(token)
+      else updated.delete(token)
       return updated
     })
-    await setFavorite(key, next, 'corpus')
+    await setFavorite(key, next, source)
   }
 
   // S12: My Recipes joined into results below, marked "Mine" (features/myRecipes/myRecipeMatch.ts).
@@ -106,11 +135,14 @@ export function Cook() {
       matchMyRecipes(corpus.db, corpus.tax, myRecipes, query),
     ]).then(([sql, mine]) => {
       if (!current) return
-      const results = [...sql.results, ...mine].sort(compareResults).slice(0, DEFAULT_MATCH_LIMIT)
+      const results = [...sql.results, ...mine.results]
+        .sort(compareResults)
+        .slice(0, DEFAULT_MATCH_LIMIT)
       setOutput({
         results,
-        stats: { candidates: sql.stats.candidates + mine.length, scored: sql.stats.scored },
+        stats: { candidates: sql.stats.candidates + mine.results.length, scored: sql.stats.scored },
       })
+      setHiddenMine(mine.hidden)
     })
     return () => {
       current = false
@@ -299,6 +331,12 @@ export function Cook() {
                   : '') +
                 (preset !== 'everything' ? ` · ${DIET_PRESET_LABELS[preset]}` : '')}
           </p>
+          {hiddenMine.length > 0 && (
+            <p className="cook-hidden-mine" data-testid="cook-hidden-mine">
+              {hiddenMine.length} of your {hiddenMine.length === 1 ? 'recipe' : 'recipes'} hidden:{' '}
+              {hiddenMineReasons(hiddenMine)}
+            </p>
+          )}
           <ul className="cook-results" data-testid="cook-results">
             {output.results.map((result) => {
               const summary = missingSummary(result)
@@ -332,16 +370,16 @@ export function Cook() {
                   </Link>
                   <button
                     type="button"
-                    aria-pressed={favoriteKeys.has(result.key)}
+                    aria-pressed={favoriteKeys.has(favoriteToken(result.key, result.mine ? 'my' : 'corpus'))}
                     aria-label={
-                      favoriteKeys.has(result.key)
+                      favoriteKeys.has(favoriteToken(result.key, result.mine ? 'my' : 'corpus'))
                         ? `Remove favorite: ${result.title}`
                         : `Add favorite: ${result.title}`
                     }
                     className="cook-result__favorite"
-                    onClick={() => void toggleFavorite(result.key)}
+                    onClick={() => void toggleFavorite(result.key, result.mine ? 'my' : 'corpus')}
                   >
-                    {favoriteKeys.has(result.key) ? '★' : '☆'}
+                    {favoriteKeys.has(favoriteToken(result.key, result.mine ? 'my' : 'corpus')) ? '★' : '☆'}
                   </button>
                   <AddToPlanControl
                     recipeId={result.key}
