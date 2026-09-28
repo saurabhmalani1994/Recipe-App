@@ -64,7 +64,7 @@ async function coreOf(recipeId: number): Promise<string[]> {
 describe('planted kitchen K1: Pad Thai without fish sauce', () => {
   it('ranks Pad Thai first at 11/12 with fish sauce swappable for soy sauce + nori', async () => {
     const { results, stats } = await matchRecipes(db, { ...BASE, have: K1 })
-    expect(stats.candidates).toBe(96)
+    expect(stats.candidates).toBe(87)
     const top = results[0]
     expect(top.key).toBe('themealdb:53191')
     expect(top.covered).toBe(11)
@@ -80,13 +80,16 @@ describe('planted kitchen K1: Pad Thai without fish sauce', () => {
     // behind everything down to `themealdb:53368` (5 covered), and coverage is banded to 10
     // points so `themealdb:52953`/`recipenlg:1470870`/`foodcom:000534`/the salsa (all 29-37%)
     // rank by covered count (5, 4, 3, 3) rather than by their raw percentages.
+    // S18: the refresh added recipenlg:1420948 (4/10, 40%) and recipenlg:1347571 (6/16, 37.5%).
+    // 1420948 lands in the 40-49% band alone, so it leads; 1347571 joins the 30-39% band and
+    // outranks `themealdb:52953` (5 covered) there on its higher covered count (6).
     expect(results.slice(1, 7).map((r) => r.key)).toEqual([
+      'recipenlg:1420948',
+      'recipenlg:1347571',
       'themealdb:52953',
       'recipenlg:1470870',
       'foodcom:000534',
       'foodwishes:nectarine-salsa-stone-cold-delicious',
-      'themealdb:53368',
-      'foodwishes:the-perfect-margarita-according-to-me',
     ])
   })
 
@@ -100,39 +103,46 @@ describe('planted kitchen K1: Pad Thai without fish sauce', () => {
 
   it('drops Pad Thai under Vegetarian (status no) and keeps 58 candidates', async () => {
     const { results, stats } = await matchRecipes(db, { ...BASE, have: K1, diet: 'vegetarian' })
-    expect(stats.candidates).toBe(58)
+    expect(stats.candidates).toBe(63)
     expect(results.map((r) => r.key)).not.toContain('themealdb:53191')
-    // S6b #4: covers 4 non-staple ingredients (the margarita covers only 2), so it now leads.
-    expect(results[0].key).toBe('recipenlg:1470870')
+    // S6b #4: covers 4 non-staple ingredients (the margarita covers only 2), so it led before
+    // S18. S18's refresh added recipenlg:1420948 (4/10, 40% coverage), the only vegetarian-ok
+    // recipe in a higher band, so it now leads instead.
+    expect(results[0].key).toBe('recipenlg:1420948')
     for (const r of results) expect(['ok', 'adaptable']).toContain(r.diet?.status)
   })
 
-  it('filters by cuisine: thai is Pad Thai alone, vietnamese has 5', async () => {
+  it('filters by cuisine: thai has Pad Thai then the refresh\'s recipenlg:1420948, vietnamese has 6', async () => {
     const thai = await matchRecipes(db, { ...BASE, have: K1, cuisine: 'thai' })
-    expect(thai.results.map((r) => r.key)).toEqual(['themealdb:53191'])
+    // S18: the refresh spread recipenlg recipes over cuisines by quota; recipenlg:1420948
+    // ("Salmon With Thai Rice Salad") landed tagged thai, so thai is no longer Pad Thai alone.
+    // recipenlg:1417846 ("Vermicelli With Chicken Skewers And Nuoc Cham") landed tagged
+    // vietnamese, so vietnamese grew from 5 to 6, and it now leads (it covers more K1
+    // ingredients than the sea bass).
+    expect(thai.results.map((r) => r.key)).toEqual(['themealdb:53191', 'recipenlg:1420948'])
     const vietnamese = await matchRecipes(db, { ...BASE, have: K1, cuisine: 'vietnamese' })
-    expect(vietnamese.stats.candidates).toBe(5)
-    expect(vietnamese.results[0].key).toBe('themealdb:53247')
+    expect(vietnamese.stats.candidates).toBe(6)
+    expect(vietnamese.results[0].key).toBe('recipenlg:1417846')
   })
 
   it('one pot (R9: one_pot AND course main) gives 30, led by Shrimp Chow Fun', async () => {
     const { results, stats } = await matchRecipes(db, { ...BASE, have: K1, onePot: true })
-    expect(stats.candidates).toBe(30)
+    expect(stats.candidates).toBe(24)
     expect(results[0].key).toBe('themealdb:52953')
     for (const r of results) expect(r.course).toBe('main')
   })
 
   it('under 30 minutes gives 37; a kitchen of only a stovetop gives 50', async () => {
     const quick = await matchRecipes(db, { ...BASE, have: K1, maxMinutes: 30 })
-    expect(quick.stats.candidates).toBe(37)
+    expect(quick.stats.candidates).toBe(27)
     for (const r of quick.results) expect(r.totalMin).toBeLessThanOrEqual(30)
     const stove = await matchRecipes(db, { ...BASE, have: K1, kitchen: ['stovetop'] })
-    expect(stove.stats.candidates).toBe(50)
+    expect(stove.stats.candidates).toBe(40)
   })
 
   it('"use only" the oven gives 6, led by the corn & sausage muffins', async () => {
     const { results, stats } = await matchRecipes(db, { ...BASE, have: K1, useOnly: ['oven'] })
-    expect(stats.candidates).toBe(6)
+    expect(stats.candidates).toBe(3)
     // S6b #4: both are in the same coverage band (13-14%); 2 covered beats 1.
     expect(results[0].key).toBe('foodwishes:fresh-corn-sausage-muffins-twelve')
     expect(results[1].key).toBe('recipenlg:636138')
@@ -140,7 +150,7 @@ describe('planted kitchen K1: Pad Thai without fish sauce', () => {
 
   it('an empty "my kitchen has" means not set, so it filters nothing', async () => {
     const { stats } = await matchRecipes(db, { ...BASE, have: K1, kitchen: [] })
-    expect(stats.candidates).toBe(96)
+    expect(stats.candidates).toBe(87)
   })
 })
 
@@ -149,13 +159,14 @@ describe('planted kitchen K2: exactly Kidney Bean Curry', () => {
     const have = await coreOf(278)
     expect(have).toHaveLength(10)
     const indian = await matchRecipes(db, { ...BASE, have, cuisine: 'indian' })
-    expect(indian.stats.candidates).toBe(8)
-    // S6b #4: themealdb:52805, 52807 and recipenlg:1564326 all land in the 20-29% band;
-    // covered count (4, then 3, then 2) now breaks the tie instead of quality.
+    expect(indian.stats.candidates).toBe(9)
+    // S18: the refresh added indianhealthyrecipes:rajma-recipe-rajma-masala-recipe (5/12,
+    // 41.6%), which now lands in the 40-49% band, ahead of themealdb:53400 (3/9, 33%) and
+    // everything else here.
     expect(indian.results.slice(0, 3).map((r) => r.key)).toEqual([
       K2_RECIPE,
+      'indianhealthyrecipes:rajma-recipe-rajma-masala-recipe',
       'themealdb:53400',
-      'themealdb:52805',
     ])
     expect(indian.results[0].coverage).toBe(1)
     expect(indian.results[0].missing).toEqual([])
@@ -167,17 +178,18 @@ describe('planted kitchen K2: exactly Kidney Bean Curry', () => {
   it('the floor keeps a 1-ingredient 100% match from outranking the curry (135 candidates)', async () => {
     const have = await coreOf(278)
     const { results, stats } = await matchRecipes(db, { ...BASE, have, limit: 200 })
-    expect(stats.candidates).toBe(135)
+    expect(stats.candidates).toBe(139)
     // recipenlg:1271214 is a 1/1 match (100% coverage, same band as the curry's 10/10) — the
     // pre-S6b ranking only kept it second on a quality tiebreak that happened to go the right
     // way (orch/reports/S6.md, "Open"). S6b #4's floor now keeps it behind anything covering
-    // more, on principle rather than by accident: it falls to position 66 (of 135), behind
-    // every candidate with 2+ covered ingredients, rather than riding a lucky tiebreak at #2.
+    // more, on principle rather than by accident: it falls to position 64 of 139 (S18's refresh
+    // added 4 more candidates with 2+ covered ingredients ahead of it), behind every candidate
+    // with 2+ covered ingredients, rather than riding a lucky tiebreak at #2.
     expect(results[0].key).toBe(K2_RECIPE)
     expect(results.slice(1, 3).map((r) => r.key)).toEqual(['themealdb:53158', 'themealdb:52956'])
     const casserole = results.find((r) => r.key === 'recipenlg:1271214')!
     expect(casserole.covered).toBe(1)
-    expect(results.indexOf(casserole)).toBe(65)
+    expect(results.indexOf(casserole)).toBe(64)
   })
 })
 
@@ -188,7 +200,7 @@ describe('planted kitchen K3: parent and child slugs', () => {
   }
 
   it('chicken covers chicken_breast; chicken_cutlet (a kind of breast) does too', async () => {
-    const wraps = (await db.query<{ key: string }>('SELECT key FROM recipes WHERE id = 74')).rows[0]
+    const wraps = (await db.query<{ key: string }>('SELECT key FROM recipes WHERE id = 193')).rows[0]
       .key
     expect(await coveredIn(['chicken'], wraps)).toBe(1)
     expect(await coveredIn(['chicken_cutlet'], wraps)).toBe(1)
@@ -196,9 +208,9 @@ describe('planted kitchen K3: parent and child slugs', () => {
   })
 
   it('red_onion covers onion but not yellow_onion; onion covers both', async () => {
-    const corn = (await db.query<{ key: string }>('SELECT key FROM recipes WHERE id = 80')).rows[0]
+    const corn = (await db.query<{ key: string }>('SELECT key FROM recipes WHERE id = 57')).rows[0]
       .key
-    const sfincione = (await db.query<{ key: string }>('SELECT key FROM recipes WHERE id = 119'))
+    const sfincione = (await db.query<{ key: string }>('SELECT key FROM recipes WHERE id = 313'))
       .rows[0].key
     expect(await coveredIn(['red_onion'], corn)).toBe(1)
     expect(await coveredIn(['red_onion'], sfincione)).toBe(0)

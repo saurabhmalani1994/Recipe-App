@@ -85,4 +85,23 @@ describe('corpus recipe detail', () => {
   it('returns null for an unknown key', async () => {
     expect(await loadCorpusRecipe(db, tax, 'nope:1', 'everything')).toBeNull()
   })
+
+  // R17: a Food Wishes recipe with a video and no steps rows carries its video_url through, so
+  // the detail screen can show "Method in the video" instead of an empty steps list.
+  it('carries video_url through for a video-only Food Wishes recipe (R17)', async () => {
+    const recipe = (await loadCorpusRecipe(
+      db,
+      tax,
+      'foodwishes:2007/02/boneless-pork-loin-chops-with-shallots',
+      'everything',
+    ))!
+    expect(recipe.steps).toEqual([])
+    expect(recipe.videoUrl).toBe('https://www.youtube.com/watch?v=guwg8Hz-iH8')
+  })
+
+  it('has no video_url for a recipe with written steps', async () => {
+    const recipe = (await loadCorpusRecipe(db, tax, 'themealdb:53191', 'everything'))!
+    expect(recipe.steps.length).toBeGreaterThan(0)
+    expect(recipe.videoUrl).toBeNull()
+  })
 })

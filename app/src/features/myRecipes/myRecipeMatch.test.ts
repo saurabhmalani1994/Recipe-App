@@ -99,7 +99,36 @@ describe('My Recipes in Cook results (S12)', () => {
     expect(results).toEqual([])
   })
 
-  it('is excluded by a diet it violates when no substitute is on hand', async () => {
+  // S18: rewritten against today's substitutions table (orch/reports/S10.md, "Design was wrong
+  // about"). `beef` now has a diet-neutral, any-context swap (`beef__vegetarian_meat`, D16/R8),
+  // so under no_red_meat it is "adaptable" rather than "no" — myRecipeDietStatus (R8) only
+  // excludes a My Recipe when a banned ingredient has *no* fitting swap, never when the user
+  // lacks the substitute on hand (it checks against an empty "have" set by design). A plain
+  // exclusion case still needs a truly unswappable banned ingredient (no fitting swap for it, or
+  // its taxonomy ancestors, anywhere in the substitutions table), so this uses `goat meat`
+  // (slug `goat_meat`, parent `lamb`): neither it nor `lamb` is any swap's target.
+  it('is excluded by a diet it violates with no fitting substitute (R8)', async () => {
+    await createMyRecipe('Goat curry', {
+      ...emptyMyRecipeData(),
+      ingredients: typed('1 lb goat meat', '1 onion'),
+    })
+    const tax = await loadTaxonomy(corpusDb)
+    const recipes = await listMyRecipes()
+    const have = ['goat_meat', 'onion']
+
+    const everything = await matchMyRecipes(corpusDb, tax, recipes, { ...BASE, have })
+    expect(everything.results.map((r) => r.title)).toContain('Goat curry')
+    expect(everything.results[0].diet).toBeNull()
+
+    const noRedMeat = await matchMyRecipes(corpusDb, tax, recipes, {
+      ...BASE,
+      have,
+      diet: 'no_red_meat',
+    })
+    expect(noRedMeat.results.map((r) => r.title)).not.toContain('Goat curry')
+  })
+
+  it('is "adaptable", not excluded, when a diet-neutral swap exists even off-hand (R8)', async () => {
     await createMyRecipe('Beef stew', {
       ...emptyMyRecipeData(),
       ingredients: typed('1 lb beef', '1 onion'),
@@ -108,16 +137,16 @@ describe('My Recipes in Cook results (S12)', () => {
     const recipes = await listMyRecipes()
     const have = ['beef', 'onion']
 
-    const everything = await matchMyRecipes(corpusDb, tax, recipes, { ...BASE, have })
-    expect(everything.results.map((r) => r.title)).toContain('Beef stew')
-    expect(everything.results[0].diet).toBeNull()
-
     const noRedMeat = await matchMyRecipes(corpusDb, tax, recipes, {
       ...BASE,
       have,
       diet: 'no_red_meat',
     })
-    expect(noRedMeat.results.map((r) => r.title)).not.toContain('Beef stew')
+    expect(noRedMeat.results.map((r) => r.title)).toContain('Beef stew')
+    expect(noRedMeat.results[0].diet).toMatchObject({
+      status: 'adaptable',
+      swaps: [{ item: 'beef', slug: 'beef', via: 'substitution', sub_id: 'beef__vegetarian_meat' }],
+    })
   })
 
   it('is "adaptable" when a diet-safe substitute exists (reuses the engine\'s swap logic)', async () => {
