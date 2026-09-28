@@ -1,6 +1,16 @@
 import type { Db } from '../../db/types'
 import type { DietSwap } from '../../corpus/model'
 import type { Course, Cuisine, DietStatus, Equipment } from '../../corpus/types'
+import {
+  avoidHits,
+  expandAvoid,
+  newHiddenTally,
+  recordHidden,
+  verdictFor,
+  type AvoidHit,
+  type AvoidList,
+  type HiddenTally,
+} from './avoid'
 import { fittingSwaps, loadSwapTable, recipeContexts, type SwapOption } from './swaps'
 import { displayName, expandHave, loadTaxonomy } from './taxonomy'
 
@@ -40,6 +50,8 @@ export interface MatchQuery {
   limit?: number
   /** Candidates scored for substitutions before the final sort (default max(limit * 4, 200)). */
   candidatePool?: number
+  /** S16 "ingredients I avoid" (settingsRepo). Undefined/empty applies no avoid filter. */
+  avoid?: AvoidList
 }
 
 export interface MissingItem {
@@ -76,6 +88,9 @@ export interface MatchResult {
    * instead of the corpus recipe detail screen. */
   mine?: boolean
   myRecipeId?: string
+  /** S16: avoided ingredients this recipe uses (empty when `avoid` was not set, or none hit). A
+   * result with a hide-mode hit is never in `results` — it went into `stats.hidden` instead. */
+  avoided: AvoidHit[]
 }
 
 export interface MatchOutput {
@@ -85,6 +100,9 @@ export interface MatchOutput {
     candidates: number
     /** Candidates scored for substitutions (the top of `candidates` by coverage). */
     scored: number
+    /** S16: recipes dropped for a hide-mode avoided ingredient (rule 11: counted, not silently
+     * dropped — `hiddenNote(hidden)` from `avoid.ts` turns this into "12 hidden: sour cream"). */
+    hidden: HiddenTally
   }
 }
 
@@ -190,7 +208,7 @@ export const RANK_LEGACY = false
 const RANK_FLOOR_COVERED = 3
 
 /** 10 percentage points per band (coverage is a 0..1 fraction). */
-const RANK_BAND_WIDTH = 0.1
+export const RANK_BAND_WIDTH = 0.1
 
 function compareLegacy(a: MatchResult, b: MatchResult): number {
   return (
@@ -234,6 +252,8 @@ export async function matchRecipes(db: Db, query: MatchQuery): Promise<MatchOutp
   const pool = Math.max(query.candidatePool ?? Math.max(limit * 4, 200), limit)
   const kitchen = nonEmpty(query.kitchen)
   const useOnly = nonEmpty(query.useOnly)
+  const avoid = query.avoid && query.avoid.size > 0 ? expandAvoid(tax, query.avoid) : null
+  const hidden = newHiddenTally()
 
   const { rows: candidates } = await db.query<CandidateRow>(CANDIDATES_SQL, [
     JSON.stringify([...have]),
@@ -246,7 +266,7 @@ export async function matchRecipes(db: Db, query: MatchQuery): Promise<MatchOutp
     pool,
   ])
   const total = candidates[0]?.total ?? 0
-  if (candidates.length === 0) return { results: [], stats: { candidates: 0, scored: 0 } }
+  if (candidates.length === 0) return { results: [], stats: { candidates: 0, scored: 0, hidden } }
 
   const { rows: lines } = await db.query<LineRow>(
     `SELECT recipe_id, line, slug, optional, raw FROM recipe_ingredients
@@ -283,6 +303,15 @@ export async function matchRecipes(db: Db, query: MatchQuery): Promise<MatchOutp
         unresolvedRaw.set(line.line, line.raw)
       }
     }
+    // S16: hide wins outright (rule 11: tallied, never silently dropped); short of that, "lower"
+    // hits drop the coverage band below, applied to `coverage` after it's computed.
+    const avoided = avoid ? avoidHits(tax, avoid, core) : []
+    const verdict = verdictFor(avoided)
+    if (verdict.hide) {
+      recordHidden(hidden, avoided)
+      continue
+    }
+
     const lacking = [...core].filter((slug) => !have.has(slug))
     const context = {
       contexts: recipeContexts(candidate.course, candidate.title),
@@ -309,6 +338,11 @@ export async function matchRecipes(db: Db, query: MatchQuery): Promise<MatchOutp
 
     const needed = core.size + candidate.unresolved_count
     const covered = core.size - lacking.length
+    // S16: "a lower-ranked recipe drops one coverage band per avoided ingredient" — `covered`
+    // and `needed` stay the honest counts; only the ranking fraction moves, by RANK_BAND_WIDTH
+    // per lower-mode hit.
+    const rawCoverage = needed === 0 ? 1 : covered / needed
+    const coverage = Math.max(0, rawCoverage - verdict.lowerBy * RANK_BAND_WIDTH)
     results.push({
       id: candidate.id,
       key: candidate.key,
@@ -317,11 +351,12 @@ export async function matchRecipes(db: Db, query: MatchQuery): Promise<MatchOutp
       cuisine: candidate.cuisine,
       totalMin: candidate.total_min,
       quality: candidate.quality,
-      coverage: needed === 0 ? 1 : covered / needed,
+      coverage,
       covered,
       needed,
       missing,
       substitutable,
+      avoided,
       diet: candidate.diet_status
         ? {
             status: candidate.diet_status,
@@ -334,7 +369,7 @@ export async function matchRecipes(db: Db, query: MatchQuery): Promise<MatchOutp
   results.sort(compareResults)
   return {
     results: results.slice(0, limit),
-    stats: { candidates: total, scored: candidates.length },
+    stats: { candidates: total, scored: candidates.length, hidden },
   }
 }
 

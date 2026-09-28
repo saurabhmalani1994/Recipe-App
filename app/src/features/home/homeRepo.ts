@@ -1,6 +1,7 @@
 import { FIXTURE_RECIPES } from '../../corpus/fixture'
 import type { Cuisine } from '../../corpus/types'
 import type { Db } from '../../db/types'
+import { hiddenNote, newHiddenTally, type AvoidList } from '../cook/avoid'
 import type { AppDiet } from '../cook/engine'
 import type { Taxonomy } from '../cook/taxonomy'
 import { listFavorites } from '../favorites/favoritesRepo'
@@ -17,6 +18,15 @@ export interface HomeOptions {
   diet: AppDiet
   /** Defaults to now; a fixed date makes the whole page reproducible in tests. */
   date?: Date
+  /** S16 "ingredients I avoid" (settingsRepo). Undefined/empty applies no avoid filter. */
+  avoid?: AvoidList
+}
+
+export interface HomeResult {
+  rows: HomeRow[]
+  /** "12 hidden: sour cream" across every row combined (rule 11: never a silent drop), or null
+   * when nothing was hidden. */
+  hiddenNote: string | null
 }
 
 /** Every cuisine `FIXTURE_RECIPES` cooks, by id — fixture recipes carry no corpus row to look
@@ -67,8 +77,10 @@ async function excludedCuisines(db: Db, date: Date): Promise<Set<Cuisine>> {
 }
 
 /** Assembles Home's four rows (S11 #2): reads user.db (favorites, plan history) here so
- * `home/rows.ts` stays a pure module over the corpus, like `cook/engine.ts`. */
-export async function loadHomeRows(db: Db, tax: Taxonomy, opts: HomeOptions): Promise<HomeRow[]> {
+ * `home/rows.ts` stays a pure module over the corpus, like `cook/engine.ts`. S16: one avoid tally
+ * shared across all four rows, so "12 hidden: sour cream" counts the whole page, not just one
+ * row. */
+export async function loadHomeRows(db: Db, tax: Taxonomy, opts: HomeOptions): Promise<HomeResult> {
   const date = opts.date ?? new Date()
   const seed = seedFromDate(date)
   const [favorites, exclude] = await Promise.all([listFavorites(), excludedCuisines(db, date)])
@@ -76,15 +88,33 @@ export async function loadHomeRows(db: Db, tax: Taxonomy, opts: HomeOptions): Pr
     .filter((f) => f.recipeSource === 'corpus')
     .map((f) => f.recipeId)
 
-  return Promise.all([
-    buildCookRow(db, { have: opts.have, diet: opts.diet, seed }),
-    buildExploreRow(db, tax, { have: opts.have, diet: opts.diet, excludeCuisines: exclude, seed }),
+  const hiddenTally = newHiddenTally()
+  const rows = await Promise.all([
+    buildCookRow(db, { have: opts.have, diet: opts.diet, seed, avoid: opts.avoid, hiddenTally }),
+    buildExploreRow(db, tax, {
+      have: opts.have,
+      diet: opts.diet,
+      excludeCuisines: exclude,
+      seed,
+      avoid: opts.avoid,
+      hiddenTally,
+    }),
     buildFavoritesRow(db, tax, {
       have: opts.have,
       diet: opts.diet,
       favoriteKeys: corpusFavoriteKeys,
       seed,
+      avoid: opts.avoid,
+      hiddenTally,
     }),
-    buildSeasonalRow(db, tax, { have: opts.have, diet: opts.diet, date, seed }),
+    buildSeasonalRow(db, tax, {
+      have: opts.have,
+      diet: opts.diet,
+      date,
+      seed,
+      avoid: opts.avoid,
+      hiddenTally,
+    }),
   ])
+  return { rows, hiddenNote: hiddenNote(hiddenTally) }
 }

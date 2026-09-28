@@ -76,3 +76,34 @@ export async function setKitchenEquipment(equipmentId: string, owned: boolean): 
     await db.run('DELETE FROM kitchen_equipment WHERE equipment_id = ?', [equipmentId])
   }
 }
+
+/** S16: "ingredients I avoid". 'hide' drops a recipe using it from every list it would show up
+ * in; 'lower' keeps it but ranks it behind ones that don't need it (features/cook/avoid.ts). */
+export type AvoidMode = 'hide' | 'lower'
+
+export interface AvoidIngredient {
+  slug: string
+  mode: AvoidMode
+}
+
+/** Every avoided slug (settings screen order: oldest first). */
+export async function listAvoidIngredients(): Promise<AvoidIngredient[]> {
+  const db = await getUserDb()
+  const result = await db.query<AvoidIngredient>(
+    'SELECT slug, mode FROM avoid_ingredients ORDER BY added_at, slug',
+  )
+  return result.rows
+}
+
+/** Adds/updates `slug` at `mode`, or removes it from the avoid list when `mode` is null. */
+export async function setAvoidIngredient(slug: string, mode: AvoidMode | null): Promise<void> {
+  const db = await getUserDb()
+  if (mode === null) {
+    await db.run('DELETE FROM avoid_ingredients WHERE slug = ?', [slug])
+  } else {
+    await db.run('INSERT OR REPLACE INTO avoid_ingredients (slug, mode) VALUES (?, ?)', [
+      slug,
+      mode,
+    ])
+  }
+}

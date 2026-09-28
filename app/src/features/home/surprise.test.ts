@@ -2,6 +2,7 @@
 import { afterAll, beforeAll, describe, expect, it } from 'vitest'
 import type { WebDb } from '../../db/webDb'
 import { openFixtureDb } from '../../test/fixtureDb'
+import { newHiddenTally } from '../cook/avoid'
 import { loadTaxonomy, type Taxonomy } from '../cook/taxonomy'
 import { pickSurprise } from './surprise'
 
@@ -54,5 +55,52 @@ describe('pickSurprise (S11 #2: "Surprise me")', () => {
       random: () => 0,
     })
     expect(card).toBeNull()
+  })
+})
+
+// S16 "ingredients I avoid".
+describe('pickSurprise: "ingredients I avoid"', () => {
+  it('never draws a hide-mode avoided recipe, and tallies it (rule 11)', async () => {
+    const random = () => 0
+    const baseline = await pickSurprise(db, tax, { have: [], diet: 'everything', random })
+    expect(baseline).not.toBeNull()
+    const { rows } = await db.query<{ slug: string }>(
+      `SELECT slug FROM recipe_slugs
+        WHERE core = 1 AND recipe_id = (SELECT id FROM recipes WHERE key = ?)`,
+      [baseline!.key],
+    )
+    const avoidedSlug = rows[0].slug
+    const tally = newHiddenTally()
+    const card = await pickSurprise(db, tax, {
+      have: [],
+      diet: 'everything',
+      random,
+      avoid: new Map([[avoidedSlug, 'hide']]),
+      hiddenTally: tally,
+    })
+    expect(card?.key).not.toBe(baseline!.key)
+    expect(tally.count).toBeGreaterThan(0)
+    expect(tally.bySlug.has(avoidedSlug)).toBe(true)
+  })
+
+  it('draws from the avoid-free pool over a lower-mode one when both exist', async () => {
+    const random = () => 0
+    const baseline = await pickSurprise(db, tax, { have: [], diet: 'everything', random })
+    const { rows } = await db.query<{ slug: string }>(
+      `SELECT slug FROM recipe_slugs
+        WHERE core = 1 AND recipe_id = (SELECT id FROM recipes WHERE key = ?)`,
+      [baseline!.key],
+    )
+    const avoidedSlug = rows[0].slug
+    const card = await pickSurprise(db, tax, {
+      have: [],
+      diet: 'everything',
+      random,
+      avoid: new Map([[avoidedSlug, 'lower']]),
+    })
+    // Not hidden, so it stays in the pool — but the avoid-free pool is non-empty (263 recipes at
+    // this floor, only a handful use any one ingredient), so it never gets the first draw.
+    expect(card).not.toBeNull()
+    expect(card?.key).not.toBe(baseline!.key)
   })
 })

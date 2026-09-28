@@ -298,7 +298,7 @@ describe('engine invariants over the whole fixture', () => {
     const { results, stats } = await matchRecipes(db, { ...BASE, have: [] })
     // Staples are never core, so they alone match no recipe.
     expect(results).toEqual([])
-    expect(stats).toEqual({ candidates: 0, scored: 0 })
+    expect(stats).toEqual({ candidates: 0, scored: 0, hidden: { count: 0, bySlug: new Map() } })
   })
 })
 

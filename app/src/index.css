@@ -692,6 +692,35 @@ button.chip[aria-pressed='true'] {
   color: var(--color-text-muted);
 }
 
+.corpus-line--avoided {
+  text-decoration: line-through;
+  text-decoration-color: var(--color-text-muted);
+}
+
+.cook-hidden-avoid,
+.home-hidden-avoid {
+  font-size: 0.85rem;
+  color: var(--color-text-muted);
+}
+
+.cook-result__avoided {
+  display: block;
+  font-size: 0.8rem;
+  color: var(--color-text-muted);
+}
+
+.avoid-list {
+  list-style: none;
+  padding: 0;
+}
+
+.avoid-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 6px;
+}
+
 .recipe-detail__diet {
   font-size: 0.9rem;
 }
