@@ -11,7 +11,7 @@ time (rule 11); the counts below are each fetcher's own `drops` summary.
 | `recipenlg` | yes | 2,231,142 | no | no | no (has steps only) | 4.4 GB (incl. 2.2 GB source CSV) | Unspecified/"unknown" per the dataset card; original RecipeNLG paper (Bień et al. 2020) says research use |
 | `foodcom` | yes, but see note | 1,228 | yes (983/1228) | no | yes (958/1228) | 34 MB | MIT (per HF dataset card) |
 | `bbcgoodfood` | yes | 245 (cap 300, resumable) | no (not present on any page seen) | yes (81/245) | yes (243/245) | 1.8 MB | BBC/Immediate Media, all rights reserved — editorial content, not permissively licensed; keep for personal use only per D14 |
-| `foodwishes` | yes, but see note | 300 (cap 300) | no | no | no | 572 KB | Chef John / Food Wishes, all rights reserved — personal use only |
+| `foodwishes` | yes, but see note | 1,084 (full crawl, 3,020/3,020 posts classified) | no | no | no | 792 KB (+ 24 MB raw post cache) | Chef John / Food Wishes, all rights reserved — personal use only |
 | `themealdb` | yes | 790 (full free tier) | no | yes (area, 600/790) | no | 1.2 MB | TheMealDB "test" API is free for non-commercial/personal use |
 | `openrecipes` | yes, but see note | 168,442 | no | no | yes (335/5000 sampled; sparse) | 139 MB | Public dump of the (defunct) openrecipes.org project; itself aggregated from many sites' schema.org markup — per-recipe `source_url` retained |
 | `github_openrecipe` (dspray95/open-recipe) | yes | 2 | no | no | no | 102 MB (mostly a checked-in Python venv; the data itself is ~1 KB) | repo has no LICENSE beyond MIT badge in README; treat as personal-use sample only |
@@ -19,8 +19,9 @@ time (rule 11); the counts below are each fetcher's own `drops` summary.
 | `github_gomp` (chadweimer/gomp) | yes, but no data | 0 | — | — | — | 3.2 MB | n/a — see note |
 | `github_recipegen` (samikshadubey23/recipe-generator) | yes | 5 | no | no | no | 6.3 MB | repo's own README pushes an external "release" download link (see note); the 5 example files themselves carry no explicit license |
 
-Grand total written: **2,402,152** raw records across 8 usable sources, ~4.6 GB on disk
-under `/home/user/recipe-data/raw/` (RecipeNLG's 2.2 GB source CSV cache dominates).
+Grand total written: **2,402,936** raw records across 8 usable sources, ~4.6 GB on disk
+under `/home/user/recipe-data/raw/` (RecipeNLG's 2.2 GB source CSV cache dominates). (S1c
+brought `foodwishes` from 300 to 1,084 written; the grand total above reflects that.)
 
 ## Notes and drop counts, per source
 
@@ -63,21 +64,50 @@ page fetched. Drops so far: a handful of "page fetch failed" (timeouts) and "no 
 block" pages; exact counts are in the source's own `progress.json`/summary, not repeated here
 since the crawl is incomplete.
 
-### `foodwishes` — foodwishes.blogspot.com
+### `foodwishes` — foodwishes.blogspot.com (S1c: full crawl, all 3,020 posts)
 **Not** a schema.org/JSON-LD site: checked multiple posts across the blog's full date range
 (2007 to 2026) and found zero `<script type="application/ld+json">` blocks and zero
-`itemprop` microdata anywhere. Instead, posts from roughly 2010–2019 have a plain-text
-"Ingredients for N servings:" block inline in the post body; posts before that era are
-video-only with no on-page recipe text, and posts from November 2019 onward (per the blog's
-own announcement post) drop the written recipe entirely and link out to allrecipes.com for
-"the complete, printable recipe" — which the brief already flags as blocked (402). This
-fetcher extracts the 2010–2019 inline-text era only. Page list comes from the blog's own
-paginated `sitemap.xml?page=1..4`; the crawler reorders that list to try the productive
-2009–2018-dated URLs first (confirmed by URL date) so the capped run spends its budget where
-it pays off, and is otherwise resumable the same way as bbcgoodfood. Reached the 300 cap.
-Drops: 10 pages with no "Ingredients for" marker found in this run (mostly stragglers at the
-edges of the reordered list); the many pre-2019/post-2019 pages that structurally have no
-recipe text were not enqueued at all once discovered.
+`itemprop` microdata anywhere. S1 only reached 300/3,020 posts via a sitemap crawl (D18: owner
+asked for more). S1c replaced that with Blogger's own JSON feed
+(`.../feeds/posts/default?alt=json&max-results=150&start-index=N`), which returns every post's
+full body HTML directly — 21 requests (1 req/s, 30s timeout) cover all 3,020 posts, each
+cached to `<raw-data>/foodwishes/posts/<year>_<month>_<slug>.json` for resumability and
+re-parsing without re-fetching. `id` is `foodwishes:<year>/<month>/<slug>`, not just the
+trailing filename: 22 filenames (e.g. `happy-holidays.html`, `chef-john-is-on-vacation.html`)
+recur across 2-7 different years and would otherwise silently collide.
+
+Three eras, by on-page recipe text (confirmed by sampling across the full date range):
+  - **~2007-2009** (262 written): a bare "Ingredients:" list, no yield, video-only method (no
+    written steps — correctly left as `[]`, not guessed at).
+  - **~2010-2019** (822 written): "Ingredients for N servings:" (yield captured), sometimes
+    followed by one or more dash-prefixed step lines.
+  - **Nov 2019 onward** (587 dropped): the post itself says so ("why we're now offering
+    complete written recipes [on Allrecipes]") and links out to allrecipes.com instead of
+    including the text. Per the brief, Allrecipes is not fetched; counted separately with
+    reason `recipe text only on allrecipes`.
+1,349 posts (announcements, guest posts, video-only posts with no recipe at all) have neither
+marker nor an Allrecipes link and are dropped with reason
+`no recipe content (announcement/video only)`. 1,084 + 1,349 + 587 = 3,020, every post
+accounted for. Full per-year written/drop breakdown in `orch/reports/S1c.md`.
+
+Parsing notes (found and fixed during this slice, all covered by regression tests in
+`ingest/fetch/test_fetchers.py`):
+  - ~127 posts carry a leftover Word/Office `<style>` block (font-face declarations, HTML
+    comments) ahead of or amid the body; stripped as a unit, not just tag-stripped, or CSS/
+    comment text leaked into parsed ingredients/steps.
+  - Many 2012-2013 Word-pasted posts have literal newlines mid-paragraph from the original
+    word-wrap width; a browser collapses these to a space, so they are collapsed here before
+    line-splitting on real block boundaries (`<br>`, `</div>`, `</p>`), or one ingredient/step
+    was wrongly split into two.
+  - A handful of posts (e.g. `2018/09/feta-roast-chicken-...`) have a genuinely malformed
+    source `<div>` tag where the step text itself was mangled into bogus HTML attributes by a
+    broken Word paste; unrecoverable by tag-stripping, so steps for that one post are `[]`
+    rather than garbage — a real source-data defect, not a parser bug.
+Gold check (brief item 3): 30 posts hand-checked, 2-3 per year across all 13 years with
+written recipes (seeded sample, `orch/reports/S1c.md` lists the ids). 29/30 correctly split;
+one 2008 post (`2008/07/red-pepper-scallops-on-potato-pancakes`) has a bolded video-caption
+line ("Watch this clip if you need a fire-roasted pepper refresher:") leak into its
+ingredients list — a one-off formatting case, not fixed (bar was 27/30).
 
 ### `themealdb` — TheMealDB free tier
 No auth needed (test API key `1`). The free tier has no "list everything" endpoint, so this
