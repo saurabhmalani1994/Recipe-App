@@ -30,8 +30,9 @@ S15 servings estimator | ingest + small app | DONE merged, bar missed (61.9%), s
 S12b Mine: favorite-source bug, R12 ranking, R13 filters | app | RUNNING | sonnet | orch/briefs/S12b-mine-fixes.md | v0.2
 S1b fix BBC parser TypeError + --retry-failed | ingest | DONE merged; full retry running as background script | sonnet | orch/briefs/S1b-bbc-parser.md | v0.2
 S8b rescore by substance/style/fresh + sheet 2 | ingest | DONE; sheet 2 PASS (1.80/1.47/0.33) | opus | orch/briefs/S8b-rescore.md | v0.2
-S16 app: 'ingredients I avoid' setting (R15), with down-ranking or hiding in Cook, Home and Surprise | app | READY after S12b | sonnet | - | v0.2
+S16 app avoid-list (R15) | app | RUNNING | sonnet | orch/briefs/S16-avoid-list.md | v0.2
 S1c Food Wishes full crawl via Blogger feed | ingest | DONE merged: 1,084 recipes (587 posts are Allrecipes-only) | sonnet | orch/briefs/S1c-foodwishes-full.md | v0.2
 S12b merge | app | DONE merged after the owner said resume |
 S17 cuisine sites survey + fetcher | ingest | DONE merged; 27 sites, full crawls running in the background | sonnet | orch/briefs/S17-cuisine-sites.md | v0.2
 S17b browser mode + Persian/Singaporean sites | ingest | DONE merged; 5 new sites | sonnet | orch/briefs/S17b-browser-sites.md | v0.2
+S10 full rebuild (prep + first build) | ingest | RUNNING | opus | orch/briefs/S10-rebuild.md | v0.2
