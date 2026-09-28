@@ -38,7 +38,7 @@ export function RecipeDetail() {
     )
   }
 
-  // `recipe` is a `DraftRecipe` from here on, but TS narrowing doesn't carry into the nested
+  // `recipe` is a `Recipe` from here on, but TS narrowing doesn't carry into the nested
   // closures below, so pin it to a definitely-defined local.
   const currentRecipe = recipe
 

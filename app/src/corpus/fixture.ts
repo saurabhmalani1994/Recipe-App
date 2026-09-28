@@ -1,4 +1,4 @@
-import type { DraftRecipe } from './draft'
+import type { Recipe } from './model'
 
 /**
  * DRAFT dev/test fixture: 20 hand-written recipes standing in for `corpus.db` until `ingest`
@@ -6,7 +6,7 @@ import type { DraftRecipe } from './draft'
  * Worcestershire sauce, lard — so the diet-filter engine has something non-trivial to test
  * against later. Out of scope for this slice: the filter itself.
  */
-export const FIXTURE_RECIPES: DraftRecipe[] = [
+export const FIXTURE_RECIPES: Recipe[] = [
   {
     id: 'r01',
     title: 'Weeknight Chana Masala',

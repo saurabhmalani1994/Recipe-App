@@ -45,5 +45,7 @@ export function resetUserDbForTests(): void {
 
 /** Opens `corpus.db` read-only. Throws until `ingest` ships a real file to bundle. */
 export function getCorpusDb(): Promise<Db> {
-  throw new Error('corpus.db is not bundled yet — see src/corpus/draft.ts for the dev fixture')
+  throw new Error(
+    'corpus.db is not bundled yet — see src/corpus/fixture.db (schema: src/corpus/types.ts)',
+  )
 }

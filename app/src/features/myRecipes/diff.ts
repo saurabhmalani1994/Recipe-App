@@ -1,4 +1,4 @@
-import type { DraftIngredientLine } from '../../corpus/draft'
+import type { IngredientLine } from '../../corpus/model'
 import type { MyRecipeIngredientLine } from './types'
 
 export interface ChangedIngredient {
@@ -15,7 +15,7 @@ export interface ChangedStep {
 
 export interface RecipeDiff {
   ingredientsAdded: MyRecipeIngredientLine[]
-  ingredientsRemoved: DraftIngredientLine[]
+  ingredientsRemoved: IngredientLine[]
   ingredientsChanged: ChangedIngredient[]
   stepsChanged: ChangedStep[]
 }
@@ -47,7 +47,7 @@ export function diffRecipes(parent: DiffableRecipe, fork: DiffableRecipe): Recip
 
   const ingredientsRemoved = parent.ingredients.filter(
     (line) => !forkByName.has(normalizeName(line.canonicalIngredient)),
-  ) as DraftIngredientLine[]
+  ) as IngredientLine[]
 
   const ingredientsChanged: ChangedIngredient[] = []
   for (const [name, parentLine] of parentByName) {

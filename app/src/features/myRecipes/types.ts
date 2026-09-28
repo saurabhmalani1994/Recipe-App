@@ -1,4 +1,4 @@
-import type { Cuisine } from '../../corpus/draft'
+import type { Cuisine } from '../../corpus/model'
 
 export interface MyRecipeIngredientLine {
   quantity: number | null

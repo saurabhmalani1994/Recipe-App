@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
 import { useNavigate, useParams } from 'react-router-dom'
-import type { Cuisine } from '../corpus/draft'
+import type { Cuisine } from '../corpus/model'
 import type { RecipeDiff } from '../features/myRecipes/diff'
 import {
   findFixtureRecipe,

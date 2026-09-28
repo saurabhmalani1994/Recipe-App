@@ -1,6 +1,6 @@
 import { getUserDb } from '../../db'
 import { FIXTURE_RECIPES } from '../../corpus/fixture'
-import type { DraftRecipe } from '../../corpus/draft'
+import type { Recipe } from '../../corpus/model'
 import { diffRecipes, type RecipeDiff } from './diff'
 import { newId } from './id'
 import type { MyRecipe, MyRecipeData } from './types'
@@ -39,7 +39,7 @@ async function getForkRow(id: string): Promise<ForkRow | undefined> {
 }
 
 /** Looks a recipe up in the draft fixture (`corpus.db` stand-in, out of scope for this slice). */
-export function findFixtureRecipe(id: string): DraftRecipe | undefined {
+export function findFixtureRecipe(id: string): Recipe | undefined {
   return FIXTURE_RECIPES.find((recipe) => recipe.id === id)
 }
 
@@ -109,7 +109,7 @@ export async function deleteMyRecipe(id: string): Promise<void> {
   await db.run('DELETE FROM my_recipes WHERE id = ?', [id])
 }
 
-function toMyRecipeData(parent: DraftRecipe): MyRecipeData {
+function toMyRecipeData(parent: Recipe): MyRecipeData {
   return {
     servings: parent.servings,
     cuisine: parent.cuisine,
@@ -121,7 +121,7 @@ function toMyRecipeData(parent: DraftRecipe): MyRecipeData {
 }
 
 /** "Make my version": forks `parent` into My Recipes, linked by `parent_id` (recipe_forks). */
-export async function forkRecipe(parent: DraftRecipe): Promise<string> {
+export async function forkRecipe(parent: Recipe): Promise<string> {
   const db = await getUserDb()
   const id = newId('fork')
   const now = new Date().toISOString()
