@@ -6,10 +6,10 @@ Branch: `claude/funny-thompson-jcmpox` (the only branch). Commit identity: saura
 ## Phase
 v0.2 feature-complete candidate. corpus/corpus.db (LFS, oid 891349ec..., 68,966 recipes, schema 4) ships in the APK.
 CI run 20 (d06aed5) is GREEN, including "Check the APK assets hold the real corpus". APK artifact 92.6 MB zipped.
-S22b is merged; waiting on CI plus device-smoke for the redesign build. S21 device-smoke PASSED on run 21 (cb29c93): '[corpus] ready 68966 recipes' 28 s after launch; copy 11,563 ms, so noCompress is not needed.
+Run 23 (62a937c, the redesign) is GREEN: build plus device-smoke. APK sent to the owner. S21 device-smoke PASSED on run 21 (cb29c93): '[corpus] ready 68966 recipes' 28 s after launch; copy 11,563 ms, so noCompress is not needed.
 
 ## Waiting on owner
-- Install the APK and try it on the phone. This is the FIRST device run: the native corpus copy (228 MB copyFromAssets) is unverified.
+- Install the run 23 APK (redesign + native fix, emulator-verified) and give feedback.
 - Size choice: 69k at 228 MB is the default; raising the cap is the alternative.
 
 ## Known open items (not queued)

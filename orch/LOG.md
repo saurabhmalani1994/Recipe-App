@@ -50,3 +50,4 @@
 - 2026-09-28: S22a merged (verified 288/47; screenshots reviewed). S22b briefed.
 - 2026-09-28: CI run 21 device-smoke PASSED on the API 34 emulator: 68,966 recipes ready 28 s after launch, copy 11.6 s. noCompress not needed.
 - 2026-09-28: S22b merged (verified 306/59; screenshots reviewed). Pushed for CI and device-smoke.
+- 2026-09-28: CI run 23 green (build + device-smoke) for the redesign. Sent to the owner.
