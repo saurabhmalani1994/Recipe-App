@@ -25,5 +25,6 @@ S10 full rebuild: R11 (no foodcom), S3b subs, S14 nutrition, S15 servings, bbc n
 S13 TS ingredient parser port + My Recipes parsed items | app | DONE merged | opus | orch/briefs/S13-ts-parser.md | v0.2
 S11 home page 4 rows + corpus favorites | app | DONE merged | sonnet | orch/briefs/S11-home.md | v0.2
 S14 nutrition (USDA FDC) | ingest | DONE merged | sonnet | orch/briefs/S14-nutrition.md | v0.2
-S12 import from URL + My Recipes in Cook | app | RUNNING | sonnet | orch/briefs/S12-import-url.md | v0.2
+S12 import from URL + My Recipes in Cook | app | DONE merged | sonnet | orch/briefs/S12-import-url.md | v0.2
 S15 servings estimator (99% of corpus lacks servings) | ingest + small app | RUNNING | opus | orch/briefs/S15-servings.md | v0.2
+S12b Mine: favorite-source bug, R12 ranking, R13 filters | app | RUNNING | sonnet | orch/briefs/S12b-mine-fixes.md | v0.2

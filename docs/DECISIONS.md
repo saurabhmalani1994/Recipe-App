@@ -43,3 +43,5 @@ Append only. The owner's words are verbatim (rule 13). Do not ask these again.
 | R9 | one_pot stays a literal tag (a single vessel). The app's "one pot meals" filter ANDs it with course=main, so S8 must derive a course tag | S5a open item; keeps course judgement out of an equipment tag |
 | R10 | Curation drops openrecipes records whose ingredient names were lost (about 32% sampled) and any recipe without steps | They can't be matched or cooked |
 | R11 | Drop the `foodcom` HF-mirror source (1,228 recipes) from the corpus. Its units were never in the data and the fetcher misaligned quantities. RecipeNLG already carries food.com recipes with full lines. Regenerate fixture.db without it | S7c finding |
+| R12 | My Recipes rank as quality 1.0 within their coverage band | The owner's own recipes "worked well" |
+| R13 | A My Recipe with no value for an active filter (time, one-pot, equipment) is excluded and counted, never passed through | Rule 11 |

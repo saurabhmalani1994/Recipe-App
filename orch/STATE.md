@@ -16,7 +16,7 @@ allrecipes gives 402 even with a browser UA (bot wall), so S1 tries headless Chr
 ## Owner silence on 3 defaults (applied): metric default, no hosted PWA, start builds now.
 
 ## Running
-S12 import+mine-in-Cook (sonnet, 4312) and S15 servings (opus) run in worktrees.
+S15 servings (opus, 4315) and S12b mine fixes (sonnet, 4316) run in worktrees.
 WAITING ON OWNER: grade sheet https://claude.ai/artifact/Qzm5YLRQtMfuiiKTjT9mmC (db collection grades/gNN {n, grade}).
 When graded: write the grades into ingest/curate/eval/owner_grade.md, then run python3 -m ingest.curate.eval.draw --score ...
 Also: corpus.db storage (188 MB) needs an owner answer; the default is Git LFS in this repo. The app lane is free until corpus schema S9. The app lane is free (S7b READY; S6 waits on corpus schema S9). The full BBC crawl runs as a background
@@ -24,6 +24,7 @@ script (cap 20000, 6h timeout; log in /home/user/recipe-data/bbc_full_crawl.log)
 Owner questions pending: Kaggle token (default: no ratings source), and location for seasonality (default: temperate north).
 
 ## Done
+- S12 merged (Cook/css conflicts with S11, both kept). 163 unit, e2e 31. Found a favorite-source bug for Mine results, so S12b.
 - S14 merged (conflict with S8 in build_corpus.py; both kept). 382 pytest. USDA mapping 97.4% of occurrences;
   gold 13/15. BUT servings is known for only 1,034/80,000 corpus recipes, so nutrition and D11 scaling fail. So S15.
 - S11 merged (migration conflict: S13=v5, S11=v6). 152 unit, e2e 28.
