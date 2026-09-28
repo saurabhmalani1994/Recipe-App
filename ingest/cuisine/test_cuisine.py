@@ -75,6 +75,18 @@ def test_lexicon_excludes_generic_ingredient_words():
         assert L.find_label(title) == (None, None), title
 
 
+def test_lexicon_demonyms_and_general_tso(): # brief S10b #1
+    assert L.find_label("Super Bowl: General Tso'S Chicken Wings") == ('chinese', 'general tso')
+    assert L.find_label('Vietnamese Summer Rolls') == ('vietnamese', 'vietnamese')
+    assert L.find_label('Thai Basil Chicken') == ('thai', 'thai basil')
+    assert L.find_label('Easy Thai Chicken Salad') == ('thai', 'thai')
+    assert L.find_label('Moroccan Lamb Stew') == ('north_african', 'moroccan')
+    # the same generic-adjective false positives still don't match with the demonyms added
+    for title in ('Italian Sausage and Peppers', 'French Fries', 'American Cheese Dip',
+                  'Swiss Chard Saute', 'Spanish Onion Soup'):
+        assert L.find_label(title) == (None, None), title
+
+
 def test_marker_words_strip_from_title_tokens_no_leakage():
     label, marker = L.find_label('Best Ever Pad Thai Noodles')
     assert label == 'thai'
@@ -215,3 +227,17 @@ def test_site_labels_to_canonical():
     # a site label means nothing for a non-site source, and a site's unknown label is None
     assert C.to_canonical('bbcgoodfood', 'palestinian') is None
     assert C.to_canonical('persianpot', 'israeli') is None
+
+
+# ---------- title override (brief S10b #1) ----------
+
+def test_title_cuisine_demonym_and_dish_marker():
+    assert C.title_cuisine("Super Bowl: General Tso'S Chicken Wings") == 'chinese'
+    assert C.title_cuisine('Vietnamese Summer Rolls') == 'vietnamese'
+    assert C.title_cuisine('Moroccan Lamb Tagine') == 'north_african'
+    assert C.title_cuisine('Plain Roast Chicken') is None
+
+
+def test_title_cuisine_never_overrides_generic_adjectives():
+    for title in ('Italian Sausage and Peppers', 'French Fries', 'American Cheese Dip'):
+        assert C.title_cuisine(title) is None

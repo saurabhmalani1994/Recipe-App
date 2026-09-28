@@ -50,6 +50,16 @@ def site_label(raw_label, path=CUISINES_PATH):
     return {'cuisine': got['cuisine'], 'sub': got.get('sub')} if got else None
 
 
+def title_cuisine(title):
+    """The canonical label a cuisine demonym or dish marker in `title` names, or None (brief
+    S10b #1). Precedence for a recipe's cuisine is: a source's own label (to_canonical, above)
+    > this title override > the classifier -- callers check to_canonical first and only fall
+    here when the source gave no label."""
+    from ingest.cuisine import lexicon as L
+    label, _ = L.find_label(title)
+    return label
+
+
 def to_canonical(source, raw_label, path=CUISINES_PATH):
     """The canonical label for one raw source label, or None if unmapped/blank. A cuisine site
     (ingest/fetch/sites.yaml) maps through site_labels; every other source through its label_map."""

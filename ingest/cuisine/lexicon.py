@@ -69,7 +69,7 @@ MARKERS = [
     ('arepa', 'latin_american'), ('churrasco', 'latin_american'), ('asado', 'latin_american'),
     ('chimichurri', 'latin_american'), ('tres leches', 'latin_american'),
     ('jerk chicken', 'caribbean'), ('jamaican', 'caribbean'), ('mofongo', 'caribbean'),
-    ('callaloo', 'caribbean'), ('curry goat', 'caribbean'), ('roti', 'caribbean'),
+    ('callaloo', 'caribbean'), ('curry goat', 'caribbean'), ('roti ', 'caribbean'),
     ('tagine', 'north_african'), ('couscous', 'north_african'), ('harissa', 'north_african'),
     ('shakshuka', 'north_african'), ('moroccan', 'north_african'), ('tunisian', 'north_african'),
     ('jollof', 'east_west_african'), ('injera', 'east_west_african'), ('suya', 'east_west_african'),
@@ -87,6 +87,35 @@ MARKERS = [
     ('grits', 'southern_us'), ('cornbread', 'southern_us'), ('fried green tomato', 'southern_us'),
     ('biscuits and gravy', 'southern_us'), ('pulled pork bbq', 'southern_us'),
     ('etouffee', 'southern_us'), ('po boy', 'southern_us'), ('hush puppies', 'southern_us'),
+
+    # -- demonyms (brief S10b #1): a plain nationality/regional adjective in the title, trusted
+    # as a cuisine marker only where it names a single geography and isn't also a generic
+    # ingredient-style adjective in wide use for dishes with no tie to that place -- the false
+    # positives the module docstring and test_lexicon_excludes_generic_ingredient_words guard
+    # against ("italian sausage", "french fries", "american cheese", "swiss chard", "spanish
+    # onion"). Those five demonyms (italian, french, american, swiss, spanish) are deliberately
+    # left out for that reason; "swiss" isn't canonical either way. A dish-specific marker
+    # earlier in this list always wins over a bare demonym for the same cuisine, since the
+    # first match found wins.
+    ('general tso', 'chinese'),  # the owner's term (brief S10b #1); Chinese-American counts as
+                                 # chinese, not korean -- the S10 sample's "General Tso'S Chicken
+                                 # Wings" misclassification this rule fixes
+    ('thai', 'thai'), ('chinese', 'chinese'), ('indian', 'indian'), ('japanese', 'japanese'),
+    ('filipino', 'filipino'), ('indonesian', 'indonesian_malaysian'),
+    ('malaysian', 'indonesian_malaysian'), ('singaporean', 'indonesian_malaysian'),
+    ('greek', 'greek'), ('algerian', 'north_african'), ('egyptian', 'north_african'),
+    ('german', 'german_central_eu'), ('polish', 'german_central_eu'),
+    ('russian', 'german_central_eu'), ('hungarian', 'german_central_eu'),
+    ('scandinavian', 'german_central_eu'), ('austrian', 'german_central_eu'),
+    ('irish', 'british_irish'), ('scottish', 'british_irish'), ('welsh', 'british_irish'),
+    ('british', 'british_irish'),
+    ('brazilian', 'latin_american'), ('peruvian', 'latin_american'),
+    ('argentinian', 'latin_american'), ('argentine', 'latin_american'),
+    ('cuban', 'caribbean'), ('haitian', 'caribbean'), ('trinidadian', 'caribbean'),
+    ('ethiopian', 'east_west_african'), ('nigerian', 'east_west_african'),
+    ('ghanaian', 'east_west_african'), ('senegalese', 'east_west_african'),
+    ('iranian', 'persian'), ('israeli', 'middle_eastern'), ('lebanese', 'middle_eastern'),
+    ('syrian', 'middle_eastern'),
 ]
 _norm = re.compile(r'\s+')
 _word_re = re.compile(r"[a-z']+")
@@ -94,8 +123,12 @@ _word_re = re.compile(r"[a-z']+")
 
 def find_label(title):
     """(canonical label, matched marker) for the first marker found in `title`, or
-    (None, None) if none match."""
-    t = _norm.sub(' ', (title or '').lower())
+    (None, None) if none match. A trailing space is padded onto the title too, so a marker
+    with its own trailing space guard ("roti ", "pho ", "dal ", "mole ") still matches a title
+    that ends in that word (brief S10b #1: "roti" alone was matching inside "rotisserie" and
+    "rotini" before the guard was added -- the padding keeps a plain "Roti"/"Chana Dal" title
+    matching once it was)."""
+    t = _norm.sub(' ', (title or '').lower()) + ' '
     for marker, label in MARKERS:
         if marker in t:
             return label, marker

@@ -78,22 +78,24 @@ _BREAKFAST = ('pancake', 'pancakes', 'waffle', 'waffles', 'french toast', 'porri
               'shakshuka', 'bircher', 'overnight oats', 'hotcakes', 'flapjacks')
 _DESSERT = ('cake', 'cakes', 'cupcake', 'cupcakes', 'cookie', 'cookies', 'brownie', 'brownies',
             'blondies', 'cheesecake', 'fudge', 'candy', 'candies', 'truffle', 'truffles',
-            'ice cream', 'sorbet', 'sherbet', 'gelato', 'mousse', 'trifle', 'cobbler', 'crisp',
+            'ice cream', 'sorbet', 'sherbet', 'gelato', 'mousse', 'trifle', 'crisp',
             'crumble', 'pavlova', 'meringue', 'meringues', 'macaroons', 'macarons', 'biscotti',
             'shortbread', 'bars', 'squares', 'traybake', 'doughnuts', 'donuts', 'doughnut',
-            'roulade', 'lamingtons', 'tiramisu', 'parfait', 'sundae', 'custard', 'flan',
+            'lamingtons', 'tiramisu', 'parfait', 'sundae', 'custard', 'flan',
             'pudding', 'dessert', 'desserts', 'treat', 'treats', 'chocolates', 'chocolate',
             'toffee', 'brittle', 'praline', 'pralines', 'bonbons', 'dumpling', 'panna cotta',
             'cheesecakes', 'eclairs', 'profiteroles', 'strudel', 'baklava', 'cannoli', 'churros',
             'snickerdoodles', 'gingerbread', 'crumb cake', 'coffee cake', 'jello', 'jell-o',
-            'congealed salad', 'pretzel salad', 'fluff', 'delight', 'dream', 'bark', 'clusters',
+            'congealed salad', 'pretzel salad', 'jello salad', "jell-o salad", 'pudding salad',
+            'watergate salad', 'ambrosia salad', 'fluff', 'delight', 'dream', 'bark', 'clusters',
             'popsicles', 'lollies', 'semifreddo', 'granita', 'souffle', 'soufflé', 'mess',
             'fool', 'crunch', 'kisses', 'drops', 'snowballs', 'haystacks', 'sticks',
             'tartlets', 'turnovers', 'galette', 'cobblers', 'crisps', 'pie', 'pies', 'tart',
             'tarts', 'torte', 'gateau', 'sponge', 'bundt', 'muffin cake', 'biscuits', 'biscuit',
             'bites', 'balls', 'pastries', 'pastry cream', 'upside-down cake', 'dumplings',
-            'ice cream sandwiches', 'ice cream sandwich', 'ice cream cake', 'ice cream pie')
-_BAKING = ('bread', 'breads', 'loaf', 'loaves', 'rolls', 'buns', 'bun', 'muffins', 'muffin',
+            'ice cream sandwiches', 'ice cream sandwich', 'ice cream cake', 'ice cream pie',
+            'kulfi', 'laddu', 'ladoo', 'ladus', 'laddoo', 'laddoos')
+_BAKING = ('bread', 'breads', 'loaf', 'loaves', 'buns', 'bun', 'muffins', 'muffin',
            'scones', 'scone', 'dough', 'pastry', 'crust', 'focaccia', 'bagels', 'bagel',
            'crackers', 'cornbread', 'brioche', 'naan', 'flatbread', 'flatbreads', 'tortillas',
            'challah', 'baguette', 'sourdough', 'ciabatta', 'pretzels', 'croissants', 'babka',
@@ -101,7 +103,8 @@ _BAKING = ('bread', 'breads', 'loaf', 'loaves', 'rolls', 'buns', 'bun', 'muffins
            'pasta dough', 'pizza dough', 'pie crust', 'shortcrust', 'puff pastry', 'biscuit dough')
 _SNACK = ('dip', 'dips', 'puffs', 'canapes', 'canapés', 'crostini', 'bruschetta', 'nachos',
           'wings', 'chips', 'popcorn', 'trail mix', 'snack', 'snacks', 'appetizer', 'appetizers',
-          'starter', 'deviled eggs', 'devilled eggs', 'spring rolls', 'egg rolls', 'fritters',
+          'starter', 'deviled eggs', 'devilled eggs', 'spring rolls', 'spring roll', 'egg rolls',
+          'egg roll', 'summer rolls', 'summer roll', 'rice paper rolls', 'fritters',
           'tempura', 'hummus', 'houmous', 'guacamole', 'labneh', 'pate', 'pâté', 'samosas',
           'samosa', 'pakora', 'pakoras', 'bhajis', 'potstickers', 'dumplings', 'nuts', 'pecans',
           'almonds', 'walnuts', 'cashews', 'peanuts', 'party mix', 'chex mix', 'crab puffs',
@@ -109,12 +112,12 @@ _SNACK = ('dip', 'dips', 'puffs', 'canapes', 'canapés', 'crostini', 'bruschetta
           'salsa dip', 'cheese straws', 'tapas', 'mezze', 'crudites', 'pinwheels', 'nibbles',
           'squid', 'calamari', 'edamame', 'croquettes', 'arancini', 'empanadas', 'quesadillas')
 _SIDE = ('slaw', 'coleslaw', 'potatoes', 'potato', 'mash', 'mashed potatoes', 'fries', 'rice',
-         'pilaf', 'pilau', 'beans', 'vegetables', 'veggies', 'veg', 'greens', 'stuffing',
+         'pilaf', 'pilau', 'beans', 'stuffing', 'spoon bread', 'spoonbread',
          'puree', 'purée', 'gratin', 'orzo', 'couscous', 'polenta', 'grits', 'remoulade',
          'side', 'sides', 'side dish', 'asparagus', 'broccoli', 'carrots', 'spinach', 'cabbage',
          'courgettes', 'zucchini', 'squash', 'sprouts', 'cauliflower', 'corn', 'peas', 'kale',
          'mushrooms', 'eggplant', 'aubergine', 'tomatoes', 'onions', 'leeks', 'parsnips',
-         'beets', 'beetroot', 'yams', 'sweet potatoes', 'fried rice', 'risotto', 'dal', 'dhal',
+         'beets', 'beetroot', 'yams', 'sweet potatoes', 'fried rice', 'dal', 'dhal',
          'succotash', 'ratatouille', 'hash', 'wedges', 'chips and', 'roast potatoes',
          'salad', 'salads')
 _MAIN = ('soup', 'soups', 'stew', 'stews', 'chili', 'chilli', 'chowder', 'bisque', 'gumbo',
@@ -138,7 +141,8 @@ _MAIN = ('soup', 'soups', 'stew', 'stews', 'chili', 'chilli', 'chowder', 'bisque
          'crab cakes', 'fish cakes', 'crab salad', 'tuna salad', 'chicken salad',
          'mac n cheese', "mac 'n' cheese", 'mac and cheese', 'macaroni and cheese', 'pilaf with',
          'wings dinner', 'mole', 'tofu', 'tempeh', 'seitan', 'lentils', 'chickpeas', 'pitas',
-         'pollo', 'carne', 'cerdo', 'wellington', 'shepherd', 'cottage pie', 'fish pie')
+         'pollo', 'carne', 'cerdo', 'wellington', 'shepherd', 'cottage pie', 'fish pie',
+         'risotto')
 
 # words whose course depends on the ingredients
 _DEPENDENT = {
@@ -163,6 +167,23 @@ _DEPENDENT = {
     'vinegar': lambda f: 'sauce_condiment', 'butter': lambda f: 'sauce_condiment',
     'mustard': lambda f: 'sauce_condiment', 'jelly': lambda f: 'sauce_condiment',
     'squid': lambda f: 'snack', 'lentils': _protein_else('main'), 'chickpeas': _protein_else('main'),
+    # "X rolls"/"X roll" is a bread you bake (dinner rolls, cinnamon rolls) only when there's no
+    # protein filling naming it as something else (lobster roll, chicken roll); "spring rolls" /
+    # "summer rolls" / "egg rolls" are listed above as their own phrases and matched first, so
+    # this bare word is never reached for them (brief S10b #2).
+    'rolls': _protein_else('baking'), 'roll': _protein_else('baking'),
+    # "X and vegetables"/"X and veg" names a side only when nothing in the title or ingredients
+    # is a protein centre; "chicken and vegetables" is main, "roasted vegetables" is side.
+    'vegetables': _protein_else('side'), 'veggies': _protein_else('side'),
+    'veg': _protein_else('side'), 'greens': _protein_else('side'),
+    # "roulade" names a sweet rolled cake with no protein, a savoury rolled meat dish otherwise.
+    'roulade': _protein_else('dessert'),
+    # a cobbler is a savoury braise under a biscuit topping (chicken cobbler) with a protein,
+    # else the fruit dessert.
+    'cobbler': _protein_else('dessert'),
+    # a cheesecake is the sweet dessert unless nothing about it is sweet (a savoury dip baked
+    # and served like one, e.g. a "salsa cheesecake").
+    'cheesecake': _sweet_else('snack'), 'cheesecakes': _sweet_else('snack'),
 }
 
 LEXICON = {}
@@ -211,6 +232,14 @@ def _lookup(words, feats):
 def head_phrase(title):
     parts = _CUT_RE.split(title or '', maxsplit=1)
     return parts[0] if parts and parts[0].strip() else (title or '')
+
+
+# A title that names "breakfast"/"brunch" as a modifier of the dish ("Breakfast Casserole",
+# "SP Bacon Breakfast Casserole", "Brunch Frittata") is breakfast even when the dish word itself
+# (casserole, frittata, pizza...) would otherwise resolve to something else on its own -- the
+# word search reads right to left, so a trailing dish word would win over an earlier "breakfast"
+# without this check (brief S10b #2: "breakfast X" -> breakfast).
+_BREAKFAST_MODIFIER_RE = re.compile(r'\b(?:breakfast|brunch)\b', re.I)
 
 
 # ---- source categories and tags --------------------------------------------------------------
@@ -350,7 +379,10 @@ def tag_course(raw, items=None):
         items = parse_items(raw)
     f = features(raw, items)
     title = raw.get('title') or ''
-    course, _ = _lookup(_words(head_phrase(title)), f)
+    head = head_phrase(title)
+    if _BREAKFAST_MODIFIER_RE.search(head):
+        return {'course': 'breakfast', 'rule': 'head'}
+    course, _ = _lookup(_words(head), f)
     if course:
         return {'course': course, 'rule': 'head'}
     course, _ = _lookup(_words(title), f)
