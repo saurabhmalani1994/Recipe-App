@@ -119,18 +119,129 @@ def test_features_join_rating_by_foodcom_id():
 
 def _features(**kw):
     f = {'domain': 'epicurious.com', 'resolved': 1.0, 'qty': 1.0, 'step_chars': 600, 'max_step': 300,
-         'n_lines': 8, 'time_source': 'estimated', 'rating': None, 'rating_count': None, 'image': False,
-         'servings': True, 'junk': []}
+         'n_lines': 8, 'n_steps': 4, 'time_source': 'estimated', 'rating': None, 'rating_count': None,
+         'image': False, 'servings': True, 'junk': [], 'course': 'main'}
     f.update(kw)
     return f
+
+
+FRESH = ('onion', 'garlic', 'basil', 'zucchini', 'chicken_breast', 'olive_oil')
 
 
 def test_score_bounds_and_terms():
     lo = _features(domain='cookbooks.com', resolved=0.4, qty=0.0, step_chars=10, max_step=10, n_lines=1,
                    time_source=None, rating=1.0, rating_count=50, servings=False)
-    hi = _features(domain='bbcgoodfood', time_source='source', rating=5.0, rating_count=50, image=True)
+    hi = _features(domain='bbcgoodfood', time_source='source', rating=5.0, rating_count=50, image=True,
+                   step_chars=900, n_lines=12, slugs=FRESH)
     assert 0.0 <= Q.quality(lo) < Q.quality(_features()) < Q.quality(hi, copies=30) <= 1.0
     assert Q.quality(hi, copies=30) >= 0.99
+    assert abs(sum(Q.WEIGHTS.values()) - 1.0) < 1e-9
+    assert all(0.0 <= v <= 1.0 for v in Q.terms(lo).values()) and all(0.0 <= v <= 1.0 for v in Q.terms(hi).values())
+
+
+# ---- S8b: substance, truncation, style, freshness (exact inputs from the graded tuning set) ----
+
+EMBER = {'title': "Ember'S Peas And Peanuts Salad",
+         'ingredients': ['1 pint sour cream', '2 sm. pkg. frozen peas', '1 tsp. garlic', '1 tsp. lemon juice',
+                         '1 sm. can spanish peanuts', '1 Tbsp. Worcestershire sauce'],
+         'steps': ['1st Layer:', '1 medium head lettuce, shredded.']}
+ANGEL_LUSH = ['1 package angel food cake mix', '1 package Jell-O Vanilla Flavor Instant Pudding',
+              '2 can Dole Crushed Pineapple in Juice', '1 c. thawed Cool Whip Whipped Topping',
+              '2 c. assorted fresh berries']
+
+
+def test_lines_ramp_is_low_at_six_and_full_from_nine():
+    got = [Q.lines_term(n) for n in range(0, 22)]
+    assert got[6] < 0.5 and got[3] == 0.0 and all(got[n] == 1.0 for n in range(9, 21))
+    assert got == sorted(got[:21]) + got[21:]            # never falls before 20 lines
+    assert Q.lines_term(25) == 0.8 and Q.lines_term(40) == 0.5
+
+
+def test_method_term_penalises_one_liners_and_short_methods():
+    assert Q.method_term(30, 30) == 0.0                                   # "Mix."
+    assert Q.method_term(80, 80, n_steps=3) < Q.method_term(300, 120, n_steps=3) < Q.method_term(700, 200, n_steps=3)
+    assert Q.method_term(700, 200, n_steps=3) == 1.0
+    assert Q.method_term(300, 300, n_steps=1) == Q.method_term(300, 100, n_steps=3) / 2   # one step
+    assert Q.method_term(300, 150, n_steps=2, n_frag=1) == Q.method_term(300, 150, n_steps=1)  # a header is no step
+    assert Q.method_term(9000, 500, n_steps=20) == 0.5                    # a scraped page
+    assert Q.method_term(900, 300, n_steps=4, trunc='dangling') == 0.0
+
+
+@pytest.mark.parametrize('steps,why', [
+    (EMBER['steps'], 'fragments'),                                          # graded 0 in the tuning set
+    (['1st Layer:'], 'header_end'),
+    (['Soften the onion.', 'Top tortillas with:'], 'header_end'),
+    (['cook shallots in butter, add mushrooms 8 min', 'add broth, boil down to one cup', 'add flour etc'],
+     'dangling'),                                                           # "Beef Stroganoff", graded 0
+    (['Heat the oven.', 'Serve immediately with'], 'dangling'),
+    (['Bake until golden, about 30 minutes. Serve hot. DO AHEAD:'], None),  # epicurious' note header
+    (['Bake 20 minutes.', 'DO AHEAD:'], None),
+    (['Bake.', 'Photography (c) 2014 by Scott Suchman Front cover photograph (c) 2014 by Sang An'], None),
+    (['Heat oil.', 'Serves 10 to 12'], None),
+    (['CRUST:', 'Mix crumbs and butter and press into a pan; bake 10 minutes until set and golden.',
+      'FILLING:', 'Beat the cream cheese with sugar and eggs until smooth, pour over and bake 45 minutes.'], None),
+])
+def test_truncated_method(steps, why):
+    assert F.truncated_method(steps) == why
+
+
+def test_truncation_costs_the_whole_score():
+    f = _features(step_chars=900, n_lines=12)
+    assert Q.quality(dict(f, trunc='dangling')) < Q.quality(f) * Q.TRUNC_FACTOR + 0.001
+
+
+def test_unreadable_lines_cost_the_whole_score():
+    # "All American Meat Loaf": every other line is "Click to see savings", 50% resolved
+    f = _features(step_chars=900, n_lines=12)
+    assert Q.quality(dict(f, resolved=0.5)) < Q.quality(dict(f, resolved=0.6)) * Q.UNPARSED_FACTOR + 0.01
+
+
+def test_style_markers_exact_inputs():
+    t = F.text_features({'ingredients': ANGEL_LUSH, 'steps': ['Bake.']})     # graded 0, was in the top band
+    assert set(t['style']) >= {'whipped_topping', 'gelatin_mix', 'pudding_mix', 'box_mix'}
+    t = F.text_features({'ingredients': EMBER['ingredients'], 'steps': EMBER['steps']})
+    assert t['n_rich'] == 1 and t['n_short'] == 2 and t['trunc'] == 'fragments'
+    for line, marker in [('1 can cream of mushroom soup', 'cream_of_soup'), ('1 lb Velveeta, cubed', 'processed_cheese'),
+                         ('2 cans crescent dinner rolls', 'canned_dough'), ('3/4 cup Miracle Whip', 'miracle_whip'),
+                         ('1 envelope onion soup mix', 'seasoning_packet'), ('1 box yellow cake mix', 'box_mix'),
+                         ('1 (3 ounce) package lemon flavored gelatin', 'gelatin_mix'),
+                         ('1 small box instant vanilla pudding', 'pudding_mix')]:
+        assert marker in F.text_features({'ingredients': [line]})['style'], line
+    # headers and real ingredients that only look like markers
+    for line in ['Pudding:', 'For the pudding:', '1 tablespoon unflavored gelatin', '1 cup whipping cream',
+                 '2 cups marinara sauce (prepared and warming on stove top)', '4 ounces goat cheese']:
+        assert F.text_features({'ingredients': [line]})['style'] == [], line
+
+
+def test_style_term_marshmallow_and_creamy_base_depend_on_course():
+    assert Q.style_term(('marshmallow',), course='dessert') == 1.0
+    assert Q.style_term(('marshmallow',), course='side') == 0.5            # candied yams
+    assert Q.style_term((), n_rich=2, n_lines=7, course='snack') == 0.5     # "Hot Crab Dip", graded 0
+    assert Q.style_term((), n_rich=2, n_lines=7, course='dessert') == 1.0   # a cheesecake
+    assert Q.style_term(('whipped_topping', 'gelatin_mix', 'pudding_mix'), course='dessert') == 0.0
+
+
+def test_freshness_rewards_fresh_and_takes_off_shortcuts():
+    fresh = Q.fresh_term(FRESH, 0, 6, 'main')
+    canned = Q.fresh_term(('canned_tomatoes', 'all_purpose_flour', 'butter', 'onion'), 3, 4, 'main')
+    assert fresh == 1.0 and canned < 0.2
+    assert Q.fresh_term(('black_pepper', 'salt', 'onion'), 0, 3, 'main') == 1.0   # staples and seasonings do not count
+    # a dessert with no fresh item sits at 0.5, fresh fruit lifts it
+    assert Q.fresh_term(('all_purpose_flour', 'sugar', 'butter', 'egg'), 0, 4, 'dessert') == 0.5
+    assert Q.fresh_term(('all_purpose_flour', 'sugar', 'butter', 'strawberries'), 0, 4, 'dessert') == 1.0
+    assert Q.fresh_term(None) == 0.5
+
+
+def test_style_sites_sit_below_their_tier():
+    assert Q.domain_prior('kraftrecipes.com') < Q.domain_prior('tasteofhome.com') < Q.domain_prior('bettycrocker.com')
+    assert Q.domain_prior('cookbooks.com') < Q.domain_prior('cookpad.com')
+
+
+def test_substance_outranks_domain_alone():
+    # the S8 failure: a two-line method with 5 lines on a top site outranked a full food.com recipe
+    thin = _features(domain='epicurious.com', n_lines=5, step_chars=88, max_step=40, n_steps=3)
+    full = _features(domain='food.com', n_lines=12, step_chars=900, max_step=300, n_steps=6)
+    assert Q.quality(full) > Q.quality(thin) + 0.1
 
 
 def test_rating_is_bayesian_and_unrated_is_neutral():
@@ -195,7 +306,7 @@ def _pool(main_every=4):
 
 
 def test_select_editorial_floors_and_mix():
-    keys, why = SEL.select(_pool(), target=60, floor=10)
+    keys, why = SEL.select(_pool(), target=60, floor=10, ceiling=None)
     rows = {r['key']: r for r in _pool()}
     got = [rows[k] for k in keys]
     assert len(keys) == 60 and len(set(keys)) == 60
@@ -204,14 +315,31 @@ def test_select_editorial_floors_and_mix():
     assert sum(1 for r in got if r['cuisine'] == 'british_irish') >= 1
     mix = SEL.mix_shares(got)
     assert mix['main'] >= 0.45 and mix['vegetarian'] >= 0.25 and mix['no_red_meat'] >= 0.5
-    assert SEL.select(list(reversed(_pool())), target=60, floor=10)[0] == keys
+    assert SEL.select(list(reversed(_pool())), target=60, floor=10, ceiling=None)[0] == keys
 
 
 def test_select_fills_the_target_when_a_constraint_cannot_be_met():
     # 20 mains in a 201-recipe pool cannot make 45% of 60: the target is still reached
-    keys, why = SEL.select(_pool(main_every=10), target=60, floor=10)
+    keys, why = SEL.select(_pool(main_every=10), target=60, floor=10, ceiling=None)
     assert len(keys) == 60 and 'score_unguarded' in why.values()
     assert sum(1 for r in _pool(main_every=10) if r['key'] in set(keys) and r['course'] == 'main') == 20
+
+
+def test_select_excludes_foodcom_r11():
+    pool = _pool() + [{'key': 'fc1', 'source': 'foodcom', 'score': 0.99, 'cuisine': 'thai', 'course': 'main',
+                       'veg': 'ok', 'nrm': 'ok'}]
+    keys, _ = SEL.select(pool, target=60, floor=10)
+    assert 'fc1' not in keys and len(keys) == 60
+
+
+def test_select_cuisine_ceiling():
+    # american is 150 of the 201 and the best by score; a 20% ceiling holds it to 12 of 60
+    keys, why = SEL.select(_pool(), target=60, floor=10, ceiling=0.2, ceiling_cuisines=('american',))
+    rows = {r['key']: r for r in _pool()}
+    assert len(keys) == 60
+    assert sum(1 for k in keys if rows[k]['cuisine'] == 'american') == 12
+    free = SEL.select(_pool(), target=60, floor=10, ceiling=None)[0]
+    assert sum(1 for k in free if rows[k]['cuisine'] == 'american') > 12
 
 
 def test_select_never_exceeds_the_hard_cap():
@@ -229,6 +357,19 @@ def test_read_grades_and_bar():
     v = EV.score(g, key)
     assert v['verdict'] == 'PASS' and v['graded'] == 3
     assert EV.score({1: 1, 2: 1, 3: 1}, key)['verdict'] == 'FAIL'
+
+
+def test_draw_excludes_the_tuning_set(tmp_path, monkeypatch):
+    ranked = [{'key': f'k{i}', 'source': 's', 'line': i, 'score': 1 - i / 1000} for i in range(1000)]
+    monkeypatch.setattr(EV, 'raw_line', lambda src, line, scan_dir, raw_root=None: {
+        'title': f't{line}', 'ingredients': ['1 onion'], 'steps': ['Cook it.']})
+    exclude = [f'k{i}' for i in range(0, 40)]                      # the top band (0-49) but ten
+    key = EV.draw(ranked, 'unused', str(tmp_path), seed=3, per_band=5, name='sheet2', exclude=exclude)
+    assert len(key) == 15 and not {k['key'] for k in key} & set(exclude)
+    assert sum(1 for k in key if k['band'] == 'top') == 5
+    assert (tmp_path / 'sheet2.md').read_text().startswith('# Owner grade')
+    assert EV.key_path(str(tmp_path / 'sheet2.md')) == str(tmp_path / 'sheet2_key.json')
+    assert '15 recipes' in (tmp_path / 'sheet2.md').read_text()
 
 
 def test_bands_are_disjoint():
@@ -348,6 +489,24 @@ def test_select_lines_streams_only_the_chosen(tmp_path):
     assert [n for n, _ in S.select_lines(str(p), 10, {1, 4, 7})] == [1, 4, 7]
     assert [n for n, _ in S.select_lines(str(p), 10, {1, 4, 7}, start=2)] == [4, 7]
     assert [n for n, _ in S.select_lines(str(p), 5, {1, 4, 7})] == [1, 4]
+
+
+def test_textpass_matches_features(tmp_path):
+    from ingest.curate import textpass as TP
+    raw = tmp_path / 'raw'
+    (raw / 'recipenlg').mkdir(parents=True)
+    rows = [_raw(id='recipenlg:0', ingredients=ANGEL_LUSH, steps=['Mix.', 'Top with:']), _raw(id='recipenlg:1')]
+    (raw / 'recipenlg' / 'recipes.jsonl').write_text(''.join(json.dumps(r) + '\n' for r in rows) + '{bad\n' +
+                                                      json.dumps(_raw(id='recipenlg:3')) + '\n')
+    scan = tmp_path / 'scan'
+    scan.mkdir()
+    (scan / 'manifest.json').write_text(json.dumps({'recipenlg': {'lines': 3, 'shard': 10, 'offsets': [0]}}))
+    got = TP.load(str(scan), str(tmp_path / 'text'), str(raw), log=lambda *a, **k: None)
+    assert set(got) == {('recipenlg', 0), ('recipenlg', 1)}         # the pinned 3 lines; line 2 is bad json
+    for n, r in enumerate(rows):
+        want = F.text_features(r)
+        assert got[('recipenlg', n)] == dict(want, style=tuple(want['style']))
+    assert got[('recipenlg', 0)]['trunc'] == 'header_end'
 
 
 def test_scan_offsets_match_line_starts(tmp_path):

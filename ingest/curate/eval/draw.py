@@ -1,11 +1,17 @@
 """Draw the owner-graded eval (brief S8 #5, bar in BAR.md) and score it once graded.
 
-draw(ranked, scan_dir, out_dir): 20 recipes drawn at random from each band of the ranked pool
-(top 5%, middle 5% around the median, bottom 5%), seeded, shuffled together, written to
-owner_grade.md with the band hidden; the answer key goes to owner_grade_key.json.
+draw(ranked, scan_dir, out_dir, name, per_band, exclude): `per_band` recipes drawn at random from
+each band of the ranked pool (top 5%, middle 5% around the median, bottom 5%), skipping the keys
+in `exclude`, seeded, shuffled together, written to <name>.md with the band hidden; the answer
+key goes to <name>_key.json.
 
-Scoring, after the owner fills in the grades:
-  python3 -m ingest.curate.eval.draw --score ingest/curate/eval/owner_grade.md
+Sheets:
+  owner_grade.md    S8, 60 recipes (seed 8). Graded; since S8b it is the TUNING set the score
+                    was reweighted on, so it can no longer test the score.
+  owner_grade_2.md  S8b, 45 recipes (15 per band, seed 82), none of the 60: the fresh test.
+
+Scoring, after the owner fills in the grades (the key is found next to the sheet):
+  python3 -m ingest.curate.eval.draw --score ingest/curate/eval/owner_grade_2.md
 """
 import json
 import os
@@ -58,15 +64,16 @@ def render(i, raw):
     return '\n'.join(L)
 
 
-def draw(ranked, scan_dir, out_dir, seed=8, per_band=PER_BAND, raw_root=S.RAW):
+def draw(ranked, scan_dir, out_dir, seed=8, per_band=PER_BAND, raw_root=S.RAW, name='owner_grade', exclude=()):
     rng = random.Random(seed)
+    exclude = set(exclude)
     picks = []
     for band, (a, b) in bands(len(ranked)).items():
-        idx = sorted(rng.sample(range(a, b), per_band))
+        idx = sorted(rng.sample([i for i in range(a, b) if ranked[i]['key'] not in exclude], per_band))
         picks += [(band, i, ranked[i]) for i in idx]
     rng.shuffle(picks)
     md = ['# Owner grade: does the quality score rank recipes that work well?', '',
-          '60 recipes, shuffled; the score and the source are hidden. About 10 seconds each.',
+          f'{len(picks)} recipes, shuffled; the score and the source are hidden. About 10 seconds each.',
           'Replace the `_` after each "grade:" with one number:', '',
           '- 2 = I would cook this as written and expect it to work',
           '- 1 = workable, but I would have to fix something (a missing amount, a vague step, an odd ratio)',
@@ -78,11 +85,16 @@ def draw(ranked, scan_dir, out_dir, seed=8, per_band=PER_BAND, raw_root=S.RAW):
         md.append(render(n, raw))
         key.append({'n': n, 'band': band, 'rank': rank, 'of': len(ranked), 'key': r['key'], 'score': r['score']})
     os.makedirs(out_dir, exist_ok=True)
-    with open(os.path.join(out_dir, 'owner_grade.md'), 'w', encoding='utf-8') as fh:
+    with open(os.path.join(out_dir, f'{name}.md'), 'w', encoding='utf-8') as fh:
         fh.write('\n'.join(md))
-    with open(os.path.join(out_dir, 'owner_grade_key.json'), 'w', encoding='utf-8') as fh:
+    with open(os.path.join(out_dir, f'{name}_key.json'), 'w', encoding='utf-8') as fh:
         json.dump(key, fh, indent=1)
     return key
+
+
+def key_path(md_path):
+    """owner_grade_2.md -> owner_grade_2_key.json, next to the sheet."""
+    return os.path.splitext(md_path)[0] + '_key.json'
 
 
 _GRADE_RE = re.compile(r'^## (\d+)\.|^grade:\s*([012])\b', re.M)
@@ -120,7 +132,7 @@ def score(grades, key):
 def main(argv):
     if len(argv) == 2 and argv[0] == '--score':
         grades = read_grades(open(argv[1], encoding='utf-8').read())
-        key = json.load(open(os.path.join(HERE, 'owner_grade_key.json'), encoding='utf-8'))
+        key = json.load(open(key_path(argv[1]), encoding='utf-8'))
         print(json.dumps(score(grades, key), indent=1))
         return 0
     print(__doc__)

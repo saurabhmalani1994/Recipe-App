@@ -30,3 +30,12 @@ the content score (the quality score without its rating and popularity terms, re
 the Bayesian-average rating. Food.com ratings are compressed (most are 5 stars), so a large
 correlation is not expected. The proxy passes if rho > 0 at p < 0.01. It is a sanity check that
 the content terms do not point the wrong way; it does not replace the owner grade.
+
+## S8b: the second sheet
+
+The 60 recipes of `owner_grade.md` were graded (FAIL: top 1.05, middle 0.80, bottom 0.35) and
+then used to reweight the score, so they are the TUNING set and can no longer test it.
+`owner_grade_2.md` is the test: 45 recipes, 15 from each band of the S8b ranking (seed 82), none
+of the 60, drawn after the style (D17) and freshness (D18) changes. The same bar applies, on
+15 per band. Score it with `python3 -m ingest.curate.eval.draw --score
+ingest/curate/eval/owner_grade_2.md`.

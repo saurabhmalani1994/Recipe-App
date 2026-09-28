@@ -1,0 +1,362 @@
+[
+ {
+  "n": 1,
+  "band": "middle",
+  "rank": 907354,
+  "of": 1860100,
+  "key": "recipenlg:1567946",
+  "score": 0.61
+ },
+ {
+  "n": 2,
+  "band": "bottom",
+  "rank": 1815459,
+  "of": 1860100,
+  "key": "recipenlg:391219",
+  "score": 0.295
+ },
+ {
+  "n": 3,
+  "band": "bottom",
+  "rank": 1770622,
+  "of": 1860100,
+  "key": "recipenlg:2055432",
+  "score": 0.342
+ },
+ {
+  "n": 4,
+  "band": "bottom",
+  "rank": 1806859,
+  "of": 1860100,
+  "key": "recipenlg:572863",
+  "score": 0.307
+ },
+ {
+  "n": 5,
+  "band": "middle",
+  "rank": 929339,
+  "of": 1860100,
+  "key": "recipenlg:1198809",
+  "score": 0.604
+ },
+ {
+  "n": 6,
+  "band": "middle",
+  "rank": 894731,
+  "of": 1860100,
+  "key": "recipenlg:697312",
+  "score": 0.614
+ },
+ {
+  "n": 7,
+  "band": "middle",
+  "rank": 947933,
+  "of": 1860100,
+  "key": "recipenlg:1100826",
+  "score": 0.599
+ },
+ {
+  "n": 8,
+  "band": "middle",
+  "rank": 957000,
+  "of": 1860100,
+  "key": "recipenlg:1720728",
+  "score": 0.597
+ },
+ {
+  "n": 9,
+  "band": "top",
+  "rank": 61814,
+  "of": 1860100,
+  "key": "recipenlg:1397592",
+  "score": 0.848
+ },
+ {
+  "n": 10,
+  "band": "bottom",
+  "rank": 1837718,
+  "of": 1860100,
+  "key": "recipenlg:720775",
+  "score": 0.255
+ },
+ {
+  "n": 11,
+  "band": "bottom",
+  "rank": 1800264,
+  "of": 1860100,
+  "key": "recipenlg:451761",
+  "score": 0.315
+ },
+ {
+  "n": 12,
+  "band": "bottom",
+  "rank": 1813917,
+  "of": 1860100,
+  "key": "recipenlg:18124",
+  "score": 0.297
+ },
+ {
+  "n": 13,
+  "band": "top",
+  "rank": 38294,
+  "of": 1860100,
+  "key": "recipenlg:1270911",
+  "score": 0.86
+ },
+ {
+  "n": 14,
+  "band": "top",
+  "rank": 23544,
+  "of": 1860100,
+  "key": "recipenlg:1443594",
+  "score": 0.868
+ },
+ {
+  "n": 15,
+  "band": "middle",
+  "rank": 926230,
+  "of": 1860100,
+  "key": "recipenlg:1576375",
+  "score": 0.605
+ },
+ {
+  "n": 16,
+  "band": "middle",
+  "rank": 899837,
+  "of": 1860100,
+  "key": "recipenlg:1514549",
+  "score": 0.612
+ },
+ {
+  "n": 17,
+  "band": "top",
+  "rank": 20528,
+  "of": 1860100,
+  "key": "recipenlg:2146101",
+  "score": 0.87
+ },
+ {
+  "n": 18,
+  "band": "middle",
+  "rank": 946693,
+  "of": 1860100,
+  "key": "recipenlg:288700",
+  "score": 0.6
+ },
+ {
+  "n": 19,
+  "band": "middle",
+  "rank": 947075,
+  "of": 1860100,
+  "key": "recipenlg:5856",
+  "score": 0.6
+ },
+ {
+  "n": 20,
+  "band": "top",
+  "rank": 89140,
+  "of": 1860100,
+  "key": "themealdb:53007",
+  "score": 0.836
+ },
+ {
+  "n": 21,
+  "band": "bottom",
+  "rank": 1821632,
+  "of": 1860100,
+  "key": "recipenlg:88530",
+  "score": 0.286
+ },
+ {
+  "n": 22,
+  "band": "top",
+  "rank": 25927,
+  "of": 1860100,
+  "key": "recipenlg:1747593",
+  "score": 0.867
+ },
+ {
+  "n": 23,
+  "band": "middle",
+  "rank": 894969,
+  "of": 1860100,
+  "key": "recipenlg:923475",
+  "score": 0.614
+ },
+ {
+  "n": 24,
+  "band": "top",
+  "rank": 64217,
+  "of": 1860100,
+  "key": "recipenlg:1469124",
+  "score": 0.847
+ },
+ {
+  "n": 25,
+  "band": "top",
+  "rank": 56823,
+  "of": 1860100,
+  "key": "recipenlg:1329337",
+  "score": 0.85
+ },
+ {
+  "n": 26,
+  "band": "bottom",
+  "rank": 1817464,
+  "of": 1860100,
+  "key": "recipenlg:315028",
+  "score": 0.292
+ },
+ {
+  "n": 27,
+  "band": "bottom",
+  "rank": 1818612,
+  "of": 1860100,
+  "key": "recipenlg:1847039",
+  "score": 0.29
+ },
+ {
+  "n": 28,
+  "band": "bottom",
+  "rank": 1824925,
+  "of": 1860100,
+  "key": "recipenlg:515731",
+  "score": 0.28
+ },
+ {
+  "n": 29,
+  "band": "bottom",
+  "rank": 1805060,
+  "of": 1860100,
+  "key": "recipenlg:217140",
+  "score": 0.309
+ },
+ {
+  "n": 30,
+  "band": "middle",
+  "rank": 965845,
+  "of": 1860100,
+  "key": "recipenlg:2154350",
+  "score": 0.595
+ },
+ {
+  "n": 31,
+  "band": "top",
+  "rank": 66210,
+  "of": 1860100,
+  "key": "recipenlg:1476829",
+  "score": 0.846
+ },
+ {
+  "n": 32,
+  "band": "bottom",
+  "rank": 1859524,
+  "of": 1860100,
+  "key": "recipenlg:705176",
+  "score": 0.14
+ },
+ {
+  "n": 33,
+  "band": "middle",
+  "rank": 915277,
+  "of": 1860100,
+  "key": "recipenlg:1702284",
+  "score": 0.608
+ },
+ {
+  "n": 34,
+  "band": "top",
+  "rank": 21890,
+  "of": 1860100,
+  "key": "recipenlg:1683647",
+  "score": 0.869
+ },
+ {
+  "n": 35,
+  "band": "bottom",
+  "rank": 1840533,
+  "of": 1860100,
+  "key": "recipenlg:517174",
+  "score": 0.248
+ },
+ {
+  "n": 36,
+  "band": "bottom",
+  "rank": 1853874,
+  "of": 1860100,
+  "key": "recipenlg:2039898",
+  "score": 0.196
+ },
+ {
+  "n": 37,
+  "band": "top",
+  "rank": 4376,
+  "of": 1860100,
+  "key": "recipenlg:1414886",
+  "score": 0.878
+ },
+ {
+  "n": 38,
+  "band": "top",
+  "rank": 76388,
+  "of": 1860100,
+  "key": "recipenlg:1260711",
+  "score": 0.841
+ },
+ {
+  "n": 39,
+  "band": "top",
+  "rank": 18971,
+  "of": 1860100,
+  "key": "recipenlg:1346876",
+  "score": 0.87
+ },
+ {
+  "n": 40,
+  "band": "bottom",
+  "rank": 1851829,
+  "of": 1860100,
+  "key": "recipenlg:271003",
+  "score": 0.207
+ },
+ {
+  "n": 41,
+  "band": "middle",
+  "rank": 883774,
+  "of": 1860100,
+  "key": "recipenlg:998818",
+  "score": 0.617
+ },
+ {
+  "n": 42,
+  "band": "top",
+  "rank": 34167,
+  "of": 1860100,
+  "key": "recipenlg:1376742",
+  "score": 0.862
+ },
+ {
+  "n": 43,
+  "band": "middle",
+  "rank": 901250,
+  "of": 1860100,
+  "key": "recipenlg:2127368",
+  "score": 0.612
+ },
+ {
+  "n": 44,
+  "band": "middle",
+  "rank": 923809,
+  "of": 1860100,
+  "key": "recipenlg:2140797",
+  "score": 0.606
+ },
+ {
+  "n": 45,
+  "band": "top",
+  "rank": 13040,
+  "of": 1860100,
+  "key": "recipenlg:1486906",
+  "score": 0.873
+ }
+]
