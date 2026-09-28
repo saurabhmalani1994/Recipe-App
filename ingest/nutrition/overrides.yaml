@@ -1,0 +1,66 @@
+# Hand-checked corrections to ingest/nutrition/build_mapping.py's scored match.
+#
+# slug: fdc_id            pin a specific Foundation/SR Legacy food (checked against
+#                          ingest/nutrition/mapping.json's "description" for that slug)
+# slug: null               deliberately unmapped: no Foundation/SR Legacy food is a reasonable
+#                          stand-in (a spice blend that varies by brand, water, ice, garnish).
+#
+# fdc_id is FoodData Central's own id, stable across releases; look one up at
+# https://fdc.nal.usda.gov/food-search?query=<name>&dataSource=Foundation,SR%20Legacy
+overrides:
+  # sugars
+  superfine_sugar: 334247        # Sugars, granulated (same composition, finer grind only)
+  dark_brown_sugar: 168833        # Sugars, brown
+  muscovado_sugar: 168833         # Sugars, brown (closest generic: unrefined cane, similar macros)
+  # condiments and sauces
+  dijon_mustard: 326698           # Mustard, prepared, yellow (dijon isn't separately listed)
+  english_mustard: 326698         # Mustard, prepared, yellow
+  light_soy_sauce: 172473         # Soy sauce made from soy and wheat (shoyu), low sodium
+  dark_soy_sauce: 174277          # Soy sauce made from soy and wheat (shoyu)
+  # spices
+  red_pepper_flakes: 170932       # Spices, pepper, red or cayenne
+  cinnamon_stick: 171320          # Spices, cinnamon, ground
+  smoked_paprika: 171329          # Spices, paprika
+  granulated_garlic: 171325       # Spices, garlic powder
+  cardamom_pods: 170919           # Spices, cardamom
+  star_anise: 171316              # Spices, anise seed
+  # vinegars
+  white_wine_vinegar: 172237      # Vinegar, distilled (no white-wine-specific entry)
+  rice_vinegar: 172237            # Vinegar, distilled (closest generic acidity/kcal)
+  sherry_vinegar: 172240          # Vinegar, red wine
+  # dairy
+  creme_fraiche: 171257           # Cream, sour, cultured (closest generic; creme fraiche is richer)
+  mascarpone: 173418              # Cheese, cream (closest generic; mascarpone runs higher-fat)
+  fresh_mozzarella: 329370        # Cheese, mozzarella, low moisture, part-skim
+  # produce
+  water_chestnuts: 170066         # Waterchestnuts, chinese, (matai), raw
+  snow_peas: 170010               # Peas, edible-podded, raw
+  bean_sprouts: 174256            # Mung beans, mature seeds, raw (closest to fresh bean sprouts)
+  poblano: 168579                 # Peppers, pasilla, dried (poblano fresh isn't separately listed)
+  cooking_apple: 1105664          # Apples, granny smith, with skin, raw
+  # grains, starches
+  basmati_rice: 168877            # Rice, white, long-grain, regular, raw, enriched
+  arborio_rice: 168877            # Rice, white, long-grain, regular, raw, enriched
+  linguine: 169736                # Pasta, dry, enriched
+  panko: 174928                   # Bread, crumbs, dry, grated, plain
+  graham_cracker_crumbs: 174957   # Cookies, graham crackers, plain or honey (includes cinnamon)
+  instant_yeast: 175043           # Leavening agents, yeast, baker's, active dry
+  # salts
+  garlic_salt: 173468             # Salt, table (garlic salt is mostly salt; garlic's kcal is trivial)
+  seasoned_salt: 173468           # Salt, table
+  flaky_salt: 173468              # Salt, table
+  # alcohol (kcal/sugar from proof and any added sugar; used in small deglazing amounts)
+  dry_sherry: 175112               # Alcoholic beverage, wine, dessert, dry
+  marsala: 173176                  # Alcoholic beverage, wine, dessert, sweet
+  brandy: 174815                   # Alcoholic beverage, distilled, all (gin, rum, vodka, whiskey), 80 proof
+  bourbon: 174815                  # Alcoholic beverage, distilled, all (gin, rum, vodka, whiskey), 80 proof
+  gin: 174815                      # Alcoholic beverage, distilled, all (gin, rum, vodka, whiskey), 80 proof
+  irish_cream: 175098              # Alcoholic beverage, liqueur, coffee with cream, 34 proof
+  orange_liqueur: 173665           # Alcoholic beverage, liqueur, coffee, 63 proof (closest generic sweet liqueur)
+  creme_de_cacao: 173665           # Alcoholic beverage, liqueur, coffee, 63 proof
+  creme_de_cassis: 173665          # Alcoholic beverage, liqueur, coffee, 63 proof
+  black_treacle: 168820            # Molasses
+  green_chili: 170497              # Peppers, hot chili, green, raw
+  artichoke_hearts: 168386         # Artichokes, (globe or french), cooked, boiled, drained, without salt
+  vanilla_bean: 173471             # Vanilla extract (bean itself isn't separately listed)
+  vanilla_bean_paste: 173471       # Vanilla extract
