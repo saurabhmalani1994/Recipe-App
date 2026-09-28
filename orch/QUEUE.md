@@ -39,4 +39,4 @@ S10 full rebuild (prep + first build) | ingest | DONE merged: 64,225 recipes, 22
 S10b title-marker lookup + course fixes | ingest | DONE merged (blind2 93.3%) | sonnet | orch/briefs/S10b-labels-course.md | v0.2
 S18 fixture refresh + re-pin tests + video method UI | app | DONE merged | sonnet | orch/briefs/S18-fixture-refresh.md | v0.2
 S19 final rebuild + LFS layout + CI APK with the real corpus | ingest+CI | RUNNING | opus | orch/briefs/S19-final-rebuild.md | - | - | v0.2
-S20 swap ordering + R19 veg ok-first | app | RUNNING | sonnet | orch/briefs/S20-swap-order.md | v0.2
+S20 swap ordering + R19 veg ok-first | app | DONE merged | sonnet | orch/briefs/S20-swap-order.md | v0.2
