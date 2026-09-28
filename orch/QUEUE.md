@@ -12,7 +12,7 @@ S5b-2 cuisine data expansion (2nd attempt, same tier) | ingest | DONE merged, ba
 S7a settings, kitchen, favorites, my recipes + forks | app | DONE merged | sonnet | orch/briefs/S7a-user-features.md | v0.1
 S6 matcher engine + Cook screen + units | app | DONE merged | opus | orch/briefs/S6-matcher.md | v0.2
 S7 planner + grocery + shopping mode | app | DONE merged | sonnet | orch/briefs/S7-planner-grocery.md | v0.2
-S8 curation: dedupe + quality + select ~80k + full build | ingest | RUNNING | opus | orch/briefs/S8-curation.md | v0.1
+S8 curation: dedupe + quality + select ~80k + full build | ingest | DONE merged (owner grade pending) | opus | orch/briefs/S8-curation.md | v0.1
 S9 corpus.db build + FTS5 + schema/corpus.sql | ingest | after S8 | opus | - | v0.1
 S7b UI polish: the recipe editor ingredient row overflows at 412px (3rd field cut off, seen in the screenshot); the qty/unit fields are too wide; OPFS persistence instead of the localStorage snapshot | app | DONE merged | sonnet | orch/briefs/S7b-ui-polish.md | v0.1
 S3b taxonomy/subs/parser fixups from S5a | ingest | DONE merged | sonnet | orch/briefs/S3b-fixups.md | v0.1
@@ -23,6 +23,6 @@ S6b Cook fixes: flaky diet persistence, equipment list drift, readability, ranki
 S7c shoppable grocery list (buy_as, shop units, no-qty items stay on list) | ingest taxonomy + app | DONE merged | opus | orch/briefs/S7c-shoppable-list.md | v0.2
 S10 rebuild after S8: apply R11 (no foodcom), S3b subs, regenerate fixture.db, rerun app tests | ingest | after S8 | sonnet | - | v0.2
 S13 TS ingredient parser port + My Recipes parsed items | app | DONE merged | opus | orch/briefs/S13-ts-parser.md | v0.2
-S11 home page 4 rows + corpus favorites | app | RUNNING | sonnet | orch/briefs/S11-home.md | v0.2
+S11 home page 4 rows + corpus favorites | app | DONE merged | sonnet | orch/briefs/S11-home.md | v0.2
 S14 nutrition (USDA FDC) | ingest | RUNNING | sonnet | orch/briefs/S14-nutrition.md | v0.2
 S12 import from URL + My Recipes in Cook | app | RUNNING | sonnet | orch/briefs/S12-import-url.md | v0.2

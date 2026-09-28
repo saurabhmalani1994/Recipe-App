@@ -16,11 +16,18 @@ allrecipes gives 402 even with a browser UA (bot wall), so S1 tries headless Chr
 ## Owner silence on 3 defaults (applied): metric default, no hosted PWA, start builds now.
 
 ## Running
-S8 curation (opus), S11 home (sonnet, 4311), S14 nutrition (sonnet) and S12 import+mine-in-Cook (sonnet, 4312) run in worktrees. The app lane is free until corpus schema S9. The app lane is free (S7b READY; S6 waits on corpus schema S9). The full BBC crawl runs as a background
+S14 nutrition (sonnet) and S12 import+mine-in-Cook (sonnet, 4312) run in worktrees.
+WAITING ON OWNER: grade sheet https://claude.ai/artifact/Qzm5YLRQtMfuiiKTjT9mmC (db collection grades/gNN {n, grade}).
+When graded: write the grades into ingest/curate/eval/owner_grade.md, then run python3 -m ingest.curate.eval.draw --score ...
+Also: corpus.db storage (188 MB) needs an owner answer; the default is Git LFS in this repo. The app lane is free until corpus schema S9. The app lane is free (S7b READY; S6 waits on corpus schema S9). The full BBC crawl runs as a background
 script (cap 20000, 6h timeout; log in /home/user/recipe-data/bbc_full_crawl.log).
 Owner questions pending: Kaggle token (default: no ratings source), and location for seasonality (default: temperate north).
 
 ## Done
+- S11 merged (migration conflict: S13=v5, S11=v6). 152 unit, e2e 28.
+- S8 merged. Re-run: 361 pytest. corpus.db 80,000 recipes, 188.2 MB at /home/user/recipe-data/out (NOT durable).
+  Proxy bar FAILED (rho -0.038 vs food.com ratings; ratings are compressed at 4.6). The owner grade is the real test.
+  Ratings mirror: HF peterpeeterspeter/recipe-interactions (699k reviews). Cuisine unknown 33.8%.
 - S13 merged. Re-run: 121 unit, e2e 27. TS parser parity 100% on gold 372 and sample 3003. Bump PARSER_VERSION on parser/slugs changes.
 - S7c merged. Re-run: 322 pytest, 112 unit, e2e 26. The list is now in shop units. The "¾" came from the foodcom HF mirror
   having no unit column, so R11 drops foodcom; S10 rebuilds after S8.
