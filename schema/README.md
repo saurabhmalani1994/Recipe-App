@@ -10,8 +10,15 @@
 ## corpus.db
 
 Built by `python3 -m ingest.build.build_corpus` (`--sample` for the 5k sample, `--all` for
-everything). Ships as a GitHub Release asset, never in git (R5). A 300-recipe build lives at
-`app/src/corpus/fixture.db` for the app's dev and tests (`python3 -m ingest.build.make_fixture`).
+everything). The curated build is committed at `corpus/corpus.db` through git LFS (S19, by the
+orchestrator's brief; R5 said a Release asset), and CI's APK build bundles it with
+`CORPUS_DB_FILE=corpus/corpus.db`. A 300-recipe build lives at `app/src/corpus/fixture.db` for the
+app's dev, tests and web build (`python3 -m ingest.build.make_fixture`; a schema bump that changes
+no recipe row is carried over with `--migrate OLD`).
+
+Schema 4 (S19): `cuisine_source` gains `title_marker` (R20), `recipe_diet` stores only the
+`vegetarian` and `no_red_meat` presets, and `recipe_diet.swaps` uses the short keys described in
+`corpus.sql` (the app reads it with `decodeDietSwaps`).
 
 ### Versioning
 

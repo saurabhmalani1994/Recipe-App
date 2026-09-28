@@ -4,6 +4,8 @@ on:
   push:
     paths:
       - 'app/**'
+      - 'corpus/**'
+      - '.gitattributes'
       - '.github/workflows/app.yml'
 
 defaults:
@@ -14,7 +16,32 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
+      # corpus/corpus.db (the real library, S19) is in git LFS, cached by its oid so a run whose
+      # corpus is unchanged takes it from the cache instead of spending LFS bandwidth: the checkout
+      # skips LFS (lfs: true would download before the cache could be restored), the cache is
+      # restored into .git/lfs, and `git lfs pull` downloads only what the cache lacked.
       - uses: actions/checkout@v4
+        with:
+          lfs: false
+
+      - name: Corpus LFS oid
+        id: lfs
+        working-directory: .
+        run: |
+          oid="$(git lfs ls-files -l -I corpus/corpus.db | cut -d' ' -f1)"
+          test -n "$oid" || { echo "corpus/corpus.db is not tracked by LFS"; exit 1; }
+          echo "oid=$oid" >> "$GITHUB_OUTPUT"
+
+      - uses: actions/cache@v4
+        with:
+          path: .git/lfs/objects
+          key: lfs-corpus-${{ steps.lfs.outputs.oid }}
+
+      - name: Pull the corpus from LFS
+        working-directory: .
+        run: |
+          git lfs pull --include corpus/corpus.db
+          echo "${{ steps.lfs.outputs.oid }}  corpus/corpus.db" | sha256sum -c -
 
       - uses: actions/setup-node@v4
         with:
@@ -33,8 +60,15 @@ jobs:
       - name: Unit tests
         run: npx vitest run
 
+      # The web build bundles the 300-recipe fixture (src/corpus/fixture.db).
       - name: Web build
         run: npm run build
+
+      # The APK bundles the real library: rebuild the web assets with it before the sync.
+      - name: Web build with the real corpus (for the APK)
+        run: npm run build
+        env:
+          CORPUS_DB_FILE: corpus/corpus.db
 
       - uses: actions/setup-java@v4
         with:
@@ -48,6 +82,10 @@ jobs:
 
       - name: Sync Capacitor Android project
         run: npx cap sync android
+
+      - name: Check the APK assets hold the real corpus
+        working-directory: .
+        run: cmp corpus/corpus.db app/android/app/src/main/assets/public/assets/databases/corpus.db
 
       - name: Build debug APK
         working-directory: app/android
